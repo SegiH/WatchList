@@ -40,6 +40,22 @@ export class WatchListItemsPage {
           this.isEditing = false;
      }
 
+     doRefresh(event) {
+          setTimeout(() => {
+               this.dataService.getWatchListItems(this.sortColumn,this.sortDirection).subscribe((response) => {
+                    if (response != null)
+                         for (let i=0;i<response.length;i++)
+                              response[i].Disabled = true;
+
+                    this.dataService.watchListItems=response;
+
+                    event.target.complete();
+               },
+                    error => {       
+               });
+          }, 2000);
+     }
+
      editWatchListItem(currWatchListItem: []) {
           currWatchListItem[`Previous`]=[];
           Object.assign(currWatchListItem[`Previous`], currWatchListItem);

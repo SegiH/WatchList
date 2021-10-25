@@ -1,0 +1,152 @@
+.ion-list-parent {
+    width: 100%;
+    overflow: auto;
+}
+
+ion-card {
+    display: flex;
+    width: 100%;
+}
+
+ion-icon {
+    width: 24px;
+    height: 24px;
+}
+
+ion-icon.cancelButton {
+     margin-left: 10px;
+}
+
+ion-input {
+    border-style: dashed;
+    border-width: 1px;
+}
+
+ion-label {
+    margin-top: 10px;
+}
+
+ion-label.mobile {
+    position: relative;
+    left: 15px;
+    top: 3px;
+}
+
+ion-list.md.list-md {
+    min-width: 1000px;
+    max-height: 500px;
+    overflow: auto;
+}
+
+ion-select {
+    border-style: dashed;
+    border-width: 1px;
+    max-width: 100%;
+}
+
+ion-col.IDColumn {
+    display: inline-flex;
+    max-width: 105px !important;
+}
+
+ion-col.nameLabelColumn {
+     display: inline-flex;
+     max-width: 50px;
+}
+
+ion-col.nameLabelMobileColumn {
+    display: inline-flex;
+    width: 200px !important;
+    max-width: 200px !important;
+}
+
+ion-col.nameDataMobileColumn {
+    display: inline-flex;
+    width: 200px !important;
+    max-width: 200px !important;
+}
+
+ion-col.dateLabelColumn {
+    display: inline-flex;
+}
+
+ion-col.dateLabelMobileColumn {
+    display: inline-flex;
+    width: 144px !important;
+    max-width: 144px !important;
+}
+
+ion-col.dateDataMobileColumn {
+    width: 144px !important;
+    max-width: 144px !important;
+}
+
+ion-col.dateDataMobileColumnAdd {
+    width: 144px !important;
+    max-width: 144px !important;
+}
+
+ion-col.notesLabelMobileColumn {
+   width: 200px !important;
+   max-width: 200px !important;
+}
+
+ion-col.notesDataMobileColumn {
+   width: 200px !important;
+   max-width: 200px !important;
+}
+
+ion-grid > ion-row > ion-col > ion-icon {
+    width: 70%;
+    height: 70%;
+}
+
+ion-grid > ion-row > ion-col > ion-label.startDateLabel {
+     max-width: 75px;
+}
+
+ion-grid > ion-row > ion-col > ion-icon.nameArrowIcon, 
+ion-grid > ion-row > ion-col > ion-icon.IDArrowIcon, 
+ion-grid > ion-row > ion-col > ion-icon.startDateArrowIcon,
+ion-grid > ion-row > ion-col > ion-icon.endDateArrowIcon {
+    width: 50px;
+    position: relative;
+    vertical-align: bottom;
+    padding-top: 10px;
+}
+
+ion-grid > ion-row > ion-col > ion-icon.active {
+    color: darkblue
+}
+
+.actionColumn {
+    display: inline-flex;
+    min-width: 175px !important;
+}
+
+.actionColumn > ion-icon.saveItem {
+    margin-left: 35px;
+}
+
+.optionsPanel {
+    float: left;
+    min-width: 750px;
+    display: flex;
+}
+
+#searchBar {
+    min-width: 400px;
+}
+
+#mobileToggle {
+    border-style: none !important;
+    border-width: 0px !important;    
+}
+
+.saveNewWatchList {
+    width: 111px;
+}
+
+.addColumn {
+    top: 10px;
+}

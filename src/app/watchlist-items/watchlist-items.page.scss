@@ -1,0 +1,143 @@
+.ion-list-parent {
+    width: 100%;
+    overflow: auto;
+}
+
+ion-card {
+    display: inherit;
+    width: 100%;
+}
+
+ion-content {
+    overflow: auto;
+}
+
+ion-icon {
+    width: 24px;
+    height: 24px;
+}
+
+ion-icon.cancelButton {
+    margin-left: 10px;
+}
+
+ion-input {
+    border-style: dashed;
+    border-width: 1px;
+}
+
+ion-label {
+    margin-top: 10px;
+}
+
+ion-list.md.list-md {
+    min-width: 1000px;
+    max-height: 500px;
+    overflow: auto;
+}
+
+ion-select {
+    max-width: 100%;
+}
+
+ion-col.IDColumn {
+    display: inline-flex;
+    max-width:105px !important;
+}
+
+ion-col.nameLabelColumn {
+    display: inline-flex;
+}
+
+ion-col.nameLabelMobileColumn {
+   display: inline-flex;
+   width: 200px !important;
+   max-width: 200px !important;
+}
+
+ion-col.nameDataMobileColumn {
+   width: 200px !important;
+   max-width: 200px !important;
+}
+
+ion-col.typeLabelColumn {
+   display: inline-flex;
+   padding-left: 20px;
+}
+
+ion-col.typeLabelMobileColumn {
+   display: inline-flex;
+   padding-left: 20px;
+   width: 200px !important;
+   max-width: 200px !important;
+}
+
+ion-col.typeDataMobileColumn {
+    width: 200px !important;
+    max-width: 200px !important;
+}
+
+ion-col.IMDBURLLabelColumn {
+    display: inline-flex;
+}
+
+ion-col.IMDBURLLabelMobileColumn {
+    display: inline-flex;
+}
+
+ion-grid > ion-row > ion-col > ion-icon.IDArrowIcon, 
+ion-grid > ion-row > ion-col > ion-icon.NameArrowIcon,
+ion-grid > ion-row > ion-col > ion-icon.TypeArrowIcon,
+ion-grid > ion-row > ion-col > ion-icon.IMDBURLArrowIcon {
+     width: 50px;
+     position: relative;
+     vertical-align: bottom;
+     padding-top: 10px;
+ }
+
+ ion-grid > ion-row > ion-col > ion-label.NameLabel {
+    max-width: 75px;
+}
+
+ion-grid > ion-row > ion-col > ion-icon {
+    width: 70%;
+    height: 70%;
+}
+
+ion-grid > ion-row > ion-col > ion-icon.active {
+    color: #30A199;
+}
+
+.actionColumn {
+    display: inline-flex;
+    min-width: 175px !important;
+}
+
+.actionColumn > ion-icon.saveItem {
+    margin-left: 25px;
+}
+
+.optionsPanel {
+    float: left;
+    min-width: 750px;
+    display: flex;
+}
+
+#searchBar {
+    min-width: 437.5px;
+}
+
+#mobileToggle {
+    border-style: none !important;
+    border-width: 0px !important;    
+}
+
+.saveNewWatchList {
+    width: 111px;
+    padding-left: 50px;
+}
+
+.addColumn {
+    max-width: 62px !important;
+    top: 10px;
+}

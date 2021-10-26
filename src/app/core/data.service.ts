@@ -32,7 +32,10 @@ export class DataService {
           let params = new HttpParams();     
           params = params.append('WatchListItemID',currWatchList['WatchListItemID']);
           params = params.append('StartDate',currWatchList['StartDate']);
-          params = params.append('EndDate',currWatchList['EndDate']);
+          
+          if (currWatchList['EndDate'] != null)
+               params = params.append('EndDate',currWatchList['EndDate']);
+
           params = params.append('Notes',currWatchList['Notes']);
 
           return this.processStep(`/AddWatchList`,params);
@@ -133,7 +136,10 @@ export class DataService {
           params = params.append('WatchListID',currWatchList['WatchListID']);
           params = params.append('WatchListItemID',currWatchList['WatchListItemID']);
           params = params.append('StartDate',currWatchList['StartDate']);
-          params = params.append('EndDate',currWatchList['EndDate']);
+          
+          if (currWatchList['EndDate'] != null)
+               params = params.append('EndDate',currWatchList['EndDate']);
+                              
           params = params.append('Notes',currWatchList['Notes']);
 
           return this.processStep(`/UpdateWatchList`,params);

@@ -203,7 +203,7 @@ let DataService = class DataService {
     constructor(toastController, http, platform) {
         this.toastController = toastController;
         this.http = http;
-        this.backendURL = `https://watchlist-backend.hovav.org`;
+        this.backendURL = `https://watchlistbackend.openode.io`;
         this.isMobilePlatform = false;
         this.searchTerm = '';
         this.title = '';

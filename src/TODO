@@ -1,0 +1,31 @@
+-- Fix DB index
+-- Saving WL item doesn't save 
+VALIDATED ---- refactored code to make data service properties private
+-- When adding item, add panel doesnt hide after adding item
+-- You meed to refresh after adding WL before it appears
+-- You meed to refresh after adding WL item before it appears
+VALIDATED -- Add notes field to WL items
+-- Add check before adding to prevent duplicates, otherwise throw error
+VALIDATED -- Add Source dropdown (NF,Hulu,Prime,JF,Other)
+VALIDATED -- Create array with column sizes instead of hard coding them in the HTML
+VALIDATED -- maybe add season field as number
+VALIDATED -- add way to filter # of rows returned
+VALIDATED -- make hyperlink in watchlist
+VALIDATED -- look into issue where error is thrown when building with --prod param
+
+Fix
+---
+add check for isediting before switching tabs
+when adding WL, WL items are sometimes sorted in reverse
+if you dont enter a season it defaults to 0
+edit not visible on mobile for WL
+
+Add
+---
+implement menu to allow user to set backend URL
+Set Android app icon
+imeplement delete
+add way to sort/filter by source
+
+Update db schema and backend
+filter WL without end date

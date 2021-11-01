@@ -1,4 +1,3 @@
-// Set app icon
 import { Component } from '@angular/core';
 import { DataService } from '../core/data.service';
 
@@ -12,15 +11,34 @@ export class WatchListPage {
      addItemStartDate = '';
      addItemEndDate = '';
      addItemNotes= '';
+     addItemSource = '';
+     addSeason = '';
      isAdding = false;
      isEditing = false;
+     recordLimit = 10;
      sortColumn = 'Name';
      sortDirection = 'ASC';
      sortActiveColumn = 'Name';
 
-     constructor(public dataService: DataService) {
-          this.dataService.title="WatchList";
+     readonly columnSizes = {
+          'ID': 1,
+          'Name': 1,
+          'StartDate': 1,
+          'EndDate': 1,
+          'Source' : 2,
+          'Season' : 1,
+          'Notes' : 2,
+          'Action' : 1,
      }
+
+     readonly recordLimitOptions = [
+          10,
+          50,
+          100,
+          500
+     ]
+
+     constructor(public dataService: DataService) {}
 
      addWatchList() {
           this.isAdding=true;
@@ -48,12 +66,12 @@ export class WatchListPage {
 
      doRefresh(event) {
           setTimeout(() => {
-               this.dataService.getWatchList(this.sortColumn,this.sortDirection).subscribe((response) => {
+               this.dataService.getWatchList(this.sortColumn,this.sortDirection,this.recordLimit).subscribe((response) => {
                     if (response != null)
-                    for (let i=0;i<response.length;i++)
-                         response[i].Disabled = true;
+                         for (let i=0;i<response.length;i++)
+                              response[i].Disabled = true;
 
-                    this.dataService.watchList=response;
+                    this.dataService.setWatchlist(response);
 
                     event.target.complete();
                },
@@ -73,6 +91,18 @@ export class WatchListPage {
 
      handleError(response: Response, error: Error) {}
 
+     recordLimitChanged() {
+          this.dataService.getWatchList(this.sortColumn,this.sortDirection,this.recordLimit).subscribe((response) => {
+               if (response != null)
+                    for (let i=0;i<response.length;i++)
+                         response[i].Disabled = true;
+
+               this.dataService.setWatchlist(response);
+          },
+               error => {       
+          });
+     }
+
      saveNewWatchList() {
           if (this.addItemName === ``) {
                alert(`Please select the name`);
@@ -89,20 +119,24 @@ export class WatchListPage {
           currWatchList.StartDate=this.addItemStartDate;
           currWatchList.EndDate=this.addItemEndDate;
           currWatchList.Notes=this.addItemNotes;
+          currWatchList.WatchListSourceID=this.addItemSource;
+          currWatchList.Season=this.addSeason;
 
           this.dataService.addWatchList(currWatchList).subscribe((response) => {
-               this.dataService.getWatchListSubscription(this.sortColumn,this.sortDirection);
+               this.addItemName = '';
+               this.addItemStartDate = '';
+               this.addItemEndDate = '';
+               this.addItemNotes= '';
+               this.addItemSource = '';
+               this.addSeason = '';
+
+               this.isAdding=false;
+
+               this.dataService.getWatchListSubscription(this.sortColumn,this.sortDirection,this.recordLimit);
           },
           error => {
                this.handleError(null, error);
           });
-
-          this.addItemName = '';
-          this.addItemStartDate = '';
-          this.addItemEndDate = '';
-          this.addItemNotes= '';
-
-          this.isAdding=false;
      }
 
      saveWatchList(currWatchList: []) {
@@ -117,26 +151,26 @@ export class WatchListPage {
           }
 
           this.dataService.updateWatchList(currWatchList).subscribe((response) => {
-               this.dataService.getWatchListSubscription(this.sortColumn,this.sortDirection);
+               currWatchList[`Disabled`]=true;
+
+               this.isEditing = false;
+
+               this.dataService.getWatchListSubscription(this.sortColumn,this.sortDirection,this.recordLimit);
           },
           error => {
                this.handleError(null, error);
           });
-
-          currWatchList[`Disabled`]=true;
-
-          this.isEditing = false;
      }
 
      searchFilter() {
-          this.dataService.getWatchListSubscription(this.sortColumn,this.sortDirection);
+          this.dataService.getWatchListSubscription(this.sortColumn,this.sortDirection,this.recordLimit);
      }
 
      sortClick(name,direction) {
           const columnName=(name != null ? name : this.sortColumn);
           const columnDirection=(direction != null ? direction : this.sortDirection);
 
-          this.dataService.getWatchListSubscription(columnName,columnDirection);
+          this.dataService.getWatchListSubscription(columnName,columnDirection,this.recordLimit);
           
           this.sortActiveColumn=columnName;
 

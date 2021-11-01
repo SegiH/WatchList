@@ -51,18 +51,21 @@ ion-col.IDColumn {
 
 ion-col.nameLabelColumn {
      display: inline-flex;
-     max-width: 50px;
+     min-width: 300px !important;
 }
 
 ion-col.nameLabelMobileColumn {
     display: inline-flex;
-    width: 200px !important;
+    min-width: 200px !important;
     max-width: 200px !important;
 }
 
+ion-col.nameMobileColumn {
+    min-width: 300px !important;
+}
+
 ion-col.nameDataMobileColumn {
-    display: inline-flex;
-    width: 200px !important;
+    min-width: 200px !important;
     max-width: 200px !important;
 }
 
@@ -108,7 +111,8 @@ ion-grid > ion-row > ion-col > ion-label.startDateLabel {
 ion-grid > ion-row > ion-col > ion-icon.nameArrowIcon, 
 ion-grid > ion-row > ion-col > ion-icon.IDArrowIcon, 
 ion-grid > ion-row > ion-col > ion-icon.startDateArrowIcon,
-ion-grid > ion-row > ion-col > ion-icon.endDateArrowIcon {
+ion-grid > ion-row > ion-col > ion-icon.endDateArrowIcon,
+ion-grid > ion-row > ion-col > ion-icon.sourceArrowIcon {
     width: 50px;
     position: relative;
     vertical-align: bottom;
@@ -128,19 +132,15 @@ ion-grid > ion-row > ion-col > ion-icon.active {
     margin-left: 35px;
 }
 
-.optionsPanel {
-    float: left;
-    min-width: 750px;
-    display: flex;
-}
 
 #searchBar {
-    min-width: 400px;
+    min-width: 437.5px;
 }
 
 #mobileToggle {
     border-style: none !important;
-    border-width: 0px !important;    
+    border-width: 0px !important;
+    margin-top: 12px;  
 }
 
 .saveNewWatchList {
@@ -149,4 +149,22 @@ ion-grid > ion-row > ion-col > ion-icon.active {
 
 .addColumn {
     top: 10px;
+}
+
+.limitLabel {
+    text-align: right;
+    margin-top: 25px;
+    width: 80px;
+}
+
+.limitSelect {
+    margin-top: 12px;
+}
+
+.sourceLabelMobileColumn {
+    display: inline-flex;
+}
+
+.sourceLabelColumn {
+    display: inline-flex;
 }

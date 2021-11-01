@@ -10,16 +10,24 @@
      </ion-refresher>
      
      <ion-grid>
-          <ion-row class="optionsPanel">
-               <ion-col size="2" class="addColumn">
+          <ion-row>
+               <ion-col size="1">
                     <ion-icon *ngIf="!isAdding && !isEditing" class="addWatchList" name="add-outline" (click)="addWatchListItem()"></ion-icon>
                </ion-col>
 
-               <ion-col size="5" id="searchBar">
+               <ion-col size="2" id="searchBar">
                     <ion-searchbar (ionChange)="searchFilter()" [disabled]="isAdding || isEditing" [(ngModel)]="dataService.searchTerm" (ionDdisabled)="isAdding || isEditing"></ion-searchbar>
                </ion-col>
 
-               <ion-col size="4" id="mobileToggle">
+               <ion-col size="1" class="limitLabel"><ion-label>Limit</ion-label></ion-col>
+
+               <ion-col size="1" class="limitSelect">
+                    <ion-select placeholder='Record Limit' name="recordLimit" [(ngModel)]="recordLimit" (ionChange)="recordLimitChanged()">
+                         <ion-select-option *ngFor="let currItem of recordLimitOptions;trackBy: trackByFn" [value]="currItem">{{currItem}}</ion-select-option>
+                    </ion-select>
+               </ion-col>
+
+               <ion-col size="3" id="mobileToggle">
                     <ion-item>Mobile<ion-toggle [(ngModel)]="dataService.isMobilePlatform" color="primary"></ion-toggle></ion-item>
                </ion-col>
           </ion-row>
@@ -30,23 +38,27 @@
                <ion-item> <!-- Table headers -->
                     <ion-grid>
                          <ion-row>
-                              <ion-col size="2" class="IDColumn">
+                              <ion-col [size]="columnSizes['ID']" class="IDColumn">
                                    <ion-label>ID</ion-label><ion-icon *ngIf="sortDirection =='ASC' && !isAdding && !isEditing" [ngClass]="sortActiveColumn === 'ID' ? 'upArrow IDArrowIcon active' : 'upArrow IDArrowIcon'" name="caret-up-outline" (click)="sortClick('ID','ASC')"></ion-icon><ion-icon *ngIf="sortDirection =='DESC' && !isAdding && !isEditing" [ngClass]="sortActiveColumn === 'ID' ? 'downArrow IDArrowIcon active' : 'downArrow IDArrowIcon'" name="caret-down-outline" (click)="sortClick('ID','DESC')"></ion-icon>
                               </ion-col>
 
-                              <ion-col size="2" [ngClass]="dataService.isMobilePlatform == true ? 'nameLabelMobileColumn' : 'nameLabelColumn'">
+                              <ion-col [size]="columnSizes['Name']" [ngClass]="dataService.isMobilePlatform == true ? 'nameLabelMobileColumn' : 'nameLabelColumn'">
                                    <ion-label class="NameLabel">Name</ion-label><ion-icon *ngIf="sortDirection =='ASC' && !isAdding && !isEditing" [ngClass]="sortActiveColumn === 'Name' ? 'upArrow NameArrowIcon active' : 'upArrow NameArrowIcon'" name="caret-up-outline" (click)="sortClick('Name','ASC')"></ion-icon><ion-icon *ngIf="sortDirection =='DESC' && !isAdding && !isEditing" [ngClass]="sortActiveColumn === 'Name' ? 'downArrow NameArrowIcon active' : 'downArrow NameArrowIcon'" name="caret-down-outline" (click)="sortClick('Name','DESC')"></ion-icon>
                               </ion-col>
 
-                              <ion-col size="2" [ngClass]="dataService.isMobilePlatform == true ? 'typeLabelMobileColumn' : 'typeLabelColumn'">
+                              <ion-col [size]="columnSizes['Type']" [ngClass]="dataService.isMobilePlatform == true ? 'typeLabelMobileColumn' : 'typeLabelColumn'">
                                    <ion-label>Type</ion-label><ion-icon *ngIf="sortDirection =='ASC' && !isAdding && !isEditing" [ngClass]="sortActiveColumn === 'Type' ? 'upArrow TypeArrowIcon active' : 'upArrow TypeArrowIcon'" name="caret-up-outline" (click)="sortClick('Type','ASC')"></ion-icon><ion-icon *ngIf="sortDirection =='DESC' && !isAdding && !isEditing" [ngClass]="sortActiveColumn === 'Type' ? 'downArrow TypeArrowIcon active' : 'downArrow TypeArrowIcon'" name="caret-down-outline" (click)="sortClick('Type','DESC')"></ion-icon>
                               </ion-col>
 
-                              <ion-col size="3" [ngClass]="dataService.isMobilePlatform == true ? 'IMDBURLLabelMobileColumn' : 'IMDBURLLabelColumn'">
+                              <ion-col [size]="columnSizes['IMDBURL']" [ngClass]="dataService.isMobilePlatform == true ? 'IMDBURLLabelMobileColumn' : 'IMDBURLLabelColumn'">
                                    <ion-label>IMDB URL</ion-label><ion-icon *ngIf="sortDirection =='ASC' && !isAdding && !isEditing" [ngClass]="sortActiveColumn === 'IMDB_URL' ? 'upArrow IMDBURLArrowIcon active' : 'upArrow IMDBURLArrowIcon'" name="caret-up-outline" (click)="sortClick('IMDB_URL','ASC')"></ion-icon><ion-icon *ngIf="sortDirection =='DESC' && !isAdding && !isEditing" [ngClass]="sortActiveColumn === 'IMDB_URL' ? 'downArrow IMDBURLArrowIcon active' : 'downArrow IMDBURLArrowIcon'" name="caret-down-outline" (click)="sortClick('IMDB_URL','DESC')"></ion-icon>
                               </ion-col>
 
-                              <ion-col size="1">
+                              <ion-col [size]="columnSizes['Notes']" [ngClass]="dataService.isMobilePlatform == true ? 'notesLabelMobileColumn' : 'notesLabelColumn'">
+                                   <ion-label>Notes</ion-label>
+                              </ion-col>
+
+                              <ion-col [size]="columnSizes['Action']">
                                    <ion-label></ion-label>
                               </ion-col>
                          </ion-row>
@@ -56,23 +68,27 @@
                <ion-item *ngIf="isAdding">
                     <ion-grid>
                          <ion-row>
-                              <ion-col size="2" class="IDColumn"></ion-col>
+                              <ion-col [size]="columnSizes['ID']" class="IDColumn"></ion-col>
 
-                              <ion-col size="2" [ngClass]="dataService.isMobilePlatform == true ? 'nameDataMobileColumn' : ''">
+                              <ion-col [size]="columnSizes['Name']" [ngClass]="dataService.isMobilePlatform == true ? 'nameDataMobileColumn' : ''">
                                    <ion-input type="text" [(ngModel)]="addItemName" [value]="addItemName" ></ion-input>
                               </ion-col>
 
-                              <ion-col size="2" [ngClass]="dataService.isMobilePlatform == true ? 'typeDataMobileColumn' : ''">
+                              <ion-col [size]="columnSizes['Type']" [ngClass]="dataService.isMobilePlatform == true ? 'typeDataMobileColumn' : ''">
                                    <ion-select placeholder='Type' name="title" [(ngModel)]="addItemType">
-                                        <ion-select-option *ngFor="let currItem of dataService.watchListTypes;trackBy: trackByFn" [value]="currItem.WatchListTypeID">{{currItem.WatchListTypeName}}</ion-select-option>
+                                        <ion-select-option *ngFor="let currItem of dataService.watchListTypes;trackBy: trackByFn" [value]="currItem['WatchListTypeID']">{{currItem['WatchListTypeName']}}</ion-select-option>
                                    </ion-select>
                               </ion-col>
 
-                              <ion-col size="3">
+                              <ion-col [size]="columnSizes['IMDBURL']">
                                    <ion-input type="text" [(ngModel)]="addItemIMDBURL"></ion-input>
                               </ion-col>
 
-                              <ion-col size="1" class="actionColumn">
+                              <ion-col [size]="columnSizes['Notes']" [ngClass]="dataService.isMobilePlatform == true ? 'notesDataMobileColumn' : ''">
+                                   <ion-input type="text" [(ngModel)]="addItemNotes"></ion-input>
+                              </ion-col>
+
+                              <ion-col [size]="columnSizes['Action']" class="actionColumn">
                                    <ion-icon name="save-outline" class="saveItem" (click)="saveNewWatchListItem()"></ion-icon>
                                    <ion-icon name="close-circle-outline" class="cancelButton" (click)="cancelAddWatchListItem()"></ion-icon>
                               </ion-col>
@@ -83,25 +99,29 @@
                <ion-item *ngFor="let currWatchListItem of dataService.watchListItems">
                     <ion-grid>
                          <ion-row>
-                              <ion-col size="2" class="IDColumn">
+                              <ion-col [size]="columnSizes['ID']" class="IDColumn">
                                    <ion-label>{{ currWatchListItem.WatchListItemID }}</ion-label>
                               </ion-col>
 
-                              <ion-col size="2" [ngClass]="dataService.isMobilePlatform == true ? 'nameDataMobileColumn' : ''">
-                                   <ion-input [disabled]="currWatchListItem.Disabled" type="text" [(ngModel)]="currWatchListItem.WatchListItemName" [value]="currWatchListItem.WatchListItemName" ></ion-input>
+                              <ion-col [size]="columnSizes['Name']" [ngClass]="dataService.isMobilePlatform == true ? 'nameDataMobileColumn' : ''">
+                                   <ion-input [disabled]="currWatchListItem.Disabled" type="text" [(ngModel)]="currWatchListItem['WatchListItemName']" [value]="currWatchListItem['WatchListItemName']" ></ion-input>
                               </ion-col>
 
-                              <ion-col size="2" [ngClass]="dataService.isMobilePlatform == true ? 'nameDataMobileColumn' : ''">
+                              <ion-col [size]="columnSizes['Type']" [ngClass]="dataService.isMobilePlatform == true ? 'nameDataMobileColumn' : ''">
                                    <ion-select placeholder='Type' name="title" [disabled]="currWatchListItem.Disabled" [(ngModel)]="currWatchListItem.WatchListTypeID">
-                                        <ion-select-option *ngFor="let currItem of dataService.watchListTypes;trackBy: trackByFn" [value]="currItem.WatchListTypeID">{{currItem.WatchListTypeName}}</ion-select-option>
+                                        <ion-select-option *ngFor="let currItem of dataService.watchListTypes;trackBy: trackByFn" [value]="currItem['WatchListTypeID']">{{currItem['WatchListTypeName']}}</ion-select-option>
                                    </ion-select>
                               </ion-col>
 
-                              <ion-col size="3">
-                                   <ion-input [disabled]="currWatchListItem.Disabled" type="text" [(ngModel)]="currWatchListItem.IMDB_URL"></ion-input>
+                              <ion-col [size]="columnSizes['IMDBURL']">
+                                   <ion-input [disabled]="currWatchListItem.Disabled" type="text" [(ngModel)]="currWatchListItem['IMDB_URL']"></ion-input>
                               </ion-col>
 
-                              <ion-col size="1" class="actionColumn ion-text-start">
+                              <ion-col [size]="columnSizes['Notes']" [ngClass]="dataService.isMobilePlatform == true ? 'notesDataMobileColumn' : ''">
+                                   <ion-input [disabled]="currWatchListItem.Disabled" type="text" [(ngModel)]="currWatchListItem['ItemNotes']"></ion-input>
+                              </ion-col>
+
+                              <ion-col [size]="columnSizes['Action']" class="actionColumn ion-text-start">
                                    <ion-icon *ngIf="currWatchListItem.Disabled && !isAdding && !isEditing" name="create-outline" (click)="editWatchListItem(currWatchListItem)"></ion-icon>
                                    <ion-icon *ngIf="!currWatchListItem.Disabled" class="saveItem" name="save-outline" (click)="saveWatchListItem(currWatchListItem)"></ion-icon>
                                    <ion-icon *ngIf="!currWatchListItem.Disabled" name="close-circle-outline" class="cancelButton" (click)="cancelEditWatchListItem(currWatchListItem)"></ion-icon>

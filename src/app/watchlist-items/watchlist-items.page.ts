@@ -9,12 +9,30 @@ import { DataService } from '../core/data.service';
 export class WatchListItemsPage {
      addItemName = '';
      addItemIMDBURL = '';
+     addItemNotes = '';
      addItemType = '';
      isAdding = false;
      isEditing = false;
+     recordLimit = 10;
      sortColumn = 'Name';
      sortDirection = 'DESC';
      sortActiveColumn = 'Name';
+
+     readonly columnSizes = {
+          'ID': 2,
+          'Name': 1,
+          'Type': 2,
+          'IMDBURL': 2,
+          'Notes' : 2,
+          'Action' : 2,
+     }
+
+     readonly recordLimitOptions = [
+          10,
+          50,
+          100,
+          500
+     ]
 
      constructor(public dataService: DataService) {}
 
@@ -42,12 +60,12 @@ export class WatchListItemsPage {
 
      doRefresh(event) {
           setTimeout(() => {
-               this.dataService.getWatchListItems(this.sortColumn,this.sortDirection).subscribe((response) => {
+               this.dataService.getWatchListItems(this.sortColumn,this.sortDirection,this.recordLimit).subscribe((response) => {
                     if (response != null)
                          for (let i=0;i<response.length;i++)
                               response[i].Disabled = true;
 
-                    this.dataService.watchListItems=response;
+                    this.dataService.setWatchlistItems(response);
 
                     event.target.complete();
                },
@@ -73,11 +91,9 @@ export class WatchListItemsPage {
                return;
           }
 
-          for (let i=0;i<this.dataService.watchListItems.length;i++) {
-               if (this.dataService.watchListItems[i]['WatchListItemName'] === this.addItemName) {
-                    alert("This name already exists");
-                    return;
-               }
+          if (this.dataService.watchListItemExists(this.addItemName)) {
+               alert("This name already exists");
+               return;
           }
 
           if (this.addItemType === ``) {
@@ -89,17 +105,27 @@ export class WatchListItemsPage {
           currWatchListItem.Name=this.addItemName;
           currWatchListItem.Type=this.addItemType;
           currWatchListItem.IMDB_URL=this.addItemIMDBURL;
+          currWatchListItem.ItemNotes=this.addItemNotes;
 
           this.dataService.addWatchListItem(currWatchListItem).subscribe((response) => {
-               this.dataService.getWatchListSubscription(this.sortColumn,this.sortDirection);
+               this.dataService.getWatchListSubscription(this.sortColumn,this.sortDirection,this.recordLimit);
+
+               this.addItemName = '';
+               this.addItemType = '';
+               this.addItemIMDBURL = '';
+               this.addItemNotes = '';
+
+               this.isAdding = false;
+
+               this.dataService.getWatchListItemsSubscription(this.sortColumn,this.sortDirection,this.recordLimit);
           },
           error => {
                this.handleError(null, error);
           });
+     }
 
-          this.addItemName = '';
-          this.addItemType = '';
-          this.addItemIMDBURL = '';
+     recordLimitChanged() {
+          this.dataService.getWatchListItemsSubscription(this.sortColumn,this.sortDirection,this.recordLimit);
      }
 
      saveWatchListItem(currWatchListItem: []) {
@@ -119,25 +145,26 @@ export class WatchListItemsPage {
           }
 
           this.dataService.updateWatchListItem(currWatchListItem).subscribe((response) => {
+               currWatchListItem[`Disabled`]=true;
+
+               this.isEditing = false;
+
+               this.dataService.getWatchListItemsSubscription(this.sortColumn,this.sortDirection,this.recordLimit);
           },
           error => {
                this.handleError(null, error);
-          });
-
-          currWatchListItem[`Disabled`]=true;
-
-          this.isEditing = false;
+          });          
      }
 
      searchFilter() {
-          this.dataService.getWatchListSubscription(this.sortColumn,this.sortDirection);
+          this.dataService.getWatchListSubscription(this.sortColumn,this.sortDirection,this.recordLimit);
      }
 
      sortClick(name,direction) {
           const columnName=(name != null ? name : this.sortColumn);
           const columnDirection=(direction != null ? direction : this.sortDirection);
 
-          this.dataService.getWatchListItemsSubscription(columnName,columnDirection);
+          this.dataService.getWatchListItemsSubscription(columnName,columnDirection,this.recordLimit);
 
           this.sortActiveColumn=columnName;
 

@@ -14,10 +14,11 @@ export class DataService {
      isMobilePlatform = false;
      platform: Platform;
      searchTerm: string = '';
-     title: string = '';
      watchList: any;
      watchListItems: any;
+     watchListSources: [];
      watchListTypes: [];
+     
 
      constructor(public toastController: ToastController, private http: HttpClient, platform: Platform) {
           this.platform = platform;
@@ -25,18 +26,25 @@ export class DataService {
           if (this.platform.is('android') || this.platform.is('ios'))
                this.isMobilePlatform=true;
                
-          this.getWatchListTypesSubscription();          
+          this.getWatchListTypesSubscription();
+
+          this.getWatchListSourcesSubscription();
      }
 
      addWatchList(currWatchList: []) {
           let params = new HttpParams();     
           params = params.append('WatchListItemID',currWatchList['WatchListItemID']);
           params = params.append('StartDate',currWatchList['StartDate']);
-          
+          params = params.append('Notes',currWatchList['Notes']);
+
           if (currWatchList['EndDate'] != null)
                params = params.append('EndDate',currWatchList['EndDate']);
 
-          params = params.append('Notes',currWatchList['Notes']);
+          if (currWatchList['WatchListSourceID'] != null)
+               params = params.append('WatchListSourceID',currWatchList['WatchListSourceID']);
+
+          if (currWatchList['Season'] != null)
+               params = params.append('Season',currWatchList['Season']);
 
           return this.processStep(`/AddWatchList`,params);
      }
@@ -46,27 +54,40 @@ export class DataService {
           params = params.append('Name',currWatchListItem['Name']);
           params = params.append('Type',currWatchListItem['Type']);
           params = params.append('IMDB_URL',currWatchListItem['IMDB_URL']);
+          params = params.append('Notes',currWatchListItem['Notes']);
 
           return this.processStep(`/AddWatchListItem`,params);
      }
 
-     getWatchList(columnName,columnDirection) {
+     getIMDBURL(watchListItemID) {
+          for (let i=0;i<this.watchListItems.length;i++) {
+               if (this.watchListItems[i].WatchListItemID == watchListItemID && this.watchListItems[i].IMDB_URL !== null)
+                    return this.watchListItems[i].IMDB_URL;
+          }
+
+          return null;
+     }
+
+     getWatchList(columnName,columnDirection,recordLimit) {
           let params = new HttpParams();
 
           if (this.searchTerm !== "") {
                params = params.append('SearchTerm',this.searchTerm);
-          } else if (columnName != null && columnDirection != null) {
+          } 
+          
+          if (columnName != null && columnDirection != null) {
                params = params.append('SortColumn',columnName);
                params = params.append('SortDirection',columnDirection);
-          } else {
-               params = null;
           }
+
+          if (recordLimit != null)
+               params = params.append('RecordLimit',recordLimit);
 
           return this.processStep(`/GetWatchList`,params);
      }
 
-     getWatchListSubscription(columnName,columnDirection) {
-          this.getWatchList(columnName,columnDirection).subscribe((response) => {
+     getWatchListSubscription(columnName,columnDirection,recordLimit) {
+          this.getWatchList(columnName,columnDirection,recordLimit).subscribe((response) => {
                if (response != null)
                     for (let i=0;i<response.length;i++)
                          response[i].Disabled = true;
@@ -79,30 +100,55 @@ export class DataService {
           });
      }
 
-     getWatchListItems(columnName = null,columnDirection=null) {
+     getWatchListItems(columnName,columnDirection,recordLimit) {
           let params = new HttpParams();
 
           if (this.searchTerm !== "") {
                params = params.append('SearchTerm',this.searchTerm);
-          } else if (columnName != null && columnDirection != null) {
+          }
+          
+          if (columnName != null && columnDirection != null) {
                params = params.append('SortColumn',columnName);
                params = params.append('SortDirection',columnDirection);
-          } else {
-               params = null;
           }
+
+          if (recordLimit != null)
+               params = params.append('RecordLimit',recordLimit);
 
           return this.processStep(`/GetWatchListItems`,params);
      }
      
-     getWatchListItemsSubscription(columnName,columnDirection) {
-          this.getWatchListItems(columnName,columnDirection).subscribe((response) => {               
+     getWatchListItemsSubscription(columnName,columnDirection,recordLimit) {
+          this.getWatchListItems(columnName,columnDirection,recordLimit).subscribe((response) => {               
                if (response != null)
                     for (let i=0;i<response.length;i++)
                          response[i].Disabled = true;
 
                this.watchListItems=response;
 
-               this.getWatchListSubscription(columnName,columnDirection);
+               this.getWatchListSubscription(columnName,columnDirection,recordLimit);
+          },
+          error => {
+               this.handleError(error);
+          });
+     }
+
+     getWatchListItemName(watchListItemID) {
+          for (let i=0;i<this.watchListItems.length;i++) {
+               if (this.watchListItems[i].WatchListItemID == watchListItemID)
+                    return this.watchListItems[i].WatchListItemName;
+          }
+
+          return null;
+     }
+
+     getWatchListSources() {
+          return this.processStep(`/GetWatchListSources`,null);          
+     }
+
+     getWatchListSourcesSubscription() {
+          this.getWatchListSources().subscribe((response) => {
+               this.watchListSources=response;              
           },
           error => {
                this.handleError(error);
@@ -117,7 +163,7 @@ export class DataService {
           this.getWatchListTypes().subscribe((response) => {
                this.watchListTypes=response;              
 
-               this.getWatchListItemsSubscription(null,null);
+               this.getWatchListItemsSubscription(null,null,10);
           },
           error => {
                this.handleError(error);
@@ -131,16 +177,31 @@ export class DataService {
              );
      }
 
+     setWatchlist(newWatchList: any) {
+          this.watchList=newWatchList;
+     }
+
+     setWatchlistItems(newWatchListItems: any) {
+          this.watchListItems=newWatchListItems;
+     }
+
      updateWatchList(currWatchList: []) {
           let params = new HttpParams();
           params = params.append('WatchListID',currWatchList['WatchListID']);
           params = params.append('WatchListItemID',currWatchList['WatchListItemID']);
           params = params.append('StartDate',currWatchList['StartDate']);
-          
+
           if (currWatchList['EndDate'] != null)
                params = params.append('EndDate',currWatchList['EndDate']);
-                              
-          params = params.append('Notes',currWatchList['Notes']);
+
+          if (currWatchList['Season'] != null)
+               params = params.append('Season',currWatchList['Season']);
+
+          if (currWatchList['WatchListSourceID'] != null)
+               params = params.append('WatchListSourceID',currWatchList['WatchListSourceID']);
+
+          if (currWatchList['Notes'] != null)
+               params = params.append('Notes',currWatchList['Notes']);
 
           return this.processStep(`/UpdateWatchList`,params);
      }
@@ -149,10 +210,21 @@ export class DataService {
           let params = new HttpParams();
           params = params.append('WatchListItemID',currWatchList['WatchListItemID']);
           params = params.append('WatchListItemName',currWatchList['WatchListItemName']);
-          params = params.append('WatchListTypeID',currWatchList['WatchListTypeID']);
+          params = params.append('WatchListTypeID',currWatchList['WatchListTypeID']);          
           params = params.append('IMDB_URL',currWatchList['IMDB_URL']);
+          params = params.append('ItemNotes',currWatchList['ItemNotes']);
 
           return this.processStep(`/UpdateWatchListItem`,params);
+     }
+
+     watchListItemExists(itemName) {
+          for (let i=0;i<this.watchListItems.length;i++) {
+               if (this.watchListItems[i]['WatchListItemName'] === itemName) {                    
+                    return true;
+               }
+          }
+
+          return false;
      }
 
      private handleError(error: Response | any) {

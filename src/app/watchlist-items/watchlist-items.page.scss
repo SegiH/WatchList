@@ -37,6 +37,8 @@ ion-list.md.list-md {
 }
 
 ion-select {
+    border-style: dashed;
+    border-width: 1px;
     max-width: 100%;
 }
 
@@ -85,6 +87,16 @@ ion-col.IMDBURLLabelMobileColumn {
     display: inline-flex;
 }
 
+ion-col.notesLabelMobileColumn {
+    width: 200px !important;
+    max-width: 200px !important;
+ }
+ 
+ ion-col.notesDataMobileColumn {
+    width: 200px !important;
+    max-width: 200px !important;
+ }
+ 
 ion-grid > ion-row > ion-col > ion-icon.IDArrowIcon, 
 ion-grid > ion-row > ion-col > ion-icon.NameArrowIcon,
 ion-grid > ion-row > ion-col > ion-icon.TypeArrowIcon,
@@ -117,19 +129,14 @@ ion-grid > ion-row > ion-col > ion-icon.active {
     margin-left: 25px;
 }
 
-.optionsPanel {
-    float: left;
-    min-width: 750px;
-    display: flex;
-}
-
 #searchBar {
     min-width: 437.5px;
 }
 
 #mobileToggle {
     border-style: none !important;
-    border-width: 0px !important;    
+    border-width: 0px !important;
+    margin-top: 12px;
 }
 
 .saveNewWatchList {
@@ -138,6 +145,23 @@ ion-grid > ion-row > ion-col > ion-icon.active {
 }
 
 .addColumn {
-    max-width: 62px !important;
     top: 10px;
+}
+
+.limitLabel {
+    text-align: right;
+    margin-top: 25px;
+    width: 80px;
+}
+
+.limitSelect {
+    margin-top: 12px;
+}
+
+.sourceLabelMobileColumn {
+    display: inline-flex;
+}
+
+.sourceLabelColumn {
+    display: inline-flex;
 }

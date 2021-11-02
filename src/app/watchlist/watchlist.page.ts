@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { DataService } from '../core/data.service';
+import { AlertController } from '@ionic/angular';
 
 @Component({
      selector: 'app-watchlist',
@@ -13,9 +14,6 @@ export class WatchListPage {
      addItemNotes= '';
      addItemSource = '';
      addSeason = '';
-     isAdding = false;
-     isEditing = false;
-     recordLimit = 10;
      sortColumn = 'Name';
      sortDirection = 'ASC';
      sortActiveColumn = 'Name';
@@ -30,18 +28,11 @@ export class WatchListPage {
           'Notes' : 2,
           'Action' : 1,
      }
-
-     readonly recordLimitOptions = [
-          10,
-          50,
-          100,
-          500
-     ]
-
-     constructor(public dataService: DataService) {}
+     
+     constructor(public alertController: AlertController, public dataService: DataService) {}
 
      addWatchList() {
-          this.isAdding=true;
+          this.dataService.isAdding=true;
      }
 
      cancelAddWatchList() {
@@ -50,7 +41,7 @@ export class WatchListPage {
           this.addItemEndDate = '';
           this.addItemNotes= '';
 
-          this.isAdding=false;
+          this.dataService.isAdding=false;
      }
 
      cancelEditWatchList(currWatchList: []) {
@@ -61,12 +52,36 @@ export class WatchListPage {
 
           currWatchList[`Disabled`]=true;
 
-          this.isEditing = false;
+          this.dataService.isEditing = false;
+     }
+
+     async confirmDialog(currWatchList: object, message: string) {
+          const alert = await this.alertController.create({
+               header: 'Alert',
+               message: message,
+               buttons: ['OK','Cancel']
+          });
+    
+          await alert.present();
+    
+          const { role } = await alert.onDidDismiss();
+
+          if (role != "cancel" ) { // OK
+               this.dataService.deleteWatchList(currWatchList['WatchListID']).subscribe((response) => {
+               },
+               error => {
+                    console.log(`An error occurred deleting WatchList Item with ID ${currWatchList['WatchListID']}`)
+               });
+          }
+     }
+
+     deleteWatchList(currWatchList: object) {
+          this.confirmDialog(currWatchList,"Are you sure that you want to delete this item ?")
      }
 
      doRefresh(event) {
           setTimeout(() => {
-               this.dataService.getWatchList(this.sortColumn,this.sortDirection,this.recordLimit).subscribe((response) => {
+               this.dataService.getWatchList(this.sortColumn,this.sortDirection).subscribe((response) => {
                     if (response != null)
                          for (let i=0;i<response.length;i++)
                               response[i].Disabled = true;
@@ -86,22 +101,10 @@ export class WatchListPage {
 
           currWatchList[`Disabled`]=false;
 
-          this.isEditing = true;
+          this.dataService.isEditing = true;
      }
 
      handleError(response: Response, error: Error) {}
-
-     recordLimitChanged() {
-          this.dataService.getWatchList(this.sortColumn,this.sortDirection,this.recordLimit).subscribe((response) => {
-               if (response != null)
-                    for (let i=0;i<response.length;i++)
-                         response[i].Disabled = true;
-
-               this.dataService.setWatchlist(response);
-          },
-               error => {       
-          });
-     }
 
      saveNewWatchList() {
           if (this.addItemName === ``) {
@@ -130,9 +133,9 @@ export class WatchListPage {
                this.addItemSource = '';
                this.addSeason = '';
 
-               this.isAdding=false;
+               this.dataService.isAdding=false;
 
-               this.dataService.getWatchListSubscription(this.sortColumn,this.sortDirection,this.recordLimit);
+               this.dataService.getWatchListSubscription(this.sortColumn,this.sortDirection);
           },
           error => {
                this.handleError(null, error);
@@ -153,9 +156,9 @@ export class WatchListPage {
           this.dataService.updateWatchList(currWatchList).subscribe((response) => {
                currWatchList[`Disabled`]=true;
 
-               this.isEditing = false;
+               this.dataService.isEditing = false;
 
-               this.dataService.getWatchListSubscription(this.sortColumn,this.sortDirection,this.recordLimit);
+               this.dataService.getWatchListSubscription(this.sortColumn,this.sortDirection);
           },
           error => {
                this.handleError(null, error);
@@ -163,14 +166,14 @@ export class WatchListPage {
      }
 
      searchFilter() {
-          this.dataService.getWatchListSubscription(this.sortColumn,this.sortDirection,this.recordLimit);
+          this.dataService.getWatchListSubscription(this.sortColumn,this.sortDirection);
      }
 
      sortClick(name,direction) {
           const columnName=(name != null ? name : this.sortColumn);
           const columnDirection=(direction != null ? direction : this.sortDirection);
 
-          this.dataService.getWatchListSubscription(columnName,columnDirection,this.recordLimit);
+          this.dataService.getWatchListSubscription(columnName,columnDirection);
           
           this.sortActiveColumn=columnName;
 

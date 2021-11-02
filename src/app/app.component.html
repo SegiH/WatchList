@@ -1,3 +1,29 @@
 <ion-app>
-  <ion-router-outlet></ion-router-outlet>
+     <ion-menu contentId="main-content" type="push"> 
+          <ion-header> 
+               <ion-toolbar> 
+                    <ion-title>Menu</ion-title> 
+               </ion-toolbar> 
+          </ion-header> 
+          <ion-content> 
+               <ion-searchbar (ionChange)="searchFilter()" [disabled]="dataService.isAdding || dataService.isEditing" [(ngModel)]="dataService.searchTerm"></ion-searchbar>
+
+               <ion-col size="1" style="display: ruby">
+                    <ion-label>Rows</ion-label>
+                    <ion-select placeholder='Record Limit' name="recordLimit" [(ngModel)]="dataService.recordLimit" (ionChange)="recordLimitChanged()">
+                         <ion-select-option *ngFor="let currItem of recordLimitOptions;trackBy: trackByFn" [value]="currItem">{{currItem}}</ion-select-option>
+                    </ion-select>
+               </ion-col>
+
+               <ion-col size="3" id="mobileToggle">
+                    <ion-item>Mobile<ion-toggle [(ngModel)]="dataService.isMobilePlatform" color="primary"></ion-toggle></ion-item>
+               </ion-col>
+
+               <ion-col size="1" id="backendURL">
+                    <ion-label>Backend URL</ion-label>
+                    <ion-input id="backendURLInput" type="text" [(ngModel)]="backendURL" [value]="backendURL"></ion-input>
+               </ion-col>
+          </ion-content> 
+     </ion-menu> 
+     <ion-router-outlet id="main-content"></ion-router-outlet>
 </ion-app>

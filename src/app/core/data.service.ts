@@ -11,8 +11,11 @@ import { ToastController } from '@ionic/angular';
 })
 export class DataService {
      readonly backendURL=`https://watchlist-backend.hovav.org`;
+     isAdding = false;
+     isEditing = false;
      isMobilePlatform = false;
      platform: Platform;
+     recordLimit = 10;
      searchTerm: string = '';
      watchList: any;
      watchListItems: any;
@@ -59,6 +62,22 @@ export class DataService {
           return this.processStep(`/AddWatchListItem`,params);
      }
 
+     deleteWatchList(watchListID) {
+          let params = new HttpParams();
+
+          params = params.append('WatchListID',watchListID);
+
+          return this.processStep(`/DeleteWatchList`,params);
+     }
+
+     deleteWatchListItem(watchListItemID) {
+          let params = new HttpParams();
+
+          params = params.append('WatchListItemID',watchListItemID);
+
+          return this.processStep(`/DeleteWatchListItem`,params);
+     }
+
      getIMDBURL(watchListItemID) {
           for (let i=0;i<this.watchListItems.length;i++) {
                if (this.watchListItems[i].WatchListItemID == watchListItemID && this.watchListItems[i].IMDB_URL !== null)
@@ -68,7 +87,7 @@ export class DataService {
           return null;
      }
 
-     getWatchList(columnName,columnDirection,recordLimit) {
+     getWatchList(columnName,columnDirection) {
           let params = new HttpParams();
 
           if (this.searchTerm !== "") {
@@ -80,14 +99,14 @@ export class DataService {
                params = params.append('SortDirection',columnDirection);
           }
 
-          if (recordLimit != null)
-               params = params.append('RecordLimit',recordLimit);
+          if (this.recordLimit != null)
+               params = params.append('RecordLimit',this.recordLimit);
 
           return this.processStep(`/GetWatchList`,params);
      }
 
-     getWatchListSubscription(columnName,columnDirection,recordLimit) {
-          this.getWatchList(columnName,columnDirection,recordLimit).subscribe((response) => {
+     getWatchListSubscription(columnName,columnDirection) {
+          this.getWatchList(columnName,columnDirection).subscribe((response) => {
                if (response != null)
                     for (let i=0;i<response.length;i++)
                          response[i].Disabled = true;
@@ -100,7 +119,7 @@ export class DataService {
           });
      }
 
-     getWatchListItems(columnName,columnDirection,recordLimit) {
+     getWatchListItems(columnName,columnDirection) {
           let params = new HttpParams();
 
           if (this.searchTerm !== "") {
@@ -112,21 +131,18 @@ export class DataService {
                params = params.append('SortDirection',columnDirection);
           }
 
-          if (recordLimit != null)
-               params = params.append('RecordLimit',recordLimit);
-
           return this.processStep(`/GetWatchListItems`,params);
      }
      
-     getWatchListItemsSubscription(columnName,columnDirection,recordLimit) {
-          this.getWatchListItems(columnName,columnDirection,recordLimit).subscribe((response) => {               
+     getWatchListItemsSubscription(columnName,columnDirection) {
+          this.getWatchListItems(columnName,columnDirection).subscribe((response) => {               
                if (response != null)
                     for (let i=0;i<response.length;i++)
                          response[i].Disabled = true;
 
                this.watchListItems=response;
 
-               this.getWatchListSubscription(columnName,columnDirection,recordLimit);
+               this.getWatchListSubscription(columnName,columnDirection);
           },
           error => {
                this.handleError(error);
@@ -163,7 +179,7 @@ export class DataService {
           this.getWatchListTypes().subscribe((response) => {
                this.watchListTypes=response;              
 
-               this.getWatchListItemsSubscription(null,null,10);
+               this.getWatchListItemsSubscription(null,null);
           },
           error => {
                this.handleError(error);

@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { TabsPage } from './tabs.page';
+import { AuthGuardService as AuthGuard } from '../core/auth-guard-service';
 
 const routes: Routes = [
   {
@@ -9,21 +10,14 @@ const routes: Routes = [
     children: [
       {
         path: 'watchlist',
-        loadChildren: () => import('../watchlist/watchlist.module').then(m => m.WatchListPageModule)
+        loadChildren: () => import('../watchlist/watchlist.module').then(m => m.WatchListPageModule),
+        canActivate: [AuthGuard]
       },
       {
         path: 'watchlist-items',
-        loadChildren: () => import('../watchlist-items/watchlist-items.module').then(m => m.WatchListItemsPageModule)
-      }/*,
-      {
-        path: '',
-        redirectTo: '/tabs/watchlist',
-        pathMatch: 'full'
-      },
-      {
-        path: 'tabs/watchlist',
-        loadChildren: () => import('../watchlist/watchlist.module').then(m => m.WatchListPageModule)
-      },*/
+        loadChildren: () => import('../watchlist-items/watchlist-items.module').then(m => m.WatchListItemsPageModule),
+        canActivate: [AuthGuard]
+      }
     ]
   },
   {

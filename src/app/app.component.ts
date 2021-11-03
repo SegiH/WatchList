@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { DataService } from './core/data.service';
-import { Router, Event, NavigationStart } from '@angular/router';
+//import { Router, Event, NavigationStart } from '@angular/router';
 
 @Component({
      selector: 'app-root',
@@ -8,7 +8,6 @@ import { Router, Event, NavigationStart } from '@angular/router';
      styleUrls: ['app.component.scss'],
 })
 export class AppComponent {
-     backendURL = '';
      readonly recordLimitOptions = [
           10,
           50,
@@ -16,29 +15,44 @@ export class AppComponent {
           500
      ]
 
-     constructor(public dataService: DataService,private router: Router) { }
+     constructor(public dataService: DataService) { }
 
-     recordLimitChanged() {
+     /*recordLimitChanged() {
           switch (this.router.url) {
                case "/tabs/watchlist":
                     this.dataService.getWatchListSubscription(null,null)
                     break;
-               case "/tabs/watchlist-items":
-                    this.dataService.getWatchListItemsSubscription(null,null);
-                    break;
+               //case "/tabs/watchlist-items":
+               //     this.dataService.getWatchListItemsSubscription(null,null);
+               //     break;
           }
+     }*/
+
+     reloadData() {
+          this.dataService.getWatchListSubscription(null,null); // Only WL is affected by the filters
      }
 
-     searchFilter() {
+     /*searchFilter() {
           switch (this.router.url) {
                case "/tabs/watchlist":
                     this.dataService.getWatchListSubscription(null,null)
                     break;
-               case "/tabs/watchlist-items":
-                    this.dataService.getWatchListItemsSubscription(null,null);
-                    break;
+               //case "/tabs/watchlist-items":
+               //     this.dataService.getWatchListItemsSubscription(null,null);
+               //     break;
           }
      }
+
+     sourceFilter() {
+          switch (this.router.url) {
+               case "/tabs/watchlist":
+                    this.dataService.getWatchListSubscription(null,null)
+                    break;
+               //case "/tabs/watchlist-items":
+               //     this.dataService.getWatchListItemsSubscription(null,null);
+               //     break;
+          }
+     }*/
 
      // Used to prevent the entire DOM tree from being re-rendered every time that there is a change
      trackByFn(index, item) {

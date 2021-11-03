@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { DataService } from '../core/data.service';
+import { AlertController } from '@ionic/angular';
 
 @Component({
      selector: 'app-watchlist',
@@ -31,7 +32,7 @@ export class WatchListItemsPage {
           500
      ]
 
-     constructor(public dataService: DataService) {}
+     constructor(public alertController: AlertController, public dataService: DataService) {}
 
      addWatchListItem() {
           this.dataService.isAdding=true;
@@ -53,6 +54,30 @@ export class WatchListItemsPage {
           currWatchListItem[`Disabled`]=true;
 
           this.dataService.isEditing = false;
+     }
+
+     async confirmDialog(currWatchListItem: object, message: string) {
+          const alert = await this.alertController.create({
+               header: 'Alert',
+               message: message,
+               buttons: ['OK','Cancel']
+          });
+    
+          await alert.present();
+    
+          const { role } = await alert.onDidDismiss();
+
+          if (role != "cancel" ) { // OK
+               this.dataService.deleteWatchListItem(currWatchListItem['WatchListItemID']).subscribe((response) => {
+               },
+               error => {
+                    console.log(`An error occurred deleting WatchList Item with ID ${currWatchListItem['WatchListID']}`)
+               });
+          }
+     }
+
+     deleteWatchListItem(currWatchListItem: object) {
+          this.confirmDialog(currWatchListItem,"Are you sure that you want to delete this item ?")
      }
 
      doRefresh(event) {

@@ -4,34 +4,33 @@ import { throwError, Observable } from 'rxjs/';
 import { catchError} from 'rxjs/operators';
 import { Platform } from '@ionic/angular';
 import { ToastController } from '@ionic/angular';
-//import { Storage } from '@ionic/storage';
+import { Storage } from '@ionic/storage';
 
 @Injectable({
      providedIn: `root`,
 })
 export class DataService {
-     readonly backendURL=`https://watchlist-backend.hovav.org`;
+     backendURL=``;
+     incompleteFilter = false;
      isAdding = false;
      isEditing = false;
      isMobilePlatform = false;
      platform: Platform;
      recordLimit = 10;
      searchTerm: string = '';
+     sourceFilter: string = '';
      watchList: any;
      watchListItems: any;
      watchListSources: [];
      watchListTypes: [];
      
-
-     constructor(public toastController: ToastController, private http: HttpClient, platform: Platform) {
+     constructor(public toastController: ToastController, private http: HttpClient, platform: Platform, private storage: Storage) {
           this.platform = platform;
 
           if (this.platform.is('android') || this.platform.is('ios'))
                this.isMobilePlatform=true;
-               
-          this.getWatchListTypesSubscription();
-
-          this.getWatchListSourcesSubscription();
+          
+          this.getBackendURL(); // Get Saved backend URL;          
      }
 
      addWatchList(currWatchList: []) {
@@ -78,6 +77,20 @@ export class DataService {
           return this.processStep(`/DeleteWatchListItem`,params);
      }
 
+     async getBackendURL() {
+          await this.storage.create();
+
+          this.backendURL = await this.storage.get('BackEndURL');
+          
+          if (this.backendURL != null && this.backendURL != "") {
+               this.getWatchListTypesSubscription();
+
+               this.getWatchListSourcesSubscription();
+          } else {
+               alert("Please set the backend URL");
+          }
+     }
+
      getIMDBURL(watchListItemID) {
           for (let i=0;i<this.watchListItems.length;i++) {
                if (this.watchListItems[i].WatchListItemID == watchListItemID && this.watchListItems[i].IMDB_URL !== null)
@@ -101,6 +114,12 @@ export class DataService {
 
           if (this.recordLimit != null)
                params = params.append('RecordLimit',this.recordLimit);
+
+          if (this.sourceFilter != null && this.sourceFilter != '')
+               params = params.append('SourceFilter',this.sourceFilter);
+
+          if (this.incompleteFilter == true)
+               params = params.append('IncompleteFilter',true);
 
           return this.processStep(`/GetWatchList`,params);
      }
@@ -192,6 +211,26 @@ export class DataService {
                   catchError(this.handleError)
              );
      }
+
+     async setBackendURL() {
+          if (this.backendURL != null && this.backendURL != "") {
+               await this.storage.set('BackEndURL', this.backendURL);
+          } else {
+              await this.storage.remove('BackEndURL');
+
+              this.watchList = [];
+              this.watchListItems = [];
+              this.watchListSources = [];
+              this.watchListTypes =[];
+          }
+            
+          if (this.backendURL != null && this.backendURL != "") {
+               this.getWatchListTypesSubscription();
+
+               this.getWatchListSourcesSubscription();
+          }
+     }
+
 
      setWatchlist(newWatchList: any) {
           this.watchList=newWatchList;

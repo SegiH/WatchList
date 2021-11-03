@@ -20,7 +20,7 @@
                </ion-col>
           </ion-row>
      </ion-grid>
-      
+     
      <div class="ion-list-parent">
           <ion-list>
                <ion-item> <!-- Table headers -->
@@ -110,9 +110,9 @@
                               </ion-col>
 
                               <ion-col [size]="columnSizes['Action']" class="actionColumn ion-text-start">
-                                   <ion-icon *ngIf="currWatchListItem.Disabled && !dataService.isAdding && !dataService.isEditing" name="create-outline" (click)="editWatchListItem(currWatchListItem)"></ion-icon>
+                                   <ion-icon *ngIf="currWatchListItem.Disabled && !dataService.isAdding && !dataService.isEditing" class="editSave" name="create-outline" (click)="editWatchListItem(currWatchListItem)"></ion-icon>
                                    <ion-icon *ngIf="currWatchListItem.Disabled && !dataService.isAdding && !dataService.isEditing" name="trash-outline" (click)="deleteWatchListItem(currWatchListItem)"></ion-icon>
-                                   <ion-icon *ngIf="!currWatchListItem.Disabled" name="save-outline" (click)="saveWatchListItem(currWatchListItem)"></ion-icon>
+                                   <ion-icon *ngIf="!currWatchListItem.Disabled" class="editSave" name="save-outline" (click)="saveWatchListItem(currWatchListItem)"></ion-icon>
                                    <ion-icon *ngIf="!currWatchListItem.Disabled" name="close-circle-outline" (click)="cancelEditWatchListItem(currWatchListItem)"></ion-icon>
                               </ion-col>
                          </ion-row>                    

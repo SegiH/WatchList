@@ -20,20 +20,22 @@ VALIDATED -- when changing limit, name does not show up for additional rows that
 VALIDATED -- implement menu to allow user to set backend URL
 VALIDATED -- Update db schema and backend
 VALIDATED -- organize menu items more nicely
+VALIDATED -- when adding WL, WL item select items are sometimes sorted in reverse
+VALIDATED -- Add check before adding to prevent duplicates, otherwise throw error
+VALIDATED -- When adding item, add panel doesnt hide after adding item
+VALIDATED -- You need to refresh after adding WL item before it appears
+VALIDATED -- implement delete
+VALIDATED -- notes default to 'null' or 'undefined' for both
+VALIDATED -- if you dont enter a season it defaults to 0
+VALIDATED -- add filter to only show items w/o end date
+VALIDATED -- add way to sort/filter by source
+VALIDATED -- move delete icon to the right
+VALIDATED -- You need to refresh after adding WL before it appears
 
--- When adding item, add panel doesnt hide after adding item
--- You meed to refresh after adding WL before it appears
--- You meed to refresh after adding WL item before it appears
--- Add check before adding to prevent duplicates, otherwise throw error
--- implement delete
--- if you dont enter a season it defaults to 0
--- notes default to 'null' or 'undefined' for both
--- add way to sort/filter by source
--- add filter to only show items w/o end date
 
 Fix
 ---
-when adding WL, WL item select items are sometimes sorted in reverse
+
 
 Add
 ---

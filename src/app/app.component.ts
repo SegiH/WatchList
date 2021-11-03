@@ -17,42 +17,9 @@ export class AppComponent {
 
      constructor(public dataService: DataService) { }
 
-     /*recordLimitChanged() {
-          switch (this.router.url) {
-               case "/tabs/watchlist":
-                    this.dataService.getWatchListSubscription(null,null)
-                    break;
-               //case "/tabs/watchlist-items":
-               //     this.dataService.getWatchListItemsSubscription(null,null);
-               //     break;
-          }
-     }*/
-
      reloadData() {
           this.dataService.getWatchListSubscription(null,null); // Only WL is affected by the filters
      }
-
-     /*searchFilter() {
-          switch (this.router.url) {
-               case "/tabs/watchlist":
-                    this.dataService.getWatchListSubscription(null,null)
-                    break;
-               //case "/tabs/watchlist-items":
-               //     this.dataService.getWatchListItemsSubscription(null,null);
-               //     break;
-          }
-     }
-
-     sourceFilter() {
-          switch (this.router.url) {
-               case "/tabs/watchlist":
-                    this.dataService.getWatchListSubscription(null,null)
-                    break;
-               //case "/tabs/watchlist-items":
-               //     this.dataService.getWatchListItemsSubscription(null,null);
-               //     break;
-          }
-     }*/
 
      // Used to prevent the entire DOM tree from being re-rendered every time that there is a change
      trackByFn(index, item) {

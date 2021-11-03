@@ -68,6 +68,7 @@ export class WatchListPage {
 
           if (role != "cancel" ) { // OK
                this.dataService.deleteWatchList(currWatchList['WatchListID']).subscribe((response) => {
+                    this.dataService.getWatchListSubscription(this.sortColumn,this.sortDirection);
                },
                error => {
                     console.log(`An error occurred deleting WatchList Item with ID ${currWatchList['WatchListID']}`)

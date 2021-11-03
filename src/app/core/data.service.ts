@@ -37,16 +37,18 @@ export class DataService {
           let params = new HttpParams();     
           params = params.append('WatchListItemID',currWatchList['WatchListItemID']);
           params = params.append('StartDate',currWatchList['StartDate']);
-          params = params.append('Notes',currWatchList['Notes']);
-
-          if (currWatchList['EndDate'] != null)
+          
+          if (currWatchList['EndDate'] != '')
                params = params.append('EndDate',currWatchList['EndDate']);
 
-          if (currWatchList['WatchListSourceID'] != null)
+          if (currWatchList['WatchListSourceID'] != '')
                params = params.append('WatchListSourceID',currWatchList['WatchListSourceID']);
 
-          if (currWatchList['Season'] != null)
+          if (currWatchList['Season'] != '')
                params = params.append('Season',currWatchList['Season']);
+
+          if (currWatchList['Notes'] != '')
+               params = params.append('Notes',currWatchList['Notes']);
 
           return this.processStep(`/AddWatchList`,params);
      }
@@ -55,8 +57,12 @@ export class DataService {
           let params = new HttpParams();
           params = params.append('Name',currWatchListItem['Name']);
           params = params.append('Type',currWatchListItem['Type']);
-          params = params.append('IMDB_URL',currWatchListItem['IMDB_URL']);
-          params = params.append('Notes',currWatchListItem['Notes']);
+          
+          if (currWatchListItem['IMDB_URL'] != null && currWatchListItem['IMDB_URL'] != '')
+               params = params.append('IMDB_URL',currWatchListItem['IMDB_URL']);
+          
+          if (currWatchListItem['ItemNotes'] != null && currWatchListItem['ItemNotes'] != '')
+               params = params.append('ItemNotes',currWatchListItem['Notes']);
 
           return this.processStep(`/AddWatchListItem`,params);
      }
@@ -141,7 +147,7 @@ export class DataService {
      getWatchListItems(columnName,columnDirection) {
           let params = new HttpParams();
 
-          if (this.searchTerm !== "") {
+          if (this.searchTerm !== '') {
                params = params.append('SearchTerm',this.searchTerm);
           }
           
@@ -231,7 +237,6 @@ export class DataService {
           }
      }
 
-
      setWatchlist(newWatchList: any) {
           this.watchList=newWatchList;
      }
@@ -246,28 +251,32 @@ export class DataService {
           params = params.append('WatchListItemID',currWatchList['WatchListItemID']);
           params = params.append('StartDate',currWatchList['StartDate']);
 
-          if (currWatchList['EndDate'] != null)
+          if (currWatchList['EndDate'] != '')
                params = params.append('EndDate',currWatchList['EndDate']);
 
-          if (currWatchList['Season'] != null)
+          if (currWatchList['Season'] != '')
                params = params.append('Season',currWatchList['Season']);
 
-          if (currWatchList['WatchListSourceID'] != null)
+          if (currWatchList['WatchListSourceID'] != '')
                params = params.append('WatchListSourceID',currWatchList['WatchListSourceID']);
 
-          if (currWatchList['Notes'] != null)
+          if (currWatchList['Notes'] != null && currWatchList['Notes'] != '')
                params = params.append('Notes',currWatchList['Notes']);
 
           return this.processStep(`/UpdateWatchList`,params);
      }
      
-     updateWatchListItem(currWatchList: []) {
+     updateWatchListItem(currWatchListItem: []) {
           let params = new HttpParams();
-          params = params.append('WatchListItemID',currWatchList['WatchListItemID']);
-          params = params.append('WatchListItemName',currWatchList['WatchListItemName']);
-          params = params.append('WatchListTypeID',currWatchList['WatchListTypeID']);          
-          params = params.append('IMDB_URL',currWatchList['IMDB_URL']);
-          params = params.append('ItemNotes',currWatchList['ItemNotes']);
+          params = params.append('WatchListItemID',currWatchListItem['WatchListItemID']);
+          params = params.append('WatchListItemName',currWatchListItem['WatchListItemName']);
+          params = params.append('WatchListTypeID',currWatchListItem['WatchListTypeID']);          
+          
+          if (currWatchListItem['IMDB_URL'] != null && currWatchListItem['IMDB_URL'] != '')
+               params = params.append('IMDB_URL',currWatchListItem['IMDB_URL']);
+
+          if (currWatchListItem['ItemNotes'] != null && currWatchListItem['ItemNotes'] != '')
+               params = params.append('ItemNotes',currWatchListItem['ItemNotes']);
 
           return this.processStep(`/UpdateWatchListItem`,params);
      }

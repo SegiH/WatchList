@@ -19,6 +19,7 @@
                </ion-col>               
           </ion-row>
      </ion-grid>
+     
      <div class="ion-list-parent">
           <ion-list>
                <ion-item> <!-- Table headers -->
@@ -145,9 +146,9 @@
                               </ion-col>
 
                               <ion-col [size]="columnSizes['Action']" class="actionColumn">
-                                   <ion-icon *ngIf="currWatchList.Disabled && !dataService.isAdding && !dataService.isEditing" name="create-outline" (click)="editWatchList(currWatchList)"></ion-icon>
+                                   <ion-icon *ngIf="currWatchList.Disabled && !dataService.isAdding && !dataService.isEditing" class="editSave" name="create-outline" (click)="editWatchList(currWatchList)"></ion-icon>
                                    <ion-icon *ngIf="currWatchList.Disabled && !dataService.isAdding && !dataService.isEditing" name="trash-outline" (click)="deleteWatchList(currWatchList)"></ion-icon>                                   
-                                   <ion-icon *ngIf="!currWatchList.Disabled" name="save-outline" (click)="saveWatchList(currWatchList)"></ion-icon>
+                                   <ion-icon *ngIf="!currWatchList.Disabled" class="editSave" name="save-outline" (click)="saveWatchList(currWatchList)"></ion-icon>
                                    <ion-icon *ngIf="!currWatchList.Disabled" name="close-circle-outline" (click)="cancelEditWatchList(currWatchList)"></ion-icon>
                               </ion-col>
                          </ion-row>                    

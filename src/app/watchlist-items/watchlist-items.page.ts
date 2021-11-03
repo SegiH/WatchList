@@ -13,7 +13,7 @@ export class WatchListItemsPage {
      addItemNotes = '';
      addItemType = '';
      sortColumn = 'Name';
-     sortDirection = 'DESC';
+     sortDirection = 'ASC';
      sortActiveColumn = 'Name';
 
      readonly columnSizes = {
@@ -69,6 +69,7 @@ export class WatchListItemsPage {
 
           if (role != "cancel" ) { // OK
                this.dataService.deleteWatchListItem(currWatchListItem['WatchListItemID']).subscribe((response) => {
+                    this.dataService.getWatchListItemsSubscription(this.sortColumn,this.sortDirection);
                },
                error => {
                     console.log(`An error occurred deleting WatchList Item with ID ${currWatchListItem['WatchListID']}`)
@@ -109,7 +110,7 @@ export class WatchListItemsPage {
 
      saveNewWatchListItem() {
           if (this.addItemName === ``) {
-               alert(`Please select the name`);
+               alert(`Please enter the name`);
                return;
           }
 

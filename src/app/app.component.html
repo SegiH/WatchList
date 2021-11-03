@@ -32,6 +32,7 @@
 
                          <ion-col size="9">
                               <ion-select placeholder='Source' name="source" [(ngModel)]="dataService.sourceFilter" (ionChange)="reloadData()">
+                                   <ion-select-option value="All">All</ion-select-option>
                                    <ion-select-option *ngFor="let currItem of dataService.watchListSources;trackBy: trackByFn" [value]="currItem['WatchListSourceID']" (ionChange)="reloadData()">{{currItem['WatchListSourceName']}}</ion-select-option>
                               </ion-select>          
                          </ion-col>

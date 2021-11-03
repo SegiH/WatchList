@@ -121,7 +121,7 @@ export class DataService {
           if (this.recordLimit != null)
                params = params.append('RecordLimit',this.recordLimit);
 
-          if (this.sourceFilter != null && this.sourceFilter != '')
+          if (this.sourceFilter != null && this.sourceFilter != '' && this.sourceFilter != 'All')
                params = params.append('SourceFilter',this.sourceFilter);
 
           if (this.incompleteFilter == true)

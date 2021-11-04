@@ -11,7 +11,7 @@ import { Storage } from '@ionic/storage';
 })
 export class DataService {
      backendURL=``;
-     incompleteFilter = false;
+     incompleteFilter = true;
      isAdding = false;
      isEditing = false;
      isMobilePlatform = false;
@@ -254,7 +254,7 @@ export class DataService {
           if (currWatchList['EndDate'] != '')
                params = params.append('EndDate',currWatchList['EndDate']);
 
-          if (currWatchList['Season'] != '')
+          if (currWatchList['Season'] != null)
                params = params.append('Season',currWatchList['Season']);
 
           if (currWatchList['WatchListSourceID'] != '')

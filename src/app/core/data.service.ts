@@ -30,7 +30,7 @@ export class DataService {
           if (this.platform.is('android') || this.platform.is('ios'))
                this.isMobilePlatform=true;
           
-          this.getBackendURL(); // Get Saved backend URL;          
+          this.getBackendURL(); // Get Saved backend URL;
      }
 
      addWatchList(currWatchList: []) {

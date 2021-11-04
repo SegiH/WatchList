@@ -29,7 +29,7 @@ export class WatchListPage {
           'Action' : 1,
      }
      
-     constructor(public alertController: AlertController, public dataService: DataService) {}
+     constructor(public alertController: AlertController, public dataService: DataService) { }
 
      addWatchList() {
           this.dataService.isAdding=true;

@@ -7,12 +7,12 @@ import { WatchListPage } from './watchlist.page';
 import { WatchListPageRoutingModule } from './watchlist-routing.module';
 
 @NgModule({
-  imports: [
-    IonicModule,
-    CommonModule,
-    FormsModule,
-    WatchListPageRoutingModule
-  ],
-  declarations: [WatchListPage]
+     imports: [
+          CommonModule,
+          FormsModule,
+          IonicModule,          
+          WatchListPageRoutingModule
+     ],
+     declarations: [WatchListPage]
 })
 export class WatchListPageModule {}

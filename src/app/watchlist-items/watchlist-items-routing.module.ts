@@ -4,13 +4,13 @@ import { WatchListItemsPage } from './watchlist-items.page';
 
 const routes: Routes = [
   {
-    path: '',
-    component: WatchListItemsPage,
+     path: '',
+     component: WatchListItemsPage,
   }
 ];
 
 @NgModule({
-  imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule]
+     imports: [RouterModule.forChild(routes)],
+     exports: [RouterModule]
 })
 export class WatchListItemsPageRoutingModule {}

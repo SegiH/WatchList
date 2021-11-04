@@ -1,3 +1,24 @@
+.actionColumn {
+     display: inline-flex;
+}
+
+.addWatchListItem {
+     width: 45px !important;
+     height: 45px !important;
+}
+
+.sourceLabelMobileColumn {
+     display: inline-flex;
+}
+
+.sourceLabelColumn {
+     display: inline-flex;
+}
+
+.editSave {
+     margin-right: 10px;
+}
+
 .ion-list-parent {
      width: 100%;
      overflow: auto;
@@ -103,25 +124,4 @@ ion-grid > ion-row > ion-col > ion-icon.IMDBURLArrowIcon {
 
 ion-grid > ion-row > ion-col > ion-icon.active {
      color: #30A199;
-}
-
-.actionColumn {
-     display: inline-flex;
-}
-
-.addWatchListItem {
-     width: 45px !important;
-     height: 45px !important;
-}
-
-.sourceLabelMobileColumn {
-     display: inline-flex;
-}
-
-.sourceLabelColumn {
-     display: inline-flex;
-}
-
-.editSave {
-     margin-right: 10px;
 }

@@ -1,3 +1,24 @@
+.actionColumn {
+     display: inline-flex;
+}
+
+.addWatchList {
+     width: 45px !important;
+     height: 45px !important;
+}
+
+.sourceLabelMobileColumn {
+     display: inline-flex;
+}
+
+.sourceLabelColumn {
+     display: inline-flex;
+}
+
+.editSave {
+     margin-right: 10px;
+}
+
 .ion-list-parent {
      width: 100%;
      overflow: auto;
@@ -101,25 +122,4 @@ ion-grid > ion-row > ion-col > ion-icon.sourceArrowIcon {
 
 ion-grid > ion-row > ion-col > ion-icon.active {
      color: darkblue
-}
-
-.actionColumn {
-     display: inline-flex;
-}
-
-.addWatchList {
-     width: 45px !important;
-     height: 45px !important;
-}
-
-.sourceLabelMobileColumn {
-     display: inline-flex;
-}
-
-.sourceLabelColumn {
-     display: inline-flex;
-}
-
-.editSave {
-     margin-right: 10px;
 }

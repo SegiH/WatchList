@@ -98,6 +98,7 @@ export class WatchListPage {
 
      editWatchList(currWatchList: []) {
           currWatchList[`Previous`]=[];
+
           Object.assign(currWatchList[`Previous`], currWatchList);
 
           currWatchList[`Disabled`]=false;

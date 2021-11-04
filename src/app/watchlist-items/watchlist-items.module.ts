@@ -8,18 +8,16 @@ import { WatchListItemsPage } from './watchlist-items.page';
 import { WatchListItemsPageRoutingModule } from './watchlist-items-routing.module';
 
 @NgModule({
-  imports: [
-    IonicModule,
-    CommonModule,
-    FormsModule,
-    WatchListItemsPageRoutingModule
-  ],
-  declarations: [WatchListItemsPage]
+     imports: [
+          IonicModule,
+          CommonModule,
+          FormsModule,
+          WatchListItemsPageRoutingModule
+     ],
+     declarations: [WatchListItemsPage]
 })
 export class WatchListItemsPageModule {
     constructor() {}
 
-    handleError(response: Response, error: Error) {
-
-    }
+    handleError(response: Response, error: Error) { }
 }

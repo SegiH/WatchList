@@ -25,13 +25,6 @@ export class WatchListItemsPage {
           'Action' : 2,
      }
 
-     readonly recordLimitOptions = [
-          10,
-          50,
-          100,
-          500
-     ]
-
      constructor(public alertController: AlertController, public dataService: DataService) {}
 
      addWatchListItem() {
@@ -92,13 +85,14 @@ export class WatchListItemsPage {
 
                     event.target.complete();
                },
-                    error => {       
+               error => {       
                });
           }, 2000);
      }
 
      editWatchListItem(currWatchListItem: []) {
           currWatchListItem[`Previous`]=[];
+
           Object.assign(currWatchListItem[`Previous`], currWatchListItem);
           
           currWatchListItem[`Disabled`]=false;

@@ -7,7 +7,7 @@ import { AlertController } from '@ionic/angular';
      templateUrl: 'watchlist.page.html',
      styleUrls: ['watchlist.page.scss']
 })
-export class WatchListPage {
+export class WatchListPage { 
      addItemName = '';
      addItemStartDate = '';
      addItemEndDate = '';

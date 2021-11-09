@@ -11,6 +11,7 @@ import { Storage } from '@ionic/storage';
 })
 export class DataService {
      backendURL=``;
+     imdb_url_missing = false;
      incompleteFilter = true;
      isAdding = false;
      isEditing = false;
@@ -155,6 +156,9 @@ export class DataService {
                params = params.append('SortColumn',columnName);
                params = params.append('SortDirection',columnDirection);
           }
+
+          if (this.imdb_url_missing == true)
+               params = params.append('IMDBURLMissing',true);
 
           return this.processStep(`/GetWatchListItems`,params);
      }

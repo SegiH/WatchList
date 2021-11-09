@@ -8,7 +8,7 @@ import { DataService } from './core/data.service';
      styleUrls: ['app.component.scss'],
 })
 export class AppComponent {
-     readonly recordLimitOptions = [
+     readonly recordLimitOptions = [ // Only applied to WatchList not WatchlistItems
           10,
           50,
           100,
@@ -17,8 +17,11 @@ export class AppComponent {
 
      constructor(public dataService: DataService) { }
 
-     reloadData() {
-          this.dataService.getWatchListSubscription(null,null); // Only WL is affected by the filters
+     reloadData(event) {
+          if (event.target.id == "IMDBURLMissing")
+               this.dataService.getWatchListItemsSubscription(null,null); // IMDB URL Missing filter affects WL Items
+          else 
+               this.dataService.getWatchListSubscription(null,null); // All other filters affect WL
      }
 
      // Used to prevent the entire DOM tree from being re-rendered every time that there is a change

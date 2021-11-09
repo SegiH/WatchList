@@ -30,6 +30,10 @@
                               <ion-item>Incomplete<ion-toggle [(ngModel)]="dataService.incompleteFilter" color="primary" (ionChange)="reloadData()"></ion-toggle></ion-item>
                          </ion-col>
 
+                         <ion-col size="12">
+                              <ion-item>IMDB URL Missing<ion-toggle id="IMDBURLMissing" [(ngModel)]="dataService.imdb_url_missing" color="primary" (ionChange)="reloadData($event)"></ion-toggle></ion-item>
+                         </ion-col>
+
                          <ion-col size="9">
                               <ion-select placeholder='Source' name="source" [(ngModel)]="dataService.sourceFilter" (ionChange)="reloadData()">
                                    <ion-select-option value="All">All</ion-select-option>

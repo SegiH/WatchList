@@ -17,6 +17,7 @@ export class WatchListPage {
      sortColumn = 'Name';
      sortDirection = 'ASC';
      sortActiveColumn = 'Name';
+     watchListItems = [];
 
      readonly columnSizes = {
           'ID': 1,
@@ -29,7 +30,9 @@ export class WatchListPage {
           'Action' : 1,
      }
      
-     constructor(public alertController: AlertController, public dataService: DataService) { }
+     constructor(public alertController: AlertController, public dataService: DataService) {
+          this.watchListItems = dataService.watchListItems;
+     }
 
      addWatchList() {
           this.dataService.isAdding=true;
@@ -165,10 +168,6 @@ export class WatchListPage {
           error => {
                this.handleError(null, error);
           });
-     }
-
-     searchFilter() {
-          this.dataService.getWatchListSubscription(this.sortColumn,this.sortDirection);
      }
 
      sortClick(name,direction) {

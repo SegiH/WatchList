@@ -1,4 +1,4 @@
-import { Component,OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { DataService } from './core/data.service';
 import { Location } from "@angular/common";
@@ -8,7 +8,7 @@ import { Location } from "@angular/common";
      templateUrl: 'app.component.html',
      styleUrls: ['app.component.scss'],
 })
-export class AppComponent implements OnInit{
+export class AppComponent {
      currentRoute: string = "";
      readonly recordLimitOptions = [ // Only applied to WatchList not WatchlistItems
           10,
@@ -18,7 +18,7 @@ export class AppComponent implements OnInit{
      ]
 
      constructor(public dataService: DataService, private location: Location, private router: Router) { 
-          //console.log(`URL is ${this.router.url}`)
+          // save current route so I can show filters in the menu that depend on the active tab
           router.events.subscribe(val => {
                if (location.path() != "") {
                     switch (location.path()) {
@@ -29,24 +29,18 @@ export class AppComponent implements OnInit{
                               this.currentRoute="WatchListItems"
                               break;
                     }
-                 //   console.log(`Path: ${location.path()}`)
-                 //this.route = location.path();
                } 
              });
      }
 
-     ngOnInit() {
-          //alert(`URL: ${this.router.url}`)
-     }
-
      reloadData(event) {
-          if (event == null)
-               return;
+          if (event != null && event.target.id == "IMDBURLMissing") // || (this.currentRoute == "WatchListItems" && this.dataService.searchTerm != ''))
+               this.dataService.getWatchListItemsSubscription(null,null);
+          else {
+               this.dataService.getWatchListSubscription(null,null);
 
-          if (event.target.id == "IMDBURLMissing")
-               this.dataService.getWatchListItemsSubscription(null,null); // IMDB URL Missing filter affects WL Items
-          else 
-               this.dataService.getWatchListSubscription(null,null); // All other filters affect WL
+               this.dataService.getWatchListItemsSubscription(null,null);
+          }
      }
 
      // Used to prevent the entire DOM tree from being re-rendered every time that there is a change

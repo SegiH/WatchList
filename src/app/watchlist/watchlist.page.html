@@ -66,7 +66,7 @@
 
                               <ion-col [size]="columnSizes['Name']" [ngClass]="dataService.isMobilePlatform == true ? 'nameDataMobileColumn' : ''">
                                    <ion-select placeholder='Name' name="title" [(ngModel)]="addItemName">
-                                        <ion-select-option *ngFor="let currItem of dataService.watchListItems;trackBy: trackByFn" [value]="currItem.WatchListItemID">{{currItem.WatchListItemName}}</ion-select-option>
+                                        <ion-select-option *ngFor="let currItem of watchListItems;trackBy: trackByFn" [value]="currItem.WatchListItemID">{{currItem.WatchListItemName}}</ion-select-option>
                                    </ion-select>
                               </ion-col>
                     
@@ -119,7 +119,7 @@
                                    </div>
 
                                    <ion-select *ngIf="dataService.isEditing" placeholder='Name' name="title" [disabled]="currWatchList.Disabled" [(ngModel)]="currWatchList.WatchListItemID">
-                                        <ion-select-option *ngFor="let currItem of dataService.watchListItems;trackBy: trackByFn" [value]="currItem.WatchListItemID">{{currItem.WatchListItemName}}</ion-select-option>
+                                        <ion-select-option *ngFor="let currItem of watchListItems;trackBy: trackByFn" [value]="currItem.WatchListItemID">{{currItem.WatchListItemName}}</ion-select-option>
                                    </ion-select>
                               </ion-col>
 

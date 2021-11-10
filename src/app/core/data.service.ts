@@ -148,6 +148,9 @@ export class DataService {
      getWatchListItems(columnName,columnDirection) {
           let params = new HttpParams();
 
+          if (this.recordLimit != null)
+               params = params.append('RecordLimit',this.recordLimit);
+
           if (this.searchTerm !== '') {
                params = params.append('SearchTerm',this.searchTerm);
           }
@@ -168,7 +171,7 @@ export class DataService {
                if (response != null)
                     for (let i=0;i<response.length;i++)
                          response[i].Disabled = true;
-
+debugger;
                this.watchListItems=response;
 
                this.getWatchListSubscription(columnName,columnDirection);

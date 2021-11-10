@@ -22,6 +22,7 @@ export class DataService {
      sourceFilter: string = '';
      watchList: any;
      watchListItems: any;
+     watchListNames: any; // This contains a full, unfiltered copy of watchListItems that is used for the names
      watchListSources: [];
      watchListTypes: [];
      
@@ -101,9 +102,9 @@ export class DataService {
      }
 
      getIMDBURL(watchListItemID) {
-          for (let i=0;i<this.watchListItems.length;i++) {
-               if (this.watchListItems[i].WatchListItemID == watchListItemID && this.watchListItems[i].IMDB_URL !== null)
-                    return this.watchListItems[i].IMDB_URL;
+          for (let i=0;i<this.watchListNames.length;i++) {
+               if (this.watchListNames[i].WatchListItemID == watchListItemID && this.watchListNames[i].IMDB_URL !== null)
+                    return this.watchListNames[i].IMDB_URL;
           }
 
           return null;
@@ -150,21 +151,21 @@ export class DataService {
      getWatchListItems(columnName,columnDirection) {
           let params = new HttpParams();
 
-          // Uncommenting this causes incomplete to not show the name
-          //if (this.recordLimit != null)
-          //     params = params.append('RecordLimit',this.recordLimit);
+          if (this.watchListNames != null) { // If watchListNames is not set get all data and ignore any filters that limit the data set returned
+               if (this.recordLimit != null)
+                    params = params.append('RecordLimit',this.recordLimit);
 
-          if (this.searchTerm !== '') {
-               params = params.append('SearchTerm',this.searchTerm);
-          }
+               if (this.searchTerm !== '')
+                    params = params.append('SearchTerm',this.searchTerm);
           
+               if (this.imdb_url_missing == true)
+                    params = params.append('IMDBURLMissing',true);
+          }          
+
           if (columnName != null && columnDirection != null) {
                params = params.append('SortColumn',columnName);
                params = params.append('SortDirection',columnDirection);
           }
-
-          if (this.imdb_url_missing == true)
-               params = params.append('IMDBURLMissing',true);
 
           return this.processStep(`/GetWatchListItems`,params);
      }
@@ -177,6 +178,11 @@ export class DataService {
 
                this.watchListItems=response;
 
+               if (this.watchListNames == null) {
+                    debugger;
+                    this.watchListNames = response;
+               }
+
                this.getWatchListSubscription(columnName,columnDirection);
           },
           error => {
@@ -185,9 +191,10 @@ export class DataService {
      }
 
      getWatchListItemName(watchListItemID) {
-          for (let i=0;i<this.watchListItems.length;i++) {
-               if (this.watchListItems[i].WatchListItemID == watchListItemID)
-                    return this.watchListItems[i].WatchListItemName;
+          debugger;
+          for (let i=0;i<this.watchListNames.length;i++) {
+               if (this.watchListNames[i].WatchListItemID == watchListItemID)
+                    return this.watchListNames[i].WatchListItemName;
           }
 
           return null;

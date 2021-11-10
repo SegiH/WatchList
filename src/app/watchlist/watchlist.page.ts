@@ -17,7 +17,6 @@ export class WatchListPage {
      sortColumn = 'Name';
      sortDirection = 'ASC';
      sortActiveColumn = 'Name';
-     watchListItems = [];
 
      readonly columnSizes = {
           'ID': 1,
@@ -30,12 +29,7 @@ export class WatchListPage {
           'Action' : 1,
      }
      
-     constructor(public alertController: AlertController, public dataService: DataService) {
-          if (this.watchListItems.length > 0) {
-               this.watchListItems = dataService.watchListItems;
-               console.log("Len=" + this.watchListItems.length)
-          }
-     }
+     constructor(public alertController: AlertController, public dataService: DataService) { }
 
      addWatchList() {
           this.dataService.isAdding=true;

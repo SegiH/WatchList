@@ -31,7 +31,10 @@ export class WatchListPage {
      }
      
      constructor(public alertController: AlertController, public dataService: DataService) {
-          this.watchListItems = dataService.watchListItems;
+          if (this.watchListItems.length > 0) {
+               this.watchListItems = dataService.watchListItems;
+               console.log("Len=" + this.watchListItems.length)
+          }
      }
 
      addWatchList() {

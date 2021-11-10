@@ -90,6 +90,8 @@ export class DataService {
           this.backendURL = await this.storage.get('BackEndURL');
           
           if (this.backendURL != null && this.backendURL != "") {
+               this.getWatchListItemsSubscription(null,null);
+
                this.getWatchListTypesSubscription();
 
                this.getWatchListSourcesSubscription();
@@ -148,8 +150,9 @@ export class DataService {
      getWatchListItems(columnName,columnDirection) {
           let params = new HttpParams();
 
-          if (this.recordLimit != null)
-               params = params.append('RecordLimit',this.recordLimit);
+          // Uncommenting this causes incomplete to not show the name
+          //if (this.recordLimit != null)
+          //     params = params.append('RecordLimit',this.recordLimit);
 
           if (this.searchTerm !== '') {
                params = params.append('SearchTerm',this.searchTerm);
@@ -171,7 +174,7 @@ export class DataService {
                if (response != null)
                     for (let i=0;i<response.length;i++)
                          response[i].Disabled = true;
-debugger;
+
                this.watchListItems=response;
 
                this.getWatchListSubscription(columnName,columnDirection);

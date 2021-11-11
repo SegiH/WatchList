@@ -91,11 +91,15 @@
                                    <ion-label>{{ currWatchListItem.WatchListItemID }}</ion-label>
                               </ion-col>
 
-                              <ion-col [size]="columnSizes['Name']" [ngClass]="dataService.isMobilePlatform == true ? 'nameDataMobileColumn' : ''">
-                                   <ion-input [disabled]="currWatchListItem.Disabled" type="text" [(ngModel)]="currWatchListItem['WatchListItemName']" [value]="currWatchListItem['WatchListItemName']" ></ion-input>
+                              <ion-col [size]="columnSizes['Name']" [ngClass]="dataService.isMobilePlatform == true ? 'nameDataMobileColumn' : dataService.isEditing ? 'nameDataColumn' : ''">
+                                   <ion-input *ngIf="dataService.isEditing; else name" type="text" [(ngModel)]="currWatchListItem['WatchListItemName']" [value]="currWatchListItem['WatchListItemName']" ></ion-input>
+
+                                   <ng-template #name>
+                                        {{ currWatchListItem['WatchListItemName'] }}
+                                   </ng-template>
                               </ion-col>
 
-                              <ion-col [size]="columnSizes['Type']" [ngClass]="dataService.isMobilePlatform == true ? 'nameDataMobileColumn' : 'nameDataColumn'">
+                              <ion-col [size]="columnSizes['Type']" [ngClass]="dataService.isMobilePlatform == true ? 'typeDataMobileColumn' : 'typeDataColumn'">
                                    <ion-select placeholder='Type' name="title" [disabled]="currWatchListItem.Disabled" [(ngModel)]="currWatchListItem.WatchListTypeID">
                                         <ion-select-option *ngFor="let currItem of dataService.watchListTypes;trackBy: trackByFn" [value]="currItem['WatchListTypeID']">{{currItem['WatchListTypeName']}}</ion-select-option>
                                    </ion-select>

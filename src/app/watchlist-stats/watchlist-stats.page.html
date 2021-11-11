@@ -1,0 +1,35 @@
+<ion-header [translucent]="true">
+    <ion-toolbar>
+         <ion-title>WatchList Stats</ion-title>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content>
+     <h2>Top 10 most frequently watched Movies</h2>
+
+     <ion-list *ngFor="let currentMovie of watchListMovieStats">
+          <ion-item>
+               <div *ngIf="currentMovie['IMDB_URL'] == null; else hyperLinkDiv">
+                    "{{ currentMovie['WatchListItemName'] }}" watched {{ currentMovie['ItemCount'] }} time(s)
+               </div>
+
+               <ng-template #hyperLinkDiv>
+                    <a [href]="currentMovie['IMDB_URL']" target="_blank">{{ currentMovie['WatchListItemName'] }}</a>&nbsp;watched {{ currentMovie['ItemCount'] }} time(s)
+               </ng-template>
+          </ion-item>
+     </ion-list>
+
+     <h2>Top 10 most frequently watched TV Shows</h2>
+
+     <ion-list *ngFor="let currentShow of watchListTVStats">
+          <ion-item>
+               <div *ngIf="currentShow['IMDB_URL'] == null; else hyperLinkDiv">
+                    "{{ currentShow['WatchListItemName'] }}" watched {{ currentShow['ItemCount'] }} time(s) between {{ currentShow['StartDate'] | date: 'MM/dd/yyyy' }} and {{ currentShow['EndDate'] | date: 'MM/dd/yyyy' }}
+               </div>               
+
+               <ng-template #hyperLinkDiv>
+                    <a [href]="currentShow['IMDB_URL']" target="_blank">{{ currentShow['WatchListItemName'] }}</a>&nbsp;watched {{ currentShow['ItemCount'] }} time(s) between {{ currentShow['StartDate'] | date: 'MM/dd/yyyy' }} and {{ currentShow['EndDate'] | date: 'MM/dd/yyyy' }} 
+               </ng-template>
+          </ion-item>
+     </ion-list>
+</ion-content>

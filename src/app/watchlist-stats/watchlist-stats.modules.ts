@@ -2,20 +2,20 @@ import { IonicModule } from '@ionic/angular';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { WatchListItemsPage } from './watchlist-items.page';
+import { WatchListStatsPage } from './watchlist-stats.page';
 
-import { WatchListItemsPageRoutingModule } from './watchlist-items-routing.module';
+import { WatchListStatsPageRoutingModule } from './watchlist-stats-routing.module';
 
 @NgModule({
      imports: [
           IonicModule,
           CommonModule,
           FormsModule,
-          WatchListItemsPageRoutingModule
+          WatchListStatsPageRoutingModule
      ],
-     declarations: [WatchListItemsPage]
+     declarations: [WatchListStatsPage]
 })
-export class WatchListItemsPageModule {
+export class WatchListStatsPageModule {
     constructor() {}
 
     handleError(response: Response, error: Error) { }

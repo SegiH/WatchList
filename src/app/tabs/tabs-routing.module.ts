@@ -9,14 +9,19 @@ const routes: Routes = [
      component: TabsPage,
      children: [
           {
-          path: 'watchlist',
-          loadChildren: () => import('../watchlist/watchlist.module').then(m => m.WatchListPageModule),
-          canActivate: [AuthGuard]
+               path: 'watchlist',
+               loadChildren: () => import('../watchlist/watchlist.module').then(m => m.WatchListPageModule),
+               canActivate: [AuthGuard]
           },
           {
-          path: 'watchlist-items',
-          loadChildren: () => import('../watchlist-items/watchlist-items.module').then(m => m.WatchListItemsPageModule),
-          canActivate: [AuthGuard]
+               path: 'watchlist-items',
+               loadChildren: () => import('../watchlist-items/watchlist-items.module').then(m => m.WatchListItemsPageModule),
+               canActivate: [AuthGuard]
+          },
+          {
+               path: 'watchlist-stats',
+               loadChildren: () => import('../watchlist-stats/watchlist-stats.modules').then(m => m.WatchListStatsPageModule),
+               canActivate: [AuthGuard]
           }
      ]
      },

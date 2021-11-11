@@ -22,8 +22,8 @@ export class DataService {
      sourceFilter: string = '';
      watchList: any;
      watchListItems: any;
-     watchListNames: any; // This contains a full, unfiltered copy of watchListItems that is used for the names
-     watchListSources: [];
+     watchListNames: any; // This contains a full, unfiltered copy of watchListItems that is used for the names     
+     watchListSources: [];     
      watchListTypes: [];
      
      constructor(public toastController: ToastController, private http: HttpClient, platform: Platform, private storage: Storage) {
@@ -179,7 +179,6 @@ export class DataService {
                this.watchListItems=response;
 
                if (this.watchListNames == null) {
-                    debugger;
                     this.watchListNames = response;
                }
 
@@ -191,13 +190,16 @@ export class DataService {
      }
 
      getWatchListItemName(watchListItemID) {
-          debugger;
           for (let i=0;i<this.watchListNames.length;i++) {
                if (this.watchListNames[i].WatchListItemID == watchListItemID)
                     return this.watchListNames[i].WatchListItemName;
           }
 
           return null;
+     }
+
+     getWatchListMovieStats() {
+          return this.processStep(`/GetWatchListMovieStats`,null);          
      }
 
      getWatchListSources() {
@@ -211,6 +213,10 @@ export class DataService {
           error => {
                this.handleError(error);
           });
+     }
+
+     getWatchListTVStats() {
+          return this.processStep(`/GetWatchListTVStats`,null);          
      }
 
      getWatchListTypes() {
@@ -308,7 +314,7 @@ export class DataService {
           return false;
      }
 
-     private handleError(error: Response | any) {
+     handleError(error: Response | any) {
           if (error.error instanceof Error) {
                const errMessage = error.error.message;
 

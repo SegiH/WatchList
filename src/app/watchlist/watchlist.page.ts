@@ -81,22 +81,6 @@ export class WatchListPage {
           });
      }
 
-     /*doRefresh(event) {
-          setTimeout(() => {
-               this.dataService.getWatchList().subscribe((response) => {
-                    if (response != null)
-                         for (let i=0;i<response.length;i++)
-                              response[i].Disabled = true;
-
-                    this.dataService.setWatchlist(response);
-
-                    event.target.complete();
-               },
-                    error => {       
-               });
-          }, 2000);
-     }*/
-
      editWatchList(currWatchList: []) {
           currWatchList[`Previous`]=[];
 

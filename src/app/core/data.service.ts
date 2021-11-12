@@ -234,6 +234,18 @@ export class DataService {
           });
      }
 
+     handleError(error: Response | any) {
+          if (error.error instanceof Error) {
+               const errMessage = error.error.message;
+
+               return throwError(errMessage);
+               // Use the following instead if using lite-server
+               // return Observable.throw(err.text() || 'backend server error');
+          }
+
+          return throwError(error || 'Node.js server error');
+     }
+
      processStep(path: string, params: HttpParams): Observable<any> {
         return this.http.get<any>(this.backendURL + path, {params})
              .pipe(
@@ -266,6 +278,11 @@ export class DataService {
 
      setWatchlistItems(newWatchListItems: any) {
           this.watchListItems=newWatchListItems;
+     }
+
+     // Used to prevent the entire DOM tree from being re-rendered every time that there is a change
+     trackByFn(index, item) {
+          return index; // or item.id
      }
 
      updateWatchList(currWatchList: []) {
@@ -312,17 +329,5 @@ export class DataService {
           }
 
           return false;
-     }
-
-     handleError(error: Response | any) {
-          if (error.error instanceof Error) {
-               const errMessage = error.error.message;
-
-               return throwError(errMessage);
-               // Use the following instead if using lite-server
-               // return Observable.throw(err.text() || 'backend server error');
-          }
-
-          return throwError(error || 'Node.js server error');
      }
 }

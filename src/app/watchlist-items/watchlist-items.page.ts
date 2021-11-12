@@ -188,9 +188,4 @@ export class WatchListItemsPage {
           else
                this.sortDirection="ASC";
      }
-
-     // Used to prevent the entire DOM tree from being re-rendered every time that there is a change
-     trackByFn(index, item) {
-          return index; // or item.id
-     }
 }

@@ -64,7 +64,7 @@
 
                               <ion-col [size]="columnSizes['Type']" [ngClass]="dataService.isMobilePlatform == true ? 'typeDataMobileColumn' : ''">
                                    <ion-select placeholder='Type' name="title" [(ngModel)]="addItemType">
-                                        <ion-select-option *ngFor="let currItem of dataService.watchListTypes;trackBy: trackByFn" [value]="currItem['WatchListTypeID']">{{currItem['WatchListTypeName']}}</ion-select-option>
+                                        <ion-select-option *ngFor="let currItem of dataService.watchListTypes;trackBy: dataService.trackByFn" [value]="currItem['WatchListTypeID']">{{currItem['WatchListTypeName']}}</ion-select-option>
                                    </ion-select>
                               </ion-col>
 
@@ -101,7 +101,7 @@
 
                               <ion-col [size]="columnSizes['Type']" [ngClass]="dataService.isMobilePlatform == true ? 'typeDataMobileColumn' : 'typeDataColumn'">
                                    <ion-select placeholder='Type' name="title" [disabled]="currWatchListItem.Disabled" [(ngModel)]="currWatchListItem.WatchListTypeID">
-                                        <ion-select-option *ngFor="let currItem of dataService.watchListTypes;trackBy: trackByFn" [value]="currItem['WatchListTypeID']">{{currItem['WatchListTypeName']}}</ion-select-option>
+                                        <ion-select-option *ngFor="let currItem of dataService.watchListTypes;trackBy: dataService.trackByFn" [value]="currItem['WatchListTypeID']">{{currItem['WatchListTypeName']}}</ion-select-option>
                                    </ion-select>
                               </ion-col>
 

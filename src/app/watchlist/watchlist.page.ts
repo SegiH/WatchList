@@ -55,7 +55,7 @@ export class WatchListPage {
           this.dataService.isEditing = false;
      }
 
-     async confirmDialog(currWatchList: object, message: string) {
+     async confirmDialog(currWatchList: object, message: string, callback: any) {
           const alert = await this.alertController.create({
                header: 'Alert',
                message: message,
@@ -67,17 +67,21 @@ export class WatchListPage {
           const { role } = await alert.onDidDismiss();
 
           if (role != "cancel" ) { // OK
-               this.dataService.deleteWatchList(currWatchList['WatchListID']).subscribe((response) => {
-                    this.dataService.getWatchListSubscription(this.sortColumn,this.sortDirection);
-               },
-               error => {
-                    console.log(`An error occurred deleting WatchList Item with ID ${currWatchList['WatchListID']}`)
-               });
+               callback(currWatchList);
           }
      }
 
      deleteWatchList(currWatchList: object) {
-          this.confirmDialog(currWatchList,"Are you sure that you want to delete this item ?")
+          this.confirmDialog(currWatchList,"Are you sure that you want to delete this item ?",this.deleteWatchListCallback)
+     }
+
+     deleteWatchListCallback(currWatchList: object) {
+          this.dataService.deleteWatchList(currWatchList['WatchListID']).subscribe((response) => {
+               this.dataService.getWatchListSubscription(this.sortColumn,this.sortDirection);
+          },
+          error => {
+               console.log(`An error occurred deleting WatchList Item with ID ${currWatchList['WatchListID']}`)
+          });
      }
 
      doRefresh(event) {
@@ -105,8 +109,6 @@ export class WatchListPage {
 
           this.dataService.isEditing = true;
      }
-
-     handleError(response: Response, error: Error) {}
 
      saveNewWatchList() {
           if (this.addItemName === ``) {
@@ -140,7 +142,7 @@ export class WatchListPage {
                this.dataService.getWatchListSubscription(this.sortColumn,this.sortDirection);
           },
           error => {
-               this.handleError(null, error);
+               this.dataService.handleError(error);
           });
      }
 
@@ -163,7 +165,7 @@ export class WatchListPage {
                this.dataService.getWatchListSubscription(this.sortColumn,this.sortDirection);
           },
           error => {
-               this.handleError(null, error);
+               this.dataService.handleError(error);
           });
      }
 

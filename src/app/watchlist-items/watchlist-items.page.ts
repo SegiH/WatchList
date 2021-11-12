@@ -49,7 +49,7 @@ export class WatchListItemsPage {
           this.dataService.isEditing = false;
      }
 
-     async confirmDialog(currWatchListItem: object, message: string) {
+     async confirmDialog(currWatchListItem: object, message: string, callback: any) {
           const alert = await this.alertController.create({
                header: 'Alert',
                message: message,
@@ -61,17 +61,21 @@ export class WatchListItemsPage {
           const { role } = await alert.onDidDismiss();
 
           if (role != "cancel" ) { // OK
-               this.dataService.deleteWatchListItem(currWatchListItem['WatchListItemID']).subscribe((response) => {
-                    this.dataService.getWatchListItemsSubscription(this.sortColumn,this.sortDirection);
-               },
-               error => {
-                    console.log(`An error occurred deleting WatchList Item with ID ${currWatchListItem['WatchListID']}`)
-               });
+               callback(currWatchListItem);
           }
-     }
+     }     
 
      deleteWatchListItem(currWatchListItem: object) {
-          this.confirmDialog(currWatchListItem,"Are you sure that you want to delete this item ?")
+          this.confirmDialog(currWatchListItem,"Are you sure that you want to delete this item ?",this.deleteWatchListItemCallback)
+     }
+
+     deleteWatchListItemCallback(currWatchListItem) {
+          this.dataService.deleteWatchListItem(currWatchListItem['WatchListItemID']).subscribe((response) => {
+               this.dataService.getWatchListItemsSubscription(this.sortColumn,this.sortDirection);
+          },
+          error => {
+               console.log(`An error occurred deleting WatchList Item with ID ${currWatchListItem['WatchListID']}`)
+          });
      }
 
      doRefresh(event) {
@@ -99,8 +103,6 @@ export class WatchListItemsPage {
 
           this.dataService.isEditing = true;
      }
-
-     handleError(response: Response, error: Error) {}
 
      saveNewWatchListItem() {
           if (this.addItemName === ``) {
@@ -137,7 +139,7 @@ export class WatchListItemsPage {
                this.dataService.getWatchListItemsSubscription(this.sortColumn,this.sortDirection);
           },
           error => {
-               this.handleError(null, error);
+               this.dataService.handleError(error);
           });
      }
 
@@ -165,7 +167,7 @@ export class WatchListItemsPage {
                this.dataService.getWatchListItemsSubscription(this.sortColumn,this.sortDirection);
           },
           error => {
-               this.handleError(null, error);
+               this.dataService.handleError(error);
           });          
      }
 

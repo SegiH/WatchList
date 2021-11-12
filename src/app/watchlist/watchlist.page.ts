@@ -14,9 +14,6 @@ export class WatchListPage {
      addItemNotes= '';
      addItemSource = '';
      addSeason = '';
-     sortColumn = 'Name';
-     sortDirection = 'ASC';
-     sortActiveColumn = 'Name';
 
      readonly columnSizes = {
           'ID': 1,
@@ -77,7 +74,7 @@ export class WatchListPage {
 
      deleteWatchListCallback(currWatchList: object) {
           this.dataService.deleteWatchList(currWatchList['WatchListID']).subscribe((response) => {
-               this.dataService.getWatchListSubscription(this.sortColumn,this.sortDirection);
+               this.dataService.getWatchListSubscription();
           },
           error => {
                console.log(`An error occurred deleting WatchList Item with ID ${currWatchList['WatchListID']}`)
@@ -86,7 +83,7 @@ export class WatchListPage {
 
      doRefresh(event) {
           setTimeout(() => {
-               this.dataService.getWatchList(this.sortColumn,this.sortDirection).subscribe((response) => {
+               this.dataService.getWatchList().subscribe((response) => {
                     if (response != null)
                          for (let i=0;i<response.length;i++)
                               response[i].Disabled = true;
@@ -139,7 +136,7 @@ export class WatchListPage {
 
                this.dataService.isAdding=false;
 
-               this.dataService.getWatchListSubscription(this.sortColumn,this.sortDirection);
+               this.dataService.getWatchListSubscription();
           },
           error => {
                this.dataService.handleError(error);
@@ -162,24 +159,10 @@ export class WatchListPage {
 
                this.dataService.isEditing = false;
 
-               this.dataService.getWatchListSubscription(this.sortColumn,this.sortDirection);
+               this.dataService.getWatchListSubscription();
           },
           error => {
                this.dataService.handleError(error);
           });
-     }
-
-     sortClick(name,direction) {
-          const columnName=(name != null ? name : this.sortColumn);
-          const columnDirection=(direction != null ? direction : this.sortDirection);
-
-          this.dataService.getWatchListSubscription(columnName,columnDirection);
-          
-          this.sortActiveColumn=columnName;
-
-          if (direction === "ASC")
-               this.sortDirection="DESC";
-          else
-               this.sortDirection="ASC";
      }
 }

@@ -25,6 +25,14 @@ export class DataService {
      watchListNames: any; // This contains a full, unfiltered copy of watchListItems that is used for the names     
      watchListSources: [];     
      watchListTypes: [];
+
+     watchListSortActiveColumn = 'Name';
+     watchListSortColumn = 'Name';
+     watchListSortDirection = 'ASC';
+
+     watchListItemsSortActiveColumn = 'Name';
+     watchListItemsSortColumn = 'Name';
+     watchListItemsSortDirection = 'ASC';
      
      constructor(public toastController: ToastController, private http: HttpClient, platform: Platform, private storage: Storage) {
           this.platform = platform;
@@ -91,7 +99,7 @@ export class DataService {
           this.backendURL = await this.storage.get('BackEndURL');
           
           if (this.backendURL != null && this.backendURL != "") {
-               this.getWatchListItemsSubscription(null,null);
+               this.getWatchListItemsSubscription();
 
                this.getWatchListTypesSubscription();
 
@@ -110,16 +118,16 @@ export class DataService {
           return null;
      }
 
-     getWatchList(columnName,columnDirection) {
+     getWatchList() {
           let params = new HttpParams();
 
           if (this.searchTerm !== "") {
                params = params.append('SearchTerm',this.searchTerm);
-          } 
-          
-          if (columnName != null && columnDirection != null) {
-               params = params.append('SortColumn',columnName);
-               params = params.append('SortDirection',columnDirection);
+          }
+
+          if (this.watchListSortColumn != null && this.watchListSortDirection != null) {
+               params = params.append('SortColumn',this.watchListSortColumn);
+               params = params.append('SortDirection', this.watchListSortDirection);
           }
 
           if (this.recordLimit != null)
@@ -134,8 +142,8 @@ export class DataService {
           return this.processStep(`/GetWatchList`,params);
      }
 
-     getWatchListSubscription(columnName,columnDirection) {
-          this.getWatchList(columnName,columnDirection).subscribe((response) => {
+     getWatchListSubscription() {
+          this.getWatchList().subscribe((response) => {
                if (response != null)
                     for (let i=0;i<response.length;i++)
                          response[i].Disabled = true;
@@ -148,7 +156,7 @@ export class DataService {
           });
      }
 
-     getWatchListItems(columnName,columnDirection) {
+     getWatchListItems() {
           let params = new HttpParams();
 
           if (this.watchListNames != null) { // If watchListNames is not set get all data and ignore any filters that limit the data set returned
@@ -162,16 +170,16 @@ export class DataService {
                     params = params.append('IMDBURLMissing',true);
           }          
 
-          if (columnName != null && columnDirection != null) {
-               params = params.append('SortColumn',columnName);
-               params = params.append('SortDirection',columnDirection);
+          if (this.watchListSortColumn != null && this.watchListSortDirection != null) {
+               params = params.append('SortColumn',this.watchListItemsSortColumn);
+               params = params.append('SortDirection', this.watchListItemsSortDirection);
           }
 
           return this.processStep(`/GetWatchListItems`,params);
      }
      
-     getWatchListItemsSubscription(columnName,columnDirection) {
-          this.getWatchListItems(columnName,columnDirection).subscribe((response) => {               
+     getWatchListItemsSubscription() {
+          this.getWatchListItems().subscribe((response) => {
                if (response != null)
                     for (let i=0;i<response.length;i++)
                          response[i].Disabled = true;
@@ -182,7 +190,7 @@ export class DataService {
                     this.watchListNames = response;
                }
 
-               this.getWatchListSubscription(columnName,columnDirection);
+               this.getWatchListSubscription();
           },
           error => {
                this.handleError(error);
@@ -227,7 +235,7 @@ export class DataService {
           this.getWatchListTypes().subscribe((response) => {
                this.watchListTypes=response;              
 
-               this.getWatchListItemsSubscription(null,null);
+               this.getWatchListItemsSubscription();
           },
           error => {
                this.handleError(error);
@@ -278,6 +286,30 @@ export class DataService {
 
      setWatchlistItems(newWatchListItems: any) {
           this.watchListItems=newWatchListItems;
+     }
+
+     sortClick(name,direction, component: string ) {
+          if (component === "WatchList") {
+               this.watchListSortColumn = name;
+               this.watchListSortActiveColumn = name;
+
+               if (direction === "ASC")
+                    this.watchListSortDirection = "DESC";
+               else
+                    this.watchListSortDirection = "ASC";
+
+               this.getWatchListSubscription();
+          } else if (component === "WatchListItems") {
+               this.watchListItemsSortColumn = name;
+               this.watchListItemsSortActiveColumn = name;
+
+               if (direction === "ASC")
+                    this.watchListItemsSortDirection = "DESC";
+               else
+                    this.watchListItemsSortDirection = "ASC";
+
+               this.getWatchListItemsSubscription();
+          }
      }
 
      // Used to prevent the entire DOM tree from being re-rendered every time that there is a change

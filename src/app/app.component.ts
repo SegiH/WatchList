@@ -35,11 +35,11 @@ export class AppComponent {
 
      reloadData(event) {
           if (event != null && event.target.id == "IMDBURLMissing") // || (this.currentRoute == "WatchListItems" && this.dataService.searchTerm != ''))
-               this.dataService.getWatchListItemsSubscription(null,null);
+               this.dataService.getWatchListItemsSubscription();
           else {
-               this.dataService.getWatchListSubscription(null,null);
+               this.dataService.getWatchListSubscription();
 
-               this.dataService.getWatchListItemsSubscription(null,null);
+               this.dataService.getWatchListItemsSubscription();
           }
      }
 

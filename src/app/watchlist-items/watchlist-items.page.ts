@@ -12,9 +12,6 @@ export class WatchListItemsPage {
      addItemIMDBURL = '';
      addItemNotes = '';
      addItemType = '';
-     sortColumn = 'Name';
-     sortDirection = 'ASC';
-     sortActiveColumn = 'Name';
 
      readonly columnSizes = {
           'ID': 2,
@@ -71,7 +68,7 @@ export class WatchListItemsPage {
 
      deleteWatchListItemCallback(currWatchListItem) {
           this.dataService.deleteWatchListItem(currWatchListItem['WatchListItemID']).subscribe((response) => {
-               this.dataService.getWatchListItemsSubscription(this.sortColumn,this.sortDirection);
+               this.dataService.getWatchListItemsSubscription();
           },
           error => {
                console.log(`An error occurred deleting WatchList Item with ID ${currWatchListItem['WatchListID']}`)
@@ -80,7 +77,7 @@ export class WatchListItemsPage {
 
      doRefresh(event) {
           setTimeout(() => {
-               this.dataService.getWatchListItems(this.sortColumn,this.sortDirection).subscribe((response) => {
+               this.dataService.getWatchListItems().subscribe((response) => {
                     if (response != null)
                          for (let i=0;i<response.length;i++)
                               response[i].Disabled = true;
@@ -127,7 +124,7 @@ export class WatchListItemsPage {
           currWatchListItem.ItemNotes=this.addItemNotes;
 
           this.dataService.addWatchListItem(currWatchListItem).subscribe((response) => {
-               this.dataService.getWatchListSubscription(this.sortColumn,this.sortDirection);
+               this.dataService.getWatchListSubscription();
 
                this.addItemName = '';
                this.addItemType = '';
@@ -136,7 +133,7 @@ export class WatchListItemsPage {
 
                this.dataService.isAdding = false;
 
-               this.dataService.getWatchListItemsSubscription(this.sortColumn,this.sortDirection);
+               this.dataService.getWatchListItemsSubscription();
           },
           error => {
                this.dataService.handleError(error);
@@ -164,7 +161,7 @@ export class WatchListItemsPage {
 
                this.dataService.isEditing = false;
 
-               this.dataService.getWatchListItemsSubscription(this.sortColumn,this.sortDirection);
+               this.dataService.getWatchListItemsSubscription();
           },
           error => {
                this.dataService.handleError(error);
@@ -172,20 +169,6 @@ export class WatchListItemsPage {
      }
 
      searchFilter() {
-          this.dataService.getWatchListSubscription(this.sortColumn,this.sortDirection);
-     }
-
-     sortClick(name,direction) {
-          const columnName=(name != null ? name : this.sortColumn);
-          const columnDirection=(direction != null ? direction : this.sortDirection);
-
-          this.dataService.getWatchListItemsSubscription(columnName,columnDirection);
-
-          this.sortActiveColumn=columnName;
-
-          if (direction === "ASC")
-               this.sortDirection="DESC";
-          else
-               this.sortDirection="ASC";
+          this.dataService.getWatchListSubscription();
      }
 }

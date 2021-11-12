@@ -261,6 +261,36 @@ export class DataService {
              );
      }
 
+     pullToRefresh(event, component: string) {
+          setTimeout(() => {
+               if (component == "WatchList") {
+                    this.getWatchList().subscribe((response) => {
+                         if (response != null)
+                              for (let i=0;i<response.length;i++)
+                                   response[i].Disabled = true;
+
+                         this.watchList = response;
+
+                         event.target.complete();
+                    },
+                    error => {       
+                    });
+               } else if (component == "WatchListItems") {
+                    this.getWatchListItems().subscribe((response) => {
+                         if (response != null)
+                              for (let i=0;i<response.length;i++)
+                                   response[i].Disabled = true;
+
+                         this.watchListItems=response;
+
+                         event.target.complete();
+                    },
+                    error => {       
+                    });
+               }
+          }, 2000);
+     }
+
      async setBackendURL() {
           if (this.backendURL != null && this.backendURL != "") {
                await this.storage.set('BackEndURL', this.backendURL);
@@ -288,7 +318,7 @@ export class DataService {
           this.watchListItems=newWatchListItems;
      }
 
-     sortClick(name,direction, component: string ) {
+     sortClick(name,direction, component: string) {
           if (component === "WatchList") {
                this.watchListSortColumn = name;
                this.watchListSortActiveColumn = name;

@@ -81,7 +81,7 @@ export class WatchListPage {
           });
      }
 
-     doRefresh(event) {
+     /*doRefresh(event) {
           setTimeout(() => {
                this.dataService.getWatchList().subscribe((response) => {
                     if (response != null)
@@ -95,7 +95,7 @@ export class WatchListPage {
                     error => {       
                });
           }, 2000);
-     }
+     }*/
 
      editWatchList(currWatchList: []) {
           currWatchList[`Previous`]=[];

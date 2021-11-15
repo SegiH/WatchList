@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { DataService } from '../core/data.service';
-import { AlertController } from '@ionic/angular';
 
 @Component({
      selector: 'app-watchlist',
@@ -15,7 +14,7 @@ export class WatchListPage {
      addItemSource = '';
      addSeason = '';
      
-     constructor(public alertController: AlertController, public dataService: DataService) { }
+     constructor(public dataService: DataService) { }
 
      addWatchList() {
           this.dataService.isAdding=true;

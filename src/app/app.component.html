@@ -9,7 +9,7 @@
                <ion-grid>
                     <ion-row>
                          <ion-col size="12">
-                              <ion-searchbar (ionChange)="reloadData()" [disabled]="dataService.isAdding || dataService.isEditing" [(ngModel)]="dataService.searchTerm"></ion-searchbar>
+                              <ion-searchbar (ionChange)="reloadData($event)" [disabled]="dataService.isAdding || dataService.isEditing" [(ngModel)]="dataService.searchTerm"></ion-searchbar>
                          </ion-col>
 
                          <ion-col size="3" id="rowsLabel">
@@ -17,7 +17,7 @@
                          </ion-col>
 
                          <ion-col size="9">
-                              <ion-select placeholder='Record Limit' name="recordLimit" [(ngModel)]="dataService.recordLimit" (ionChange)="reloadData()">
+                              <ion-select placeholder='Record Limit' name="recordLimit" [(ngModel)]="dataService.recordLimit" (ionChange)="reloadData($event)">
                                    <ion-select-option *ngFor="let currItem of recordLimitOptions;trackBy: trackByFn" [value]="currItem">{{currItem}}</ion-select-option>
                               </ion-select>          
                          </ion-col>
@@ -27,7 +27,7 @@
                          </ion-col>
 
                          <ion-col size="12" *ngIf="currentRoute=='WatchList'">
-                              <ion-item>Incomplete<ion-toggle [(ngModel)]="dataService.incompleteFilter" color="primary" (ionChange)="reloadData()"></ion-toggle></ion-item>
+                              <ion-item>Incomplete<ion-toggle [(ngModel)]="dataService.incompleteFilter" color="primary" (ionChange)="reloadData($event)"></ion-toggle></ion-item>
                          </ion-col>
 
                          <ion-col size="12" *ngIf="currentRoute=='WatchListItems'">
@@ -35,9 +35,9 @@
                          </ion-col>
 
                          <ion-col size="9" *ngIf="currentRoute=='WatchList'">
-                              <ion-select placeholder='Source' name="source" [(ngModel)]="dataService.sourceFilter" (ionChange)="reloadData()">
+                              <ion-select placeholder='Source' name="source" [(ngModel)]="dataService.sourceFilter" (ionChange)="reloadData($event)">
                                    <ion-select-option value="All">All</ion-select-option>
-                                   <ion-select-option *ngFor="let currItem of dataService.watchListSources;trackBy: trackByFn" [value]="currItem['WatchListSourceID']" (ionChange)="reloadData()">{{currItem['WatchListSourceName']}}</ion-select-option>
+                                   <ion-select-option *ngFor="let currItem of dataService.watchListSources;trackBy: trackByFn" [value]="currItem['WatchListSourceID']" (ionChange)="reloadData($event)">{{currItem['WatchListSourceName']}}</ion-select-option>
                               </ion-select>
                          </ion-col>
 

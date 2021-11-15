@@ -142,8 +142,4 @@ export class WatchListItemsPage {
                this.dataService.handleError(error);
           });          
      }
-
-     searchFilter() {
-          this.dataService.getWatchListSubscription();
-     }
 }

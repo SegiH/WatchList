@@ -26,7 +26,7 @@ export class DataService {
      watchListSources: [];     
      watchListTypes: [];
 
-     readonly watchListColumnSizes = {
+     private readonly watchListColumnSizes = {
           'ID': 1,
           'Name': 1,
           'StartDate': 1,
@@ -37,7 +37,7 @@ export class DataService {
           'Action' : 1,
      }
 
-     readonly watchListItemsColumnSizes = {
+     private readonly watchListItemsColumnSizes = {
           'ID': 2,
           'Name': 1,
           'Type': 2,

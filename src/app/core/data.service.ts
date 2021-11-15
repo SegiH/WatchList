@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { throwError, Observable } from 'rxjs/';
 import { catchError} from 'rxjs/operators';
+import { AlertController } from '@ionic/angular';
 import { Platform } from '@ionic/angular';
 import { ToastController } from '@ionic/angular';
 import { Storage } from '@ionic/storage';
@@ -54,7 +55,7 @@ export class DataService {
      watchListItemsSortColumn = 'Name';
      watchListItemsSortDirection = 'ASC';
      
-     constructor(public toastController: ToastController, private http: HttpClient, platform: Platform, private storage: Storage) {
+     constructor(public alertController: AlertController, private http: HttpClient, platform: Platform, private storage: Storage, public toastController: ToastController) {
           this.platform = platform;
 
           if (this.platform.is('android') || this.platform.is('ios'))
@@ -95,6 +96,22 @@ export class DataService {
                params = params.append('ItemNotes',currWatchListItem['Notes']);
 
           return this.processStep(`/AddWatchListItem`,params);
+     }
+
+     async confirmDialog(param: object, message: string, callback: any) {
+          const alert = await this.alertController.create({
+               header: 'Alert',
+               message: message,
+               buttons: ['OK','Cancel']
+          });
+    
+          await alert.present();
+    
+          const { role } = await alert.onDidDismiss();
+
+          if (role != "cancel" ) { // OK
+               callback(param);
+          }
      }
 
      deleteWatchList(watchListID) {

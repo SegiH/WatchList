@@ -41,24 +41,8 @@ export class WatchListPage {
           this.dataService.isEditing = false;
      }
 
-     async confirmDialog(currWatchList: object, message: string, callback: any) {
-          const alert = await this.alertController.create({
-               header: 'Alert',
-               message: message,
-               buttons: ['OK','Cancel']
-          });
-    
-          await alert.present();
-    
-          const { role } = await alert.onDidDismiss();
-
-          if (role != "cancel" ) { // OK
-               callback(currWatchList);
-          }
-     }
-
      deleteWatchList(currWatchList: object) {
-          this.confirmDialog(currWatchList,"Are you sure that you want to delete this item ?",this.deleteWatchListCallback)
+          this.dataService.confirmDialog(currWatchList,"Are you sure that you want to delete this item ?",this.deleteWatchListCallback)
      }
 
      deleteWatchListCallback(currWatchList: object) {

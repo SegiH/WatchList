@@ -386,8 +386,7 @@ export class DataService {
           }
      }
 
-     // Used to prevent the entire DOM tree from being re-rendered every time that there is a change
-     trackByFn(index, item) {
+     trackByFn(index, item) { // Used to prevent the entire DOM tree from being re-rendered every time that there is a change
           return index; // or item.id
      }
 

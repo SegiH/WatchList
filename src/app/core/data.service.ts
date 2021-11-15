@@ -26,6 +26,26 @@ export class DataService {
      watchListSources: [];     
      watchListTypes: [];
 
+     readonly watchListColumnSizes = {
+          'ID': 1,
+          'Name': 1,
+          'StartDate': 1,
+          'EndDate': 1,
+          'Source' : 2,
+          'Season' : 1,
+          'Notes' : 2,
+          'Action' : 1,
+     }
+
+     readonly watchListItemsColumnSizes = {
+          'ID': 2,
+          'Name': 1,
+          'Type': 2,
+          'IMDBURL': 2,
+          'Notes' : 2,
+          'Action' : 2,
+     }
+
      watchListSortActiveColumn = 'Name';
      watchListSortColumn = 'Name';
      watchListSortDirection = 'ASC';
@@ -107,6 +127,13 @@ export class DataService {
           } else {
                alert("Please set the backend URL");
           }
+     }
+
+     getColumnSize(columnName, component: string) {
+          if (component == "WatchList")
+               return this.watchListColumnSizes[columnName];
+          else if (component == "WatchListItems")
+               return this.watchListItemsColumnSizes[columnName];
      }
 
      getIMDBURL(watchListItemID) {

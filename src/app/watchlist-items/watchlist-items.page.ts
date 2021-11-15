@@ -13,15 +13,6 @@ export class WatchListItemsPage {
      addItemNotes = '';
      addItemType = '';
 
-     readonly columnSizes = {
-          'ID': 2,
-          'Name': 1,
-          'Type': 2,
-          'IMDBURL': 2,
-          'Notes' : 2,
-          'Action' : 2,
-     }
-
      constructor(public alertController: AlertController, public dataService: DataService) {}
 
      addWatchListItem() {

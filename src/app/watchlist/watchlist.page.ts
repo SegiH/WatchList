@@ -14,17 +14,6 @@ export class WatchListPage {
      addItemNotes= '';
      addItemSource = '';
      addSeason = '';
-
-     readonly columnSizes = {
-          'ID': 1,
-          'Name': 1,
-          'StartDate': 1,
-          'EndDate': 1,
-          'Source' : 2,
-          'Season' : 1,
-          'Notes' : 2,
-          'Action' : 1,
-     }
      
      constructor(public alertController: AlertController, public dataService: DataService) { }
 

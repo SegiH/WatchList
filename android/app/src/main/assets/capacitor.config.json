@@ -1,0 +1,6 @@
+{
+	"appId": "com.segihovav.watchlist",
+	"appName": "watchlist",
+	"webDir": "www",
+	"bundledWebRuntime": false
+}

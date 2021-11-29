@@ -34,12 +34,12 @@ export class AppComponent {
      }
 
      reloadData(event) {
-          if (event != null && event.target.id == "IMDBURLMissing") // || (this.currentRoute == "WatchListItems" && this.dataService.searchTerm != ''))
-               this.dataService.getWatchListItemsSubscription();
+          if (event != null && event.target.id == "IMDBURLMissing")
+               this.dataService.getWatchListItemsSubscription(true);
           else {
                this.dataService.getWatchListSubscription();
 
-               this.dataService.getWatchListItemsSubscription();
+               this.dataService.getWatchListItemsSubscription(true);
           }
      }
 

@@ -118,17 +118,17 @@
                                         </ng-template>
                                    </div>
 
-                                   <ion-select *ngIf="dataService.isEditing" placeholder='Name' name="title" [disabled]="currWatchList.Disabled" [(ngModel)]="currWatchList.WatchListItemID">
+                                   <ion-select *ngIf="dataService.isEditing" placeholder='Name' name="title" type="number" [disabled]="currWatchList.Disabled" [(ngModel)]="currWatchList.WatchListItemID">
                                         <ion-select-option *ngFor="let currItem of dataService.watchListNames;trackBy: dataService.trackByFn" [value]="currItem.WatchListItemID">{{currItem.WatchListItemName}}</ion-select-option>
                                    </ion-select>
                               </ion-col>
 
                               <ion-col [size]="this.dataService.getColumnSize('StartDate','WatchList')" [ngClass]="dataService.isMobilePlatform == true ? 'dateDataMobileColumn' : ''">
-                                   <ion-input [disabled]="currWatchList.Disabled" type="text" [(ngModel)]="currWatchList.StartDate" [value]="currWatchList.StartDate"></ion-input>
+                                   <ion-input [disabled]="currWatchList.Disabled" type="date" [(ngModel)]="currWatchList.StartDate" [value]="currWatchList.StartDate"></ion-input>
                               </ion-col>
 
                               <ion-col [size]="this.dataService.getColumnSize('EndDate','WatchList')" [ngClass]="dataService.isMobilePlatform == true ? 'dateDataMobileColumn' : ''">
-                                   <ion-input [disabled]="currWatchList.Disabled" type="text" [(ngModel)]="currWatchList.EndDate" [value]="currWatchList.EndDate"></ion-input>
+                                   <ion-input [disabled]="currWatchList.Disabled" type="date" [(ngModel)]="currWatchList.EndDate" [value]="currWatchList.EndDate"></ion-input>
                               </ion-col>
 
                               <ion-col [size]="this.dataService.getColumnSize('Source','WatchList')" [ngClass]="dataService.isMobilePlatform == true ? 'sourceDataMobileColumn' : ''">

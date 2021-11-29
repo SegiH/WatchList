@@ -136,7 +136,9 @@ export class DataService {
           this.backendURL = await this.storage.get('BackEndURL');
           
           if (this.backendURL != null && this.backendURL != "") {
-               this.getWatchListItemsSubscription();
+               this.getWatchListItemsSubscription(false);
+
+               this.getWatchListSubscription();
 
                this.getWatchListTypesSubscription();
 
@@ -200,10 +202,10 @@ export class DataService {
           });
      }
 
-     getWatchListItems() {
+     getWatchListItems(loadAllData: boolean) {
           let params = new HttpParams();
 
-          if (this.watchListNames != null) { // If watchListNames is not set get all data and ignore any filters that limit the data set returned
+          if (this.watchListNames != null && loadAllData != true) { // If watchListNames is not set get all data and ignore any filters that limit the data set returned
                if (this.recordLimit != null)
                     params = params.append('RecordLimit',this.recordLimit);
 
@@ -222,19 +224,17 @@ export class DataService {
           return this.processStep(`/GetWatchListItems`,params);
      }
      
-     getWatchListItemsSubscription() {
-          this.getWatchListItems().subscribe((response) => {
+     getWatchListItemsSubscription(loadAllData: boolean) {          
+          this.getWatchListItems(loadAllData).subscribe((response) => {
                if (response != null)
                     for (let i=0;i<response.length;i++)
                          response[i].Disabled = true;
 
                this.watchListItems=response;
 
-               if (this.watchListNames == null) {
+               if (this.watchListNames == null || loadAllData == true) {
                     this.watchListNames = response;
                }
-
-               this.getWatchListSubscription();
           },
           error => {
                this.handleError(error);
@@ -277,9 +277,7 @@ export class DataService {
 
      getWatchListTypesSubscription() {
           this.getWatchListTypes().subscribe((response) => {
-               this.watchListTypes=response;              
-
-               this.getWatchListItemsSubscription();
+               this.watchListTypes=response;
           },
           error => {
                this.handleError(error);
@@ -320,7 +318,7 @@ export class DataService {
                     error => {       
                     });
                } else if (component == "WatchListItems") {
-                    this.getWatchListItems().subscribe((response) => {
+                    this.getWatchListItems(true).subscribe((response) => {
                          if (response != null)
                               for (let i=0;i<response.length;i++)
                                    response[i].Disabled = true;
@@ -382,7 +380,7 @@ export class DataService {
                else
                     this.watchListItemsSortDirection = "ASC";
 
-               this.getWatchListItemsSubscription();
+               this.getWatchListItemsSubscription(false);
           }
      }
 

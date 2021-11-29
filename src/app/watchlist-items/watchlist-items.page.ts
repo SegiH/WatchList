@@ -43,7 +43,7 @@ export class WatchListItemsPage {
 
      deleteWatchListItemCallback(currWatchListItem) {
           this.dataService.deleteWatchListItem(currWatchListItem['WatchListItemID']).subscribe((response) => {
-               this.dataService.getWatchListItemsSubscription();
+               this.dataService.getWatchListItemsSubscription(true);
           },
           error => {
                console.log(`An error occurred deleting WatchList Item with ID ${currWatchListItem['WatchListID']}`)
@@ -83,8 +83,6 @@ export class WatchListItemsPage {
           currWatchListItem.ItemNotes=this.addItemNotes;
 
           this.dataService.addWatchListItem(currWatchListItem).subscribe((response) => {
-               this.dataService.getWatchListSubscription();
-
                this.addItemName = '';
                this.addItemType = '';
                this.addItemIMDBURL = '';
@@ -92,7 +90,7 @@ export class WatchListItemsPage {
 
                this.dataService.isAdding = false;
 
-               this.dataService.getWatchListItemsSubscription();
+               this.dataService.getWatchListItemsSubscription(true);
           },
           error => {
                this.dataService.handleError(error);
@@ -114,16 +112,16 @@ export class WatchListItemsPage {
                alert("Please enter the type");
                return;
           }
-
+          
           this.dataService.updateWatchListItem(currWatchListItem).subscribe((response) => {
                currWatchListItem[`Disabled`]=true;
 
                this.dataService.isEditing = false;
 
-               this.dataService.getWatchListItemsSubscription();
+               this.dataService.getWatchListItemsSubscription(true);
           },
           error => {
                this.dataService.handleError(error);
-          });          
+          });        
      }
 }

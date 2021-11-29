@@ -20,7 +20,7 @@
     "@angular/platform-browser-dynamic": "~12.1.1",
     "@angular/router": "~12.1.1",
     "@capacitor-community/app-icon": "^2.0.4",
-    "@capacitor/android": "3.3.0",
+    "@capacitor/android": "3.3.2",
     "@capacitor/app": "1.0.5",
     "@capacitor/core": "^3.2.5",
     "@capacitor/haptics": "1.1.2",

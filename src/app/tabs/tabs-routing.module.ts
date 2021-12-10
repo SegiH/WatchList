@@ -19,6 +19,11 @@ const routes: Routes = [
                canActivate: [AuthGuard]
           },
           {
+               path: 'watchlist-queue',
+               loadChildren: () => import('../watchlist-queue/watchlistqueue.module').then(m => m.WatchListQueuePageModule),
+               canActivate: [AuthGuard]
+          },
+          {
                path: 'watchlist-stats',
                loadChildren: () => import('../watchlist-stats/watchlist-stats.modules').then(m => m.WatchListStatsPageModule),
                canActivate: [AuthGuard]

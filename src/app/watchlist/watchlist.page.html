@@ -53,7 +53,7 @@
                                    <ion-label>Notes</ion-label>
                               </ion-col>
 
-                              <ion-col [size]="this.dataService.getColumnSize('Notes','Action')"> <!-- Action column -->
+                              <ion-col [size]="this.dataService.getColumnSize('Action','WatchList')"> <!-- Action column -->
                               </ion-col>
                          </ion-row>
                     </ion-grid>               
@@ -92,8 +92,8 @@
                                    <ion-input type="text" [(ngModel)]="addItemNotes"></ion-input>
                               </ion-col>
 
-                              <ion-col [size]="this.dataService.getColumnSize('Notes','Action')" class="actionColumn">
-                                   <ion-icon class="saveNewWatchList" name="save-outline" (click)="saveNewWatchList()"></ion-icon>
+                              <ion-col [size]="this.dataService.getColumnSize('Action','WatchList')" class="actionColumn">
+                                   <ion-icon class="editSave" name="save-outline" (click)="saveNewWatchList()"></ion-icon>
                                    <ion-icon name="close-circle-outline" class="cancelButton" (click)="cancelAddWatchList()"></ion-icon>
                               </ion-col>
                          </ion-row>
@@ -145,7 +145,7 @@
                                    <ion-input [disabled]="currWatchList.Disabled" type="text" [(ngModel)]="currWatchList.Notes"></ion-input>
                               </ion-col>
 
-                              <ion-col [size]="this.dataService.getColumnSize('Notes','Action')" class="actionColumn">
+                              <ion-col [size]="this.dataService.getColumnSize('Action','WatchList')" class="actionColumn">
                                    <ion-icon *ngIf="currWatchList.Disabled && !dataService.isAdding && !dataService.isEditing" class="editSave" name="create-outline" (click)="editWatchList(currWatchList)"></ion-icon>
                                    <ion-icon *ngIf="currWatchList.Disabled && !dataService.isAdding && !dataService.isEditing" name="trash-outline" (click)="deleteWatchList(currWatchList)"></ion-icon>                                   
                                    <ion-icon *ngIf="!currWatchList.Disabled" class="editSave" name="save-outline" (click)="saveWatchList(currWatchList)"></ion-icon>

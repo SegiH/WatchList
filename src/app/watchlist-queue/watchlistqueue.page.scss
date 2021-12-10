@@ -1,0 +1,103 @@
+.actionColumn {
+    display: inline-flex;
+}
+
+.addWatchListQueue {
+    width: 45px !important;
+    height: 45px !important;
+}
+
+.editSave {
+    margin-right: 10px;
+}
+
+.ion-list-parent {
+    width: 100%;
+    overflow: auto;
+}
+
+ion-card {
+    display: flex;
+    width: 100%;
+}
+
+ion-col.IDColumn {
+    display: inline-flex;
+    max-width: 105px !important;
+}
+
+ion-col.nameLabelColumn {
+    display: inline-flex;
+}
+
+ion-col.nameLabelMobileColumn {
+    display: inline-flex;
+    min-width: 150px;
+}
+
+ion-col.nameDataMobileColumn {
+    display: inline-flex;
+    min-width: 150px;
+}
+
+ion-col.notesLabelMobileColumn {
+    width: 200px !important;
+    max-width: 200px !important;
+}
+
+ion-col.notesDataMobileColumn {
+    width: 200px !important;
+    max-width: 200px !important;
+}
+
+ion-grid > ion-row > ion-col > ion-icon {
+    width: 35px;
+    height: 35px;
+}
+
+ion-grid > ion-row > ion-col > ion-icon.nameArrowIcon, 
+ion-grid > ion-row > ion-col > ion-icon.IDArrowIcon {
+     width: 50px;
+     position: relative;
+     vertical-align: bottom;
+}
+
+ion-grid > ion-row > ion-col > ion-icon.active {
+    color: darkblue
+}
+
+ion-content {
+    overflow: auto;
+}
+
+ion-icon {
+    width: 24px;
+    height: 24px;
+}
+
+ion-input {
+    border-style: dashed;
+    border-width: 1px;
+}
+
+ion-label {
+    margin-top: 10px;
+}
+
+ion-list.md.list-md {
+    min-width: 1000px;
+    max-height: 500px;
+    overflow: auto;
+}
+
+ion-select {
+    border-style: dashed;
+    border-width: 1px;
+    max-width: 100%;
+}
+
+ion-content {
+    ion-item {
+      pointer-events: auto;
+    }
+}

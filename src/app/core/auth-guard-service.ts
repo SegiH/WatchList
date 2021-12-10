@@ -10,5 +10,6 @@ export class AuthGuardService implements CanActivate {  constructor(public dataS
           alert("Please save before switching tabs");
           return false;
      }
+     
      return true;
-  }}
+}}

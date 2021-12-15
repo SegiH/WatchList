@@ -1,0 +1,42 @@
+<ion-header [translucent]="true">
+    <ion-toolbar>
+         <ion-buttons slot="start"> 
+              <ion-menu-button></ion-menu-button>                
+         </ion-buttons>            
+         <ion-title>IMDB Search</ion-title>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content>
+    <ion-grid>
+        <ion-row>
+             <ion-col size="6">
+                <ion-input type="text" [(ngModel)]="searchTerm" (keyup)="handleKeyUp($event)"></ion-input>
+             </ion-col>
+
+             <ion-col size="1">
+                <ion-icon name="search-outline" (click)="searchIMDB()"></ion-icon>
+             </ion-col>
+        </ion-row>
+   </ion-grid>
+
+   <div class="ion-list-parent">
+      <ion-list>
+         <ion-item *ngFor="let currSearchResult of searchResults;let index=index;"> <!-- Table headers -->
+            <ion-grid>
+                 <ion-row>
+                      <ion-col size="12">                        
+                        <ion-label><ion-icon name="add-outline" (click)="addSearchResult(currSearchResult,index)"></ion-icon> {{ currSearchResult['Title'] }} ( {{ currSearchResult['Year'] }} )</ion-label> 
+                      </ion-col>
+
+                      <ion-col size="3">
+                        <ion-img [src]="currSearchResult.Poster"></ion-img>
+                      </ion-col>
+
+                      <ion-col size="6"></ion-col>
+                 </ion-row>
+            </ion-grid>
+         </ion-item>
+      </ion-list>
+   </div>
+</ion-content>

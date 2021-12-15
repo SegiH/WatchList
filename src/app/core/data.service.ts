@@ -13,6 +13,7 @@ import { Storage } from '@ionic/storage';
 export class DataService {
      auth_key=``;
      backendURL=``;
+     IMDBSearchEnabled = false;
      imdb_url_missing = false;
      incompleteFilter = true;
      isAdding = false;
@@ -26,7 +27,7 @@ export class DataService {
      watchListItems: any;
      watchListNames: any; // This contains a full, unfiltered copy of watchListItems that is used for the names
      watchListQueue: any;
-     watchListSources: [];     
+     watchListSources: [];
      watchListTypes: [];
 
      private readonly watchListColumnSizes = {
@@ -68,8 +69,8 @@ export class DataService {
           this.platform = platform;
 
           if (this.platform.is('android') || this.platform.is('ios'))
-               this.isMobilePlatform=true;
-          
+               this.isMobilePlatform=true;               
+
           this.getAuthKey();
      }
 
@@ -164,7 +165,7 @@ export class DataService {
 
           if (this.auth_key == null || this.auth_key == '')
                alert("Please set the Auth Key");
-          else
+          else 
                this.getBackendURL(); // Get Saved backend URL;
      }
 
@@ -323,12 +324,12 @@ export class DataService {
      }
 
      getWatchListSources() {
-          return this.processStep(`/GetWatchListSources`,null);          
+          return this.processStep(`/GetWatchListSources`,null);
      }
 
      getWatchListSourcesSubscription() {
           this.getWatchListSources().subscribe((response) => {
-               this.watchListSources=response;              
+               this.watchListSources=response;
           },
           error => {
                this.handleError(error);
@@ -336,7 +337,7 @@ export class DataService {
      }
 
      getWatchListTVStats() {
-          return this.processStep(`/GetWatchListTVStats`,null);          
+          return this.processStep(`/GetWatchListTVStats`,null);
      }
 
      getWatchListTypes() {
@@ -364,6 +365,10 @@ export class DataService {
           }
 
           return throwError(error || 'Node.js server error');
+     }
+
+     isIMDBSearchEnabled() {
+          return this.processStep(`/IsIMDBSearchEnabled`,null);
      }
 
      processStep(path: string, params: HttpParams): Observable<any> {
@@ -407,6 +412,16 @@ export class DataService {
                } else if (component == "WatchListQueueItems") {
                }
           }, 2000);
+     }
+
+     searchIMDB(searchTerm: string) {
+          let params = new HttpParams();
+
+          if (searchTerm !== "") {
+               params = params.append('SearchTerm',searchTerm);
+          }
+
+          return this.processStep(`/SearchIMDB`,params);
      }
 
      async setAuthKey() {

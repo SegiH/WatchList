@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { DataService } from '../core/data.service';
 
 @Component({
      selector: 'app-tabs',
@@ -7,5 +8,14 @@ import { Component } from '@angular/core';
 })
 
 export class TabsPage {
-     constructor() {}
+     IMDBSearchEnabled = false;
+
+     constructor(public dataService: DataService) {
+          this.dataService.isIMDBSearchEnabled().subscribe((response) => {
+               this.IMDBSearchEnabled=response;
+          },
+          error => {
+               alert(`The error ${error.error.toString()} occurred calling isIMDBSearchEnabled() in TabsPage`)
+          });
+      }
 }

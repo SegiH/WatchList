@@ -1,0 +1,36 @@
+
+.ion-list-parent {
+    width: 100%;
+    overflow: auto;
+}
+
+ion-col {
+    vertical-align: top;
+}
+
+ion-content {
+    overflow: auto;
+}
+
+ion-icon {
+    width: 35px;
+    height: 35px;
+}
+
+ion-img {
+    width: 200px;
+    height: 200px;
+}
+
+ion-input {
+    border-style: dashed;
+    border-width: 1px;
+}
+
+ion-label {
+    font-size: 28px;
+}
+
+ion-label.labelMobile {
+    font-size: 18px;
+}

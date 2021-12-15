@@ -1,7 +1,8 @@
 import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
+import { RouterModule, Router, Routes } from '@angular/router';
 import { TabsPage } from './tabs.page';
 import { AuthGuardService as AuthGuard } from '../core/auth-guard-service';
+import { DataService } from '../core/data.service';
 
 const routes: Routes = [
      {
@@ -21,6 +22,11 @@ const routes: Routes = [
           {
                path: 'watchlist-queue',
                loadChildren: () => import('../watchlist-queue/watchlistqueue.module').then(m => m.WatchListQueuePageModule),
+               canActivate: [AuthGuard]
+          },
+          {
+               path: 'imdb-search', // The route settings are always here but this route won't get activated if IMDB API key is not provided because the IMDB Search tab gets hidden when API key is not present
+               loadChildren: () => import('../imdb-search/imdb-search.module').then(m => m.IMDBSearchPageModule),
                canActivate: [AuthGuard]
           },
           {

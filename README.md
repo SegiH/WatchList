@@ -1,7 +1,9 @@
 # WatchList
-WatcHList application that lets you track movies and TV
+WatchList application that lets you track movies and TV
 
 Requirements: WatchList-Backend service (See my other repo)
+
+This app has the ability to search IMDB for a movie or TV show within the API if you provide a RapidAPI IMDB key on the backend service. See the README on my WatchList-Backend repo for details.
 
 1. npm install
 1. ionic build

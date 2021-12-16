@@ -11,6 +11,14 @@ export class TabsPage {
      IMDBSearchEnabled = false;
 
      constructor(public dataService: DataService) {
+          if (this.dataService.backendURL != '') {
+               this.getBackEndURL();
+          } else {
+               setTimeout(this.getBackEndURL, 5000);
+          }
+      }
+
+      getBackEndURL() {
           this.dataService.isIMDBSearchEnabled().subscribe((response) => {
                this.IMDBSearchEnabled=response;
           },

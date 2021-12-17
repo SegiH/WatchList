@@ -4,7 +4,7 @@
     </ion-toolbar>
 </ion-header>
 
-<ion-content>
+<ion-content *ngIf="dataService.isBackendURLSet()">
      <h2>Top 10 most frequently watched Movies</h2>
 
      <ion-list *ngFor="let currentMovie of watchListMovieStats">

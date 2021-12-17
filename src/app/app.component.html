@@ -8,33 +8,33 @@
           <ion-content>
                <ion-grid>
                     <ion-row>
-                         <ion-col size="12">
+                         <ion-col size="12" *ngIf="dataService.isBackendURLSet()">
                               <ion-searchbar (ionChange)="reloadData($event)" [disabled]="dataService.isAdding || dataService.isEditing" [(ngModel)]="dataService.searchTerm"></ion-searchbar>
                          </ion-col>
 
-                         <ion-col size="3" id="rowsLabel">
+                         <ion-col size="3" id="rowsLabel" *ngIf="dataService.isBackendURLSet()">
                               <ion-label>Rows</ion-label>
                          </ion-col>
 
-                         <ion-col size="9">
+                         <ion-col size="9" *ngIf="dataService.isBackendURLSet()">
                               <ion-select placeholder='Record Limit' name="recordLimit" [(ngModel)]="dataService.recordLimit" (ionChange)="reloadData($event)">
                                    <ion-select-option *ngFor="let currItem of recordLimitOptions;trackBy: trackByFn" [value]="currItem">{{currItem}}</ion-select-option>
                               </ion-select>          
                          </ion-col>
 
-                         <ion-col size="12">
+                         <ion-col size="12" *ngIf="dataService.isBackendURLSet()">
                               <ion-item>Mobile<ion-toggle [(ngModel)]="dataService.isMobilePlatform" color="primary"></ion-toggle></ion-item>
                          </ion-col>
 
-                         <ion-col size="12" *ngIf="currentRoute=='WatchList'">
+                         <ion-col size="12" *ngIf="currentRoute=='WatchList' && dataService.isBackendURLSet()">
                               <ion-item>Incomplete<ion-toggle [(ngModel)]="dataService.incompleteFilter" color="primary" (ionChange)="reloadData($event)"></ion-toggle></ion-item>
                          </ion-col>
 
-                         <ion-col size="12" *ngIf="currentRoute=='WatchListItems'">
+                         <ion-col size="12" *ngIf="currentRoute=='WatchListItems' && dataService.isBackendURLSet()">
                               <ion-item>IMDB URL Missing<ion-toggle id="IMDBURLMissing" [(ngModel)]="dataService.imdb_url_missing" color="primary" (ionChange)="reloadData($event)"></ion-toggle></ion-item>
                          </ion-col>
 
-                         <ion-col size="9" *ngIf="currentRoute=='WatchList'">
+                         <ion-col size="9" *ngIf="currentRoute=='WatchList' && dataService.isBackendURLSet()">
                               <ion-select placeholder='Source' name="source" [(ngModel)]="dataService.sourceFilter" (ionChange)="reloadData($event)">
                                    <ion-select-option value="All">All</ion-select-option>
                                    <ion-select-option *ngFor="let currItem of dataService.watchListSources;trackBy: trackByFn" [value]="currItem['WatchListSourceID']" (ionChange)="reloadData($event)">{{currItem['WatchListSourceName']}}</ion-select-option>
@@ -45,7 +45,7 @@
                               <ion-input id="backendURLInput" type="text" placeholder="Backend URL" [(ngModel)]="dataService.backendURL" [value]="dataService.backendURL" (ionBlur)="dataService.setBackendURL()"></ion-input>
                          </ion-col>
 
-                         <ion-col size="12">
+                         <ion-col size="12" *ngIf="dataService.isBackendURLSet()">
                               <ion-input id="authKeyInput" type="text" placeholder="Auth Key" [(ngModel)]="dataService.auth_key" [value]="dataService.auth_key" (ionBlur)="dataService.setAuthKey()"></ion-input>
                          </ion-col>
                     </ion-row>

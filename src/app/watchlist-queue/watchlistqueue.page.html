@@ -8,7 +8,7 @@
      </ion-toolbar>
 </ion-header>
 
-<ion-content>
+<ion-content *ngIf="dataService.isBackendURLSet()">
      <ion-refresher slot="fixed" (ionRefresh)="dataService.pullToRefresh($event,'WatchListQueueItems')">
           <ion-refresher-content></ion-refresher-content>
      </ion-refresher>
@@ -50,7 +50,7 @@
                               <ion-col [size]="this.dataService.getColumnSize('ID','WatchListQueueItems')" class="IDColumn"></ion-col>
 
                               <ion-col [size]="this.dataService.getColumnSize('Name','WatchListQueueItems')" [ngClass]="dataService.isMobilePlatform == true ? 'nameDataMobileColumn' : ''">
-                                   <ion-select placeholder='Name' name="title" [(ngModel)]="addQueueItemName">
+                                   <ion-select placeholder='Name' name="title" [(ngModel)]="addQueueItemID">
                                         <ion-select-option *ngFor="let currItem of dataService.watchListNames;trackBy: dataService.trackByFn" [value]="currItem.WatchListItemID">{{currItem.WatchListItemName}}</ion-select-option>
                                    </ion-select>
                               </ion-col>
@@ -95,6 +95,7 @@
                               </ion-col>
  
                               <ion-col [size]="this.dataService.getColumnSize('Action','WatchListQueueItems')" class="actionColumn">
+                                   <span title="Add To WatchList" *ngIf="!dataService.isAdding && !dataService.isEditing" (click)="addToWatchList(currWatchListQueue)"><ion-icon style="pointer-events:none" class="addWatchListQueue" name="add-outline"></ion-icon></span>
                                    <ion-icon *ngIf="currWatchListQueue.Disabled && !dataService.isAdding && !dataService.isEditing" class="editSave" name="create-outline" (click)="editWatchListQueueItem(currWatchListQueue)"></ion-icon>
                                    <ion-icon *ngIf="currWatchListQueue.Disabled && !dataService.isAdding && !dataService.isEditing" name="trash-outline" (click)="deleteWatchListQueueItem(currWatchListQueue)"></ion-icon>                                   
                                    <ion-icon *ngIf="!currWatchListQueue.Disabled" class="editSave" name="save-outline" (click)="saveWatchListQueueItem(currWatchListQueue)"></ion-icon>

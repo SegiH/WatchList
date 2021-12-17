@@ -1,3 +1,4 @@
+import { DatePipe } from '@angular/common';
 import { Component } from '@angular/core';
 import { DataService } from '../core/data.service';
 
@@ -18,6 +19,44 @@ export class WatchListPage {
 
      addWatchList() {
           this.dataService.isAdding=true;
+     }
+
+     // Add Queue item to WatchList Queue and remove from WatchList
+     addToWatchListQueue(currWatchList) {
+          const currWatchListItem: any=[];
+          currWatchListItem.WatchListItemID=currWatchList.WatchListItemID;
+
+          const d=new Date();
+          const pipe = new DatePipe('en-US');
+          const now = Date.now();
+          const formattedDate = pipe.transform(now, 'shortDate');
+          
+          currWatchListItem.StartDate=formattedDate;
+          currWatchListItem.WatchListID=currWatchList.WatchListID; // Needed so we can delete the watchlist item later
+
+          if (currWatchList.Notes != null && currWatchList.Notes != '')
+               currWatchListItem.Notes=currWatchList.Notes;
+          else
+               currWatchListItem.Notes="Added from WatchList";
+
+          this.dataService.confirmDialog(currWatchListItem,"Are you sure that you want to move this item to the WatchList Queue?",this.addToWatchListQueueCallback.bind(this))
+     }
+
+     addToWatchListQueueCallback(currWatchListItem) {
+          this.dataService.isAdding=true;
+
+          this.dataService.addWatchListQueueItem(currWatchListItem).subscribe((response) => {
+               this.deleteWatchListCallback(currWatchListItem);
+
+               this.dataService.isAdding=false;
+
+               this.dataService.getWatchListSubscription();
+
+               this.dataService.getWatchListQueueSubscription();
+          },
+          error => {
+               this.dataService.handleError(error);
+          });
      }
 
      cancelAddWatchList() {
@@ -41,7 +80,7 @@ export class WatchListPage {
      }
 
      deleteWatchList(currWatchList: object) {
-          this.dataService.confirmDialog(currWatchList,"Are you sure that you want to delete this item ?",this.deleteWatchListCallback)
+          this.dataService.confirmDialog(currWatchList,"Are you sure that you want to delete this item ?",this.deleteWatchListCallback.bind(this))
      }
 
      deleteWatchListCallback(currWatchList: object) {

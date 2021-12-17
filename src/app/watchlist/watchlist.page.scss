@@ -2,11 +2,6 @@
      display: inline-flex;
 }
 
-.addWatchList {
-     width: 45px !important;
-     height: 45px !important;
-}
-
 .sourceLabelMobileColumn {
      display: inline-flex;
 }
@@ -34,8 +29,8 @@ ion-content {
 }
 
 ion-icon {
-     width: 24px;
-     height: 24px;
+     width: 45px;
+     height: 45px;
 }
 
 ion-input {
@@ -99,11 +94,6 @@ ion-col.notesLabelMobileColumn {
 ion-col.notesDataMobileColumn {
      width: 200px !important;
      max-width: 200px !important;
-}
-
-ion-grid > ion-row > ion-col > ion-icon {
-     width: 35px;
-     height: 35px;
 }
 
 ion-grid > ion-row > ion-col > ion-label.startDateLabel {

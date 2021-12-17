@@ -2,11 +2,6 @@
     display: inline-flex;
 }
 
-.addWatchListQueue {
-    width: 45px !important;
-    height: 45px !important;
-}
-
 .editSave {
     margin-right: 10px;
 }
@@ -50,11 +45,6 @@ ion-col.notesDataMobileColumn {
     max-width: 200px !important;
 }
 
-ion-grid > ion-row > ion-col > ion-icon {
-    width: 35px;
-    height: 35px;
-}
-
 ion-grid > ion-row > ion-col > ion-icon.nameArrowIcon, 
 ion-grid > ion-row > ion-col > ion-icon.IDArrowIcon {
      width: 50px;
@@ -71,8 +61,8 @@ ion-content {
 }
 
 ion-icon {
-    width: 24px;
-    height: 24px;
+    width: 45px !important;
+    height: 45px !important;
 }
 
 ion-input {

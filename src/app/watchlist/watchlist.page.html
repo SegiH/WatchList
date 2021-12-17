@@ -7,7 +7,7 @@
      </ion-toolbar>
 </ion-header>
 
-<ion-content>
+<ion-content *ngIf="dataService.isBackendURLSet()">
      <ion-refresher slot="fixed" (ionRefresh)="dataService.pullToRefresh($event,'WatchList')">
           <ion-refresher-content></ion-refresher-content>
      </ion-refresher>
@@ -15,7 +15,7 @@
      <ion-grid>
           <ion-row>
                <ion-col size="1">
-                    <ion-icon *ngIf="!dataService.isAdding && !dataService.isEditing" class="addWatchList" name="add-outline" (click)="addWatchList()"></ion-icon>
+                    <ion-icon *ngIf="!dataService.isAdding && !dataService.isEditing" name="add-outline" (click)="addWatchList()"></ion-icon>
                </ion-col>               
           </ion-row>
      </ion-grid>
@@ -146,6 +146,7 @@
                               </ion-col>
 
                               <ion-col [size]="this.dataService.getColumnSize('Action','WatchList')" class="actionColumn">
+                                   <ion-icon *ngIf="!dataService.isAdding && !dataService.isEditing" (click)="addToWatchListQueue(currWatchList)" name="add-outline"></ion-icon>
                                    <ion-icon *ngIf="currWatchList.Disabled && !dataService.isAdding && !dataService.isEditing" class="editSave" name="create-outline" (click)="editWatchList(currWatchList)"></ion-icon>
                                    <ion-icon *ngIf="currWatchList.Disabled && !dataService.isAdding && !dataService.isEditing" name="trash-outline" (click)="deleteWatchList(currWatchList)"></ion-icon>                                   
                                    <ion-icon *ngIf="!currWatchList.Disabled" class="editSave" name="save-outline" (click)="saveWatchList(currWatchList)"></ion-icon>

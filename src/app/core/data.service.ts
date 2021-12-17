@@ -79,16 +79,16 @@ export class DataService {
           params = params.append('WatchListItemID',currWatchList['WatchListItemID']);
           params = params.append('StartDate',currWatchList['StartDate']);
           
-          if (currWatchList['EndDate'] != '')
+          if (currWatchList['EndDate'] != null && currWatchList['EndDate'] != '')
                params = params.append('EndDate',currWatchList['EndDate']);
 
-          if (currWatchList['WatchListSourceID'] != '')
+          if (currWatchList['WatchListSourceID'] != null && currWatchList['WatchListSourceID'] != '')
                params = params.append('WatchListSourceID',currWatchList['WatchListSourceID']);
 
-          if (currWatchList['Season'] != '')
+          if (currWatchList['Season'] != null && currWatchList['Season'] != '')
                params = params.append('Season',currWatchList['Season']);
 
-          if (currWatchList['Notes'] != '')
+          if (currWatchList['Notes'] != null && currWatchList['Notes'] != '')
                params = params.append('Notes',currWatchList['Notes']);
 
           return this.processStep(`/AddWatchList`,params);
@@ -112,7 +112,7 @@ export class DataService {
           let params = new HttpParams();     
           params = params.append('WatchListItemID',currWatchList['WatchListItemID']);
 
-          if (currWatchList['Notes'] != '')
+          if (currWatchList['Notes'] != null && currWatchList['Notes'] != '')
                params = params.append('Notes',currWatchList['Notes']);
 
           return this.processStep(`/AddWatchListQueueItem`,params);
@@ -213,7 +213,7 @@ export class DataService {
      getWatchList() {
           let params = new HttpParams();
 
-          if (this.searchTerm !== "") {
+          if (this.searchTerm != null && this.searchTerm !== "") {
                params = params.append('SearchTerm',this.searchTerm);
           }
 
@@ -255,7 +255,7 @@ export class DataService {
                if (this.recordLimit != null)
                     params = params.append('RecordLimit',this.recordLimit);
 
-               if (this.searchTerm !== '')
+               if (this.searchTerm != null && this.searchTerm !== '')
                     params = params.append('SearchTerm',this.searchTerm);
           
                if (this.imdb_url_missing == true)
@@ -303,7 +303,7 @@ export class DataService {
      getWatchListQueue() {
           let params = new HttpParams();
 
-          if (this.searchTerm !== "") {
+          if (this.searchTerm != null && this.searchTerm !== "") {
                params = params.append('SearchTerm',this.searchTerm);
           }
 
@@ -365,6 +365,10 @@ export class DataService {
           }
 
           return throwError(error || 'Node.js server error');
+     }
+
+     isBackendURLSet() {
+          return (this.backendURL != null && this.backendURL != '' ? true : false)
      }
 
      isIMDBSearchEnabled() {
@@ -504,13 +508,13 @@ export class DataService {
           params = params.append('WatchListItemID',currWatchList['WatchListItemID']);
           params = params.append('StartDate',currWatchList['StartDate']);
 
-          if (currWatchList['EndDate'] != '')
+          if (currWatchList['EndDate'] != null && currWatchList['EndDate'] != '')
                params = params.append('EndDate',currWatchList['EndDate']);
 
           if (currWatchList['Season'] != null)
                params = params.append('Season',currWatchList['Season']);
 
-          if (currWatchList['WatchListSourceID'] != '')
+          if (currWatchList['WatchListSourceID'] !=  null && currWatchList['WatchListSourceID'] != '')
                params = params.append('WatchListSourceID',currWatchList['WatchListSourceID']);
 
           if (currWatchList['Notes'] != null && currWatchList['Notes'] != '')

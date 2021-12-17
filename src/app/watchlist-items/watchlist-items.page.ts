@@ -38,7 +38,7 @@ export class WatchListItemsPage {
      }
 
      deleteWatchListItem(currWatchListItem: object) {
-          this.dataService.confirmDialog(currWatchListItem,"Are you sure that you want to delete this item ?",this.deleteWatchListItemCallback)
+          this.dataService.confirmDialog(currWatchListItem,"Are you sure that you want to delete this item ?",this.deleteWatchListItemCallback.bind(this))
      }
 
      deleteWatchListItemCallback(currWatchListItem) {

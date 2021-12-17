@@ -1,3 +1,4 @@
+import { DatePipe } from '@angular/common';
 import { Component } from '@angular/core';
 import { DataService } from '../core/data.service';
 
@@ -7,17 +8,54 @@ import { DataService } from '../core/data.service';
      styleUrls: ['watchlistqueue.page.scss']
 })
 export class WatchListQueuePage {
-     addQueueItemName = '';     
+     addQueueItemID = '';     
      addQueueItemNotes= '';
 
      constructor(public dataService: DataService) { }
+
+     // Add Queue item to WatchList and remove from WatchList Queue
+     addToWatchList(currWatchListQueue) {
+          const currWatchListItem: any=[];
+          currWatchListItem.WatchListItemID=currWatchListQueue.WatchListItemID;
+
+          const d=new Date();
+          const pipe = new DatePipe('en-US');
+          const now = Date.now();
+          const formattedDate = pipe.transform(now, 'shortDate');
+          
+          currWatchListItem.StartDate=formattedDate;
+          currWatchListItem.WatchListQueueItemID=currWatchListQueue.WatchListQueueItemID; // Needed so we can delete the queue item later
+          
+          if (currWatchListQueue.Notes != null && currWatchListQueue.Notes != '')
+               currWatchListItem.Notes=currWatchListQueue.Notes;
+          else
+               currWatchListItem.Notes="Added from queue";
+
+          this.dataService.confirmDialog(currWatchListItem,"Are you sure that you want to move this item to the WatchList ?",this.addToWatchListCallback.bind(this))
+     }
+
+     addToWatchListCallback(currWatchListItem) {
+          this.dataService.isAdding=true;
+
+          this.dataService.addWatchList(currWatchListItem).subscribe((response) => {
+               
+               this.deleteWatchListQueueItemCallback(currWatchListItem);
+
+               this.dataService.isAdding=false;
+
+               this.dataService.getWatchListSubscription();
+          },
+          error => {
+               this.dataService.handleError(error);
+          });
+     }
 
      addWatchListQueueItem() {
           this.dataService.isAdding=true;
      }
 
      cancelAddWatchListQueueItem() {
-          this.addQueueItemName = '';
+          this.addQueueItemID = '';
           this.addQueueItemNotes= '';
 
           this.dataService.isAdding=false;
@@ -58,17 +96,17 @@ export class WatchListQueuePage {
      }
 
      saveNewWatchListQueueItem() {
-          if (this.addQueueItemName === ``) {
+          if (this.addQueueItemID === ``) {
                alert(`Please select the name`);
                return;
           }
 
           const currWatchListQueueItem: any=[];
-          currWatchListQueueItem.WatchListItemID=this.addQueueItemName;
+          currWatchListQueueItem.WatchListItemID=this.addQueueItemID;
           currWatchListQueueItem.Notes=this.addQueueItemNotes;
 
           this.dataService.addWatchListQueueItem(currWatchListQueueItem).subscribe((response) => {
-               this.addQueueItemName = '';
+               this.addQueueItemID = '';
                this.addQueueItemNotes= '';
 
                this.dataService.isAdding=false;

@@ -43,7 +43,11 @@ export class IMDBSearchPage {
      searchIMDB() {
           if (this.searchTerm != '' && this.searchTerm != null) {
                this.dataService.searchIMDB(this.searchTerm).subscribe((response) => {
-                    this.searchResults=Object.entries(response)[0][1]; // This contains the actual search results
+                    if (response.Response == "False") {
+                         alert(`${response.Error}`)
+                    } else {
+                         this.searchResults=Object.entries(response)[0][1]; // This contains the actual search results
+                    }
                },
                error => {
                     console.log(`An error occurred searching IMDB`)

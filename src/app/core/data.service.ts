@@ -18,6 +18,7 @@ export class DataService {
      incompleteFilter = true;
      isAdding = false;
      isEditing = false;
+     isIMDBSearchEnabled = false;
      isMobilePlatform = false;
      platform: Platform;
      recordLimit = 10;
@@ -175,6 +176,8 @@ export class DataService {
           this.backendURL = await this.storage.get('BackEndURL');
           
           if (this.backendURL != null && this.backendURL != "") {
+               this.getIMDBSearchEnabledSubscription();
+
                this.getWatchListItemsSubscription(false);
 
                this.getWatchListSubscription();
@@ -365,14 +368,23 @@ export class DataService {
           }
 
           return throwError(error || 'Node.js server error');
-     }
+     }     
 
      isBackendURLSet() {
           return (this.backendURL != null && this.backendURL != '' ? true : false)
      }
 
-     isIMDBSearchEnabled() {
+     getIMDBSearchEnabled() {
           return this.processStep(`/IsIMDBSearchEnabled`,null);
+     }     
+
+     getIMDBSearchEnabledSubscription() {
+          this.getIMDBSearchEnabled().subscribe((response) => {
+               this.isIMDBSearchEnabled=response;
+          },
+          error => {
+               this.handleError(error);
+          });
      }
 
      processStep(path: string, params: HttpParams): Observable<any> {

@@ -15,7 +15,7 @@
                <ion-label>Watchlist Queue</ion-label>
           </ion-tab-button>
 
-          <ion-tab-button tab="imdb-search" *ngIf="IMDBSearchEnabled != false">
+          <ion-tab-button tab="imdb-search" *ngIf="dataService.isIMDBSearchEnabled">
                <!-- <ion-icon name="ellipse"></ion-icon> -->
                <ion-label>IMDB Search</ion-label>
           </ion-tab-button>

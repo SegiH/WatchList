@@ -7,7 +7,7 @@ This app has the ability to search IMDB for a movie or TV show within the API if
 
 1. npm install
 1. ionic build
-1. Move contents of www to web server
+1. Move contents of build to web server
 1. ionic cap add ios (optional if you want to build for ios)
 1. ionic cap sync
 1. Open Android project in Android Studio or iOS project in XCode

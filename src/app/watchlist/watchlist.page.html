@@ -7,7 +7,7 @@
      </ion-toolbar>
 </ion-header>
 
-<ion-content *ngIf="dataService.isBackendURLSet()">
+<ion-content *ngIf="dataService.isBackendURLSet() && dataService.isAuthKeySet()">
      <ion-refresher slot="fixed" (ionRefresh)="dataService.pullToRefresh($event,'WatchList')">
           <ion-refresher-content></ion-refresher-content>
      </ion-refresher>
@@ -69,7 +69,7 @@
                                         <ion-select-option *ngFor="let currItem of dataService.watchListNames;trackBy: dataService.trackByFn" [value]="currItem.WatchListItemID">{{currItem.WatchListItemName}}</ion-select-option>
                                    </ion-select>
                               </ion-col>
-                    
+
                               <ion-col [size]="this.dataService.getColumnSize('StartDate','WatchList')" [ngClass]="dataService.isMobilePlatform == true ? 'dateDataMobileColumnAdd' : ''">
                                    <ion-input type="date" [(ngModel)]="addItemStartDate" [value]="addItemStartDate" ></ion-input>
                               </ion-col>
@@ -85,7 +85,7 @@
                               </ion-col>
 
                               <ion-col [size]="this.dataService.getColumnSize('Season','WatchList')" [ngClass]="dataService.isMobilePlatform == true ? 'seasonNumDataMobileColumn' : ''">
-                                   <ion-input type="text" [(ngModel)]="addSeason"></ion-input>
+                                   <ion-input *ngIf="dataService.getWatchListTypeName(addItemName) == 'TV'" type="text" [(ngModel)]="addSeason"></ion-input>
                               </ion-col>
 
                               <ion-col [size]="this.dataService.getColumnSize('Notes','WatchList')" [ngClass]="dataService.isMobilePlatform == true ? 'notesDataMobileColumn' : ''">
@@ -138,7 +138,7 @@
                               </ion-col>
 
                               <ion-col [size]="this.dataService.getColumnSize('Season','WatchList')" [ngClass]="dataService.isMobilePlatform == true ? 'seasonNumDataMobileColumn' : ''">
-                                   <ion-input [disabled]="currWatchList.Disabled" maxlength=3 type="text" [(ngModel)]="currWatchList.Season"></ion-input>
+                                   <ion-input *ngIf="dataService.getWatchListTypeName(currWatchList.WatchListItemID) == 'TV'" [disabled]="currWatchList.Disabled" maxlength=3 type="text" [(ngModel)]="currWatchList.Season"></ion-input>
                               </ion-col>
 
                               <ion-col [size]="this.dataService.getColumnSize('Notes','WatchList')" [ngClass]="dataService.isMobilePlatform == true ? 'notesDataMobileColumn' : ''">

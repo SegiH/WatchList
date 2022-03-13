@@ -34,8 +34,8 @@ export class DataService {
      private readonly watchListColumnSizes = {
           'ID': 1,
           'Name': 1,
-          'StartDate': 1,
-          'EndDate': 1,
+          'StartDate': 2,
+          'EndDate': 2,
           'Source' : 2,
           'Season' : 1,
           'Notes' : 2,
@@ -46,7 +46,7 @@ export class DataService {
           'ID': 2,
           'Name': 1,
           'Type': 2,
-          'IMDBURL': 2,
+          'IMDBURL': 3,
           'Notes' : 2,
           'Action' : 2,
      }
@@ -299,6 +299,16 @@ export class DataService {
           return null;
      }
 
+     getWatchListTypeName(watchListItemID) {
+          if (watchListItemID === "")
+               return;
+
+          for (let i=0;i<this.watchListItems.length;i++) {
+               if (this.watchListItems[i].WatchListItemID == watchListItemID)
+                    return this.watchListTypes.filter(wlt => wlt['WatchListTypeID'] === this.watchListItems[i].WatchListTypeID)[0]['WatchListTypeName'];
+          }
+     }
+
      getWatchListMovieStats() {
           return this.processStep(`/GetWatchListMovieStats`,null);          
      }
@@ -369,6 +379,10 @@ export class DataService {
 
           return throwError(error || 'Node.js server error');
      }     
+
+     isAuthKeySet() {
+          return (this.auth_key != null && this.auth_key != '' ? true : false)
+     }
 
      isBackendURLSet() {
           return (this.backendURL != null && this.backendURL != '' ? true : false)

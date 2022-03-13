@@ -8,7 +8,7 @@
      </ion-toolbar>
 </ion-header>
 
-<ion-content *ngIf="dataService.isBackendURLSet()">
+<ion-content *ngIf="dataService.isBackendURLSet() && dataService.isAuthKeySet()">
      <ion-refresher slot="fixed" (ionRefresh)="dataService.pullToRefresh($event,'WatchListQueueItems')">
           <ion-refresher-content></ion-refresher-content>
      </ion-refresher>

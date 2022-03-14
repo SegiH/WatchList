@@ -41,12 +41,24 @@
                               </ion-select>
                          </ion-col>
 
+                         <ion-col size="12" *ngIf="!isEditingOptions">
+                              <ion-icon class="optionsIcon" name="create-outline" (click)="editOptions()"></ion-icon>
+                         </ion-col>
+
+                         <ion-col size="10" *ngIf="isEditingOptions">
+                              <ion-icon class="optionsIcon" name="save-outline" (click)="saveOptions()"></ion-icon>
+                         </ion-col>
+
+                         <ion-col size="2" *ngIf="isEditingOptions">
+                              <ion-icon class="optionsIcon" name="close-circle-outline" (click)="saveOptions()"></ion-icon>
+                         </ion-col>
+
                          <ion-col size="12">
-                              <ion-input id="backendURLInput" type="text" placeholder="Backend URL" [(ngModel)]="dataService.backendURL" [value]="dataService.backendURL" (ionBlur)="dataService.setBackendURL()"></ion-input>
+                              <ion-input id="backendURLInput" [disabled]="!isEditingOptions" type="text" placeholder="Backend URL" [(ngModel)]="dataService.backendURL" [value]="dataService.backendURL" (ionBlur)="dataService.setBackendURL()"></ion-input>
                          </ion-col>
 
                          <ion-col size="12" *ngIf="dataService.isBackendURLSet()">
-                              <ion-input id="authKeyInput" type="text" placeholder="Auth Key" [(ngModel)]="dataService.auth_key" [value]="dataService.auth_key" (ionBlur)="dataService.setAuthKey()"></ion-input>
+                              <ion-input id="authKeyInput"  [disabled]="!isEditingOptions" [type]="!isEditingOptions ? 'password' : 'text'" placeholder="Auth Key" [(ngModel)]="dataService.auth_key" [value]="dataService.auth_key" (ionBlur)="dataService.setAuthKey()"></ion-input>
                          </ion-col>
                     </ion-row>
                </ion-grid>

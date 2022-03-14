@@ -38,8 +38,8 @@ export class DataService {
           'EndDate': 2,
           'Source' : 2,
           'Season' : 1,
-          'Notes' : 2,
-          'Action' : 1,
+          'Notes' : 1,
+          'Action' : 2,
      }
 
      private readonly watchListItemsColumnSizes = {
@@ -72,7 +72,7 @@ export class DataService {
           if (this.platform.is('android') || this.platform.is('ios'))
                this.isMobilePlatform=true;               
 
-          this.getAuthKey();
+          this.getBackendURL();
      }
 
      addWatchList(currWatchList: []) {
@@ -166,16 +166,7 @@ export class DataService {
 
           if (this.auth_key == null || this.auth_key == '')
                alert("Please set the Auth Key");
-          else 
-               this.getBackendURL(); // Get Saved backend URL;
-     }
-
-     async getBackendURL() {
-          await this.storage.create();
-
-          this.backendURL = await this.storage.get('BackEndURL');
-          
-          if (this.backendURL != null && this.backendURL != "") {
+          else {
                this.getIMDBSearchEnabledSubscription();
 
                this.getWatchListItemsSubscription(false);
@@ -187,6 +178,16 @@ export class DataService {
                this.getWatchListTypesSubscription();
 
                this.getWatchListSourcesSubscription();
+          }
+     }
+
+     async getBackendURL() {
+          await this.storage.create();
+
+          this.backendURL = await this.storage.get('BackEndURL');
+          
+          if (this.backendURL != null && this.backendURL != "") {
+               this.getAuthKey();
           } else {
                alert("Please set the backend URL");
           }
@@ -366,6 +367,19 @@ export class DataService {
           });
      }
 
+     getIMDBSearchEnabled() {
+          return this.processStep(`/IsIMDBSearchEnabled`,null);
+     }     
+
+     getIMDBSearchEnabledSubscription() {
+          this.getIMDBSearchEnabled().subscribe((response) => {
+               this.isIMDBSearchEnabled=response;
+          },
+          error => {
+               this.handleError(error);
+          });
+     }
+
      handleError(error: Response | any) {
           if (error.error == "Unauthorized") {
                     console.log("Unauthorized. Check the Auth Key");
@@ -386,19 +400,6 @@ export class DataService {
 
      isBackendURLSet() {
           return (this.backendURL != null && this.backendURL != '' ? true : false)
-     }
-
-     getIMDBSearchEnabled() {
-          return this.processStep(`/IsIMDBSearchEnabled`,null);
-     }     
-
-     getIMDBSearchEnabledSubscription() {
-          this.getIMDBSearchEnabled().subscribe((response) => {
-               this.isIMDBSearchEnabled=response;
-          },
-          error => {
-               this.handleError(error);
-          });
      }
 
      processStep(path: string, params: HttpParams): Observable<any> {
@@ -465,17 +466,13 @@ export class DataService {
               this.watchListSources = [];
               this.watchListTypes =[];
           }
-            
-          if (this.auth_key != null && this.auth_key != "") {
-               this.getWatchListTypesSubscription();
-
-               this.getWatchListSourcesSubscription();
-          }
      }
 
      async setBackendURL() {
           if (this.backendURL != null && this.backendURL != "") {
                await this.storage.set('BackEndURL', this.backendURL);
+
+               this.setAuthKey();
           } else {
               await this.storage.remove('BackEndURL');
 
@@ -483,12 +480,6 @@ export class DataService {
               this.watchListItems = [];
               this.watchListSources = [];
               this.watchListTypes =[];
-          }
-            
-          if (this.backendURL != null && this.backendURL != "") {
-               this.getWatchListTypesSubscription();
-
-               this.getWatchListSourcesSubscription();
           }
      }
 

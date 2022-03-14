@@ -10,10 +10,9 @@ import { FormsModule } from '@angular/forms';
 import { IonicStorageModule } from '@ionic/storage-angular';
 
 @NgModule({
-     declarations: [AppComponent],
-     entryComponents: [],
-     imports: [BrowserModule, CoreModule, FormsModule, IonicModule.forRoot(), IonicStorageModule.forRoot(), AppRoutingModule],
-     providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy },{provide: LocationStrategy, useClass: HashLocationStrategy}],
-     bootstrap: [AppComponent],
+    declarations: [AppComponent],
+    imports: [BrowserModule, CoreModule, FormsModule, IonicModule.forRoot(), IonicStorageModule.forRoot(), AppRoutingModule],
+    providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy }, { provide: LocationStrategy, useClass: HashLocationStrategy }],
+    bootstrap: [AppComponent]
 })
 export class AppModule {}

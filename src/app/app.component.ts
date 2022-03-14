@@ -10,6 +10,7 @@ import { Location } from "@angular/common";
 })
 export class AppComponent {
      currentRoute: string = "";
+     isEditingOptions: boolean = false;
      readonly recordLimitOptions = [ // Only applied to WatchList not WatchlistItems
           10,
           50,
@@ -31,6 +32,36 @@ export class AppComponent {
                     }
                } 
              });
+     }
+
+     editOptions() {
+          this.isEditingOptions = true;
+     }
+
+     saveOptions() {
+          if (this.dataService.backendURL == null || this.dataService.backendURL == "") {
+               alert("Please set the Backend URL");
+               return;
+          }
+
+          if (this.dataService.auth_key == null || this.dataService.auth_key == "") {
+               alert("Please set the Auth Key");
+               return;
+          }
+
+          this.dataService.getIMDBSearchEnabledSubscription();
+
+          this.dataService.getWatchListItemsSubscription(false);
+
+          this.dataService.getWatchListSubscription();
+
+          this.dataService.getWatchListQueueSubscription();
+
+          this.dataService.getWatchListTypesSubscription();
+
+          this.dataService.getWatchListSourcesSubscription();
+
+          this.isEditingOptions=false;
      }
 
      reloadData(event) {

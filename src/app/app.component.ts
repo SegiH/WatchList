@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { DataService } from './core/data.service';
 import { Location } from "@angular/common";
 
+
 @Component({
      selector: 'app-root',
      templateUrl: 'app.component.html',
@@ -19,6 +20,8 @@ export class AppComponent {
      ]
 
      constructor(public dataService: DataService, private location: Location, private router: Router) { 
+          this.router.navigateByUrl("/");
+          
           // save current route so I can show filters in the menu that depend on the active tab
           router.events.subscribe(val => {
                if (location.path() != "") {
@@ -31,7 +34,7 @@ export class AppComponent {
                               break;
                     }
                } 
-             });
+          });
      }
 
      editOptions() {

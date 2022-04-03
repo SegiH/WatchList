@@ -6,6 +6,8 @@ import { AlertController } from '@ionic/angular';
 import { Platform } from '@ionic/angular';
 import { ToastController } from '@ionic/angular';
 import { Storage } from '@ionic/storage';
+import { Overlay, OverlayRef } from '@angular/cdk/overlay';
+import { Router } from '@angular/router';
 
 @Injectable({
      providedIn: `root`,
@@ -16,8 +18,6 @@ export class DataService {
      IMDBSearchEnabled = false;
      imdb_url_missing = false;
      incompleteFilter = true;
-     isAdding = false;
-     isEditing = false;
      isIMDBSearchEnabled = false;
      isMobilePlatform = false;
      platform: Platform;
@@ -30,25 +30,26 @@ export class DataService {
      watchListQueue: any;
      watchListSources: [];
      watchListTypes: [];
+     detailOverlay: OverlayRef;
+     detailObjectName: string=null;
+     detailID: number=null;
 
      private readonly watchListColumnSizes = {
           'ID': 1,
-          'Name': 1,
-          'StartDate': 2,
-          'EndDate': 2,
-          'Source' : 2,
+          'Name': 2,
+          'StartDate': 1,
+          'EndDate': 1,
+          'Source' : 1,
           'Season' : 1,
-          'Notes' : 1,
-          'Action' : 2,
+          'Notes' : 2,
      }
 
      private readonly watchListItemsColumnSizes = {
-          'ID': 2,
-          'Name': 1,
-          'Type': 2,
+          'ID': 1,
+          'Name': 2 ,
+          'Type': 1,
           'IMDBURL': 3,
           'Notes' : 2,
-          'Action' : 2,
      }
 
      private readonly watchListQueueColumnSizes = {
@@ -58,6 +59,12 @@ export class DataService {
           'Action' : 2,
      }
 
+     private readonly validObjectNames = [
+          'WatchList',
+          'WatchListItems',
+          'WatchListQueue'
+     ]
+
      watchListSortActiveColumn = 'Name';
      watchListSortColumn = 'Name';
      watchListSortDirection = 'ASC';
@@ -65,8 +72,8 @@ export class DataService {
      watchListItemsSortActiveColumn = 'Name';
      watchListItemsSortColumn = 'Name';
      watchListItemsSortDirection = 'ASC';
-     
-     constructor(public alertController: AlertController, private http: HttpClient, platform: Platform, private storage: Storage, public toastController: ToastController) {
+
+     constructor(private overlay: Overlay, public alertController: AlertController, private http: HttpClient, platform: Platform, private storage: Storage, public toastController: ToastController, private router: Router) {
           this.platform = platform;
 
           if (this.platform.is('android') || this.platform.is('ios'))
@@ -117,6 +124,14 @@ export class DataService {
                params = params.append('Notes',currWatchList['Notes']);
 
           return this.processStep(`/AddWatchListQueueItem`,params);
+     }
+
+     closeOverlay() {
+          this.router.navigateByUrl(`/tabs/${this.detailObjectName}`);
+
+          this.detailObjectName=null;
+
+          this.detailID=null;
      }
 
      async confirmDialog(param: object, message: string, callback: any) {
@@ -202,16 +217,63 @@ export class DataService {
                return this.watchListQueueColumnSizes[columnName];
      }
 
+     getDetailID() {
+          return this.detailID;
+     }
+
+     getDetailObject() {
+          if (this.detailObjectName === null)
+               return null;
+     
+          switch(this.detailObjectName) {
+               case "watchlist":
+                    return this.watchList.filter(wl => wl['WatchListID'] === this.detailID)[0];
+               case "watchlist-items":
+                    return this.watchListItems.filter(wli => wli['WatchListItemID'] === this.detailID)[0];
+               case "watchlist-queue":
+                    return this.watchListQueue.filter(wlq => wlq['WatchListQueueItemID'] === this.detailID)[0];
+          } 
+     }
+
+     getDetailObjectName() {
+          return this.detailObjectName
+     }
+
+     getIMDBSearchEnabled() {
+          return this.processStep(`/IsIMDBSearchEnabled`,null);
+     }     
+
+     getIMDBSearchEnabledSubscription() {
+          this.getIMDBSearchEnabled().subscribe((response) => {
+               this.isIMDBSearchEnabled=response;
+          },
+          error => {
+               this.handleError(error);
+          });
+     }
+
      getIMDBURL(watchListItemID) {
           if (this.getWatchListItemName.length == 0)
                return;
 
-          for (let i=0;i<this.watchListNames.length;i++) {
-               if (this.watchListNames[i].WatchListItemID == watchListItemID && this.watchListNames[i].IMDB_URL !== null)
-                    return this.watchListNames[i].IMDB_URL;
+          try {
+               for (let i=0;i<this.watchListNames.length;i++) {
+                    if (this.watchListNames[i].WatchListItemID == watchListItemID && this.watchListNames[i].IMDB_URL !== null)
+                         return this.watchListNames[i].IMDB_URL;
+               }
+          } catch(e) {
+               return null;
           }
 
           return null;
+     }
+
+     getSourceName(ID: number) {
+          try {
+               return this.watchListSources.filter(wls => wls['WatchListSourceID'] === ID)[0]['WatchListSourceName'];
+          } catch(e) {
+               return "";
+          }
      }
 
      getWatchList() {
@@ -292,9 +354,13 @@ export class DataService {
      }
 
      getWatchListItemName(watchListItemID) {
-          for (let i=0;i<this.watchListNames.length;i++) {
-               if (this.watchListNames[i].WatchListItemID == watchListItemID)
-                    return this.watchListNames[i].WatchListItemName;
+          try {
+               for (let i=0;i<this.watchListNames.length;i++) {
+                    if (this.watchListNames[i].WatchListItemID == watchListItemID)
+                         return this.watchListNames[i].WatchListItemName;
+               }
+          } catch(e) {
+               return null;
           }
 
           return null;
@@ -304,9 +370,13 @@ export class DataService {
           if (watchListItemID === "")
                return;
 
-          for (let i=0;i<this.watchListItems.length;i++) {
-               if (this.watchListItems[i].WatchListItemID == watchListItemID)
-                    return this.watchListTypes.filter(wlt => wlt['WatchListTypeID'] === this.watchListItems[i].WatchListTypeID)[0]['WatchListTypeName'];
+          try {
+               for (let i=0;i<this.watchListItems.length;i++) {
+                    if (this.watchListItems[i].WatchListItemID == watchListItemID)
+                         return this.watchListTypes.filter(wlt => wlt['WatchListTypeID'] === this.watchListItems[i].WatchListTypeID)[0]['WatchListTypeName'];
+               }
+          } catch(e) {
+               return;
           }
      }
 
@@ -367,19 +437,6 @@ export class DataService {
           });
      }
 
-     getIMDBSearchEnabled() {
-          return this.processStep(`/IsIMDBSearchEnabled`,null);
-     }     
-
-     getIMDBSearchEnabledSubscription() {
-          this.getIMDBSearchEnabled().subscribe((response) => {
-               this.isIMDBSearchEnabled=response;
-          },
-          error => {
-               this.handleError(error);
-          });
-     }
-
      handleError(error: Response | any) {
           if (error.error == "Unauthorized") {
                     console.log("Unauthorized. Check the Auth Key");
@@ -400,6 +457,28 @@ export class DataService {
 
      isBackendURLSet() {
           return (this.backendURL != null && this.backendURL != '' ? true : false)
+     }
+
+     openDetailOverlay(objectName: string, ID: number) {
+          if (this.detailObjectName !== null) { // Ignore because overlay is already open
+               return;
+          }
+
+          if (objectName === null) {
+               alert(`objectName not provided`);
+               return;
+          }
+
+          if (this.validObjectNames[objectName] === null) {
+               alert(`Invalid objectName ${objectName}`);
+               return;
+          }
+
+          this.detailObjectName=objectName;
+          
+          this.detailID=ID;
+
+          this.router.navigate(['/tabs/detail-overlay',{ "ObjectName" : objectName}]);
      }
 
      processStep(path: string, params: HttpParams): Observable<any> {
@@ -426,7 +505,8 @@ export class DataService {
 
                          event.target.complete();
                     },
-                    error => {       
+                    error => {     
+                         alert(`An error occurred getting the Watchlist ${error}`);
                     });
                } else if (component == "WatchListItems") {
                     this.getWatchListItems(true).subscribe((response) => {
@@ -438,9 +518,22 @@ export class DataService {
 
                          event.target.complete();
                     },
-                    error => {       
+                    error => {    
+                         alert(`An error occurred getting the Watchlist Items ${error}`);   
                     });
                } else if (component == "WatchListQueueItems") {
+                    this.getWatchListQueue().subscribe((response) => {
+                         if (response != null)
+                              for (let i=0;i<response.length;i++)
+                                   response[i].Disabled = true;
+
+                         this.watchListQueue=response;
+
+                         event.target.complete();
+                    },
+                    error => {       
+                         alert(`An error occurred getting the Watchlist Queue ${error}`);
+                    });
                }
           }, 2000);
      }

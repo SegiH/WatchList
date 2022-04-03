@@ -1,0 +1,67 @@
+.actionColumn {
+    display: inline-flex;
+}
+
+.detailLink {
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+.editSave {
+    margin-right: 10px;
+}
+
+.ion-list-parent {
+    width: 100%;
+    overflow: auto;
+}
+
+.IDColumn, .nameColumn {
+    margin-top: 8px;
+}
+
+ion-card {
+    display: flex;
+    width: 100%;
+}
+
+ion-grid > ion-row > ion-col > ion-icon.nameArrowIcon, 
+ion-grid > ion-row > ion-col > ion-icon.IDArrowIcon {
+     width: 50px;
+     position: relative;
+     vertical-align: bottom;
+}
+
+ion-grid > ion-row > ion-col > ion-icon.active {
+    color: darkblue
+}
+
+ion-content {
+    overflow: auto;
+}
+
+ion-icon {
+    width: 45px !important;
+    height: 45px !important;
+}
+
+ion-input {
+    border-style: dashed;
+    border-width: 1px;
+}
+
+ion-label {
+    margin-top: 10px;
+}
+
+ion-list.md.list-md {
+    min-width: 1000px;
+    max-height: 500px;
+    overflow: auto;
+}
+
+ion-content {
+    ion-item {
+      pointer-events: auto;
+    }
+}

@@ -1,0 +1,23 @@
+@media screen and (min-width: 320px) and (max-width: 480px){
+    /* styles */
+}
+
+.content {
+    /*margin-left: 30%;
+    margin-top: 5%;*/
+    height: 400px;
+    width: 600px;
+    background-color: lightgrey;
+    border-style: solid;
+    border-style: ridge;
+}
+
+ion-icon {  
+    width: 35px;
+    height: 35px;
+    cursor: pointer;
+}
+
+app-watchlist-detail, app-watchlist-items-detail, app-watchlist-queue-detail {
+    color: black;
+}

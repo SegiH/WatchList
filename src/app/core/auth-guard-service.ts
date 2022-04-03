@@ -5,11 +5,15 @@ import { DataService } from './data.service';
 @Injectable({
      providedIn: 'root'
 })
-export class AuthGuardService implements CanActivate {  constructor(public dataService: DataService, public router: Router) {}  canActivate(): boolean {
-     if (this.dataService.isAdding || this.dataService.isEditing) { // Prevents switching tabs while adding or editing an item
-          alert("Please save before switching tabs");
-          return false;
-     }
+export class AuthGuardService implements CanActivate {  
+     constructor(public dataService: DataService, public router: Router) {}  
      
-     return true;
-}}
+     canActivate(): boolean {
+          if (this.dataService.detailObjectName !== null && this.dataService.detailObjectName.toLowerCase() != this.router.url.replace("/tabs/","").toLowerCase()) { // Prevents switching tabs while adding or editing an item. Prevents switching to a DIFFERENT component
+               alert(`Please save or cancel the detail before switching tabs`);
+               return false;
+          } 
+     
+          return true;
+     }
+}

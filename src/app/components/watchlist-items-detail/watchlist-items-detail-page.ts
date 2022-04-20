@@ -124,7 +124,7 @@ export class WatchListItemsDetailPage {
           this.dataService.updateWatchListItem(this.detailObject).subscribe((response) => {
                this.isEditing = false;
 
-               this.dataService.getWatchListItemsSubscription(false);
+               this.dataService.getWatchListItemsSubscription(true);
           },
           error => {
                this.dataService.handleError(error);

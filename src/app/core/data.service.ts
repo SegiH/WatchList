@@ -366,14 +366,18 @@ export class DataService {
           return null;
      }
 
-     getWatchListTypeName(watchListItemID) {
-          if (watchListItemID === "")
+     getWatchListTypeName(watchListTypeID) {
+          if (watchListTypeID === "") {
                return;
+          }
 
           try {
-               for (let i=0;i<this.watchListItems.length;i++) {
-                    if (this.watchListItems[i].WatchListItemID == watchListItemID)
-                         return this.watchListTypes.filter(wlt => wlt['WatchListTypeID'] === this.watchListItems[i].WatchListTypeID)[0]['WatchListTypeName'];
+               for (let i=0;i<this.watchListTypes.length;i++) {
+                    if (this.watchListTypes[i]['WatchListTypeID'] == watchListTypeID) {
+                         return this.watchListTypes[i]['WatchListTypeName'];
+                         //debugger;
+                         //return this.watchListTypes.filter(wlt => wlt['WatchListTypeID'] === this.watchListItems[i].WatchListTypeID)[0]['WatchListTypeName'];
+                    }
                }
           } catch(e) {
                return;

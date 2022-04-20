@@ -12,3 +12,19 @@ ion-input {
     border-style: dashed;
     border-width: 1px;
 }
+
+#action_row {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+}
+
+#deleteIcon {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+}
+
+.editAddSelect {
+    background-color: white;
+}

@@ -76,11 +76,11 @@
                     {{ dataService.getWatchListTypeName(detailObject['WatchListTypeID']) }}
                </ion-label>
 
-               <select *ngIf="isEditing" placeholder='Type' name="title" [(ngModel)]="detailObject['WatchListTypeID']">
+               <select class="editAddSelect" *ngIf="isEditing" placeholder='Type' name="title" [(ngModel)]="detailObject['WatchListTypeID']">
                     <option *ngFor="let currItem of dataService.watchListTypes;trackBy: dataService.trackByFn" [value]="currItem['WatchListTypeID']">{{currItem['WatchListTypeName']}}</option>
                </select>
 
-               <select *ngIf="isAdding" placeholder='Type' name="title" [(ngModel)]="addItemType">
+               <select class="editAddSelect" *ngIf="isAdding" placeholder='Type' name="title" [(ngModel)]="addItemType">
                     <option *ngFor="let currItem of dataService.watchListTypes;trackBy: dataService.trackByFn" [value]="currItem['WatchListTypeID']">{{currItem['WatchListTypeName']}}</option>
                </select>
           </ion-col>
@@ -129,47 +129,6 @@
                <ion-input *ngIf="isAdding" type="text" [(ngModel)]="addItemNotes"></ion-input>
           </ion-col>
      </ion-row>
-
-     <ion-row>
-          <ion-col [size]="12" *ngIf="!isEditing && !isAdding"></ion-col>
-     </ion-row>
-
-     <ion-row>
-          <ion-col [size]="12" *ngIf="!isEditing && !isAdding"></ion-col>
-     </ion-row>
-
-     <ion-row>
-          <ion-col [size]="12" *ngIf="!isEditing && !isAdding"></ion-col>
-     </ion-row>
-
-     <ion-row>
-          <ion-col [size]="12" *ngIf="!isEditing && !isAdding"></ion-col>
-     </ion-row>
-
-     <ion-row>
-          <ion-col [size]="12" *ngIf="!isEditing && !isAdding"></ion-col>
-     </ion-row>
-
-     <ion-row>
-          <ion-col [size]="12" *ngIf="!isEditing && !isAdding"></ion-col>
-     </ion-row>
-
-     <ion-row>
-          <ion-col [size]="12" *ngIf="!isEditing && !isAdding"></ion-col>
-     </ion-row>
-
-     <ion-row>
-          <ion-col [size]="12" *ngIf="!isEditing && !isAdding"></ion-col>
-     </ion-row>
-
-     <ion-row *ngIf="!isEditing && !isAdding">
-          <ion-col [size]="2">
-          </ion-col>
-
-          <ion-col [size]="9"></ion-col>
-
-          <ion-col [size]="1">
-               <ion-icon name="trash-outline" (click)="deleteWatchListItem(currWatchListItem)"></ion-icon>
-          </ion-col>
-     </ion-row>
 </ion-grid>
+
+<ion-icon id="deleteIcon" name="trash-outline" *ngIf="!isAdding" (click)="deleteWatchListItem(currWatchListItem)"></ion-icon>

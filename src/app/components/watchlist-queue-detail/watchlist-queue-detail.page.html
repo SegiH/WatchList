@@ -83,7 +83,7 @@
      </ion-row>
 
      <ion-row>
-          <ion-col [size]="12" *ngIf="!isEditing && !isAdding"></ion-col>
+          <ion-col [size]="12"></ion-col>
      </ion-row>
 
      <ion-row>
@@ -98,9 +98,9 @@
                    {{ detailObject['Notes'] }}
               </ion-label>
 
-              <ion-input *ngIf="isEditing" type="text" [(ngModel)]="detailObject.Notes"></ion-input>
+              <ion-input *ngIf="isEditing" class="editAddSelect" type="text" [(ngModel)]="detailObject.Notes"></ion-input>
 
-              <ion-input *ngIf="isAdding" type="text" [(ngModel)]="addItemNotes"></ion-input>
+              <ion-input *ngIf="isAdding" class="editAddSelect" type="text" [(ngModel)]="addItemNotes"></ion-input>
          </ion-col>
     </ion-row>
 </ion-grid>

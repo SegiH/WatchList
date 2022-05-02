@@ -54,9 +54,9 @@
                     {{ detailObject['WatchListItemName'] }}
                </ion-label>
 
-               <ion-input *ngIf="isEditing" type="text" [(ngModel)]="detailObject['WatchListItemName']" [value]="detailObject['WatchListItemName']" ></ion-input>
+               <ion-input *ngIf="isEditing" class="editAddSelect" type="text" [(ngModel)]="detailObject['WatchListItemName']" [value]="detailObject['WatchListItemName']" ></ion-input>
 
-               <ion-input *ngIf="isAdding" type="text" [(ngModel)]="addItemName" [value]="addItemName" ></ion-input>
+               <ion-input *ngIf="isAdding" class="editAddSelect" type="text" [(ngModel)]="addItemName" [value]="addItemName" ></ion-input>
           </ion-col>
      </ion-row>
 
@@ -102,9 +102,9 @@
                     {{ detailObject['IMDB_URL'] }}
                </ion-label>
 
-               <ion-input *ngIf="isEditing" type="text" [(ngModel)]="detailObject['IMDB_URL']"></ion-input>
+               <ion-input *ngIf="isEditing" class="editAddSelect" type="text" [(ngModel)]="detailObject['IMDB_URL']"></ion-input>
 
-               <ion-input *ngIf="isAdding" type="text" [(ngModel)]="addItemIMDBURL"></ion-input>
+               <ion-input *ngIf="isAdding" class="editAddSelect" type="text" [(ngModel)]="addItemIMDBURL"></ion-input>
           </ion-col>
      </ion-row>
 
@@ -124,9 +124,9 @@
                     {{ detailObject['Notes'] }}
                </ion-label>
 
-               <ion-input *ngIf="isEditing && !isAdding" type="text" [(ngModel)]="detailObject.Notes"></ion-input>
+               <ion-input *ngIf="isEditing && !isAdding" class="editAddSelect" type="text" [(ngModel)]="detailObject.Notes"></ion-input>
 
-               <ion-input *ngIf="isAdding" type="text" [(ngModel)]="addItemNotes"></ion-input>
+               <ion-input *ngIf="isAdding" type="text" class="editAddSelect" [(ngModel)]="addItemNotes"></ion-input>
           </ion-col>
      </ion-row>
 </ion-grid>

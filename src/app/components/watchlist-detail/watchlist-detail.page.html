@@ -98,9 +98,9 @@
                     {{ detailObject['StartDate'] | date:"MM/dd/yyyy" }}
                </ion-label>
 
-               <ion-input *ngIf="isEditing && !isAdding" type="date" [(ngModel)]="detailObject.StartDate" [value]="detailObject.StartDate"></ion-input>
+               <ion-input *ngIf="isEditing && !isAdding" class="editAddSelect" type="date" [(ngModel)]="detailObject.StartDate" [value]="detailObject.StartDate"></ion-input>
           
-               <ion-input *ngIf="isAdding" type="date" [(ngModel)]="addItemStartDate" [value]="addItemStartDate"></ion-input>
+               <ion-input *ngIf="isAdding" type="date" class="editAddSelect" [(ngModel)]="addItemStartDate" [value]="addItemStartDate"></ion-input>
           </ion-col>
      </ion-row>
 
@@ -120,9 +120,9 @@
                     {{ detailObject['EndDate'] | date:"MM/dd/yyyy" }}
                </ion-label>
 
-               <ion-input *ngIf="isEditing && !isAdding" type="date" [(ngModel)]="detailObject.EndDate" [value]="detailObject.EndDate"></ion-input>
+               <ion-input *ngIf="isEditing && !isAdding" class="editAddSelect" type="date" [(ngModel)]="detailObject.EndDate" [value]="detailObject.EndDate"></ion-input>
 
-               <ion-input *ngIf="isAdding" type="date" [(ngModel)]="addItemEndDate" [value]="addItemEndDate"></ion-input>
+               <ion-input *ngIf="isAdding" class="editAddSelect" type="date" [(ngModel)]="addItemEndDate" [value]="addItemEndDate"></ion-input>
           </ion-col>
      </ion-row>
 
@@ -152,11 +152,9 @@
           </ion-col>
      </ion-row>
 
-     <ion-row *ngIf="(isAdding && dataService.getWatchListTypeName(addItemName) == 'TV') || (isEditing && dataService.getWatchListTypeName(detailObject['Season']) == 'TV')">
+     <ion-row *ngIf="(isAdding && dataService.getWatchListTypeName(addItemName) == 'TV') || dataService.getWatchListTypeName(detailObject['WatchListTypeID']) == 'TV'">
           <ion-col [size]="12"></ion-col>
-     </ion-row>
 
-     <ion-row *ngIf="(isAdding && dataService.getWatchListTypeName(addItemName) == 'TV') || (isEditing && dataService.getWatchListTypeName(detailObject['Season']) == 'TV')">
           <ion-col [size]="2">
                <ion-label>Season</ion-label>
           </ion-col>
@@ -168,7 +166,7 @@
                     {{ detailObject['Season'] }}
                </ion-label>
 
-               <ion-input *ngIf="isAdding && dataService.getWatchListTypeName(addItemName) == 'TV'" maxlength=3 type="text" [(ngModel)]="addSeason"></ion-input>
+               <ion-input *ngIf="(isAdding && dataService.getWatchListTypeName(addItemName) == 'TV') || (isEditing && dataService.getWatchListTypeName(detailObject['WatchListTypeID']) == 'TV')" class="editAddSelect" maxlength=3 type="text" [ngModel]="(isAdding ? addSeason : detailObject['Season'])"></ion-input>
           </ion-col>
      </ion-row>
 
@@ -188,9 +186,9 @@
                     {{ detailObject['Notes'] }}
                </ion-label>
 
-               <ion-input *ngIf="isEditing && !isAdding" type="text" [(ngModel)]="detailObject.Notes"></ion-input>
+               <ion-input *ngIf="isEditing && !isAdding" class="editAddSelect" type="text" [(ngModel)]="detailObject.Notes"></ion-input>
 
-               <ion-input *ngIf="isAdding" type="text" [(ngModel)]="addItemNotes"></ion-input>
+               <ion-input *ngIf="isAdding" type="text" class="editAddSelect" [(ngModel)]="addItemNotes"></ion-input>
           </ion-col>
      </ion-row>
 

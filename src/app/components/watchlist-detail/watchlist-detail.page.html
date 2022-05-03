@@ -152,7 +152,7 @@
           </ion-col>
      </ion-row>
 
-     <ion-row *ngIf="(isAdding && dataService.getWatchListTypeName(addItemName) == 'TV') || dataService.getWatchListTypeName(detailObject['WatchListTypeID']) == 'TV'">
+     <ion-row *ngIf="(isAdding && dataService.getWatchListTypeName(addItemName) == 'TV') || (isediting && detailObject !== null && dataService.getWatchListTypeName(detailObject['WatchListTypeID']) == 'TV')">
           <ion-col [size]="12"></ion-col>
 
           <ion-col [size]="2">

@@ -68,6 +68,8 @@ export class WatchListItemsDetailPage {
      }
 
      saveWatchListItem() {
+          debugger;
+
           if (this.isAdding)
                this.saveNewWatchListItem();
 
@@ -87,12 +89,13 @@ export class WatchListItemsDetailPage {
           }
 
           const currWatchList: any=[];
-          currWatchList.WatchListItemID=this.addItemName;
-          currWatchList.WatchListTypeID=this.addItemType;
+          //currWatchList.WatchListItemID=this.addItemName;
+          currWatchList.Name=this.addItemName;
+          currWatchList.Type=this.addItemType;
           currWatchList.IMDB_URL=this.addItemIMDBURL;
-          currWatchList.Notes=this.addItemNotes;
+          currWatchList.ItemNotes=this.addItemNotes;
 
-          this.dataService.addWatchList(currWatchList).subscribe((response) => {
+          this.dataService.addWatchListItem(currWatchList).subscribe((response) => {
                this.addItemName = '';
                this.addItemType = '';
                this.addItemIMDBURL = '';

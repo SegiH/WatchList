@@ -29,6 +29,10 @@ export class WatchListItemsDetailPage {
                this.isAdding=true;
      }
 
+     addNewWatchListRecord(currWatchList) {
+          this.dataService.openDetailOverlay("watchlist",null,currWatchList.WatchListItemID);
+     }
+
      cancelWatchListItem() {
           if (this.isEditing) {
                this.detailObject["WatchListItemName"]=this.detailObject[`Previous`].WatchListItemName;
@@ -68,8 +72,6 @@ export class WatchListItemsDetailPage {
      }
 
      saveWatchListItem() {
-          debugger;
-
           if (this.isAdding)
                this.saveNewWatchListItem();
 
@@ -89,24 +91,34 @@ export class WatchListItemsDetailPage {
           }
 
           const currWatchList: any=[];
-          //currWatchList.WatchListItemID=this.addItemName;
           currWatchList.Name=this.addItemName;
           currWatchList.Type=this.addItemType;
           currWatchList.IMDB_URL=this.addItemIMDBURL;
           currWatchList.ItemNotes=this.addItemNotes;
 
           this.dataService.addWatchListItem(currWatchList).subscribe((response) => {
+               this.dataService.getWatchListItemsSubscription(true);
+
+               this.isAdding=false;
+
+               // Set up prompt to add watchlist for newly added watchlist item
+               const ids = this.dataService.watchListItems.map(object => {
+                    return object.WatchListItemID;
+               });
+
+               const newID = Math.max(...ids) + 1;
+
+               const currWatchList: any=[];
+               currWatchList.WatchListItemID=newID;
+
+               this.dataService.confirmDialog(currWatchList,"Do you want to add a Watchlist record now ?",this.addNewWatchListRecord.bind(this));
+
+               this.dataService.closeOverlay();
+
                this.addItemName = '';
                this.addItemType = '';
                this.addItemIMDBURL = '';
                this.addItemNotes= '';
-
-               this.isAdding=false;
-
-               this.dataService.getWatchListItemsSubscription(false);
-
-               this.dataService.closeOverlay();
-
           },
           error => {
                this.dataService.handleError(error);

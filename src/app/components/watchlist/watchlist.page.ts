@@ -7,7 +7,7 @@ import { DataService } from '../../core/data.service';
      styleUrls: ['watchlist.page.scss']
 })
 export class WatchListPage {     
-     constructor(public dataService: DataService) {}
+     constructor(public dataService: DataService) { }
 
      addWatchList() {
           this.dataService.openDetailOverlay("watchlist",null);

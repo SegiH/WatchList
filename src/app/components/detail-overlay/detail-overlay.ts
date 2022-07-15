@@ -15,6 +15,8 @@ export class DetailOverlay {
      ngDoCheck() {
           this.detailObjectName=this.route.snapshot.paramMap.get("ObjectName")
           
+          this.dataService.authGuardDisabled=false;
+
           if (this.detailObjectName == null)
                this.router.navigateByUrl('/')
      }

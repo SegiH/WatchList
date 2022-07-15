@@ -27,9 +27,21 @@ export class WatchListDetailPage {
 
           this.detailObjectName=this.dataService.getDetailObjectName();
 
-          if (this.dataService.getDetailID() == null)
+          const addWatchListItemID=this.dataService.getDetailWatchListItemID();
+
+          if (addWatchListItemID !== null) {
+               this.addItemName=addWatchListItemID.toString();
+          }
+
+          if (this.dataService.getDetailID() == null) {
                this.isAdding=true;
-          else
+
+               // Default start and end date to current date
+               const dateStr = new Date().setSeconds(0,0);
+               const dt = new Date(dateStr).toISOString().substring(0,10); 
+               this.addItemStartDate=dt;
+               this.addItemEndDate=dt;
+          }  else
                this.isAdding=false;
      }
 

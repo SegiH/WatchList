@@ -33,6 +33,8 @@ export class DataService {
      detailOverlay: OverlayRef;
      detailObjectName: string=null;
      detailID: number=null;
+     detailWatchListItemID: number=null;
+     authGuardDisabled = false;
 
      private readonly watchListColumnSizes = {
           'ID': 1,
@@ -140,6 +142,8 @@ export class DataService {
                message: message,
                buttons: ['OK','Cancel']
           });
+
+          this.authGuardDisabled=true;
     
           await alert.present();
     
@@ -147,6 +151,8 @@ export class DataService {
 
           if (role != "cancel" ) { // OK
                callback(param);
+          } else {
+               //this.authGuardDisabled=false;
           }
      }
 
@@ -208,7 +214,7 @@ export class DataService {
           }
      }
 
-     getColumnSize(columnName, component: string) {
+     getColumnSize(columnName: string, component: string) {
           if (component == "WatchList")
                return this.watchListColumnSizes[columnName];
           else if (component == "WatchListItems")
@@ -236,7 +242,11 @@ export class DataService {
      }
 
      getDetailObjectName() {
-          return this.detailObjectName
+          return this.detailObjectName;
+     }
+
+     getDetailWatchListItemID() {
+          return this.detailWatchListItemID;
      }
 
      getIMDBSearchEnabled() {
@@ -375,8 +385,6 @@ export class DataService {
                for (let i=0;i<this.watchListTypes.length;i++) {
                     if (this.watchListTypes[i]['WatchListTypeID'] == watchListTypeID) {
                          return this.watchListTypes[i]['WatchListTypeName'];
-                         //debugger;
-                         //return this.watchListTypes.filter(wlt => wlt['WatchListTypeID'] === this.watchListItems[i].WatchListTypeID)[0]['WatchListTypeName'];
                     }
                }
           } catch(e) {
@@ -463,7 +471,7 @@ export class DataService {
           return (this.backendURL != null && this.backendURL != '' ? true : false)
      }
 
-     openDetailOverlay(objectName: string, ID: number) {
+     openDetailOverlay(objectName: string, ID: number, WatchListItemID: number=null) {
           if (this.detailObjectName !== null) { // Ignore because overlay is already open
                return;
           }
@@ -481,6 +489,8 @@ export class DataService {
           this.detailObjectName=objectName;
           
           this.detailID=ID;
+
+          this.detailWatchListItemID=WatchListItemID;
 
           this.router.navigate(['/tabs/detail-overlay',{ "ObjectName" : objectName}]);
      }

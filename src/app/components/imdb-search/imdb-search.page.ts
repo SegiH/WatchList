@@ -12,6 +12,10 @@ export class IMDBSearchPage {
 
      constructor(public dataService: DataService) { }
 
+     addNewWatchListRecord(currWatchList) {
+          this.dataService.openDetailOverlay("watchlist",null,currWatchList.WatchListItemID);
+     }
+
      addSearchResult(currSearchResult: any, index: number) {
           const currWatchListItem: any=[];
           currWatchListItem.Name=currSearchResult['Title'];
@@ -29,6 +33,18 @@ export class IMDBSearchPage {
                this.searchResults.splice(index,1); // Remove it from the the search results since its been added
 
                this.dataService.getWatchListItemsSubscription(true);
+
+                // Set up prompt to add watchlist for newly added watchlist item
+                const ids = this.dataService.watchListItems.map(object => {
+                    return object.WatchListItemID;
+               });
+
+               const newID = Math.max(...ids) + 1;
+
+               const currWatchList: any=[];
+               currWatchList.WatchListItemID=newID;
+
+               this.dataService.confirmDialog(currWatchList,"Do you want to add a Watchlist record now ?",this.addNewWatchListRecord.bind(this));
           },
           error => {
                this.dataService.handleError(error);

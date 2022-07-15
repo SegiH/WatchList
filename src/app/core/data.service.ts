@@ -14,7 +14,12 @@ import { Router } from '@angular/router';
 })
 export class DataService {
      auth_key=``;
+     authGuardDisabled = false;
      backendURL=``;
+     detailOverlay: OverlayRef;
+     detailObjectName: string=null;
+     detailID: number=null;
+     detailWatchListItemID: number=null;
      IMDBSearchEnabled = false;
      imdb_url_missing = false;
      incompleteFilter = true;
@@ -30,11 +35,6 @@ export class DataService {
      watchListQueue: any;
      watchListSources: [];
      watchListTypes: [];
-     detailOverlay: OverlayRef;
-     detailObjectName: string=null;
-     detailID: number=null;
-     detailWatchListItemID: number=null;
-     authGuardDisabled = false;
 
      private readonly watchListColumnSizes = {
           'ID': 1,
@@ -126,6 +126,20 @@ export class DataService {
                params = params.append('Notes',currWatchList['Notes']);
 
           return this.processStep(`/AddWatchListQueueItem`,params);
+     }
+
+     autoAddWatchListRecord(IMDB_URL = null) {
+          const ids = this.watchListItems.map(object => {
+               return object.WatchListItemID;
+          });
+
+          const newID = Math.max(...ids) + 1;
+          const existing=this.watchListItems.filter(wli => wli['IMDB_URL'] === IMDB_URL)[0];
+
+          const currWatchList: any=[];
+          currWatchList.WatchListItemID=(existing !== null ? existing.WatchListItemID : newID);
+
+          this.confirmDialog(currWatchList,"Do you want to add a Watchlist record now ?",this.showWatchListDetail.bind(this));
      }
 
      closeOverlay() {
@@ -590,12 +604,16 @@ export class DataService {
           }
      }
 
-     setWatchlist(newWatchList: any) {
+     setWatchList(newWatchList: any) {
           this.watchList=newWatchList;
      }
 
-     setWatchlistItems(newWatchListItems: any) {
+     setWatchListItems(newWatchListItems: any) {
           this.watchListItems=newWatchListItems;
+     }
+
+     showWatchListDetail(currWatchList: any) {
+          this.openDetailOverlay("watchlist",null,currWatchList.WatchListItemID);
      }
 
      sortClick(name,direction, component: string) {

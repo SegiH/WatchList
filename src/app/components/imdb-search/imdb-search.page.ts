@@ -12,10 +12,6 @@ export class IMDBSearchPage {
 
      constructor(public dataService: DataService) { }
 
-     addNewWatchListRecord(currWatchList) {
-          this.dataService.openDetailOverlay("watchlist",null,currWatchList.WatchListItemID);
-     }
-
      addSearchResult(currSearchResult: any, index: number) {
           const currWatchListItem: any=[];
           currWatchListItem.Name=currSearchResult['Title'];
@@ -34,17 +30,7 @@ export class IMDBSearchPage {
 
                this.dataService.getWatchListItemsSubscription(true);
 
-                // Set up prompt to add watchlist for newly added watchlist item
-                const ids = this.dataService.watchListItems.map(object => {
-                    return object.WatchListItemID;
-               });
-
-               const newID = Math.max(...ids) + 1;
-
-               const currWatchList: any=[];
-               currWatchList.WatchListItemID=newID;
-
-               this.dataService.confirmDialog(currWatchList,"Do you want to add a Watchlist record now ?",this.addNewWatchListRecord.bind(this));
+               this.dataService.autoAddWatchListRecord(currWatchListItem.IMDB_URL); // When adding item through IMDB search, it may exist already. In this case, it won't have a new ID
           },
           error => {
                this.dataService.handleError(error);

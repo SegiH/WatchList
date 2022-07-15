@@ -29,10 +29,6 @@ export class WatchListItemsDetailPage {
                this.isAdding=true;
      }
 
-     addNewWatchListRecord(currWatchList) {
-          this.dataService.openDetailOverlay("watchlist",null,currWatchList.WatchListItemID);
-     }
-
      cancelWatchListItem() {
           if (this.isEditing) {
                this.detailObject["WatchListItemName"]=this.detailObject[`Previous`].WatchListItemName;
@@ -101,17 +97,7 @@ export class WatchListItemsDetailPage {
 
                this.isAdding=false;
 
-               // Set up prompt to add watchlist for newly added watchlist item
-               const ids = this.dataService.watchListItems.map(object => {
-                    return object.WatchListItemID;
-               });
-
-               const newID = Math.max(...ids) + 1;
-
-               const currWatchList: any=[];
-               currWatchList.WatchListItemID=newID;
-
-               this.dataService.confirmDialog(currWatchList,"Do you want to add a Watchlist record now ?",this.addNewWatchListRecord.bind(this));
+               this.dataService.autoAddWatchListRecord();
 
                this.dataService.closeOverlay();
 

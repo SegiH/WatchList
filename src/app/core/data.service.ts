@@ -5,7 +5,6 @@ import { catchError} from 'rxjs/operators';
 import { AlertController } from '@ionic/angular';
 import { ToastController } from '@ionic/angular';
 import { Storage } from '@ionic/storage';
-import { Overlay, OverlayRef } from '@angular/cdk/overlay';
 import { Router } from '@angular/router';
 
 @Injectable({
@@ -15,7 +14,6 @@ export class DataService {
      auth_key=``;
      authGuardDisabled = false;
      backendURL=``;
-     detailOverlay: OverlayRef;
      detailObjectName: string=null;
      detailID: number=null;
      detailWatchListItemID: number=null;
@@ -30,6 +28,12 @@ export class DataService {
      watchListItems: any;
      watchListNames: any; // This contains a full, unfiltered copy of watchListItems that is used for the names
      watchListQueue: any;
+     watchListSortActiveColumn = 'Name';
+     watchListSortColumn = 'Name';
+     watchListSortDirection = 'ASC';
+     watchListItemsSortActiveColumn = 'Name';
+     watchListItemsSortColumn = 'Name';
+     watchListItemsSortDirection = 'ASC';
      watchListSources: [];
      watchListTypes: [];
 
@@ -64,15 +68,7 @@ export class DataService {
           'WatchListQueue'
      ]
 
-     watchListSortActiveColumn = 'Name';
-     watchListSortColumn = 'Name';
-     watchListSortDirection = 'ASC';
-
-     watchListItemsSortActiveColumn = 'Name';
-     watchListItemsSortColumn = 'Name';
-     watchListItemsSortDirection = 'ASC';
-
-     constructor(private overlay: Overlay, public alertController: AlertController, private http: HttpClient, private storage: Storage, public toastController: ToastController, private router: Router) {
+     constructor(public alertController: AlertController, private http: HttpClient, private storage: Storage, public toastController: ToastController, private router: Router) {
           this.getBackendURL();
      }
 
@@ -162,7 +158,7 @@ export class DataService {
           }
      }
 
-     deleteWatchList(watchListID) {
+     deleteWatchList(watchListID: string) {
           let params = new HttpParams();
 
           params = params.append('WatchListID',watchListID);
@@ -170,7 +166,7 @@ export class DataService {
           return this.processStep(`/DeleteWatchList`,params);
      }
 
-     deleteWatchListItem(watchListItemID) {
+     deleteWatchListItem(watchListItemID: string) {
           let params = new HttpParams();
 
           params = params.append('WatchListItemID',watchListItemID);
@@ -178,7 +174,7 @@ export class DataService {
           return this.processStep(`/DeleteWatchListItem`,params);
      }
 
-     deleteWatchListQueueItem(watchListItemID) {
+     deleteWatchListQueueItem(watchListItemID: string) {
           let params = new HttpParams();
 
           params = params.append('WatchListQueueItemID',watchListItemID);
@@ -529,7 +525,7 @@ export class DataService {
              );
      }
 
-     pullToRefresh(event, component: string) {
+     pullToRefresh(event: any, component: string) {
           setTimeout(() => {
                if (component == "WatchList") {
                     this.getWatchList().subscribe((response) => {
@@ -624,7 +620,7 @@ export class DataService {
           this.openDetailOverlay("watchlist",null,currWatchList.WatchListItemID);
      }
 
-     sortClick(name,direction, component: string) {
+     sortClick(name: string,direction: string, component: string) {
           if (component === "WatchList") {
                this.watchListSortColumn = name;
                this.watchListSortActiveColumn = name;
@@ -648,7 +644,7 @@ export class DataService {
           }
      }
 
-     trackByFn(index, item) { // Used to prevent the entire DOM tree from being re-rendered every time that there is a change
+     trackByFn(index: any) { // Used to prevent the entire DOM tree from being re-rendered every time that there is a change
           return index; // or item.id
      }
 

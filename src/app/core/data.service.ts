@@ -3,7 +3,6 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { throwError, Observable } from 'rxjs/';
 import { catchError} from 'rxjs/operators';
 import { AlertController } from '@ionic/angular';
-import { Platform } from '@ionic/angular';
 import { ToastController } from '@ionic/angular';
 import { Storage } from '@ionic/storage';
 import { Overlay, OverlayRef } from '@angular/cdk/overlay';
@@ -24,8 +23,6 @@ export class DataService {
      imdb_url_missing = false;
      incompleteFilter = true;
      isIMDBSearchEnabled = false;
-     isMobilePlatform = false;
-     platform: Platform;
      recordLimit = 10;
      searchTerm: string = '';
      sourceFilter: string = '';
@@ -75,12 +72,7 @@ export class DataService {
      watchListItemsSortColumn = 'Name';
      watchListItemsSortDirection = 'ASC';
 
-     constructor(private overlay: Overlay, public alertController: AlertController, private http: HttpClient, platform: Platform, private storage: Storage, public toastController: ToastController, private router: Router) {
-          this.platform = platform;
-
-          if (this.platform.is('android') || this.platform.is('ios'))
-               this.isMobilePlatform=true;               
-
+     constructor(private overlay: Overlay, public alertController: AlertController, private http: HttpClient, private storage: Storage, public toastController: ToastController, private router: Router) {
           this.getBackendURL();
      }
 
@@ -276,7 +268,7 @@ export class DataService {
           });
      }
 
-     getIMDBURL(watchListItemID) {
+     getIMDBURL(watchListItemID: number) {
           if (this.getWatchListItemName.length == 0)
                return;
 
@@ -324,18 +316,17 @@ export class DataService {
           return this.processStep(`/GetWatchList`,params);
      }
 
-     getWatchListSubscription() {
-          this.getWatchList().subscribe((response) => {
-               if (response != null)
-                    for (let i=0;i<response.length;i++)
-                         response[i].Disabled = true;
+     getWatchListItemName(watchListItemID: number) {
+          try {
+               for (let i=0;i<this.watchListNames.length;i++) {
+                    if (this.watchListNames[i].WatchListItemID == watchListItemID)
+                         return this.watchListNames[i].WatchListItemName;
+               }
+          } catch(e) {
+               return null;
+          }
 
-               this.watchList=response;              
-
-          },
-          error => {
-               this.handleError(error);
-          });
+          return null;
      }
 
      getWatchListItems(loadAllData: boolean) {
@@ -359,7 +350,7 @@ export class DataService {
 
           return this.processStep(`/GetWatchListItems`,params);
      }
-     
+
      getWatchListItemsSubscription(loadAllData: boolean) {
           this.getWatchListItems(loadAllData).subscribe((response) => {               
                if (response != null)
@@ -377,55 +368,10 @@ export class DataService {
           });
      }
 
-     getWatchListItemName(watchListItemID) {
-          try {
-               for (let i=0;i<this.watchListNames.length;i++) {
-                    if (this.watchListNames[i].WatchListItemID == watchListItemID)
-                         return this.watchListNames[i].WatchListItemName;
-               }
-          } catch(e) {
-               return null;
-          }
-
-          return null;
-     }
-
-     getWatchListTypeName(watchListTypeID) {
-          const typeObj=this.watchListTypes.filter(wlt => wlt['WatchListTypeID'] == watchListTypeID)[0];
-
-          if (typeObj !== null) {
-               return typeObj["WatchListTypeName"];
-          } else
-               return null;
-     }
-
-     getWatchListTypeNameByWatchListItemID(watchListItemID: string) {
-          if (watchListItemID === "") {
-               alert("fucking empty!")
-               return;
-          }
-
-          try {
-          // Get type of current watchlist item ID
-          const currentWatchListItem=this.watchListItems.filter(wli => wli['WatchListItemID'].toString() === watchListItemID.toString())[0];
-
-          if (currentWatchListItem !== null) {
-               const typeObj=this.watchListTypes.filter(wlt => wlt['WatchListTypeID'] == currentWatchListItem.WatchListTypeID)[0];
-
-               if (typeObj !== null) {
-                    return typeObj["WatchListTypeName"];
-               } else
-                    return null;
-          } else
-               return null;
-          } catch(e) {
-          }
-     }
-
      getWatchListMovieStats() {
           return this.processStep(`/GetWatchListMovieStats`,null);          
      }
-     
+
      getWatchListQueue() {
           let params = new HttpParams();
 
@@ -462,8 +408,54 @@ export class DataService {
           });
      }
 
+     getWatchListSubscription() {
+          this.getWatchList().subscribe((response) => {
+               if (response != null)
+                    for (let i=0;i<response.length;i++)
+                         response[i].Disabled = true;
+
+               this.watchList=response;              
+
+          },
+          error => {
+               this.handleError(error);
+          });
+     }
+
      getWatchListTVStats() {
           return this.processStep(`/GetWatchListTVStats`,null);
+     }
+
+     getWatchListTypeName(watchListTypeID) {
+          const typeObj=this.watchListTypes.filter(wlt => wlt['WatchListTypeID'] == watchListTypeID)[0];
+
+          if (typeObj !== null) {
+               return typeObj["WatchListTypeName"];
+          } else
+               return null;
+     }
+
+     getWatchListTypeNameByWatchListItemID(watchListItemID: string) {
+          if (watchListItemID === "") {
+               return;
+          }
+
+          // If watchListItems or watchListTypes are not loaded, this will throw an error
+          try {
+               // Get type of current watchlist item ID
+               const currentWatchListItem=this.watchListItems.filter(wli => wli['WatchListItemID'].toString() === watchListItemID.toString())[0];
+
+               if (currentWatchListItem !== null) {
+                    const typeObj=this.watchListTypes.filter(wlt => wlt['WatchListTypeID'] == currentWatchListItem.WatchListTypeID)[0];
+
+                    if (typeObj !== null) {
+                         return typeObj["WatchListTypeName"];
+                    } else
+                         return null;
+               } else
+                    return null;
+               } catch(e) {
+          }
      }
 
      getWatchListTypes() {

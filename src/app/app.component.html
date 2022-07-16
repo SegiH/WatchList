@@ -22,10 +22,6 @@
                               </ion-select>          
                          </ion-col>
 
-                         <!--<ion-col size="12" *ngIf="dataService.isBackendURLSet() && dataService.isAuthKeySet()">
-                              <ion-item>Mobile<ion-toggle [(ngModel)]="dataService.isMobilePlatform" color="primary"></ion-toggle></ion-item>
-                         </ion-col>-->
-
                          <ion-col size="12" *ngIf="currentRoute=='WatchList' && dataService.isBackendURLSet() && dataService.isAuthKeySet()">
                               <ion-item>Incomplete<ion-toggle [(ngModel)]="dataService.incompleteFilter" color="primary" (ionChange)="reloadData($event)"></ion-toggle></ion-item>
                          </ion-col>

@@ -170,7 +170,7 @@
                     {{ detailObject['Season'] }}
                </ion-label>
 
-               <ion-input *ngIf="isAdding || isEditing" class="editAddSelect" maxlength="3" type="text" [ngModel]="(isAdding ? addSeason : detailObject['Season'])"></ion-input>
+               <ion-input *ngIf="isAdding || isEditing" class="editAddSelect shortField" maxlength="3" type="text" [ngModel]="(isAdding ? addSeason : detailObject['Season'])"></ion-input>
           </ion-col>
      </ion-row>
 

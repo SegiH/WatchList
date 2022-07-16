@@ -391,19 +391,31 @@ export class DataService {
      }
 
      getWatchListTypeName(watchListTypeID) {
-          if (watchListTypeID === "") {
+          const typeObj=this.watchListTypes.filter(wlt => wlt['WatchListTypeID'] == watchListTypeID)[0];
+
+          if (typeObj !== null) {
+               return typeObj["WatchListTypeName"];
+          } else
+               return null;
+     }
+
+     getWatchListTypeNameByWatchListItemID(watchListItemID) {
+          if (watchListItemID === "") {
                return;
           }
 
-          try {
-               for (let i=0;i<this.watchListTypes.length;i++) {
-                    if (this.watchListTypes[i]['WatchListTypeID'] == watchListTypeID) {
-                         return this.watchListTypes[i]['WatchListTypeName'];
-                    }
-               }
-          } catch(e) {
-               return;
-          }
+          // Get type of current watchlist item ID
+          const currentWatchListItem=this.watchListItems.filter(wli => wli['WatchListItemID'].toString() === watchListItemID.toString())[0];
+
+          if (currentWatchListItem !== null) {
+               const typeObj=this.watchListTypes.filter(wlt => wlt['WatchListTypeID'] == currentWatchListItem.WatchListTypeID)[0];
+
+               if (typeObj !== null) {
+                    return typeObj["WatchListTypeName"];
+               } else
+                    return null;
+          } else
+               return null;
      }
 
      getWatchListMovieStats() {

@@ -96,7 +96,7 @@
                               </ion-col>
 
                               <ion-col [size]="this.dataService.getColumnSize('Season','WatchList')">
-                                   <ion-label *ngIf="dataService.getWatchListTypeName(currWatchList.WatchListTypeID) == 'TV'">
+                                   <ion-label *ngIf="dataService.getWatchListTypeNameByWatchListItemID(currWatchList.WatchListItemID) == 'TV'">
                                         {{ currWatchList.Season }}
                                    </ion-label>
                               </ion-col>

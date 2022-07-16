@@ -48,11 +48,13 @@ export class IMDBSearchPage {
                     if (response.Response == "False") {
                          alert(`${response.Error}`)
                     } else {
+                         this.searchTerm='';
                          this.searchResults=Object.entries(response)[0][1]; // This contains the actual search results
                     }
                },
                error => {
-                    console.log(`An error occurred searching IMDB`)
+                    console.log(`An error occurred searching IMDB`);
+                    this.searchTerm='';
                });
           } else
                alert("Please enter a search term");

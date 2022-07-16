@@ -67,7 +67,7 @@
      <ion-row>
           <ion-col [size]="12"></ion-col>
      </ion-row>
-    
+
      <ion-row>
           <ion-col [size]="2">
                <ion-label>Type</ion-label>
@@ -80,7 +80,7 @@
                     {{ dataService.getWatchListTypeName(detailObject['WatchListTypeID']) }}
                </ion-label>
 
-               <ion-label *ngIf="isAdding && addItemName !== null">
+               <ion-label *ngIf="isAdding && addItemName !== null && addItemName !== ''">
                     {{ dataService.getWatchListTypeNameByWatchListItemID(addItemName) }}
                </ion-label>
           </ion-col>
@@ -156,7 +156,7 @@
           </ion-col>
      </ion-row>
 
-     <ion-row *ngIf="(isAdding && dataService.getWatchListTypeNameByWatchListItemID(addItemName) == 'TV') || (isEditing && detailObject !== null && dataService.getWatchListTypeNameByWatchListItemID(detailObject['WatchListTypeID']) == 'TV')">
+     <ion-row *ngIf="(isAdding && addItemName !== '' && dataService.getWatchListTypeNameByWatchListItemID(addItemName) == 'TV') || (!isAdding && detailObject !== null && dataService.getWatchListTypeName(detailObject['WatchListTypeID']) == 'TV')">
           <ion-col [size]="12"></ion-col>
 
           <ion-col [size]="2">
@@ -170,7 +170,7 @@
                     {{ detailObject['Season'] }}
                </ion-label>
 
-               <ion-input class="editAddSelect" maxlength=3 type="text" [ngModel]="(isAdding ? addSeason : detailObject['Season'])"></ion-input>
+               <ion-input *ngIf="isAdding || isEditing" class="editAddSelect" maxlength="3" type="text" [ngModel]="(isAdding ? addSeason : detailObject['Season'])"></ion-input>
           </ion-col>
      </ion-row>
 

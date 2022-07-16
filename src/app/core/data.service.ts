@@ -399,11 +399,13 @@ export class DataService {
                return null;
      }
 
-     getWatchListTypeNameByWatchListItemID(watchListItemID) {
+     getWatchListTypeNameByWatchListItemID(watchListItemID: string) {
           if (watchListItemID === "") {
+               alert("fucking empty!")
                return;
           }
 
+          try {
           // Get type of current watchlist item ID
           const currentWatchListItem=this.watchListItems.filter(wli => wli['WatchListItemID'].toString() === watchListItemID.toString())[0];
 
@@ -416,6 +418,8 @@ export class DataService {
                     return null;
           } else
                return null;
+          } catch(e) {
+          }
      }
 
      getWatchListMovieStats() {

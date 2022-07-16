@@ -23,13 +23,6 @@ export class WatchListDetailPage {
      constructor(private dataService: DataService) { }
 
      ngDoCheck() {
-          this.addItemName = '';
-          this.addItemStartDate = '';
-          this.addItemEndDate = '';
-          this.addItemNotes= '';
-          this.addItemSource = '';
-          this.addSeason = '';
-
           this.detailObject=this.dataService.getDetailObject();
 
           this.detailObjectName=this.dataService.getDetailObjectName();
@@ -103,6 +96,8 @@ export class WatchListDetailPage {
 
           if (this.isAdding) {
                this.isEditing = false;
+
+               this.addItemName='';
 
                this.dataService.closeOverlay();
           }

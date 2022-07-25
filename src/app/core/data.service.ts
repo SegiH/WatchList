@@ -123,9 +123,9 @@ export class DataService {
 
           const newID = Math.max(...ids) + 1;
           const existing=this.watchListItems.filter(wli => wli['IMDB_URL'] === IMDB_URL)[0];
-
+debugger
           const currWatchList: any=[];
-          currWatchList.WatchListItemID=(existing !== null ? existing.WatchListItemID : newID);
+          currWatchList.WatchListItemID=(typeof existing !== 'undefined' ? existing.WatchListItemID : newID);
 
           this.confirmDialog(currWatchList,"Do you want to add a Watchlist record now ?",this.showWatchListDetail.bind(this));
      }

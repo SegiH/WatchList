@@ -29,7 +29,7 @@ export class IMDBSearchPage {
                this.searchResults.splice(index,1); // Remove it from the the search results since its been added
 
                this.dataService.getWatchListItemsSubscription(true);
-
+               
                this.dataService.autoAddWatchListRecord(currWatchListItem.IMDB_URL); // When adding item through IMDB search, it may exist already. In this case, it won't have a new ID
           },
           error => {

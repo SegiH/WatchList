@@ -9,13 +9,24 @@
 
      <ion-list *ngFor="let currentMovie of watchListMovieStats">
           <ion-item>
-               <div *ngIf="currentMovie['IMDB_URL'] == null; else hyperLinkDiv">
-                    "{{ currentMovie['WatchListItemName'] }}" watched {{ currentMovie['ItemCount'] }} time(s)
-               </div>
+               <ion-grid>
+                    <ion-row>
+                         <ion-col size="3">
+                              <ion-label *ngIf="currentMovie['IMDB_URL'] == null">"{{ currentMovie['WatchListItemName'] }}"</ion-label>
+                              <a *ngIf="currentMovie['IMDB_URL'] != null" [href]="currentMovie['IMDB_URL']" target="_blank">{{ currentMovie['WatchListItemName'] }}</a>&nbsp;
+                         </ion-col>
 
-               <ng-template #hyperLinkDiv>
-                    <a [href]="currentMovie['IMDB_URL']" target="_blank">{{ currentMovie['WatchListItemName'] }}</a>&nbsp;watched {{ currentMovie['ItemCount'] }} time(s)
-               </ng-template>
+                         <ion-col size="1">
+                              <ion-label>watched</ion-label>
+                         </ion-col>
+          
+                         <ion-col size="1">
+                              {{ currentMovie['ItemCount'] }} time(s)
+                         </ion-col>
+
+                         <ion-col size="7"></ion-col>
+                    </ion-row>
+               </ion-grid>
           </ion-item>
      </ion-list>
 
@@ -23,13 +34,44 @@
 
      <ion-list *ngFor="let currentShow of watchListTVStats">
           <ion-item>
-               <div *ngIf="currentShow['IMDB_URL'] == null; else hyperLinkDiv">
-                    "{{ currentShow['WatchListItemName'] }}" watched {{ currentShow['ItemCount'] }} time(s) between {{ currentShow['StartDate'] | date: 'MM/dd/yyyy' }} and {{ currentShow['EndDate'] | date: 'MM/dd/yyyy' }}
-               </div>               
+               <ion-grid>
+                    <ion-row>
+                         <ion-col size="3">
+                              <ion-label *ngIf="currentShow['IMDB_URL'] == null">"{{ currentShow['WatchListItemName'] }}"</ion-label>
+                              <a *ngIf="currentShow['IMDB_URL'] != null" [href]="currentShow['IMDB_URL']" target="_blank">{{ currentShow['WatchListItemName'] }}</a>&nbsp;
+                         </ion-col>
 
-               <ng-template #hyperLinkDiv>
-                    <a [href]="currentShow['IMDB_URL']" target="_blank">{{ currentShow['WatchListItemName'] }}</a>&nbsp;watched {{ currentShow['ItemCount'] }} time(s) between {{ currentShow['StartDate'] | date: 'MM/dd/yyyy' }} and {{ currentShow['EndDate'] | date: 'MM/dd/yyyy' }} 
-               </ng-template>
+                         <ion-col size="1">
+                              <ion-label>watched</ion-label>
+                         </ion-col>
+          
+                         <ion-col size="1">
+                              <ion-label>{{ currentShow['ItemCount'] }} time(s)</ion-label>
+                         </ion-col>
+
+                         <ion-col size="1">
+                              <ion-label> between</ion-label>
+                         </ion-col>
+
+                         <ion-col size="1">
+                              <ion-label>{{ currentShow['StartDate'] | date: 'MM/dd/yyyy' }}</ion-label>
+                         </ion-col>
+
+                         <ion-col size="1">
+                              <ion-label>and</ion-label>
+                         </ion-col>
+
+                         <ion-col size="1">
+                              <ion-label>{{ currentShow['EndDate'] | date: 'MM/dd/yyyy' }}</ion-label>
+                         </ion-col>
+
+                         
+          
+                         <ion-col size="3"></ion-col>
+                    </ion-row>
+               </ion-grid>
+
+              
           </ion-item>
      </ion-list>
 </ion-content>

@@ -5,26 +5,25 @@
 </ion-header>
 
 <ion-content *ngIf="dataService.isBackendURLSet() && dataService.isAuthKeySet()">
+     <div class="content-parent">
      <h2>Top 10 most frequently watched Movies</h2>
 
      <ion-list *ngFor="let currentMovie of watchListMovieStats">
           <ion-item>
                <ion-grid>
                     <ion-row>
-                         <ion-col size="3">
+                         <ion-col size="6" class="first">
                               <ion-label *ngIf="currentMovie['IMDB_URL'] == null">"{{ currentMovie['WatchListItemName'] }}"</ion-label>
                               <a *ngIf="currentMovie['IMDB_URL'] != null" [href]="currentMovie['IMDB_URL']" target="_blank">{{ currentMovie['WatchListItemName'] }}</a>&nbsp;
                          </ion-col>
 
-                         <ion-col size="1">
+                         <ion-col size="3" class="second">
                               <ion-label>watched</ion-label>
                          </ion-col>
           
-                         <ion-col size="1">
+                         <ion-col size="3" class="third">
                               {{ currentMovie['ItemCount'] }} time(s)
                          </ion-col>
-
-                         <ion-col size="7"></ion-col>
                     </ion-row>
                </ion-grid>
           </ion-item>
@@ -36,42 +35,31 @@
           <ion-item>
                <ion-grid>
                     <ion-row>
-                         <ion-col size="3">
+                         <ion-col size="6">
                               <ion-label *ngIf="currentShow['IMDB_URL'] == null">"{{ currentShow['WatchListItemName'] }}"</ion-label>
                               <a *ngIf="currentShow['IMDB_URL'] != null" [href]="currentShow['IMDB_URL']" target="_blank">{{ currentShow['WatchListItemName'] }}</a>&nbsp;
                          </ion-col>
 
-                         <ion-col size="1">
-                              <ion-label>watched</ion-label>
-                         </ion-col>
-          
-                         <ion-col size="1">
-                              <ion-label>{{ currentShow['ItemCount'] }} time(s)</ion-label>
+                         <ion-col size="6">
+                              <ion-label>watched {{ currentShow['ItemCount'] }} time(s)</ion-label>
                          </ion-col>
 
-                         <ion-col size="1">
-                              <ion-label> between</ion-label>
-                         </ion-col>
-
-                         <ion-col size="1">
+                         <ion-col size="3">
                               <ion-label>{{ currentShow['StartDate'] | date: 'MM/dd/yyyy' }}</ion-label>
                          </ion-col>
 
-                         <ion-col size="1">
-                              <ion-label>and</ion-label>
-                         </ion-col>
+                         <ion-col size="1"></ion-col>
+                         <ion-col size="1">-</ion-col>
+                         <ion-col size="1"></ion-col>
 
-                         <ion-col size="1">
+                         <ion-col size="3">
                               <ion-label>{{ currentShow['EndDate'] | date: 'MM/dd/yyyy' }}</ion-label>
                          </ion-col>
-
-                         
-          
-                         <ion-col size="3"></ion-col>
                     </ion-row>
                </ion-grid>
 
               
           </ion-item>
      </ion-list>
+</div>
 </ion-content>

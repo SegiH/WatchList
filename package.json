@@ -6,7 +6,7 @@
   "main": "src/app/app.component.ts",
   "scripts": {
     "ng": "ng",
-    "start": "ionic serve",
+    "start": "ionic serve --host=0.0.0.0",
     "build": "ng build",
     "test": "ng test",
     "lint": "ng lint",

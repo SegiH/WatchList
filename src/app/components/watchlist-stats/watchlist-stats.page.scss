@@ -2,7 +2,21 @@ ion-content {
     overflow: visible;
 }
 
-.content-parent {
+.ion-list-parent {
     width: 100%;
-    overflow: visible !important;
+    overflow: auto;
+}
+
+ion-card {
+    display: flex;
+    width: 100%;
+}
+
+ion-content {
+    overflow: auto;
+}
+
+ion-list.md.list-md {
+    min-width: 1000px;
+    overflow: scroll;
 }

@@ -51,25 +51,25 @@
                               <ion-col [size]="this.dataService.getColumnSize('ID','WatchListQueueItems')" class="IDColumn">
                                    <a class="detailLink" (click)="this.dataService.openDetailOverlay('watchlist-queue',currWatchListQueue.WatchListQueueItemID)">{{ currWatchListQueue.WatchListQueueItemID }}</a>
                               </ion-col>
-
+                
                               <ion-col [size]="this.dataService.getColumnSize('Name','WatchListQueueItems')" class="nameColumn">
                                    <div *ngIf="!dataService.isEditing">
                                         <div *ngIf="dataService.getIMDBURL(currWatchListQueue.WatchListQueueItemID) === null; else hyperLinkDiv">
                                              {{dataService.getWatchListItemName(currWatchListQueue.WatchListItemID)}}
                                         </div>
- 
+                
                                         <ng-template #hyperLinkDiv>
                                              <a [href]="dataService.getIMDBURL(currWatchListQueue.WatchListItemID)" target="_blank">{{dataService.getWatchListItemName(currWatchListQueue.WatchListItemID)}}</a>
                                         </ng-template>
                                     </div>
                               </ion-col>
-
+                
                               <ion-col [size]="this.dataService.getColumnSize('Notes','WatchListQueueItems')">
                                    {{ currWatchListQueue.Notes }}
                               </ion-col>
                          </ion-row>
                     </ion-grid>
-               </ion-item>
+                </ion-item>
           </ion-list>
      </div>
 </ion-content>

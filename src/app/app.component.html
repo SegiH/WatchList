@@ -6,6 +6,10 @@
                </ion-toolbar> 
           </ion-header> 
           <ion-content>
+               <ion-refresher slot="fixed" (ionRefresh)="reloadData($event)">
+                    <ion-refresher-content></ion-refresher-content>
+               </ion-refresher>
+
                <ion-grid>
                     <ion-row>
                          <ion-col size="12" *ngIf="dataService.isBackendURLSet() && dataService.isAuthKeySet()">

@@ -65,9 +65,11 @@ export class AppComponent {
           this.dataService.getWatchListSourcesSubscription();
 
           this.isEditingOptions=false;
+
+          this.reloadData(null);
      }
 
-     reloadData(event) {
+     reloadData(event: any) {
           if (event != null && event.target.id == "IMDBURLMissing")
                this.dataService.getWatchListItemsSubscription(true);
           else {

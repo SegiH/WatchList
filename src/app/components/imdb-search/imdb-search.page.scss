@@ -34,3 +34,8 @@ ion-label {
 ion-label.labelMobile {
     font-size: 18px;
 }
+
+ion-list.md.list-md {
+    min-width: 1000px;
+    overflow: auto;
+}

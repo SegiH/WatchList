@@ -29,8 +29,7 @@ ion-label {
 
 ion-list.md.list-md {
      min-width: 1000px;
-     max-height: 500px;
-     overflow: auto;
+     overflow: scroll;
 }
 
 ion-grid > ion-row > ion-col > ion-icon.IDArrowIcon, 

@@ -40,8 +40,8 @@ export class DataService {
      private readonly watchListColumnSizes = {
           'ID': 1,
           'Name': 2,
-          'StartDate': 1,
-          'EndDate': 1,
+          'StartDate': 2,
+          'EndDate': 2,
           'Source' : 1,
           'Season' : 1,
           'Notes' : 2,
@@ -49,10 +49,10 @@ export class DataService {
 
      private readonly watchListItemsColumnSizes = {
           'ID': 1,
-          'Name': 2 ,
+          'Name': 5,
           'Type': 1,
-          'IMDBURL': 3,
-          'Notes' : 2,
+          'IMDBURL': 4,
+          'Notes' : 1,
      }
 
      private readonly watchListQueueColumnSizes = {

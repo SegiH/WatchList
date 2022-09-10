@@ -9,6 +9,7 @@
 
 .ion-list-parent {
      width: 100%;
+     height: 100%;
      overflow: auto;
 }
 
@@ -33,6 +34,14 @@ ion-input {
 
 ion-label {
      margin-top: 10px;
+}
+
+ion-label.header {
+     display: inline;
+}
+
+ion-icon.header {
+     vertical-align: middle !important;
 }
 
 ion-list.md.list-md {

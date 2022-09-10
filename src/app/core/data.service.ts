@@ -42,7 +42,7 @@ export class DataService {
           'Name': 2,
           'StartDate': 2,
           'EndDate': 2,
-          'Source' : 1,
+          'Source' : 2,
           'Season' : 1,
           'Notes' : 2,
      }

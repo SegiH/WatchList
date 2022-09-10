@@ -5,6 +5,8 @@ Requirements: WatchList-Backend service (See my other repo)
 
 This app has the ability to search IMDB for a movie or TV show within the API if you provide a RapidAPI IMDB key on the backend service. See the README on my WatchList-Backend repo for details.
 
+This app can be built as a web app or an Android or iOS app.
+
 1. npm install
 1. ionic build
 1. Move contents of build to web server

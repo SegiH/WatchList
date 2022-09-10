@@ -41,6 +41,16 @@ export class AppComponent {
           this.isEditingOptions = true;
      }
 
+     reloadData(event: any) {
+          if (event != null && event.target.id == "IMDBURLMissing")
+               this.dataService.getWatchListItemsSubscription(true);
+          else {
+               this.dataService.getWatchListSubscription();
+
+               this.dataService.getWatchListItemsSubscription(true);
+          }
+     }
+
      saveOptions() {
           if (this.dataService.backendURL == null || this.dataService.backendURL == "") {
                alert("Please set the Backend URL");
@@ -67,16 +77,6 @@ export class AppComponent {
           this.isEditingOptions=false;
 
           this.reloadData(null);
-     }
-
-     reloadData(event: any) {
-          if (event != null && event.target.id == "IMDBURLMissing")
-               this.dataService.getWatchListItemsSubscription(true);
-          else {
-               this.dataService.getWatchListSubscription();
-
-               this.dataService.getWatchListItemsSubscription(true);
-          }
      }
 
      // Used to prevent the entire DOM tree from being re-rendered every time that there is a change

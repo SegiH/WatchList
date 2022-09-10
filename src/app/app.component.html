@@ -5,6 +5,7 @@
                     <ion-title>Menu</ion-title> 
                </ion-toolbar> 
           </ion-header> 
+
           <ion-content>
                <ion-refresher slot="fixed" (ionRefresh)="reloadData($event)">
                     <ion-refresher-content></ion-refresher-content>
@@ -12,10 +13,6 @@
 
                <ion-grid>
                     <ion-row>
-                         <ion-col size="12" *ngIf="dataService.isBackendURLSet() && dataService.isAuthKeySet()">
-                              <ion-searchbar (ionChange)="reloadData($event)" [disabled]="dataService.isAdding || dataService.isEditing" [(ngModel)]="dataService.searchTerm"></ion-searchbar>
-                         </ion-col>
-
                          <ion-col size="3" id="rowsLabel" *ngIf="dataService.isBackendURLSet() && dataService.isAuthKeySet()">
                               <ion-label>Rows</ion-label>
                          </ion-col>
@@ -64,5 +61,6 @@
                </ion-grid>
           </ion-content>
      </ion-menu>
+
      <ion-router-outlet id="main-content"></ion-router-outlet>
 </ion-app>

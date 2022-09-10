@@ -580,6 +580,24 @@ export class DataService {
           return this.processStep(`/SearchIMDB`,params);
      }
 
+     searchTermChangeHandler(event) {
+          const currentRoute=this.router.url.replace("/tabs/","");
+          
+          this.setSearchTerm(event.target.value);
+
+          switch(currentRoute) {
+               case "watchlist":
+                    this.getWatchListSubscription();
+                    break;
+               case "watchlist-items":
+                    this.getWatchListItemsSubscription(false);
+                    break;
+               case "watchlist-queue":
+                    this.getWatchListQueueSubscription();
+                    break;
+          }
+     }
+
      async setAuthKey() {
           if (this.auth_key != null && this.auth_key != "") {
                await this.storage.set('AuthKey', this.auth_key);
@@ -610,6 +628,10 @@ export class DataService {
 
      setWatchList(newWatchList: any) {
           this.watchList=newWatchList;
+     }
+
+     setSearchTerm(newSearchTerm: string) {
+          this.searchTerm=newSearchTerm;
      }
 
      setWatchListItems(newWatchListItems: any) {

@@ -10,11 +10,11 @@
 <ion-content *ngIf="dataService.isBackendURLSet()">
     <ion-grid>
         <ion-row>
-             <ion-col size="6">
-                <ion-input type="text" [(ngModel)]="searchTerm" (keyup)="handleKeyUp($event)"></ion-input>
-             </ion-col>
+             <ion-col size="10">
+               <ion-searchbar  (keyup)="handleKeyUp($event)" [(ngModel)]="searchTerm"></ion-searchbar>
+          </ion-col>
 
-             <ion-col size="1">
+             <ion-col class="header" size="2">
                 <ion-icon name="search-outline" (click)="searchIMDB()"></ion-icon>
              </ion-col>
         </ion-row>

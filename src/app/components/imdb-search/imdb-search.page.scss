@@ -8,6 +8,10 @@ ion-col {
     vertical-align: top;
 }
 
+ion-col.header {
+    padding-top: 20px;
+}
+
 ion-content {
     overflow: auto;
 }

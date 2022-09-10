@@ -13,6 +13,16 @@ This app has the ability to search IMDB for a movie or TV show within the API if
 1. ionic cap open android (optional: if you want to build for ios instead, use ios)
 1. Open Android project in Android Studio for Android or XCode for iOS
 
-KNOWN ISSUES:
+## Screenshots
 
-After updating the web app, the browser cache may need to be cleared before the app reloads properly without using the cached copy.
+Watchlist (movies and shows you have watched)
+![Watchlist](https://github.com/SegiH/WatchList/blob/main/screenshots/watchlist.png?raw=true)
+
+Watchlist Items (list of movies and TV shows)
+![Watchlist Items](https://github.com/SegiH/WatchList/blob/main/screenshots/watchlist-items.png?raw=true)
+
+Watchlist Queue (Movies or TV shows that you want to watch later)
+![Watchlist Items](https://github.com/SegiH/WatchList/blob/main/screenshots/watchlist-queue.png?raw=true)
+
+IMDB Search
+![Watchlist Items](https://github.com/SegiH/WatchList/blob/main/screenshots/imdb-search.png?raw=true)

@@ -32,6 +32,9 @@ If you want to try out the app, run these commands:
 
 ## Screenshots
 
+Watchlist Login
+![Watchlist Login](https://github.com/SegiH/WatchList/blob/main/screenshots/login.png?raw=true)
+
 Watchlist (movies and shows you have watched)
 ![Watchlist](https://github.com/SegiH/WatchList/blob/main/screenshots/watchlist.png?raw=true)
 

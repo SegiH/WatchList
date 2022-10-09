@@ -1,11 +1,11 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { DetailOverlay } from './detail-overlay';
+import { DetailOverlayComponent } from './detail-overlay';
 
 const routes: Routes = [
   {
      path: '',
-     component: DetailOverlay,
+     component: DetailOverlayComponent,
   }
 ];
 

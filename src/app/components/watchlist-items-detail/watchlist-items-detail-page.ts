@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, DoCheck } from '@angular/core';
+import IWatchListItem from 'src/app/interfaces/watchlistitem.interface';
 import { DataService } from '../../core/data.service';
 
 @Component({
@@ -6,13 +7,12 @@ import { DataService } from '../../core/data.service';
      templateUrl: 'watchlist-items-detail.page.html',
      styleUrls: ['watchlist-items-detail.page.scss']
 })
-export class WatchListItemsDetailPage {
+export class WatchListItemsDetailComponent implements DoCheck {
      addItemName = '';
      addItemType = '';
      addItemIMDBURL = '';
      addItemNotes= '';
-     
-     detailObject:[] = [];
+     detailObject: IWatchListItem;
      detailObjectName: string;
      isAdding: boolean;
      isEditing: boolean;
@@ -25,16 +25,17 @@ export class WatchListItemsDetailPage {
 
           this.detailObjectName=this.dataService.getDetailObjectName();
 
-          if (this.dataService.getDetailID() == null)
+          if (this.dataService.getDetailID() == null) {
                this.isAdding=true;
+          }
      }
 
      cancelWatchListItem() {
           if (this.isEditing) {
-               this.detailObject["WatchListItemName"]=this.detailObject[`Previous`].WatchListItemName;
-               this.detailObject["WatchListTypeID"]=this.detailObject[`Previous`].WatchListTypeID;
-               this.detailObject["IMDB_URL"]=this.detailObject[`Previous`].IMDB_URL;
-               this.detailObject["Notes"]=this.detailObject[`Previous`].Notes;
+               this.detailObject.WatchListItemName=this.detailObject.Previous.WatchListItemName;
+               this.detailObject.WatchListTypeID=this.detailObject.Previous.WatchListTypeID;
+               this.detailObject.IMDB_URL=this.detailObject.Previous.IMDB_URL;
+               this.detailObject.ItemNotes=this.detailObject.Previous.ItemNotes;
 
                this.isEditing = false;
           }
@@ -47,42 +48,44 @@ export class WatchListItemsDetailPage {
      }
 
      deleteWatchListItem(currWatchListItem: object) {
-          this.dataService.confirmDialog(currWatchListItem,"Are you sure that you want to delete this item ?",this.deleteWatchListItemCallback.bind(this))
+          this.dataService.confirmDialog(currWatchListItem,'Are you sure that you want to delete this item ?',this.deleteWatchListItemCallback.bind(this));
      }
 
      deleteWatchListItemCallback(currWatchListItem) {
-          this.dataService.deleteWatchListItem(currWatchListItem['WatchListItemID']).subscribe((response) => {
+          this.dataService.deleteWatchListItem(currWatchListItem.WatchListItemID).subscribe((response) => {
                this.dataService.getWatchListItemsSubscription(true);
           },
           error => {
-               console.log(`An error occurred deleting WatchList Item with ID ${currWatchListItem['WatchListID']}`)
+               console.log(`An error occurred deleting WatchList Item with ID ${currWatchListItem.WatchListID}`);
           });
      }
 
      editWatchListItem() {
           this.isEditing=true;
 
-          this.detailObject[`Previous`]=[];
+          this.detailObject.Previous=this.dataService.iWatchListItemEmpty();
 
-          Object.assign(this.detailObject[`Previous`], this.detailObject);
+          Object.assign(this.detailObject.Previous, this.detailObject);
      }
 
      saveWatchListItem() {
-          if (this.isAdding)
+          if (this.isAdding) {
                this.saveNewWatchListItem();
+          }
 
-          if (this.isEditing)
+          if (this.isEditing) {
                this.saveExistingWatchListItem();
+          }
      }
 
      saveNewWatchListItem() {
           if (this.addItemName === ``) {
-               alert(`Please select the name`);
+               this.dataService.alert(`Please select the name`);
                return;
           }
 
           if (this.addItemType === ``) {
-               alert(`Please enter the start date`);
+               this.dataService.alert(`Please enter the start date`);
                return;
           }
 
@@ -112,13 +115,13 @@ export class WatchListItemsDetailPage {
      }
 
      saveExistingWatchListItem() {
-          if (this.detailObject[`WatchListItemName`] === ``) {
-               alert(`Please select the name`);
+          if (this.detailObject.WatchListItemName === ``) {
+               this.dataService.alert(`Please select the name`);
                return;
           }
 
-          if (this.detailObject[`WatchListTypeID`] === ``) {
-               alert(`Please select the type`);
+          if (this.detailObject.WatchListTypeID === null) {
+               this.dataService.alert(`Please select the type`);
                return;
           }
 

@@ -33,7 +33,7 @@
  
           <ion-col [size]="9">
                <ion-label *ngIf="!isAdding">
-                    {{ detailObject['WatchListID'] }}
+                    {{ detailObject?.WatchListID }}
                </ion-label>
           </ion-col>
      </ion-row>
@@ -51,14 +51,14 @@
          
           <ion-col [size]="9">
                <ion-label *ngIf="!isEditing && !isAdding">
-                    {{ dataService.getWatchListItemName(detailObject['WatchListItemID']) }}
+                    {{ dataService.getWatchListItemName(detailObject?.WatchListItemID) }}
                </ion-label>
 
                <select class="editAddSelect" *ngIf="isEditing && !isAdding" placeholder='Name' name="title" type="number" [(ngModel)]="detailObject.WatchListItemID">
                     <option *ngFor="let currItem of dataService.watchListNames;trackBy: dataService.trackByFn" [value]="currItem.WatchListItemID">{{currItem.WatchListItemName}}</option>
                </select>
 
-               <select class="editAddSelect" *ngIf="isAdding" placeholder='Name' name="title" [(ngModel)]="addItemName">
+               <select class="editAddSelect" *ngIf="isAdding" placeholder='Name' name="title" [(ngModel)]="addItemID">
                     <option *ngFor="let currItem of dataService.watchListNames;trackBy: dataService.trackByFn" [value]="currItem.WatchListItemID">{{currItem.WatchListItemName}}</option>
                </select>
           </ion-col>
@@ -77,11 +77,11 @@
 
           <ion-col [size]="9">
                <ion-label *ngIf="!isAdding">
-                    {{ dataService.getWatchListTypeName(detailObject['WatchListTypeID']) }}
+                    {{ dataService.getWatchListTypeName(detailObject?.WatchListTypeID) }}
                </ion-label>
 
-               <ion-label *ngIf="isAdding && addItemName !== null && addItemName !== ''">
-                    {{ dataService.getWatchListTypeNameByWatchListItemID(addItemName) }}
+               <ion-label *ngIf="isAdding && addItemID !== null && addItemID !== null">
+                    {{ dataService.getWatchListTypeNameByWatchListItemID(addItemID) }}
                </ion-label>
           </ion-col>
      </ion-row>
@@ -99,7 +99,7 @@
       
           <ion-col [size]="9">
                <ion-label *ngIf="!isEditing && !isAdding">
-                    {{ detailObject['StartDate'] | date:"MM/dd/yyyy" }}
+                    {{ detailObject?.StartDate | date:"MM/dd/yyyy" }}
                </ion-label>
 
                <ion-input *ngIf="isEditing && !isAdding" class="editAddSelect" type="date" [(ngModel)]="detailObject.StartDate" [value]="detailObject.StartDate"></ion-input>
@@ -121,12 +121,12 @@
    
           <ion-col [size]="9">
                <ion-label *ngIf="!isEditing && !isAdding">
-                    {{ detailObject['EndDate'] | date:"MM/dd/yyyy" }}
+                    {{ detailObject?.EndDate | date:"MM/dd/yyyy" }}
                </ion-label>
 
                <ion-input *ngIf="isEditing && !isAdding" class="editAddSelect" type="date" [(ngModel)]="detailObject.EndDate" [value]="detailObject.EndDate"></ion-input>
 
-               <ion-input *ngIf="isAdding" class="editAddSelect" type="date" [(ngModel)]="addItemEndDate" [value]="addItemEndDate"></ion-input>
+               <ion-input *ngIf="isAdding" type="date" class="editAddSelect" [(ngModel)]="addItemEndDate" [value]="addItemEndDate"></ion-input>
           </ion-col>
      </ion-row>
 
@@ -143,20 +143,20 @@
 
           <ion-col [size]="9">
                <ion-label *ngIf="!isEditing && !isAdding">
-                    {{ dataService.getSourceName(detailObject['WatchListSourceID']) }}
+                    {{ dataService.getSourceName(detailObject?.WatchListSourceID) }}
                </ion-label>
 
                <select class="editAddSelect" *ngIf="isEditing && !isAdding" placeholder='Source' name="Source" [(ngModel)]="detailObject.WatchListSourceID">
-                    <option *ngFor="let currItem of dataService.watchListSources;trackBy: dataService.trackByFn" [value]="currItem['WatchListSourceID']">{{currItem['WatchListSourceName']}}</option>
+                    <option *ngFor="let currItem of dataService.watchListSources;trackBy: dataService.trackByFn" [value]="currItem.WatchListSourceID">{{currItem?.WatchListSourceName}}</option>
                </select>
 
                <select class="editAddSelect" *ngIf="isAdding" placeholder='Name' name="title" [(ngModel)]="addItemSource">
-                    <option *ngFor="let currItem of dataService.watchListSources;trackBy: dataService.trackByFn" [value]="currItem['WatchListSourceID']">{{currItem['WatchListSourceName']}}</option>
+                    <option *ngFor="let currItem of dataService.watchListSources;trackBy: dataService.trackByFn" [value]="currItem?.WatchListSourceID">{{currItem?.WatchListSourceName}}</option>
                </select>
           </ion-col>
      </ion-row>
 
-     <ion-row *ngIf="(isAdding && addItemName !== '' && dataService.getWatchListTypeNameByWatchListItemID(addItemName) == 'TV') || (!isAdding && detailObject !== null && dataService.getWatchListTypeName(detailObject['WatchListTypeID']) == 'TV')">
+     <ion-row *ngIf="(isAdding && addItemID !== '' && dataService.getWatchListTypeNameByWatchListItemID(addItemID) === 'TV') || (!isAdding && detailObject !== null && dataService.getWatchListTypeName(detailObject?.WatchListTypeID) === 'TV')">
           <ion-col [size]="12"></ion-col>
 
           <ion-col [size]="2">
@@ -167,10 +167,12 @@
 
           <ion-col [size]="9">
                <ion-label *ngIf="!isEditing && !isAdding">
-                    {{ detailObject['Season'] }}
+                    {{ detailObject?.Season }}
                </ion-label>
 
-               <ion-input *ngIf="isAdding || isEditing" class="editAddSelect shortField" maxlength="3" type="text" [ngModel]="(isAdding ? addSeason : detailObject['Season'])"></ion-input>
+               <ion-input *ngIf="isEditing && !isAdding" class="editAddSelect shortField" maxlength="3" type="text" [(ngModel)]="detailObject.Season"></ion-input>
+
+               <ion-input *ngIf="isAdding && !isEditing" class="editAddSelect shortField" maxlength="3" type="text" [(ngModel)]="addSeason"></ion-input>
           </ion-col>
      </ion-row>
 
@@ -187,12 +189,12 @@
 
           <ion-col [size]="9">
                <ion-label *ngIf="!isEditing && !isAdding">
-                    {{ detailObject['Notes'] }}
+                    {{ detailObject?.Notes }}
                </ion-label>
 
                <ion-input *ngIf="isEditing && !isAdding" class="editAddSelect" type="text" [(ngModel)]="detailObject.Notes"></ion-input>
 
-               <ion-input *ngIf="isAdding" type="text" class="editAddSelect" [(ngModel)]="addItemNotes"></ion-input>
+               <ion-input *ngIf="isAdding && !isEditing" type="text" class="editAddSelect" [(ngModel)]="addItemNotes"></ion-input>
           </ion-col>
      </ion-row>
 

@@ -1,17 +1,19 @@
-import { Component } from '@angular/core';
+import { Component, DoCheck } from '@angular/core';
 import { DataService } from '../../core/data.service';
 import { DatePipe } from '@angular/common';
+import IWatchListQueueItem from 'src/app/interfaces/watchlistqueueitem.interface';
+import IWatchList from 'src/app/interfaces/watchlist.interface';
 
 @Component({
      selector: 'app-watchlist-queue-detail',
      templateUrl: 'watchlist-queue-detail.page.html',
      styleUrls: ['watchlist-queue-detail.page.scss']
 })
-export class WatchListQueueDetailPage {   
-     addQueueItemID = '';     
+export class WatchListQueueDetailComponent implements DoCheck {
+     addQueueItemID = '';
      addQueueItemNotes= '';
 
-     detailObject:[] = [];
+     detailObject: IWatchListQueueItem;
      detailObjectName: string;
      isAdding: boolean;
      isEditing: boolean;
@@ -24,34 +26,48 @@ export class WatchListQueueDetailPage {
 
           this.detailObjectName=this.dataService.getDetailObjectName();
 
-          if (this.dataService.getDetailID() == null)
+          if (this.dataService.getDetailID() == null) {
                this.isAdding=true;
+          }
      }
 
      // Add Queue item to WatchList and remove from WatchList Queue
      addToWatchList() {
           const currWatchListItem: any=[];
-          currWatchListItem.WatchListItemID=this.detailObject['WatchListItemID'];
+          currWatchListItem.WatchListItemID=this.detailObject.WatchListItemID;
 
           const d=new Date();
           const pipe = new DatePipe('en-US');
           const now = Date.now();
           const formattedDate = pipe.transform(now, 'shortDate');
-          
-          currWatchListItem.StartDate=formattedDate;
-          currWatchListItem.WatchListQueueItemID=this.detailObject['WatchListQueueItemID']; // Needed so we can delete the queue item later
-          
-          if (this.detailObject['Notes'] != null && this.detailObject['Notes'] != '')
-               currWatchListItem.Notes=this.detailObject['Notes'];
-          else
-               currWatchListItem.Notes="Added from queue";
 
-          this.dataService.confirmDialog(currWatchListItem,"Are you sure that you want to move this item to the WatchList ?",this.addToWatchListCallback.bind(this))
+          currWatchListItem.StartDate=formattedDate;
+
+           // Needed so we can delete the queue item later
+          currWatchListItem.WatchListQueueItemID=this.detailObject.WatchListQueueItemID;
+
+          if (this.detailObject.Notes !== null && this.detailObject.Notes !== '') {
+               currWatchListItem.Notes=this.detailObject.Notes;
+          } else {
+               currWatchListItem.Notes='Added from queue';
+          }
+
+          this.dataService.confirmDialog(currWatchListItem,'Are you sure that you want to move this item to the WatchList ?',this.addToWatchListCallback.bind(this));
      }
 
      addToWatchListCallback() {
-          this.dataService.addWatchList(this.detailObject).subscribe((response) => {
-               
+          const newWatchList: IWatchList = {
+               WatchListID: null,
+               WatchListItemID: this.detailObject.WatchListItemID,
+               UserID: this.detailObject.UserID,
+               StartDate: new Date(),
+               EndDate: null,
+               WatchListSourceID: null,
+               Season: null,
+               Notes: ''
+          };
+
+          this.dataService.addWatchList(newWatchList).subscribe((response) => {
                this.deleteWatchListQueueItemCallback();
 
                this.dataService.getWatchListSubscription();
@@ -63,8 +79,8 @@ export class WatchListQueueDetailPage {
 
      cancelWatchListQueueItem() {
           if (this.isEditing) {
-               this.detailObject["WatchListItemName"]=this.detailObject[`Previous`].WatchListItemName;
-               this.detailObject["Notes"]=this.detailObject[`Previous`].Notes;
+               this.detailObject.WatchListItemID=this.detailObject.Previous.WatchListItemID;
+               this.detailObject.Notes=this.detailObject.Previous.Notes;
 
                this.isEditing = false;
           } else if (this.isAdding) {
@@ -78,37 +94,39 @@ export class WatchListQueueDetailPage {
      }
 
      deleteWatchListQueueItem() {
-          this.dataService.confirmDialog(this.detailObject,"Are you sure that you want to delete this queue item ?",this.deleteWatchListQueueItemCallback.bind(this))
+          this.dataService.confirmDialog(this.detailObject,'Are you sure that you want to delete this queue item ?',this.deleteWatchListQueueItemCallback.bind(this));
      }
-     
-     deleteWatchListQueueItemCallback() {          
-          this.dataService.deleteWatchListQueueItem(this.detailObject['WatchListQueueItemID']).subscribe((response) => {
+
+     deleteWatchListQueueItemCallback() {
+          this.dataService.deleteWatchListQueueItem(this.detailObject.WatchListQueueItemID).subscribe((response) => {
                this.dataService.getWatchListQueueSubscription();
           },
           error => {
-               console.log(`An error occurred deleting WatchList Queue Item with ID ${this.detailObject['WatchListQueueItemID']}`)
+               console.log(`An error occurred deleting WatchList Queue Item with ID ${this.detailObject.WatchListQueueItemID}`);
           });
      }
 
      editWatchListQueueItem() {
           this.isEditing = true;
 
-          this.detailObject[`Previous`]=[];
+          //this.detailObject.Previous=[];
 
-          Object.assign(this.detailObject[`Previous`], this.detailObject);
+          Object.assign(this.detailObject.Previous, this.detailObject);
      }
 
      saveWatchListQueueItem() {
-          if (this.isAdding)
+          if (this.isAdding) {
                this.saveNewWatchListQueueItem();
+          }
 
-          if (this.isEditing)
+          if (this.isEditing) {
                this.saveExistingWatchListQueueItem();
+          }
      }
 
      saveNewWatchListQueueItem() {
           if (this.addQueueItemID === ``) {
-               alert(`Please select the name`);
+               this.dataService.alert(`Please select the name`);
                return;
           }
 
@@ -130,8 +148,8 @@ export class WatchListQueueDetailPage {
      }
 
      saveExistingWatchListQueueItem() {
-          if (this.detailObject[`WatchListItemName`] === ``) {
-               alert(`Please select the name`);
+          if (this.detailObject.WatchListItemID === null) {
+               this.dataService.alert(`Please select the name`);
                return;
           }
 

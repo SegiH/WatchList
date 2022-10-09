@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { IonicModule } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { WatchListPage } from './watchlist.page';
+import { WatchListComponent } from './watchlist.page';
 import { WatchListPageRoutingModule } from './watchlist-routing.module';
 
 @NgModule({
@@ -12,6 +12,6 @@ import { WatchListPageRoutingModule } from './watchlist-routing.module';
           IonicModule,
           WatchListPageRoutingModule,
      ],
-     declarations: [WatchListPage]
+     declarations: [WatchListComponent]
 })
 export class WatchListPageModule {}

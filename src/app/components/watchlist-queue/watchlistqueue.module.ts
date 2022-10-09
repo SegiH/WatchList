@@ -2,7 +2,7 @@ import { IonicModule } from '@ionic/angular';
 import { NgModule, OnInit  } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { WatchListQueuePage } from './watchlistqueue.page';
+import { WatchListQueueComponent } from './watchlistqueue.page';
 
 import { WatchListQueuePageRoutingModule } from './watchlistqueue-routing.module';
 
@@ -10,9 +10,9 @@ import { WatchListQueuePageRoutingModule } from './watchlistqueue-routing.module
      imports: [
           CommonModule,
           FormsModule,
-          IonicModule,          
+          IonicModule,
           WatchListQueuePageRoutingModule
      ],
-     declarations: [WatchListQueuePage]
+     declarations: [WatchListQueueComponent]
 })
 export class WatchListQueuePageModule {}

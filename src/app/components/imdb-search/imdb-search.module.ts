@@ -2,7 +2,7 @@ import { IonicModule } from '@ionic/angular';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { IMDBSearchPage } from './imdb-search.page';
+import { IMDBSearchComponent } from './imdb-search.page';
 
 import { IMDBSearchPageRoutingModule } from './imdb-search-routing.module';
 
@@ -10,9 +10,9 @@ import { IMDBSearchPageRoutingModule } from './imdb-search-routing.module';
      imports: [
           CommonModule,
           FormsModule,
-          IonicModule,          
+          IonicModule,
           IMDBSearchPageRoutingModule
      ],
-     declarations: [IMDBSearchPage]
+     declarations: [IMDBSearchComponent]
 })
 export class IMDBSearchPageModule {}

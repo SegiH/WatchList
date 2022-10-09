@@ -6,10 +6,10 @@ import { DataService } from '../../core/data.service';
      templateUrl: 'watchlist.page.html',
      styleUrls: ['watchlist.page.scss']
 })
-export class WatchListPage {     
+export class WatchListComponent {
      constructor(public dataService: DataService) { }
 
      addWatchList() {
-          this.dataService.openDetailOverlay("watchlist",null);
+          this.dataService.openDetailOverlay('watchlist',null);
      }
 }

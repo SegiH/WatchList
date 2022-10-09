@@ -1,11 +1,11 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { IMDBSearchPage } from './imdb-search.page';
+import { IMDBSearchComponent } from './imdb-search.page';
 
 const routes: Routes = [
   {
      path: '',
-     component: IMDBSearchPage,
+     component: IMDBSearchComponent,
   }
 ];
 

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, DoCheck } from '@angular/core';
 import { DataService } from '../../core/data.service';
 import { ActivatedRoute, Router } from '@angular/router';
 
@@ -7,17 +7,18 @@ import { ActivatedRoute, Router } from '@angular/router';
      templateUrl: 'detail-overlay.page.html',
      styleUrls: ['detail-overlay.page.scss']
 })
-export class DetailOverlay {
+export class DetailOverlayComponent implements DoCheck {
      detailObjectName: string;
-    
+
      constructor(public dataService: DataService, private router: Router, private route: ActivatedRoute) {}
 
      ngDoCheck() {
-          this.detailObjectName=this.route.snapshot.paramMap.get("ObjectName")
-          
+          this.detailObjectName=this.route.snapshot.paramMap.get('ObjectName');
+
           this.dataService.authGuardDisabled=false;
 
-          if (this.detailObjectName == null)
-               this.router.navigateByUrl('/')
+          if (this.detailObjectName == null) {
+               this.router.navigateByUrl('/');
+          }
      }
 }

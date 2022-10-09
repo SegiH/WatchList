@@ -2,7 +2,7 @@ import { IonicModule } from '@ionic/angular';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { WatchListStatsPage } from './watchlist-stats.page';
+import { WatchListStatsComponent } from './watchlist-stats.page';
 
 import { WatchListStatsPageRoutingModule } from './watchlist-stats-routing.module';
 
@@ -13,7 +13,7 @@ import { WatchListStatsPageRoutingModule } from './watchlist-stats-routing.modul
           FormsModule,
           WatchListStatsPageRoutingModule
      ],
-     declarations: [WatchListStatsPage]
+     declarations: [WatchListStatsComponent]
 })
 export class WatchListStatsPageModule {
     constructor() {}

@@ -7,6 +7,6 @@ import { DataService } from '../core/data.service';
      styleUrls: ['tabs.page.scss']
 })
 
-export class TabsPage {
+export class TabsComponent {
      constructor(public dataService: DataService) { }
 }

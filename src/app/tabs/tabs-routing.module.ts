@@ -1,13 +1,17 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { TabsPage } from './tabs.page';
+import { TabsComponent } from './tabs.page';
 import { AuthGuardService as AuthGuard } from '../core/auth-guard-service';
 
 const routes: Routes = [
      {
      path: 'tabs',
-     component: TabsPage,
+     component: TabsComponent,
      children: [
+          {
+               path: 'login',
+               loadChildren: () => import('../components/login/login.module').then(m => m.LoginPageModule)
+          },
           {
                path: 'watchlist',
                loadChildren: () => import('../components/watchlist/watchlist.module').then(m => m.WatchListPageModule),
@@ -23,8 +27,8 @@ const routes: Routes = [
                loadChildren: () => import('../components/watchlist-queue/watchlistqueue.module').then(m => m.WatchListQueuePageModule),
                canActivate: [AuthGuard]
           },
-          {
-               path: 'imdb-search', // The route settings are always here but this route won't get activated if IMDB API key is not provided because the IMDB Search tab gets hidden when API key is not present
+          { // This route is defined but won't get activated if IMDB API key is not provided. IMDB tab is hidden when API key isn't set
+               path: 'imdb-search',
                loadChildren: () => import('../components/imdb-search/imdb-search.module').then(m => m.IMDBSearchPageModule),
                canActivate: [AuthGuard]
           },
@@ -42,7 +46,7 @@ const routes: Routes = [
      },
      {
           path: '',
-          redirectTo: '/tabs/watchlist',
+          redirectTo: '/tabs/login',
           pathMatch: 'full'
      }
 ];

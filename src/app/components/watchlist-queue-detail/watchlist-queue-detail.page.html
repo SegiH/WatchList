@@ -1,4 +1,4 @@
-<ion-content *ngIf="dataService.isBackendURLSet() && dataService.isAuthKeySet()">
+<ion-content *ngIf="dataService.isBackendURLSet() && dataService.isLoggedIn">
      <ion-refresher slot="fixed" (ionRefresh)="dataService.pullToRefresh($event,'WatchListQueueItems')">
           <ion-refresher-content></ion-refresher-content>
      </ion-refresher>
@@ -41,7 +41,7 @@
 
                               <ion-col [size]="9">
                                    <ion-label *ngIf="!isAdding">
-                                        {{ detailObject['WatchListQueueItemID'] }}
+                                        {{ detailObject.WatchListQueueItemID }}
                                    </ion-label>
                               </ion-col>
                          </ion-row>
@@ -58,7 +58,7 @@
                               <ion-col [size]="1"></ion-col>
         
                               <ion-col [size]="9">
-                                   <ion-label *ngIf="!isEditing && !isAdding">{{ dataService.getWatchListItemName(detailObject['WatchListItemID']) }}</ion-label>
+                                   <ion-label *ngIf="!isEditing && !isAdding">{{ dataService.getWatchListItemName(detailObject.WatchListItemID) }}</ion-label>
 
                                    <select class="editAddSelect" *ngIf="isEditing" placeholder='Name' name="title" type="number" [(ngModel)]="detailObject.WatchListItemID">
                                         <option *ngFor="let currItem of dataService.watchListNames;trackBy: dataService.trackByFn" [value]="currItem.WatchListItemID">{{currItem.WatchListItemName}}</option>
@@ -82,7 +82,7 @@
                               <ion-col [size]="1"></ion-col>
 
                               <ion-col [size]="9">
-                                   <ion-label>{{ dataService.getWatchListTypeName(detailObject['WatchListTypeID']) }}</ion-label>
+                                   <ion-label>{{ dataService.getWatchListTypeName(detailObject.WatchListTypeID) }}</ion-label>
                               </ion-col>
                          </ion-row>
 
@@ -98,7 +98,7 @@
                               <ion-col [size]="1"></ion-col>
 
                               <ion-col [size]="9">
-                                   <ion-label *ngIf="!isEditing && !isAdding">{{ detailObject['Notes'] }}</ion-label>
+                                   <ion-label *ngIf="!isEditing && !isAdding">{{ detailObject.Notes }}</ion-label>
 
                                    <ion-input *ngIf="isEditing" class="editAddSelect" type="text" [(ngModel)]="detailObject.Notes"></ion-input>
 

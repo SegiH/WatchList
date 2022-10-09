@@ -2,16 +2,16 @@ import { NgModule } from '@angular/core';
 import { IonicModule } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { WatchListItemsComponent } from './watchlist-items.page';
-import { WatchListItemsPageRoutingModule } from './watchlist-items-routing.module';
+import { LoginComponent } from '../login/login.component';
+import { LoginPageRoutingModule } from './login-routing.module';
 
 @NgModule({
      imports: [
           CommonModule,
           FormsModule,
           IonicModule,
-          WatchListItemsPageRoutingModule
+          LoginPageRoutingModule,
      ],
-     declarations: [WatchListItemsComponent]
+     declarations: [LoginComponent]
 })
-export class WatchListItemsPageModule {}
+export class LoginPageModule {}

@@ -1,46 +1,53 @@
-import { Component } from '@angular/core';
+import { Component, DoCheck, OnInit } from '@angular/core';
 import { DataService } from '../../core/data.service';
 import { DatePipe } from '@angular/common';
+import IWatchList from 'src/app/interfaces/watchlist.interface';
 
 @Component({
      selector: 'app-watchlist-detail',
      templateUrl: 'watchlist-detail.page.html',
      styleUrls: ['watchlist-detail.page.scss']
 })
-export class WatchListDetailPage {
-     addItemName = '';
+export class WatchListDetailComponent implements DoCheck {
+     addItemID = 0;
      addItemStartDate = '';
      addItemEndDate = '';
      addItemNotes= '';
      addItemSource = '';
      addSeason = '';
 
-     detailObject:[] = [];
+     detailObject: IWatchList;
      detailObjectName: string;
      isAdding: boolean;
      isEditing: boolean;
 
      constructor(private dataService: DataService) { }
 
-     ngDoCheck() {
+     ngDoCheck(): void {
           this.detailObject=this.dataService.getDetailObject();
 
           this.detailObjectName=this.dataService.getDetailObjectName();
 
-          const addWatchListItemID=this.dataService.getDetailWatchListItemID();
+          /*const addWatchListItemID=this.dataService.getDetailWatchListItemID();
 
           if (addWatchListItemID !== null) {
-               this.addItemName=addWatchListItemID.toString();
-          }
+               this.addItemID=addWatchListItemID;
+          }*/
 
           if (this.dataService.getDetailID() == null) {
                this.isAdding=true;
 
                // Default start and end date to current date
                const dateStr = new Date().setSeconds(0,0);
-               const dt = new Date(dateStr).toISOString().substring(0,10); 
-               this.addItemStartDate=dt;
-               this.addItemEndDate=dt;
+               const dt = new Date(dateStr).toISOString().substring(0,10);
+
+               if (this.addItemStartDate === '') {
+                    this.addItemStartDate=dt;
+               }
+
+               if (this.addItemEndDate === '') {
+                    this.addItemEndDate=dt;
+               }
           }  else
                this.isAdding=false;
      }
@@ -54,16 +61,17 @@ export class WatchListDetailPage {
           const pipe = new DatePipe('en-US');
           const now = Date.now();
           const formattedDate = pipe.transform(now, 'shortDate');
-          
+
           currWatchListItem.StartDate=formattedDate;
           currWatchListItem.WatchListID=this.detailObject['WatchListID']; // Needed so we can delete the watchlist item later
 
-          if (this.detailObject['Notes'] != null && this.detailObject['Notes'] != '')
+          if (this.detailObject['Notes'] !== null && this.detailObject['Notes'] !== '') {
                currWatchListItem.Notes=this.detailObject['Notes'];
-          else
-               currWatchListItem.Notes="Added from WatchList";
+          } else {
+               currWatchListItem.Notes='Added from WatchList';
+          }
 
-          this.dataService.confirmDialog(currWatchListItem,"Are you sure that you want to move this item to the WatchList Queue?",this.addToWatchListQueueCallback.bind(this))
+          this.dataService.confirmDialog(currWatchListItem,'Are you sure that you want to move this item to the WatchList Queue?',this.addToWatchListQueueCallback.bind(this));
      }
 
      addToWatchListQueueCallback() {
@@ -76,20 +84,20 @@ export class WatchListDetailPage {
 
                this.dataService.closeOverlay();
 
-               alert("Added to Watch List Queue");
+               this.dataService.alert('Added to Watch List Queue');
           },
           error => {
-               alert(`Error ${error} occurred. Not addded to Watch List QueueQQQ`);
+               this.dataService.alert(`Error ${error} occurred. Not addded to Watch List QueueQQQ`);
                this.dataService.handleError(error);
           });
      }
 
      cancelWatchList() {
           if (this.isEditing) {
-               this.detailObject["WatchListItemID"]=this.detailObject[`Previous`].WatchListItemID;
-               this.detailObject["StartDate"]=this.detailObject[`Previous`].StartDate;
-               this.detailObject["EndDate"]=this.detailObject[`Previous`].EndDate;
-               this.detailObject["Notes"]=this.detailObject[`Previous`].Notes;
+               this.detailObject['WatchListItemID']=this.detailObject[`Previous`].WatchListItemID;
+               this.detailObject['StartDate']=this.detailObject[`Previous`].StartDate;
+               this.detailObject['EndDate']=this.detailObject[`Previous`].EndDate;
+               this.detailObject['Notes']=this.detailObject[`Previous`].Notes;
 
                this.isEditing = false;
           }
@@ -97,14 +105,14 @@ export class WatchListDetailPage {
           if (this.isAdding) {
                this.isEditing = false;
 
-               this.addItemName='';
+               this.addItemID=0;
 
                this.dataService.closeOverlay();
           }
      }
 
      deleteWatchList(currWatchList: object) {
-          this.dataService.confirmDialog(currWatchList,"Are you sure that you want to delete this item ?",this.deleteWatchListCallback.bind(this))
+          this.dataService.confirmDialog(currWatchList,'Are you sure that you want to delete this item ?',this.deleteWatchListCallback.bind(this));
      }
 
      deleteWatchListCallback() {
@@ -112,7 +120,7 @@ export class WatchListDetailPage {
                this.dataService.getWatchListSubscription();
           },
           error => {
-               console.log(`An error occurred deleting WatchList Item with ID ${this.detailObject['WatchListID']}`)
+               console.log(`An error occurred deleting WatchList Item with ID ${this.detailObject['WatchListID']}`);
           });
      }
 
@@ -125,26 +133,28 @@ export class WatchListDetailPage {
      }
 
      saveWatchList() {
-          if (this.isAdding)
+          if (this.isAdding) {
                this.saveNewWatchList();
+          }
 
-          if (this.isEditing)
+          if (this.isEditing) {
                this.saveExistingWatchList();
+          }
      }
 
      saveNewWatchList() {
-          if (this.addItemName === ``) {
-               alert(`Please select the name`);
+          if (this.addItemID === 0) {
+               this.dataService.alert(`Please select the name`);
                return;
           }
 
           if (this.addItemStartDate === ``) {
-               alert(`Please enter the start date`);
+               this.dataService.alert(`Please enter the start date`);
                return;
           }
 
           const currWatchList: any=[];
-          currWatchList.WatchListItemID=this.addItemName;
+          currWatchList.WatchListItemID=this.addItemID;
           currWatchList.StartDate=this.addItemStartDate;
           currWatchList.EndDate=this.addItemEndDate;
           currWatchList.Notes=this.addItemNotes;
@@ -152,7 +162,7 @@ export class WatchListDetailPage {
           currWatchList.Season=this.addSeason;
 
           this.dataService.addWatchList(currWatchList).subscribe((response) => {
-               this.addItemName = '';
+               this.addItemID = 0;
                this.addItemStartDate = '';
                this.addItemEndDate = '';
                this.addItemNotes= '';
@@ -172,13 +182,13 @@ export class WatchListDetailPage {
      }
 
      saveExistingWatchList() {
-          if (this.detailObject[`WatchListID`] === ``) {
-               alert(`Please select the name`);
+          if (String(this.detailObject[`WatchListID`]) === ``) {
+               this.dataService.alert(`Please select the name`);
                return;
           }
 
-          if (this.detailObject[`StartDate`] === ``) {
-               alert(`Please enter the start date`);
+          if (String(this.detailObject[`StartDate`]) === ``) {
+               this.dataService.alert(`Please enter the start date`);
                return;
           }
 

@@ -6,6 +6,6 @@ import { DataService } from '../../core/data.service';
      templateUrl: 'watchlistqueue.page.html',
      styleUrls: ['watchlistqueue.page.scss']
 })
-export class WatchListQueuePage {
+export class WatchListQueueComponent {
      constructor(public dataService: DataService) { }
 }

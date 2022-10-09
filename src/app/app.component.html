@@ -1,5 +1,5 @@
 <ion-app>
-     <ion-menu contentId="main-content" type="push"> 
+     <ion-menu *ngIf="dataService.isBackendURLSet() && dataService.isLoggedIn" contentId="main-content" type="push"> 
           <ion-header> 
                <ion-toolbar> 
                     <ion-title>Menu</ion-title> 
@@ -7,60 +7,53 @@
           </ion-header> 
 
           <ion-content>
-               <ion-refresher slot="fixed" (ionRefresh)="reloadData($event)">
-                    <ion-refresher-content></ion-refresher-content>
-               </ion-refresher>
-
                <ion-grid>
                     <ion-row>
-                         <ion-col size="3" id="rowsLabel" *ngIf="dataService.isBackendURLSet() && dataService.isAuthKeySet()">
+                         <ion-col size="3" id="rowsLabel">
                               <ion-label>Rows</ion-label>
                          </ion-col>
 
-                         <ion-col size="9" *ngIf="dataService.isBackendURLSet() && dataService.isAuthKeySet()">
+                         <ion-col size="9">
                               <ion-select placeholder='Record Limit' name="recordLimit" [(ngModel)]="dataService.recordLimit" (ionChange)="reloadData($event)">
                                    <ion-select-option *ngFor="let currItem of recordLimitOptions;trackBy: trackByFn" [value]="currItem">{{currItem}}</ion-select-option>
                               </ion-select>          
                          </ion-col>
 
-                         <ion-col size="12" *ngIf="currentRoute=='WatchList' && dataService.isBackendURLSet() && dataService.isAuthKeySet()">
+                         <ion-col size="12" *ngIf="currentRoute==='WatchList'">
                               <ion-item>Still watching<ion-toggle [(ngModel)]="dataService.incompleteFilter" color="primary" (ionChange)="reloadData($event)"></ion-toggle></ion-item>
                          </ion-col>
 
-                         <ion-col size="12" *ngIf="currentRoute=='WatchListItems' && dataService.isBackendURLSet() && dataService.isAuthKeySet()">
+                         <ion-col size="12" *ngIf="currentRoute==='WatchListItems'">
                               <ion-item>IMDB URL Missing<ion-toggle id="IMDBURLMissing" [(ngModel)]="dataService.imdb_url_missing" color="primary" (ionChange)="reloadData($event)"></ion-toggle></ion-item>
                          </ion-col>
 
-                         <ion-col size="9" *ngIf="currentRoute=='WatchList' && dataService.isBackendURLSet() && dataService.isAuthKeySet()">
+                         <ion-col size="9" *ngIf="currentRoute==='WatchList'">
                               <ion-select placeholder='Source' name="source" [(ngModel)]="dataService.sourceFilter" (ionChange)="reloadData($event)">
                                    <ion-select-option value="All">All</ion-select-option>
                                    <ion-select-option *ngFor="let currItem of dataService.watchListSources;trackBy: trackByFn" [value]="currItem['WatchListSourceID']" (ionChange)="reloadData($event)">{{currItem['WatchListSourceName']}}</ion-select-option>
                               </ion-select>
                          </ion-col>
+                    </ion-row>
 
-                         <ion-col size="12" *ngIf="!isEditingOptions">
-                              <ion-icon class="optionsIcon" name="create-outline" (click)="editOptions()"></ion-icon>
-                         </ion-col>
+                    <ion-row *ngIf="!isEditingOptions">
+                         <ion-col size="12"></ion-col>
+                         <ion-col size="12"></ion-col>
+                         <ion-col size="12"></ion-col>
 
-                         <ion-col size="10" *ngIf="isEditingOptions">
-                              <ion-icon class="optionsIcon" name="save-outline" (click)="saveOptions()"></ion-icon>
+                         <ion-col size="3" class="align">
+                              Sign Out
                          </ion-col>
-
-                         <ion-col size="2" *ngIf="isEditingOptions">
-                              <ion-icon class="optionsIcon" name="close-circle-outline" (click)="saveOptions()"></ion-icon>
-                         </ion-col>
-
-                         <ion-col size="12">
-                              <ion-input id="backendURLInput" [disabled]="!isEditingOptions" type="text" placeholder="Backend URL" [(ngModel)]="dataService.backendURL" [value]="dataService.backendURL" (ionBlur)="dataService.setBackendURL()"></ion-input>
-                         </ion-col>
-
-                         <ion-col size="12" *ngIf="dataService.isBackendURLSet()">
-                              <ion-input id="authKeyInput"  [disabled]="!isEditingOptions" [type]="!isEditingOptions ? 'password' : 'text'" placeholder="Auth Key" [(ngModel)]="dataService.auth_key" [value]="dataService.auth_key" (ionBlur)="dataService.setAuthKey()"></ion-input>
-                         </ion-col>
+                         <ion-col size="2">
+                              <ion-icon class="optionsIcon" name="log-out-outline" (click)="signOut()"></ion-icon>
+                         </ion-col> 
                     </ion-row>
                </ion-grid>
           </ion-content>
      </ion-menu>
 
-     <ion-router-outlet id="main-content"></ion-router-outlet>
+     <ion-router-outlet id="main-content"></ion-router-outlet>     
 </ion-app>
+
+<!--
+<a [routerLink]="['/forgot-password']" class="small-text">Forgot Password?</a>
+-->

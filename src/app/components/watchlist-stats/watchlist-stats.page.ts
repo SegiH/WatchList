@@ -6,8 +6,8 @@ import { DataService } from '../../core/data.service';
      templateUrl: 'watchlist-stats.page.html',
      styleUrls: ['watchlist-stats.page.scss']
 })
-export class WatchListStatsPage implements OnInit{
-     watchListMovieStats: []; 
+export class WatchListStatsComponent implements OnInit{
+     watchListMovieStats: [];
      watchListTVStats: [];
 
      constructor(public dataService: DataService) {}
@@ -20,7 +20,7 @@ export class WatchListStatsPage implements OnInit{
 
      getWatchListMovieStatsSubscription() {
           this.dataService.getWatchListMovieStats().subscribe((response) => {
-               this.watchListMovieStats=response;              
+               this.watchListMovieStats=response;
           },
           error => {
                this.dataService.handleError(error);
@@ -29,7 +29,7 @@ export class WatchListStatsPage implements OnInit{
 
      getWatchListTVStatsSubscription() {
           this.dataService.getWatchListTVStats().subscribe((response) => {
-               this.watchListTVStats=response;              
+               this.watchListTVStats=response;
           },
           error => {
                this.dataService.handleError(error);

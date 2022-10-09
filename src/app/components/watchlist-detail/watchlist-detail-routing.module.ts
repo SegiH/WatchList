@@ -1,10 +1,10 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { WatchListDetailPage } from './watchlist-detail-page';
+import { WatchListDetailComponent } from './watchlist-detail-page';
 const routes: Routes = [
   {
      path: '',
-     component: WatchListDetailPage,
+     component: WatchListDetailComponent,
   }
 ];
 

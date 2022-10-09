@@ -7,14 +7,14 @@
           <ion-grid>
                <ion-row>
                     <ion-col size="12">
-                         <ion-searchbar *ngIf="dataService.isBackendURLSet() && dataService.isAuthKeySet()"(ionChange)="dataService.searchTermChangeHandler($event)" [disabled]="dataService.isAdding || dataService.isEditing" [(ngModel)]="dataService.searchTerm"></ion-searchbar>
+                         <ion-searchbar *ngIf="dataService.isBackendURLSet() && dataService.isLoggedIn"(ionChange)="dataService.searchTermChangeHandler($event)" [disabled]="dataService.isAdding || dataService.isEditing" [(ngModel)]="dataService.searchTerm"></ion-searchbar>
                     </ion-col>
                </ion-row>
           </ion-grid>
      </ion-toolbar>
 </ion-header>
 
-<ion-content *ngIf="dataService.isBackendURLSet() && dataService.isAuthKeySet()">
+<ion-content *ngIf="dataService.isBackendURLSet() && dataService.isLoggedIn">
      <ion-refresher slot="fixed" (ionRefresh)="dataService.pullToRefresh($event,'WatchList')">
           <ion-refresher-content></ion-refresher-content>
      </ion-refresher>
@@ -33,34 +33,33 @@
                     <ion-grid>
                          <ion-row>
                               <ion-col [size]="this.dataService.getColumnSize('ID','WatchList')">
-                                   
                                    <ion-label class="header">ID</ion-label>
-                                   <ion-icon *ngIf="dataService.watchList?.length > 0 && dataService.watchListSortDirection =='ASC' && !dataService.isAdding && !dataService.isEditing" [ngClass]="dataService.watchListSortActiveColumn === 'ID' ? 'upArrow IDArrowIcon active header' : 'upArrow IDArrowIcon header'" name="caret-up-outline" (click)="dataService.sortClick('ID','ASC','WatchList')"></ion-icon>
-                                   <ion-icon *ngIf="dataService.watchList?.length > 0 && dataService.watchListSortDirection =='DESC' && !dataService.isAdding && !dataService.isEditing" [ngClass]="dataService.watchListSortActiveColumn === 'ID' ? 'downArrow IDArrowIcon active header' : 'downArrow IDArrowIcon header'" name="caret-down-outline" (click)="dataService.sortClick('ID','DESC','WatchList')"></ion-icon>
+                                   <ion-icon *ngIf="dataService.watchList?.length > 0 && dataService.watchListSortDirection ==='ASC' && !dataService.isAdding && !dataService.isEditing" [ngClass]="dataService.watchListSortActiveColumn === 'ID' ? 'upArrow IDArrowIcon active header' : 'upArrow IDArrowIcon header'" name="caret-up-outline" (click)="dataService.sortClick('ID','ASC','WatchList')"></ion-icon>
+                                   <ion-icon *ngIf="dataService.watchList?.length > 0 && dataService.watchListSortDirection ==='DESC' && !dataService.isAdding && !dataService.isEditing" [ngClass]="dataService.watchListSortActiveColumn === 'ID' ? 'downArrow IDArrowIcon active header' : 'downArrow IDArrowIcon header'" name="caret-down-outline" (click)="dataService.sortClick('ID','DESC','WatchList')"></ion-icon>
                               </ion-col>
 
                               <ion-col [size]="this.dataService.getColumnSize('Name','WatchList')">
                                    <ion-label class="header">Name</ion-label>
-                                   <ion-icon *ngIf="dataService.watchList?.length > 0 && dataService.watchListSortDirection =='ASC' && !dataService.isAdding && !dataService.isEditing" [ngClass]="dataService.watchListSortActiveColumn === 'Name' ? 'upArrow nameArrowIcon active header' : 'upArrow nameArrowIcon header'" name="caret-up-outline" (click)="dataService.sortClick('Name','ASC','WatchList')"></ion-icon>
-                                   <ion-icon *ngIf="dataService.watchList?.length > 0 && dataService.watchListSortDirection =='DESC' && !dataService.isAdding && !dataService.isEditing" [ngClass]="dataService.watchListSortActiveColumn === 'Name' ? 'downArrow nameArrowIcon active header' : 'downArrow nameArrowIcon header'" name="caret-down-outline" (click)="dataService.sortClick('Name','DESC','WatchList')"></ion-icon>
+                                   <ion-icon *ngIf="dataService.watchList?.length > 0 && dataService.watchListSortDirection ==='ASC' && !dataService.isAdding && !dataService.isEditing" [ngClass]="dataService.watchListSortActiveColumn === 'Name' ? 'upArrow nameArrowIcon active header' : 'upArrow nameArrowIcon header'" name="caret-up-outline" (click)="dataService.sortClick('Name','ASC','WatchList')"></ion-icon>
+                                   <ion-icon *ngIf="dataService.watchList?.length > 0 && dataService.watchListSortDirection ==='DESC' && !dataService.isAdding && !dataService.isEditing" [ngClass]="dataService.watchListSortActiveColumn === 'Name' ? 'downArrow nameArrowIcon active header' : 'downArrow nameArrowIcon header'" name="caret-down-outline" (click)="dataService.sortClick('Name','DESC','WatchList')"></ion-icon>
                               </ion-col>
 
                               <ion-col [size]="this.dataService.getColumnSize('StartDate','WatchList')">
                                    <ion-label class="header">Start Date</ion-label>
-                                   <ion-icon *ngIf="dataService.watchList?.length > 0 && dataService.watchListSortDirection =='ASC' && !dataService.isAdding && !dataService.isEditing" [ngClass]="dataService.watchListSortActiveColumn === 'StartDate' ? 'upArrow startDateArrowIcon active header' : 'upArrow startDateArrowIcon header'" name="caret-up-outline" (click)="dataService.sortClick('StartDate','ASC','WatchList')"></ion-icon>
-                                   <ion-icon *ngIf="dataService.watchList?.length > 0 && dataService.watchListSortDirection =='DESC' && !dataService.isAdding && !dataService.isEditing" [ngClass]="dataService.watchListSortActiveColumn === 'StartDate' ? 'downArrow startDateArrowIcon active header' : 'downArrow startDateArrowIcon header'" name="caret-down-outline" (click)="dataService.sortClick('StartDate','DESC','WatchList')"></ion-icon>
+                                   <ion-icon *ngIf="dataService.watchList?.length > 0 && dataService.watchListSortDirection ==='ASC' && !dataService.isAdding && !dataService.isEditing" [ngClass]="dataService.watchListSortActiveColumn === 'StartDate' ? 'upArrow startDateArrowIcon active header' : 'upArrow startDateArrowIcon header'" name="caret-up-outline" (click)="dataService.sortClick('StartDate','ASC','WatchList')"></ion-icon>
+                                   <ion-icon *ngIf="dataService.watchList?.length > 0 && dataService.watchListSortDirection ==='DESC' && !dataService.isAdding && !dataService.isEditing" [ngClass]="dataService.watchListSortActiveColumn === 'StartDate' ? 'downArrow startDateArrowIcon active header' : 'downArrow startDateArrowIcon header'" name="caret-down-outline" (click)="dataService.sortClick('StartDate','DESC','WatchList')"></ion-icon>
                               </ion-col>
 
                               <ion-col [size]="this.dataService.getColumnSize('EndDate','WatchList')">
                                    <ion-label class="header">End Date</ion-label>
-                                   <ion-icon *ngIf="dataService.watchList?.length > 0 && dataService.watchListSortDirection =='ASC' && !dataService.isAdding && !dataService.isEditing" [ngClass]="dataService.watchListSortActiveColumn === 'EndDate' ? 'upArrow endDateArrowIcon active header' : 'upArrow endDateArrowIcon header'" name="caret-up-outline" (click)="dataService.sortClick('EndDate','ASC','WatchList')"></ion-icon>
-                                   <ion-icon *ngIf="dataService.watchList?.length > 0 && dataService.watchListSortDirection =='DESC' && !dataService.isAdding && !dataService.isEditing" [ngClass]="dataService.watchListSortActiveColumn === 'EndDate' ? 'downArrow endDateArrowIcon active header' : 'downArrow endDateArrowIcon header'" name="caret-down-outline" (click)="dataService.sortClick('EndDate','DESC','WatchList')"></ion-icon>
+                                   <ion-icon *ngIf="dataService.watchList?.length > 0 && dataService.watchListSortDirection ==='ASC' && !dataService.isAdding && !dataService.isEditing" [ngClass]="dataService.watchListSortActiveColumn === 'EndDate' ? 'upArrow endDateArrowIcon active header' : 'upArrow endDateArrowIcon header'" name="caret-up-outline" (click)="dataService.sortClick('EndDate','ASC','WatchList')"></ion-icon>
+                                   <ion-icon *ngIf="dataService.watchList?.length > 0 && dataService.watchListSortDirection ==='DESC' && !dataService.isAdding && !dataService.isEditing" [ngClass]="dataService.watchListSortActiveColumn === 'EndDate' ? 'downArrow endDateArrowIcon active header' : 'downArrow endDateArrowIcon header'" name="caret-down-outline" (click)="dataService.sortClick('EndDate','DESC','WatchList')"></ion-icon>
                               </ion-col>
 
                               <ion-col [size]="this.dataService.getColumnSize('Source','WatchList')">
                                    <ion-label class="header">Source</ion-label>
-                                   <ion-icon *ngIf="dataService.watchList?.length > 0 && dataService.watchListSortDirection =='ASC' && !dataService.isAdding && !dataService.isEditing" [ngClass]="dataService.watchListSortActiveColumn === 'Source' ? 'upArrow sourceArrowIcon active header' : 'upArrow sourceArrowIcon header'" name="caret-up-outline" (click)="dataService.sortClick('Source','ASC','WatchList')"></ion-icon>
-                                   <ion-icon *ngIf="dataService.watchList?.length > 0 && dataService.watchListSortDirection =='DESC' && !dataService.isAdding && !dataService.isEditing" [ngClass]="dataService.watchListSortActiveColumn === 'Source' ? 'downArrow sourceArrowIcon active header' : 'downArrow sourceArrowIcon header'" name="caret-down-outline" (click)="dataService.sortClick('Source','DESC','WatchList')"></ion-icon>
+                                   <ion-icon *ngIf="dataService.watchList?.length > 0 && dataService.watchListSortDirection ==='ASC' && !dataService.isAdding && !dataService.isEditing" [ngClass]="dataService.watchListSortActiveColumn === 'Source' ? 'upArrow sourceArrowIcon active header' : 'upArrow sourceArrowIcon header'" name="caret-up-outline" (click)="dataService.sortClick('Source','ASC','WatchList')"></ion-icon>
+                                   <ion-icon *ngIf="dataService.watchList?.length > 0 && dataService.watchListSortDirection ==='DESC' && !dataService.isAdding && !dataService.isEditing" [ngClass]="dataService.watchListSortActiveColumn === 'Source' ? 'downArrow sourceArrowIcon active header' : 'downArrow sourceArrowIcon header'" name="caret-down-outline" (click)="dataService.sortClick('Source','DESC','WatchList')"></ion-icon>
                               </ion-col>
 
                               <ion-col [size]="this.dataService.getColumnSize('Season','WatchList')">
@@ -113,7 +112,7 @@
                               </ion-col>
 
                               <ion-col [size]="this.dataService.getColumnSize('Season','WatchList')">
-                                   <ion-label *ngIf="dataService.getWatchListTypeNameByWatchListItemID(currWatchList.WatchListItemID) == 'TV'">
+                                   <ion-label *ngIf="dataService.getWatchListTypeNameByWatchListItemID(currWatchList.WatchListItemID) === 'TV'">
                                         {{ currWatchList.Season }}
                                    </ion-label>
                               </ion-col>

@@ -1,0 +1,29 @@
+<ion-content id="login" *ngIf="dataService.isLoggedInCheckComplete">
+     <ion-toolbar>
+          <ion-title>Log In</ion-title>
+    </ion-toolbar>
+
+    <div class="ion-list-parent">
+     <ion-list>
+   
+          <ion-item lines="full">
+               <ion-label position="floating">Username</ion-label>
+               <ion-input type="text" [(ngModel)]="username" [value]="username" required></ion-input>
+          </ion-item>
+
+          <ion-item lines="full">
+               <ion-label position="floating">Password</ion-label>
+               <ion-input type="password" [(ngModel)]="password" [value]="password" required></ion-input>
+          </ion-item>
+
+          <ion-item lines="full">
+               <ion-label position="floating">Backend URL</ion-label>
+               <ion-input type="text" [(ngModel)]="backendURL" [value]="backendURL" required></ion-input>
+          </ion-item>
+   
+        <ion-button color="primary" expand="block" (click)="login()">Sign In</ion-button>
+      
+       
+       </ion-list>
+       </div>
+</ion-content>

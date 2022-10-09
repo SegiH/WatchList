@@ -3,9 +3,9 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
 import { IonicModule } from '@ionic/angular';
-import { OverlayModule } from "@angular/cdk/overlay";
+import { OverlayModule } from '@angular/cdk/overlay';
 import { DetailOverlay } from '../detail-overlay/detail-overlay';
-import { WatchListItemsDetailPage } from '../watchlist-items-detail/watchlist-items-detail-page';
+import { WatchListItemsDetailComponent } from '../watchlist-items-detail/watchlist-items-detail-page';
 
 @NgModule({
      imports: [
@@ -14,6 +14,6 @@ import { WatchListItemsDetailPage } from '../watchlist-items-detail/watchlist-it
           IonicModule,
           OverlayModule
      ],
-     declarations: [DetailOverlay, WatchListItemsDetailPage]
+     declarations: [DetailOverlay, WatchListItemsDetailComponent]
 })
 export class WatchListItemsDetailPageModule {}

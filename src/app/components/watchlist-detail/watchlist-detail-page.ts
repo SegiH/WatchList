@@ -44,10 +44,6 @@ export class WatchListDetailComponent implements DoCheck {
                if (this.addItemStartDate === '') {
                     this.addItemStartDate=dt;
                }
-
-               if (this.addItemEndDate === '') {
-                    this.addItemEndDate=dt;
-               }
           }  else
                this.isAdding=false;
      }
@@ -161,6 +157,14 @@ export class WatchListDetailComponent implements DoCheck {
           currWatchList.WatchListSourceID=this.addItemSource;
           currWatchList.Season=this.addSeason;
 
+          // Clear fields to prevent user from saving twice
+          this.addItemID = 0;
+          this.addItemStartDate = '';
+          this.addItemEndDate = '';
+          this.addItemNotes= '';
+          this.addItemSource = '';
+          this.addSeason = '';
+
           this.dataService.addWatchList(currWatchList).subscribe((response) => {
                this.addItemID = 0;
                this.addItemStartDate = '';
@@ -177,6 +181,14 @@ export class WatchListDetailComponent implements DoCheck {
 
           },
           error => {
+               // Restore fields values in case the user made a mistake & wants to resubmit
+               this.addItemID = currWatchList.WatchListItemID;
+               this.addItemStartDate = currWatchList.StartDate;
+               this.addItemEndDate = currWatchList.EndDate;
+               this.addItemNotes= currWatchList.Notes;
+               this.addItemSource = currWatchList.WatchListSourceID;
+               this.addSeason = currWatchList.Season;
+               
                this.dataService.handleError(error);
           });
      }

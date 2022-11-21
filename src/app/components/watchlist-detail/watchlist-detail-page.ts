@@ -23,6 +23,7 @@ export class WatchListDetailComponent implements DoCheck {
      lastIndex = null;
      lastRating = null;
      readonly math = Math;
+     wasModified = false;
 
      constructor(private dataService: DataService) { }
 
@@ -112,12 +113,21 @@ export class WatchListDetailComponent implements DoCheck {
           }
      }
 
+     closeClickHandler() {
+          if (this.wasModified)
+               this.dataService.getWatchListSubscription();
+
+          this.dataService.closeOverlay();
+     }
+
      deleteWatchList(currWatchList: object) {
           this.dataService.confirmDialog(currWatchList,'Are you sure that you want to delete this item ?',this.deleteWatchListCallback.bind(this));
      }
 
      deleteWatchListCallback() {
           this.dataService.deleteWatchList(this.detailObject['WatchListID']).subscribe((response) => {
+               this.dataService.closeOverlay();
+               
                this.dataService.getWatchListSubscription();
           },
           error => {
@@ -253,10 +263,7 @@ export class WatchListDetailComponent implements DoCheck {
 
                this.isAdding=false;
 
-               this.dataService.getWatchListSubscription();
-
-               this.dataService.closeOverlay();
-
+               this.wasModified = true;
           },
           error => {
                // Restore fields values in case the user made a mistake & wants to resubmit
@@ -296,8 +303,8 @@ export class WatchListDetailComponent implements DoCheck {
                this.detailObject[`Disabled`]=true;
 
                this.isEditing = false;
-
-               this.dataService.getWatchListSubscription();
+               
+               this.wasModified = true;
           },
           error => {
                this.dataService.handleError(error);

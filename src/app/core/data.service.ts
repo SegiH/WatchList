@@ -183,7 +183,7 @@ export class DataService {
                buttons: ['OK','Cancel']
           });
 
-          //this.authGuardDisabled=true;
+          this.authGuardDisabled=true;
 
           await alert.present();
 

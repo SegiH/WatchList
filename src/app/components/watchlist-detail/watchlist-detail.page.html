@@ -15,7 +15,7 @@
                <ion-col size="7"></ion-col>
   
               <ion-col size="1">
-                    <ion-icon  *ngIf="!isAdding && !isEditing" name="close-outline" class="cancelButton" (click)="dataService.closeOverlay()"></ion-icon>
+                    <ion-icon  *ngIf="!isAdding && !isEditing" name="close-outline" class="cancelButton" (click)="closeClickHandler();"></ion-icon>
                </ion-col>
           </ion-row>
   

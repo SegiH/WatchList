@@ -4,26 +4,23 @@
     </ion-toolbar>
 
     <div class="ion-list-parent">
-     <ion-list>
-   
-          <ion-item lines="full">
-               <ion-label position="floating">Username</ion-label>
-               <ion-input type="text" [(ngModel)]="username" [value]="username" required></ion-input>
-          </ion-item>
+          <ion-list>
+               <ion-item lines="full">
+                    <ion-label position="floating">Username</ion-label>
+                    <ion-input type="text" [(ngModel)]="username" [value]="username" required (keyup.enter)="login()"></ion-input>
+               </ion-item>
 
-          <ion-item lines="full">
-               <ion-label position="floating">Password</ion-label>
-               <ion-input type="password" [(ngModel)]="password" [value]="password" required></ion-input>
-          </ion-item>
+               <ion-item lines="full">
+                    <ion-label position="floating">Password</ion-label>
+                    <ion-input type="password" [(ngModel)]="password" [value]="password" required (keyup.enter)="login()"></ion-input>
+               </ion-item>
 
-          <ion-item lines="full">
-               <ion-label position="floating">Backend URL</ion-label>
-               <ion-input type="text" [(ngModel)]="backendURL" [value]="backendURL" required></ion-input>
-          </ion-item>
-   
-        <ion-button color="primary" expand="block" (click)="login()">Sign In</ion-button>
-      
-       
-       </ion-list>
-       </div>
+               <ion-item lines="full">
+                    <ion-label position="floating">Backend URL</ion-label>
+                    <ion-input type="text" [(ngModel)]="backendURL" [value]="backendURL" required (keyup.enter)="login()"></ion-input>
+               </ion-item>
+     
+               <ion-button color="primary" expand="block" (click)="login()">Sign In</ion-button>
+          </ion-list>
+     </div>
 </ion-content>

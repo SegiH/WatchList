@@ -1,5 +1,4 @@
-import { Component } from '@angular/core';
-import IWatchListItem from 'src/app/interfaces/watchlistitem.interface';
+import { Component, ViewChild } from '@angular/core';
 import { DataService } from '../../core/data.service';
 
 @Component({
@@ -11,7 +10,15 @@ export class IMDBSearchComponent {
      searchTerm = '';
      searchResults: any;
 
-     constructor(public dataService: DataService) { }
+     @ViewChild('search') search;
+
+     constructor(public dataService: DataService) {}
+
+     ionViewDidEnter() {
+          setTimeout(() => {
+            this.search.setFocus();
+       });
+     }
 
      showWatchListDetail(currWatchList: any) {
          // This is activated after adding a WatchListItem when you say yes to add a WatchList item now prompt

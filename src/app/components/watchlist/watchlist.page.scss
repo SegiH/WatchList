@@ -17,6 +17,11 @@
      margin-top: 8px;
 }
 
+ion-card {
+     display: flex;
+     width: 100%;
+}
+
 ion-content {
      overflow: auto;
 }
@@ -67,4 +72,12 @@ ion-grid > ion-row > ion-col > ion-icon.sourceArrowIcon {
 
 ion-grid > ion-row > ion-col > ion-icon.active {
      color: darkblue
+}
+
+ion-item > ion-grid > ion-row > ion-col > ion-label {
+     word-break: break-all;
+     overflow-wrap: break-word;
+     word-wrap: break-word;
+     hyphens: auto;
+     overflow: auto;
 }

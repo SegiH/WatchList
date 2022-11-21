@@ -43,6 +43,8 @@ export class AppComponent {
      reloadData(event: any) {
           this.dataService.saveIncompleteFilter();
           this.dataService.saveRecordLimitFilter();
+          this.dataService.saveSourceFilter();
+          this.dataService.saveTypeFilter();
 
           if (event != null && event.target.id === 'IMDBURLMissing') {
                this.dataService.getWatchListItemsSubscription(true);

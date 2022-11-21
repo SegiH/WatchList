@@ -27,10 +27,17 @@
                               <ion-item>IMDB URL Missing<ion-toggle id="IMDBURLMissing" [(ngModel)]="dataService.imdb_url_missing" color="primary" (ionChange)="reloadData($event)"></ion-toggle></ion-item>
                          </ion-col>
 
-                         <ion-col size="9" *ngIf="currentRoute==='WatchList'">
+                         <ion-col size="12" *ngIf="currentRoute==='WatchList'">
                               <ion-select placeholder='Source' name="source" [(ngModel)]="dataService.sourceFilter" (ionChange)="reloadData($event)">
                                    <ion-select-option value="All">All</ion-select-option>
                                    <ion-select-option *ngFor="let currItem of dataService.watchListSources;trackBy: trackByFn" [value]="currItem['WatchListSourceID']" (ionChange)="reloadData($event)">{{currItem['WatchListSourceName']}}</ion-select-option>
+                              </ion-select>
+                         </ion-col>
+
+                         <ion-col size="12" *ngIf="currentRoute==='WatchList'">
+                              <ion-select placeholder='Type' name="type" [(ngModel)]="dataService.typeFilter" (ionChange)="reloadData($event)">
+                                   <ion-select-option value="All">All</ion-select-option>
+                                   <ion-select-option *ngFor="let currItem of dataService.watchListTypes;trackBy: trackByFn" [value]="currItem['WatchListTypeID']" (ionChange)="reloadData($event)">{{currItem['WatchListTypeName']}}</ion-select-option>
                               </ion-select>
                          </ion-col>
                     </ion-row>

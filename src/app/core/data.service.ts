@@ -30,6 +30,7 @@ export class DataService {
      recordLimit = 10;
      searchTerm = '';
      sourceFilter = '';
+     typeFilter = '';
      userData: IUser=this.iUserEmpty();
      watchList: IWatchList[];
      watchListItems: any;
@@ -86,6 +87,10 @@ export class DataService {
           this.getIncompleteFilter();
 
           this.getRecordLimit();
+
+          this.getSourceFilter();
+
+          this.getTypeFilter();
      }
 
      addWatchList(currWatchList: IWatchList) {
@@ -308,8 +313,12 @@ export class DataService {
      }
 
      async getIncompleteFilter() {
-          //return this.incompleteFilter;
           this.incompleteFilter = await this.storage.get('IncompleteFilter');
+     }
+
+     async getSourceFilter() {
+          //this.sourceFilter = await this.storage.get('SourceFilter');
+          //alert("Saving " + )
      }
 
      getSourceName(sourceID: number) {
@@ -320,28 +329,38 @@ export class DataService {
           }
      }
 
+     async getTypeFilter() {
+          this.typeFilter = await this.storage.get('TypeFilter');
+
+          console.log("Getting type when it is " + this.typeFilter)
+     }
+
      getWatchList() {
           let params = new HttpParams();
 
-          if (this.searchTerm !== null && this.searchTerm !== '') {
-               params = params.append('SearchTerm',this.searchTerm);
-          }
-
-          if (this.watchListSortColumn !== null && this.watchListSortDirection !== null) {
-               params = params.append('SortColumn',this.watchListSortColumn);
-               params = params.append('SortDirection', this.watchListSortDirection);
+          if (this.incompleteFilter === true) {
+               params = params.append('IncompleteFilter',true);
           }
 
           if (this.recordLimit !== null) {
                params = params.append('RecordLimit',this.recordLimit);
           }
 
+          if (this.searchTerm !== null && this.searchTerm !== '') {
+               params = params.append('SearchTerm',this.searchTerm);
+          }
+
           if (this.sourceFilter !== null && this.sourceFilter !== '' && this.sourceFilter !== 'All') {
                params = params.append('SourceFilter',this.sourceFilter);
           }
 
-          if (this.incompleteFilter === true) {
-               params = params.append('IncompleteFilter',true);
+          if (this.typeFilter !== null && this.typeFilter !== '' && this.typeFilter !== 'All') {
+               params = params.append('TypeFilter',this.typeFilter);
+          }
+
+          if (this.watchListSortColumn !== null && this.watchListSortDirection !== null) {
+               params = params.append('SortColumn',this.watchListSortColumn);
+               params = params.append('SortDirection', this.watchListSortDirection);
           }
 
           return this.runRest(`/GetWatchList`,'GET',params);
@@ -828,6 +847,16 @@ export class DataService {
 
      async saveRecordLimitFilter() {
           await this.storage.set('RecordLimitFilter',this.recordLimit);
+     }
+
+     async saveSourceFilter() {
+          console.log("Saving source " + this.sourceFilter)
+          await this.storage.set('SourceFilter',this.sourceFilter);
+     }
+
+     async saveTypeFilter() {
+          console.log("Saving type" + this.typeFilter)
+          await this.storage.set('TypeFilter',this.typeFilter);
      }
 
      searchIMDB(searchTerm: string) {

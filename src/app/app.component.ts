@@ -16,7 +16,8 @@ export class AppComponent {
           10,
           50,
           100,
-          500
+          500,
+          1000
      ];
 
      constructor(public dataService: DataService, location: Location, private menu: MenuController, private router: Router) {

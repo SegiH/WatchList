@@ -26,6 +26,7 @@ export class DataService {
      isIMDBSearchEnabled = false;
      isLoggedIn = false;
      isLoggedInCheckComplete = false;
+     readonly ratingMax = 5;
      recordLimit = 10;
      searchTerm = '';
      sourceFilter = '';
@@ -48,8 +49,9 @@ export class DataService {
           Name: 2,
           StartDate: 2,
           EndDate: 2,
-          Source : 2,
+          Source : 1,
           Season : 1,
+          Rating : 1,
           Notes : 2,
      };
 
@@ -80,6 +82,10 @@ export class DataService {
                  public toastController: ToastController,
                  private router: Router) {
           this.getBackendURL();
+
+          this.getIncompleteFilter();
+
+          this.getRecordLimit();
      }
 
      addWatchList(currWatchList: IWatchList) {
@@ -145,7 +151,7 @@ export class DataService {
           await alert.present();
      }
 
-     autoAddWatchListRecord(iMDB_URL = null) {
+     /*autoAddWatchListRecord(iMDB_URL = null) {
           const ids = this.watchListItems.map((thisWatchList: IWatchList) => { return thisWatchList.WatchListItemID; });
 
           const newID = Math.max(...ids) + 1;
@@ -155,7 +161,7 @@ export class DataService {
           currWatchList.watchListItemID=(typeof existing !== 'undefined' ? existing.watchListItemID : newID);
 
           this.confirmDialog(currWatchList,'Do you want to add a Watchlist record now ?',this.showWatchListDetail.bind(this));
-     }
+     }*/
 
      closeOverlay() {
           this.router.navigateByUrl(`/tabs/${this.detailObjectName}`);
@@ -258,9 +264,9 @@ export class DataService {
           return this.detailObjectName;
      }
 
-     /*getDetailWatchListItemID() {
-          return this.detailWatchListItemID;
-     }*/
+     getDetailWatchListItemID() {
+          return this.detailID;
+     }
 
      getIMDBSearchEnabled() {
           return this.runRest(`/IsIMDBSearchEnabled`,'GET',null);
@@ -273,6 +279,11 @@ export class DataService {
           error => {
                this.handleError(error);
           });
+     }
+
+     async getIncompleteFilter() {
+          //return this.incompleteFilter;
+          this.incompleteFilter = await this.storage.get('IncompleteFilter');
      }
 
      getIMDBURL(watchListItemID: number) {
@@ -291,6 +302,14 @@ export class DataService {
           }
 
           return null;
+     }
+
+     async getRecordLimit() {
+          this.recordLimit = await this.storage.get('RecordLimitFilter');
+
+          if (this.recordLimit === null) {
+               this.recordLimit = 10;
+          }
      }
 
      getSourceName(sourceID: number) {
@@ -428,6 +447,10 @@ export class DataService {
           return this.runRest(`/GetWatchListSources`,'GET',null);
      }
 
+     getWatchListSourceStats() {
+          return this.runRest(`/GetWatchListSourceStats`,'GET',null);
+     }
+
      getWatchListSourcesSubscription() {
           this.getWatchListSources().subscribe((response) => {
                this.watchListSources=response;
@@ -450,6 +473,10 @@ export class DataService {
           error => {
                this.handleError(error);
           });
+     }
+
+     getWatchListTopRatedStats() {
+          return this.runRest(`/GetWatchListTopRatedStats`,'GET',null);
      }
 
      getWatchListTVStats() {
@@ -512,6 +539,7 @@ export class DataService {
 
      handleError(error: Response | any) {
           console.log(error);
+          this.alert(error);
 
           if (error.error === 'Unauthorized') {
                     console.log('Unauthorized. Check the Auth Key');
@@ -552,6 +580,7 @@ export class DataService {
                EndDate: null,
                WatchListSourceID: null,
                Season: null,
+               Rating: null,
                Notes: null
           };
      }
@@ -718,8 +747,6 @@ export class DataService {
 
           this.detailID=objectID;
 
-          //this.detailWatchListItemID=watchListItemID;
-
           this.router.navigate(['/tabs/detail-overlay',{ ObjectName : objectName}]);
      }
 
@@ -795,6 +822,14 @@ export class DataService {
           }
      }
 
+     async saveIncompleteFilter() {
+          await this.storage.set('IncompleteFilter',this.incompleteFilter);
+     }
+
+     async saveRecordLimitFilter() {
+          await this.storage.set('RecordLimitFilter',this.recordLimit);
+     }
+
      searchIMDB(searchTerm: string) {
           let params = new HttpParams();
 
@@ -808,7 +843,8 @@ export class DataService {
      searchTermChangeHandler(event: any) {
           const currentRoute=this.router.url.replace('/tabs/','');
 
-          this.setSearchTerm(event.target.value);
+          if (event !== null)
+               this.setSearchTerm(event.target.value);
 
           switch(currentRoute) {
                case 'watchlist':
@@ -838,7 +874,7 @@ export class DataService {
               this.watchListTypes = [];
           }
      }
-
+ 
      setWatchList(newWatchList: any) {
           this.watchList=newWatchList;
      }
@@ -849,12 +885,6 @@ export class DataService {
 
      setWatchListItems(newWatchListItems: any) {
           this.watchListItems=newWatchListItems;
-     }
-
-     showWatchListDetail(currWatchList: any) {
-          // This is activated after adding a WatchListItem when you say yes to add a WatchList item now prompt
-          //this.openDetailOverlay('watchlist',null,currWatchList.watchListItemID);
-          this.openDetailOverlay('watchlist',currWatchList.WatchListItemID);
      }
 
      sortClick(name: string,direction: string, component: string) {
@@ -905,9 +935,13 @@ export class DataService {
                params = params.append('WatchListSourceID',currWatchList.WatchListSourceID);
           }
 
-          if (currWatchList.Notes !== null && currWatchList.Notes !== '') {
-               params = params.append('Notes',currWatchList.Notes);
+          if (currWatchList.Rating !== null) {
+               params = params.append('Rating',currWatchList.Rating);
           }
+
+          //if (currWatchList.Notes !== null && currWatchList.Notes !== '') {
+     params = params.append('Notes',currWatchList.Notes);
+          //}
 
           return this.runRest(`/UpdateWatchList`,'PUT',params);
      }

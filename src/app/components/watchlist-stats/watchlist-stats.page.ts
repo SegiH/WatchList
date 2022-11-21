@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { DataService } from '../../core/data.service';
 
 @Component({
@@ -8,6 +8,8 @@ import { DataService } from '../../core/data.service';
 })
 export class WatchListStatsComponent implements OnInit{
      watchListMovieStats: [];
+     watchListSourceStats: [];
+     watchListTopRatedStats: [];
      watchListTVStats: [];
 
      constructor(public dataService: DataService) {}
@@ -16,11 +18,33 @@ export class WatchListStatsComponent implements OnInit{
          this.getWatchListMovieStatsSubscription();
 
          this.getWatchListTVStatsSubscription();
+
+         this.getWatchListSourceStatsSubscription();
+
+         this.getWatchListTopRatedStatsSubscription();
      }
 
      getWatchListMovieStatsSubscription() {
           this.dataService.getWatchListMovieStats().subscribe((response) => {
                this.watchListMovieStats=response;
+          },
+          error => {
+               this.dataService.handleError(error);
+          });
+     }
+
+     getWatchListSourceStatsSubscription() {
+          this.dataService.getWatchListSourceStats().subscribe((response) => {
+               this.watchListSourceStats=response;
+          },
+          error => {
+               this.dataService.handleError(error);
+          });
+     }
+
+     getWatchListTopRatedStatsSubscription() {
+          this.dataService.getWatchListTopRatedStats().subscribe((response) => {
+               this.watchListTopRatedStats=response;
           },
           error => {
                this.dataService.handleError(error);

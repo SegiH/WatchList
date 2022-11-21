@@ -66,6 +66,10 @@
                                    <ion-label>Season</ion-label>
                               </ion-col>
 
+                              <ion-col [size]="this.dataService.getColumnSize('Rating','WatchList')">
+                                   <ion-label>Rating</ion-label>
+                              </ion-col>
+
                               <ion-col [size]="this.dataService.getColumnSize('Notes','WatchList')">
                                    <ion-label>Notes</ion-label>
                               </ion-col>
@@ -114,6 +118,12 @@
                               <ion-col [size]="this.dataService.getColumnSize('Season','WatchList')">
                                    <ion-label *ngIf="dataService.getWatchListTypeNameByWatchListItemID(currWatchList.WatchListItemID) === 'TV'">
                                         {{ currWatchList.Season }}
+                                   </ion-label>
+                              </ion-col>
+
+                              <ion-col [size]="this.dataService.getColumnSize('Rating','WatchList')">
+                                   <ion-label>
+                                        {{ currWatchList.Rating }} <span *ngIf="currWatchList['Rating'] !== null">/ {{ dataService.ratingMax }}</span>
                                    </ion-label>
                               </ion-col>
 

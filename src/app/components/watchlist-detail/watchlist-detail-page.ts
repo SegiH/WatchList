@@ -20,6 +20,9 @@ export class WatchListDetailComponent implements DoCheck {
      detailObjectName: string;
      isAdding: boolean;
      isEditing: boolean;
+     lastIndex = null;
+     lastRating = null;
+     readonly math = Math;
 
      constructor(private dataService: DataService) { }
 
@@ -28,22 +31,22 @@ export class WatchListDetailComponent implements DoCheck {
 
           this.detailObjectName=this.dataService.getDetailObjectName();
 
-          /*const addWatchListItemID=this.dataService.getDetailWatchListItemID();
+          const addWatchListItemID=this.dataService.getDetailWatchListItemID();
 
           if (addWatchListItemID !== null) {
                this.addItemID=addWatchListItemID;
-          }*/
+          }
 
           if (this.dataService.getDetailID() == null) {
                this.isAdding=true;
 
-               // Default start and end date to current date
-               const dateStr = new Date().setSeconds(0,0);
+               // Default start date to current date
+               /*const dateStr = new Date().setSeconds(0,0);
                const dt = new Date(dateStr).toISOString().substring(0,10);
 
                if (this.addItemStartDate === '') {
                     this.addItemStartDate=dt;
-               }
+               }*/
           }  else
                this.isAdding=false;
      }
@@ -90,10 +93,12 @@ export class WatchListDetailComponent implements DoCheck {
 
      cancelWatchList() {
           if (this.isEditing) {
-               this.detailObject['WatchListItemID']=this.detailObject[`Previous`].WatchListItemID;
-               this.detailObject['StartDate']=this.detailObject[`Previous`].StartDate;
-               this.detailObject['EndDate']=this.detailObject[`Previous`].EndDate;
-               this.detailObject['Notes']=this.detailObject[`Previous`].Notes;
+               this.detailObject.WatchListItemID=this.detailObject[`Previous`].WatchListItemID;
+               this.detailObject.StartDate=this.detailObject[`Previous`].StartDate;
+               this.detailObject.EndDate=this.detailObject[`Previous`].EndDate;
+               this.detailObject.WatchListSourceID=this.detailObject[`Previous`].WatchListSourceID;
+               this.detailObject.Rating=this.detailObject[`Previous`].Rating;
+               this.detailObject.Notes=this.detailObject[`Previous`].Notes;
 
                this.isEditing = false;
           }
@@ -126,6 +131,79 @@ export class WatchListDetailComponent implements DoCheck {
           this.detailObject[`Previous`]=[];
 
           Object.assign(this.detailObject[`Previous`], this.detailObject);
+     }
+
+     getRatingIcon(index: number) {
+          return (
+               this.detailObject?.Rating > index + 0.5 ? "heart" : this.detailObject?.Rating === index + 0.5 ? "heart-half" : "heart-outline"
+          )
+     }
+
+     numSequence(n: number): Array<number> {
+          return Array(n);
+     }
+
+     ratingClickHandler(index: number) {
+          if (!this.isAdding && !this.isEditing)
+               return true;
+
+          if (this.detailObject.Rating === null)
+               this.detailObject.Rating=0;
+
+          /*if (String(this.detailObject.Rating) === String(index + ".0"))
+               this.detailObject.Rating = index + 0.5;
+          else if (String(this.detailObject.Rating) === String(index + ".5"))
+               this.detailObject.Rating = index;
+          else
+               this.detailObject.Rating = parseFloat(index.toFixed(1));*/
+
+          switch(index) {
+               case 0:
+                    if (this.detailObject.Rating === 0.0)
+                         this.detailObject.Rating = 0.5;
+                    else if (this.detailObject.Rating === 0.5)
+                         this.detailObject.Rating = 1.0;
+                    else
+                         this.detailObject.Rating = 0.0;
+
+                    break;
+               case 1:
+                    if (this.detailObject.Rating === 1.0)
+                         this.detailObject.Rating = 1.5;
+                    else if (this.detailObject.Rating === 1.5)
+                         this.detailObject.Rating = 2.0;
+                    else
+                         this.detailObject.Rating = 1.0;
+
+                    break;
+               case 2:
+                    if (this.detailObject.Rating === 2.0)
+                         this.detailObject.Rating = 2.5;
+                    else if (this.detailObject.Rating === 2.5)
+                         this.detailObject.Rating = 3.0;
+                    else
+                         this.detailObject.Rating = 2.0;
+
+                    break;
+               case 3:
+                    if (this.detailObject.Rating === 3.0)
+                         this.detailObject.Rating = 3.5;
+                    else if (this.detailObject.Rating === 3.5)
+                         this.detailObject.Rating = 4.0;
+                    else
+                         this.detailObject.Rating = 3.0;
+
+                    break;
+               case 4:
+                    if (this.detailObject.Rating === 4.0)
+                         this.detailObject.Rating = 4.5;
+                    else if (this.detailObject.Rating === 4.5)
+                         this.detailObject.Rating = 5.0;
+                    else
+                         this.detailObject.Rating = 4.0;
+
+                    break;
+          }
      }
 
      saveWatchList() {
@@ -204,7 +282,17 @@ export class WatchListDetailComponent implements DoCheck {
                return;
           }
 
+          if (isNaN(this.detailObject[`Season`])) {
+               this.dataService.alert(`Please enter a number for the season`);
+               return;
+          }
+
           this.dataService.updateWatchList(this.detailObject).subscribe((response) => {
+               if (response !== null && response.length > 0 && response[0] === "ERROR") {
+                    alert(response[1]);
+                    return;
+               }
+
                this.detailObject[`Disabled`]=true;
 
                this.isEditing = false;

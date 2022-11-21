@@ -135,11 +135,9 @@
      </ion-row>
 
      <ion-row>
-          <ion-col [size]="2">
+          <ion-col [size]="3">
                <ion-label>Source</ion-label>
           </ion-col>
-
-          <ion-col [size]="1"></ion-col>
 
           <ion-col [size]="9">
                <ion-label *ngIf="!isEditing && !isAdding">
@@ -159,11 +157,9 @@
      <ion-row *ngIf="(isAdding && addItemID !== '' && dataService.getWatchListTypeNameByWatchListItemID(addItemID) === 'TV') || (!isAdding && detailObject !== null && dataService.getWatchListTypeName(detailObject?.WatchListTypeID) === 'TV')">
           <ion-col [size]="12"></ion-col>
 
-          <ion-col [size]="2">
+          <ion-col [size]="3">
                <ion-label>Season</ion-label>
           </ion-col>
-
-          <ion-col [size]="1"></ion-col>
 
           <ion-col [size]="9">
                <ion-label *ngIf="!isEditing && !isAdding">
@@ -195,6 +191,20 @@
                <ion-input *ngIf="isEditing && !isAdding" class="editAddSelect" type="text" [(ngModel)]="detailObject.Notes"></ion-input>
 
                <ion-input *ngIf="isAdding && !isEditing" type="text" class="editAddSelect" [(ngModel)]="addItemNotes"></ion-input>
+          </ion-col>
+     </ion-row>
+
+     <ion-row>
+          <ion-col [size]="12"></ion-col>
+     </ion-row>
+
+     <ion-row>
+          <ion-col [size]="3">
+               <ion-label>Rating</ion-label>
+          </ion-col>
+
+          <ion-col [size]="9">
+               <ion-icon *ngFor="let number of numSequence(dataService.ratingMax);let index=index" (click)="ratingClickHandler(index)" [name]="getRatingIcon(index)"></ion-icon>
           </ion-col>
      </ion-row>
 

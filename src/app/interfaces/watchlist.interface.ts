@@ -6,6 +6,7 @@ interface IWatchList {
 	EndDate: Date;
 	WatchListSourceID: number;
 	Season: number;
+	Rating: number;
 	Notes: string;
 }
 

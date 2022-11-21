@@ -64,6 +64,7 @@ export class WatchListQueueDetailComponent implements DoCheck {
                EndDate: null,
                WatchListSourceID: null,
                Season: null,
+               Rating: null,
                Notes: ''
           };
 

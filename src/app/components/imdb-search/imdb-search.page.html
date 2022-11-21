@@ -11,12 +11,12 @@
     <ion-grid>
         <ion-row>
              <ion-col size="10">
-               <ion-searchbar  (keyup)="handleKeyUp($event)" [(ngModel)]="searchTerm"></ion-searchbar>
+               <ion-searchbar  (keyup)="handleKeyUp($event)" [(ngModel)]="searchTerm" show-cancel-button="focus"></ion-searchbar>
           </ion-col>
 
-             <ion-col class="header" size="2">
+             <!--<ion-col class="header" size="2">
                 <ion-icon name="search-outline" (click)="searchIMDB()"></ion-icon>
-             </ion-col>
+             </ion-col>-->
         </ion-row>
    </ion-grid>
 

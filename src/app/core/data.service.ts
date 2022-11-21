@@ -183,7 +183,7 @@ export class DataService {
                buttons: ['OK','Cancel']
           });
 
-          this.authGuardDisabled=true;
+          //this.authGuardDisabled=true;
 
           await alert.present();
 
@@ -192,7 +192,7 @@ export class DataService {
           if (role !== 'cancel' ) { // OK
                callback(param);
           } else {
-               //this.authGuardDisabled=false;
+               this.authGuardDisabled=false;
           }
      }
 
@@ -317,8 +317,7 @@ export class DataService {
      }
 
      async getSourceFilter() {
-          //this.sourceFilter = await this.storage.get('SourceFilter');
-          //alert("Saving " + )
+          this.sourceFilter = await this.storage.get('SourceFilter');
      }
 
      getSourceName(sourceID: number) {
@@ -331,8 +330,6 @@ export class DataService {
 
      async getTypeFilter() {
           this.typeFilter = await this.storage.get('TypeFilter');
-
-          console.log("Getting type when it is " + this.typeFilter)
      }
 
      getWatchList() {
@@ -968,9 +965,9 @@ export class DataService {
                params = params.append('Rating',currWatchList.Rating);
           }
 
-          //if (currWatchList.Notes !== null && currWatchList.Notes !== '') {
-     params = params.append('Notes',currWatchList.Notes);
-          //}
+          if (currWatchList.Notes !== null && currWatchList.Notes !== '') {
+               params = params.append('Notes',currWatchList.Notes);
+          }
 
           return this.runRest(`/UpdateWatchList`,'PUT',params);
      }

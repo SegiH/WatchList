@@ -281,20 +281,15 @@ export class DataService {
           });
      }
 
-     async getIncompleteFilter() {
-          //return this.incompleteFilter;
-          this.incompleteFilter = await this.storage.get('IncompleteFilter');
-     }
-
      getIMDBURL(watchListItemID: number) {
-          if (this.getWatchListItemName.length === 0) {
+          if (this.getWatchListItems.length === 0) {
                return;
           }
 
           try {
                for (let i=0;i<this.watchListNames.length;i++) {
-                    if (this.watchListNames[i].watchListItemID === watchListItemID && this.watchListNames[i].iMDB_URL !== null) {
-                         return this.watchListNames[i].iMDB_URL;
+                    if (this.watchListItems[i].WatchListItemID === watchListItemID && this.watchListItems[i].IMDB_URL !== null) {
+                         return this.watchListItems[i].IMDB_URL;
                     }
                }
           } catch(e) {
@@ -310,6 +305,11 @@ export class DataService {
           if (this.recordLimit === null) {
                this.recordLimit = 10;
           }
+     }
+
+     async getIncompleteFilter() {
+          //return this.incompleteFilter;
+          this.incompleteFilter = await this.storage.get('IncompleteFilter');
      }
 
      getSourceName(sourceID: number) {

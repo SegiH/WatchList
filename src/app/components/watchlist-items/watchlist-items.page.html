@@ -21,8 +21,12 @@
      
      <ion-grid>
           <ion-row>
-               <ion-col size="1">
+               <ion-col size="6">
                     <ion-icon *ngIf="!dataService.isAdding && !dataService.isEditing" class="addWatchListItem" name="add-outline" (click)="addWatchListItem()"></ion-icon>
+               </ion-col>
+
+               <ion-col size="6">
+                    <div *ngIf="dataService.watchListItems.length > 0">{{ dataService.watchListItems.length }} records</div>
                </ion-col>
           </ion-row>
      </ion-grid>

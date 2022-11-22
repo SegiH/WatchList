@@ -11,7 +11,7 @@
     <ion-grid>
         <ion-row>
              <ion-col size="10">
-               <ion-searchbar id="search" #search (keyup)="handleKeyUp($event)" [(ngModel)]="searchTerm" show-cancel-button="focus"></ion-searchbar>
+               <ion-searchbar id="search" #search (keyup)="handleKeyUp($event)" [(ngModel)]="searchTerm" show-cancel-button="never"></ion-searchbar>
           </ion-col>
 
              <!--<ion-col class="header" size="2">

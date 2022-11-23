@@ -60,10 +60,8 @@
 
           <ion-accordion value="third">
                <ion-item slot="header" color="light">
-                    <ion-label>Top 10 most frequently watched Movies</ion-label>
+                    <ion-label>Top 10 Movies</ion-label>
                </ion-item>
-
-               <h2>Top 10 most frequently watched Movies</h2>
 
                <ion-list *ngFor="let currentMovie of watchListMovieStats" slot="content">
                     <ion-item>
@@ -85,10 +83,8 @@
 
           <ion-accordion value="fourth">
                <ion-item slot="header" color="light">
-                 <ion-label>Top 10 most frequently watched TV Shows</ion-label>
+                 <ion-label>Top 10 TV Shows</ion-label>
                </ion-item>
-
-               <h2>Top 10 most frequently watched TV Shows</h2>
 
                <div slot="content">
                     <ion-list *ngFor="let currentShow of watchListTVStats">

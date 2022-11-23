@@ -24,15 +24,24 @@
                <ion-col size="6">
                     <ion-icon *ngIf="!dataService.isAdding && !dataService.isEditing" class="addWatchListItem" name="add-outline" (click)="addWatchListItem()"></ion-icon>
                </ion-col>
-
-               <ion-col size="6">
-                    <div *ngIf="dataService.watchListItems">{{ dataService.watchListItems.length }} records</div>
-               </ion-col>
           </ion-row>
      </ion-grid>
      
      <div class="ion-list-parent">
           <ion-list>
+               <!-- Pagination -->
+               <ion-item lines="none">
+                    <span class="pageSpan" *ngIf="dataService.watchListItems && dataService.watchListItems.length > itemsPerPage">
+                         <span class="page nomargin" *ngIf="currentPage > 1">Previous</span>
+
+                         <span class="page" [ngClass]="{'active': currentPage == (pageIndex + 1)}" (click)="paginationClickHandler(0,pageIndex + 1)" *ngFor="let number of numSequence(dataService.watchListItems.length/itemsPerPage > 1 ? math.round(dataService.watchListItems.length/itemsPerPage) : 1 );let pageIndex=index">
+                              {{ pageIndex + 1 }}
+                         </span>
+
+                         <span class="page nomargin" *ngIf="currentPage < dataService.watchListItems.length/itemsPerPage" (click)="paginationClickHandler(1)">Next</span>
+                    </span>
+               </ion-item>
+
                <ion-item> <!-- Table headers -->
                     <ion-grid>
                          <ion-row>
@@ -64,35 +73,52 @@
                     </ion-grid>               
                </ion-item>
 
-               <ion-item *ngFor="let currWatchListItem of dataService.watchListItems">
-                    <ion-grid>
-                         <ion-row>
-                              <ion-col [size]="this.dataService.getColumnSize('ID','WatchListItems')">
-                                   <ion-label><a class="detailLink" (click)="this.dataService.openDetailOverlay('watchlist-items',currWatchListItem.WatchListItemID)">{{ currWatchListItem.WatchListItemID }}</a></ion-label>
-                              </ion-col>
+               <div *ngFor="let currWatchListItem of dataService.watchListItems;let index=index">
+                    <ion-item *ngIf="isShown(index)">
+                         <ion-grid>
+                              <ion-row>
+                                   <ion-col [size]="this.dataService.getColumnSize('ID','WatchListItems')">
+                                        <ion-label><a class="detailLink" (click)="this.dataService.openDetailOverlay('watchlist-items',currWatchListItem.WatchListItemID)">{{ currWatchListItem.WatchListItemID }}</a></ion-label>
+                                   </ion-col>
 
-                              <ion-col [size]="this.dataService.getColumnSize('Name','WatchListItems')">
-                                   <ion-label className="WatchListItemName">
-                                        {{ currWatchListItem.WatchListItemName }}
-                                   </ion-label>
-                              </ion-col>
+                                   <ion-col [size]="this.dataService.getColumnSize('Name','WatchListItems')">
+                                        <ion-label className="WatchListItemName">
+                                             {{ currWatchListItem.WatchListItemName }}
+                                        </ion-label>
+                                   </ion-col>
 
-                              <ion-col [size]="this.dataService.getColumnSize('Type','WatchListItems')">
-                                   <ion-label>{{ dataService.getWatchListTypeName(currWatchListItem.WatchListTypeID) }}</ion-label>
-                              </ion-col>
+                                   <ion-col [size]="this.dataService.getColumnSize('Type','WatchListItems')">
+                                        <ion-label>{{ dataService.getWatchListTypeName(currWatchListItem.WatchListTypeID) }}</ion-label>
+                                   </ion-col>
 
-                              <ion-col [size]="this.dataService.getColumnSize('IMDBURL','WatchListItems')">
-                                   <ion-label>
-                                        <a *ngIf="currWatchListItem.IMDB_URL !== null" href="{{ currWatchListItem.IMDB_URL }}" target="_blank">{{ currWatchListItem.IMDB_URL }}</a>
-                                   </ion-label>
-                              </ion-col>
+                                   <ion-col [size]="this.dataService.getColumnSize('IMDBURL','WatchListItems')">
+                                        <ion-label>
+                                             <a *ngIf="currWatchListItem.IMDB_URL !== null" href="{{ currWatchListItem.IMDB_URL }}" target="_blank">{{ currWatchListItem.IMDB_URL }}</a>
+                                        </ion-label>
+                                   </ion-col>
 
-                              <ion-col [size]="this.dataService.getColumnSize('Notes','WatchListItems')">
-                                   <ion-label>{{ currWatchListItem.Notes }}</ion-label>
-                              </ion-col>
-                         </ion-row>                    
-                    </ion-grid>                   
-               </ion-item>
+                                   <ion-col [size]="this.dataService.getColumnSize('Notes','WatchListItems')">
+                                        <ion-label>{{ currWatchListItem.Notes }}</ion-label>
+                                   </ion-col>
+                              </ion-row>                    
+                         </ion-grid>                   
+                    </ion-item>
+               </div>
           </ion-list>
+
+          <!-- Pagination -->
+          <ion-item lines="none">
+               <span class="pageSpan" *ngIf="dataService.watchListItems && dataService.watchListItems.length > itemsPerPage">
+                    <span class="page nomargin" *ngIf="currentPage > 1">Previous</span>
+
+                    <span class="page" [ngClass]="{'active': currentPage == (pageIndex + 1)}" (click)="paginationClickHandler(0,pageIndex + 1)" *ngFor="let number of numSequence(dataService.watchListItems.length/itemsPerPage > 1 ? math.round(dataService.watchListItems.length/itemsPerPage) : 1 );let pageIndex=index">
+                         {{ pageIndex + 1 }}
+                    </span>
+
+                    <span class="page nomargin" *ngIf="currentPage < dataService.watchListItems.length/itemsPerPage" (click)="paginationClickHandler(1)">Next</span>
+               </span>
+          </ion-item>
+
+          <div *ngIf="dataService.watchListItems">{{ dataService.watchListItems.length }} records</div>
      </div>
 </ion-content>

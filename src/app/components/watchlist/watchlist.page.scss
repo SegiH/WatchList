@@ -17,6 +17,64 @@
      margin-top: 8px;
 }
 
+.page {
+     cursor: pointer;
+     padding-left: 5px;
+     padding-right: 5px;
+     border: 1px solid #ddd;
+     color: black;
+     float: left;
+     padding: 8px 16px;
+     text-decoration: none;
+     overflow-x: visible;
+}
+
+.pageSelect {
+     width: 65px;
+}
+
+.item-inner {
+     border-style: hidden;
+}
+
+.page:first-child {
+     border-top-left-radius: 5px;
+     border-bottom-left-radius: 5px;
+   }
+   
+.page:last-child {
+     border-top-right-radius: 5px;
+     border-bottom-right-radius: 5px;
+}
+
+.page.active {
+    background-color: #4285f4;
+    color: white;
+}
+
+.pageSpan {
+     display: flex;
+     overflow: scroll;
+     width: fit-content;
+     border-style: dashed;
+     border-width: 1px;
+}
+
+.nomargin {
+     margin-left: 0px;
+     margin-right: 0px;
+}
+
+span > .page:first-child {
+     border-top-left-radius: 5px;
+     border-bottom-left-radius: 5px;
+}
+     
+span > .page:last-child {
+     border-top-right-radius: 5px;
+     border-bottom-right-radius: 5px;
+}
+
 ion-card {
      display: flex;
      width: 100%;

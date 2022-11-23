@@ -657,7 +657,6 @@ export class DataService {
 
           // save to local storage
           localStorage.setItem('WL_Username', username);
-          localStorage.setItem('WL_Password', password);
 
           this.setBackendURL();
 
@@ -847,12 +846,10 @@ export class DataService {
      }
 
      async saveSourceFilter() {
-          console.log("Saving source " + this.sourceFilter)
           await this.storage.set('SourceFilter',this.sourceFilter);
      }
 
      async saveTypeFilter() {
-          console.log("Saving type" + this.typeFilter)
           await this.storage.set('TypeFilter',this.typeFilter);
      }
 

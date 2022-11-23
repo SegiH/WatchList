@@ -16,7 +16,7 @@
                          <ion-col size="9">
                               <ion-select placeholder='Record Limit' name="recordLimit" [(ngModel)]="dataService.recordLimit" (ionChange)="reloadData($event)">
                                    <ion-select-option *ngFor="let currItem of recordLimitOptions;trackBy: trackByFn" [value]="currItem">{{currItem}}</ion-select-option>
-                              </ion-select>          
+                              </ion-select>
                          </ion-col>
 
                          <ion-col size="12" *ngIf="currentRoute==='WatchList'">

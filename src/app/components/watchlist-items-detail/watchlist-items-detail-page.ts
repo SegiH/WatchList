@@ -100,10 +100,9 @@ export class WatchListItemsDetailComponent implements DoCheck {
 
                this.isAdding=false;
 
-               // TODO: Fix later!
-               // this.dataService.autoAddWatchListRecord();
-
                this.dataService.closeOverlay();
+
+               this.dataService.autoAddWatchListRecord(this.addItemIMDBURL);
 
                this.addItemName = '';
                this.addItemType = '';

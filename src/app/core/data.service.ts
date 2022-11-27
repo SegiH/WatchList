@@ -156,17 +156,18 @@ export class DataService {
           await alert.present();
      }
 
-     /*autoAddWatchListRecord(iMDB_URL = null) {
+     autoAddWatchListRecord(iMDB_URL = null) {
           const ids = this.watchListItems.map((thisWatchList: IWatchList) => { return thisWatchList.WatchListItemID; });
 
           const newID = Math.max(...ids) + 1;
           const existing=this.watchListItems.filter((wli: IWatchListItem) => wli.IMDB_URL === iMDB_URL)[0];
 
           const currWatchList: any=[];
-          currWatchList.watchListItemID=(typeof existing !== 'undefined' ? existing.watchListItemID : newID);
+          currWatchList.WatchListItemID=(typeof existing !== 'undefined' ? existing.WatchListItemID : newID);
+          this.detailID=currWatchList.WatchListItemID;
 
           this.confirmDialog(currWatchList,'Do you want to add a Watchlist record now ?',this.showWatchListDetail.bind(this));
-     }*/
+     }
 
      closeOverlay() {
           this.router.navigateByUrl(`/tabs/${this.detailObjectName}`);
@@ -908,6 +909,11 @@ export class DataService {
 
      setWatchListItems(newWatchListItems: any) {
           this.watchListItems=newWatchListItems;
+     }
+
+     showWatchListDetail(currWatchList: any) {
+          // This is activated after adding a WatchListItem when you say yes to add a WatchList item now prompt
+          this.openDetailOverlay('watchlist',currWatchList.WatchListItemID);
      }
 
      sortClick(name: string,direction: string, component: string) {

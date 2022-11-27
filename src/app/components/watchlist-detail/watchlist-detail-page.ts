@@ -34,10 +34,6 @@ export class WatchListDetailComponent implements DoCheck {
 
           const addWatchListItemID=this.dataService.getDetailWatchListItemID();
 
-          if (addWatchListItemID !== null) {
-               this.addItemID=addWatchListItemID;
-          }
-
           if (this.dataService.getDetailID() == null) {
                this.isAdding=true;
 
@@ -50,6 +46,13 @@ export class WatchListDetailComponent implements DoCheck {
                }*/
           }  else
                this.isAdding=false;
+
+          if (addWatchListItemID !== null) {
+               this.addItemID=addWatchListItemID;
+               this.isAdding=true;
+
+               this.detailObject=this.dataService.iWatchListEmpty();
+          }
      }
 
      // Add Queue item to WatchList Queue and remove from WatchList

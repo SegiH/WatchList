@@ -1,14 +1,14 @@
 # WatchList
-WatchList application is a multi-user app that lets you track movies and TV
+WatchList application is a multi-user app that lets you track the movies and TV that you watch, how many times you watched them and when you watched them. You can also rate movies or shows.
 
 Requirements: npm, WatchList-Backend service (See my other repo)
 
 This app has the ability to search IMDB for a movie or TV show within the API if you provide a RapidAPI IMDB key on the backend service. See the README on my WatchList-Backend repo for details.
 
-This app can be built as a web app or an Android or iOS app.
+This app can be built as a web app, an Android app or an iOS app.
 
 ## Build web application
-Run these commands the build the web application
+Run these commands to build the web application
 
 1. npm install
 1. ionic build
@@ -16,12 +16,6 @@ Run these commands the build the web application
 
 ## Logging in
 Log into the web application using the username, password and backend URL created on WatchList-Backend.
-
-## Test the web app
-If you want to try out the app, run these commands:
-1. npm install
-1. ionic serve
-1. Open http://localhost:8100 in your browser if it doesn't open automatically. Google Chrome/Edge will not work when accessing a site over http if the backend URL address uses https. Use  This only applies when testing the web app.
 
 ## Build for Android or iOS
 1. Build web app following instructions above

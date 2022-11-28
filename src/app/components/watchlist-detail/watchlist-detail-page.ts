@@ -38,12 +38,12 @@ export class WatchListDetailComponent implements DoCheck {
                this.isAdding=true;
 
                // Default start date to current date
-               /*const dateStr = new Date().setSeconds(0,0);
-               const dt = new Date(dateStr).toISOString().substring(0,10);
+               //const dateStr = new Date().setSeconds(0,0);
+               //const dt = new Date(dateStr).toISOString().substring(0,10);
 
-               if (this.addItemStartDate === '') {
-                    this.addItemStartDate=dt;
-               }*/
+               //if (this.addItemStartDate === '') {
+               //     this.addItemStartDate=dt;
+               //}
           }  else
                this.isAdding=false;
 

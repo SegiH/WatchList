@@ -20,6 +20,7 @@ export class DataService {
      authGuardDisabled = false;
      detailObjectName: string=null;
      detailID: number=null;
+     detailWatchListItemID: number=null;
      IMDBSearchEnabled = false;
      imdb_url_missing = false;
      incompleteFilter = true;
@@ -164,7 +165,7 @@ export class DataService {
 
           const currWatchList: any=[];
           currWatchList.WatchListItemID=(typeof existing !== 'undefined' ? existing.WatchListItemID : newID);
-          this.detailID=currWatchList.WatchListItemID;
+          this.detailWatchListItemID=currWatchList.WatchListItemID;
 
           this.confirmDialog(currWatchList,'Do you want to add a Watchlist record now ?',this.showWatchListDetail.bind(this));
      }
@@ -271,7 +272,7 @@ export class DataService {
      }
 
      getDetailWatchListItemID() {
-          return this.detailID;
+          return this.detailWatchListItemID;
      }
 
      getIMDBSearchEnabled() {
@@ -658,6 +659,7 @@ export class DataService {
 
           // save to local storage
           localStorage.setItem('WL_Username', username);
+          localStorage.setItem('WL_Password', password);
 
           this.setBackendURL();
 

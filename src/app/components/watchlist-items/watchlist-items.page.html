@@ -34,7 +34,7 @@
                     <span class="pageSpan" *ngIf="dataService.watchListItems && dataService.watchListItems.length > itemsPerPage">
                          <span class="page nomargin" *ngIf="currentPage > 1">Previous</span>
 
-                         <span class="page" [ngClass]="{'active': currentPage == (pageIndex + 1)}" (click)="paginationClickHandler(0,pageIndex + 1)" *ngFor="let number of numSequence(dataService.watchListItems.length/itemsPerPage > 1 ? math.round(dataService.watchListItems.length/itemsPerPage) : 1 );let pageIndex=index">
+                         <span class="page" [ngClass]="{'active': currentPage === (pageIndex + 1)}" (click)="paginationClickHandler(0,pageIndex + 1)" *ngFor="let number of numSequence(dataService.watchListItems.length/itemsPerPage > 1 ? math.round(dataService.watchListItems.length/itemsPerPage) : 1 );let pageIndex=index">
                               {{ pageIndex + 1 }}
                          </span>
 
@@ -111,7 +111,7 @@
                <span class="pageSpan" *ngIf="dataService.watchListItems && dataService.watchListItems.length > itemsPerPage">
                     <span class="page nomargin" *ngIf="currentPage > 1">Previous</span>
 
-                    <span class="page" [ngClass]="{'active': currentPage == (pageIndex + 1)}" (click)="paginationClickHandler(0,pageIndex + 1)" *ngFor="let number of numSequence(dataService.watchListItems.length/itemsPerPage > 1 ? math.round(dataService.watchListItems.length/itemsPerPage) : 1 );let pageIndex=index">
+                    <span class="page" [ngClass]="{'active': currentPage === (pageIndex + 1)}" (click)="paginationClickHandler(0,pageIndex + 1)" *ngFor="let number of numSequence(dataService.watchListItems.length/itemsPerPage > 1 ? math.round(dataService.watchListItems.length/itemsPerPage) : 1 );let pageIndex=index">
                          {{ pageIndex + 1 }}
                     </span>
 

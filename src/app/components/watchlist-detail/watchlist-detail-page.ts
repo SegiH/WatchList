@@ -15,6 +15,7 @@ export class WatchListDetailComponent implements DoCheck {
      addItemNotes= '';
      addItemSource = '';
      addSeason = '';
+     addRating = 0;
 
      detailObject: IWatchList;
      detailObjectName: string;
@@ -147,9 +148,10 @@ export class WatchListDetailComponent implements DoCheck {
      }
 
      getRatingIcon(index: number) {
-          return (
-               this.detailObject?.Rating > index + 0.5 ? "heart" : this.detailObject?.Rating === index + 0.5 ? "heart-half" : "heart-outline"
-          )
+          if (this.isAdding)
+               return this.addRating > index + 0.5 ? "heart" : this.addRating === index + 0.5 ? "heart-half" : "heart-outline";
+          else
+               return this.detailObject?.Rating > index + 0.5 ? "heart" : this.detailObject?.Rating === index + 0.5 ? "heart-half" : "heart-outline"
      }
 
      numSequence(n: number): Array<number> {
@@ -160,62 +162,27 @@ export class WatchListDetailComponent implements DoCheck {
           if (!this.isAdding && !this.isEditing)
                return true;
 
-          if (this.detailObject.Rating === null)
-               this.detailObject.Rating=0;
+          if (this.isAdding) {
+               if (String(this.addRating + ".0") === String(index + ".0")) {
+                    this.addRating = index + 0.5;
+               } else if (String(this.addRating) === String(index + ".5")) {
+                    this.addRating = parseFloat((index+1).toFixed(1));
+               } else {
+                    this.addRating = parseFloat(index.toFixed(1));
+               }
 
-          /*if (String(this.detailObject.Rating) === String(index + ".0"))
-               this.detailObject.Rating = index + 0.5;
-          else if (String(this.detailObject.Rating) === String(index + ".5"))
-               this.detailObject.Rating = index;
-          else
-               this.detailObject.Rating = parseFloat(index.toFixed(1));*/
+               return;
+          } else {
+               if (this.detailObject.Rating === null)
+                    this.detailObject.Rating=0;
 
-          switch(index) {
-               case 0:
-                    if (this.detailObject.Rating === 0.0)
-                         this.detailObject.Rating = 0.5;
-                    else if (this.detailObject.Rating === 0.5)
-                         this.detailObject.Rating = 1.0;
-                    else
-                         this.detailObject.Rating = 0.0;
-
-                    break;
-               case 1:
-                    if (this.detailObject.Rating === 1.0)
-                         this.detailObject.Rating = 1.5;
-                    else if (this.detailObject.Rating === 1.5)
-                         this.detailObject.Rating = 2.0;
-                    else
-                         this.detailObject.Rating = 1.0;
-
-                    break;
-               case 2:
-                    if (this.detailObject.Rating === 2.0)
-                         this.detailObject.Rating = 2.5;
-                    else if (this.detailObject.Rating === 2.5)
-                         this.detailObject.Rating = 3.0;
-                    else
-                         this.detailObject.Rating = 2.0;
-
-                    break;
-               case 3:
-                    if (this.detailObject.Rating === 3.0)
-                         this.detailObject.Rating = 3.5;
-                    else if (this.detailObject.Rating === 3.5)
-                         this.detailObject.Rating = 4.0;
-                    else
-                         this.detailObject.Rating = 3.0;
-
-                    break;
-               case 4:
-                    if (this.detailObject.Rating === 4.0)
-                         this.detailObject.Rating = 4.5;
-                    else if (this.detailObject.Rating === 4.5)
-                         this.detailObject.Rating = 5.0;
-                    else
-                         this.detailObject.Rating = 4.0;
-
-                    break;
+               if (String(this.detailObject.Rating + ".0") === String(index + ".0")) {
+                    this.detailObject.Rating = index + 0.5;
+               } else if (String(this.detailObject.Rating) === String(index + ".5")) {
+                    this.detailObject.Rating = parseFloat((index+1).toFixed(1));
+               } else {
+                    this.detailObject.Rating = parseFloat(index.toFixed(1));
+               }
           }
      }
 

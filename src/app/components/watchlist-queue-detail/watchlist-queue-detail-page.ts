@@ -65,6 +65,7 @@ export class WatchListQueueDetailComponent implements DoCheck {
                WatchListSourceID: null,
                Season: null,
                Rating: null,
+               IMDB_Poster: null,
                Notes: ''
           };
 
@@ -110,7 +111,7 @@ export class WatchListQueueDetailComponent implements DoCheck {
      editWatchListQueueItem() {
           this.isEditing = true;
 
-          //this.detailObject.Previous=[];
+          this.detailObject.Previous=this.dataService.iWatchListQueueItemEmpty();
 
           Object.assign(this.detailObject.Previous, this.detailObject);
      }

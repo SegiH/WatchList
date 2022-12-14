@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, DoCheck } from '@angular/core';
+import IWatchListItem from 'src/app/interfaces/watchlistitem.interface';
 import { DataService } from '../../core/data.service';
 
 @Component({
@@ -6,19 +7,37 @@ import { DataService } from '../../core/data.service';
      templateUrl: 'watchlist-items.page.html',
      styleUrls: ['watchlist-items.page.scss']
 })
-export class WatchListItemsComponent {
+export class WatchListItemsComponent implements DoCheck {
      currentPage = 1;
+     filteredWatchListItems: IWatchListItem[]
      readonly itemsPerPage = 20;
      readonly math = Math;
 
      constructor(public dataService: DataService) { }
+
+     ngDoCheck(): void {
+          if (typeof this.dataService.watchListItems !== 'undefined' && this.dataService.watchListItems.length > 0) {
+               this.filteredWatchListItems=this.dataService.watchListItems.filter((wli: IWatchListItem) => {
+                    return (
+                         (this.dataService.searchTerm === ""
+                         || (this.dataService.searchTerm !== ""
+                            && (
+                               this.dataService.getWatchListItemName(wli.WatchListItemID).toLowerCase().includes(this.dataService.searchTerm.toLowerCase())
+                               || (wli.WatchListTypeID !== null && this.dataService.getWatchListTypeName(wli.WatchListTypeID).toLowerCase().includes(this.dataService.searchTerm.toLowerCase())
+                            )
+                         || (wli.ItemNotes  !== null && wli.ItemNotes.toLowerCase().includes(this.dataService.searchTerm.toLowerCase())))
+                         ))
+                    )
+               });
+          }
+     }
 
      addWatchListItem() {
           this.dataService.openDetailOverlay('watchlist-items',null);
      }
 
      isShown(pageIndex: number) {
-          if (this.dataService.watchListItems.length < this.itemsPerPage)
+          if (this.filteredWatchListItems.length < this.itemsPerPage)
                return true;
 
           if (pageIndex >= ((this.currentPage-1)*this.itemsPerPage) && pageIndex < ((this.currentPage-1)*this.itemsPerPage) + this.itemsPerPage)

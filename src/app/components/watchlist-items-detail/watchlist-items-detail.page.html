@@ -24,6 +24,12 @@
           </ion-row>
      </ion-grid>
 
+     <a class="nooutline" *ngIf="detailObject?.IMDB_URL !== null" href="{{detailObject?.IMDB_URL}}" target="_blank">
+          <img *ngIf="detailObject?.IMDB_Poster !== null" class="poster" src="{{detailObject?.IMDB_Poster}}">
+     </a>
+
+     <img *ngIf="detailObject?.IMDB_URL === null && detailObject?.IMDB_Poster !== null" class="poster" src="{{detailObject?.IMDB_Poster}}">
+
      <ion-row *ngIf="!isAdding">
           <ion-col [size]="2">
                <ion-label>Item ID</ion-label>
@@ -105,6 +111,20 @@
                <ion-input *ngIf="isEditing" class="editAddSelect" type="text" [(ngModel)]="detailObject.IMDB_URL"></ion-input>
 
                <ion-input *ngIf="isAdding" class="editAddSelect" type="text" [(ngModel)]="addItemIMDBURL"></ion-input>
+          </ion-col>
+     </ion-row>
+
+     <ion-row *ngIf="isEditing || isAdding">
+          <ion-col [size]="2">
+               <ion-label>Image</ion-label>
+          </ion-col>
+
+          <ion-col [size]="1"></ion-col>
+   
+          <ion-col [size]="9">
+               <ion-input *ngIf="isEditing" class="editAddSelect" type="text" [(ngModel)]="detailObject.IMDB_Poster"></ion-input>
+
+               <ion-input *ngIf="isAdding" class="editAddSelect" type="text" [(ngModel)]="addItemIMDBPoster"></ion-input>
           </ion-col>
      </ion-row>
 

@@ -32,16 +32,8 @@
                <ion-item> <!-- Table headers -->
                     <ion-grid>
                          <ion-row>
-                              <ion-col [size]="this.dataService.getColumnSize('ID','WatchListQueueItems')">
-                                   <ion-label>Queue ID</ion-label>
-                                   
-                                   <!--<ion-icon *ngIf="dataService.watchListSortDirection =='ASC' && !dataService.isAdding && !dataService.isEditing" [ngClass]="dataService.watchListSortActiveColumn === 'ID' ? 'upArrow IDArrowIcon active' : 'upArrow IDArrowIcon'" name="caret-up-outline" (click)="dataService.sortClick('ID','ASC','WatchList')"></ion-icon><ion-icon *ngIf="dataService.watchListSortDirection =='DESC' && !dataService.isAdding && !dataService.isEditing" [ngClass]="dataService.watchListSortActiveColumn === 'ID' ? 'downArrow IDArrowIcon active' : 'downArrow IDArrowIcon'" name="caret-down-outline" (click)="dataService.sortClick('ID','DESC','WatchList')"></ion-icon>-->
-                              </ion-col>
-  
                               <ion-col [size]="this.dataService.getColumnSize('Name','WatchListQueueItems')">
                                    <ion-label>Name</ion-label>
-                                   
-                                   <!--<ion-icon *ngIf="dataService.watchListSortDirection =='ASC' && !dataService.isAdding && !dataService.isEditing" [ngClass]="dataService.watchListSortActiveColumn === 'Name' ? 'upArrow nameArrowIcon active' : 'upArrow nameArrowIcon'" name="caret-up-outline" (click)="dataService.sortClick('Name','ASC','WatchList')"></ion-icon><ion-icon *ngIf="dataService.watchListSortDirection =='DESC' && !dataService.isAdding && !dataService.isEditing" [ngClass]="dataService.watchListSortActiveColumn === 'Name' ? 'downArrow nameArrowIcon active' : 'downArrow nameArrowIcon'" name="caret-down-outline" (click)="dataService.sortClick('Name','DESC','WatchList')"></ion-icon>-->
                               </ion-col>
   
                               <ion-col [size]="this.dataService.getColumnSize('Notes','WatchListQueueItems')">
@@ -54,20 +46,12 @@
                <ion-item *ngFor="let currWatchListQueue of dataService.watchListQueue"> <!-- Data Panel -->
                     <ion-grid>
                          <ion-row>
-                              <ion-col [size]="this.dataService.getColumnSize('ID','WatchListQueueItems')" class="IDColumn">
-                                   <a class="detailLink" (click)="this.dataService.openDetailOverlay('watchlist-queue',currWatchListQueue.WatchListQueueItemID)">{{ currWatchListQueue.WatchListQueueItemID }}</a>
-                              </ion-col>
-                
                               <ion-col [size]="this.dataService.getColumnSize('Name','WatchListQueueItems')" class="nameColumn">
-                                   <div *ngIf="!dataService.isEditing">
-                                        <div *ngIf="dataService.getIMDBURL(currWatchListQueue.WatchListQueueItemID) === null; else hyperLinkDiv">
-                                             {{dataService.getWatchListItemName(currWatchListQueue.WatchListItemID)}}
-                                        </div>
-                
-                                        <ng-template #hyperLinkDiv>
-                                             <a [href]="dataService.getIMDBURL(currWatchListQueue.WatchListItemID)" target="_blank">{{dataService.getWatchListItemName(currWatchListQueue.WatchListItemID)}}</a>
-                                        </ng-template>
-                                    </div>
+                                   <ion-label class="poster" className="WatchListItemName" (click)="this.dataService.openDetailOverlay('watchlist-queue',currWatchListQueue.WatchListQueueItemID)">
+                                        {{ currWatchListQueue.WatchListItemName }}
+                                   </ion-label>
+
+                                   <img *ngIf="currWatchListQueue.IMDB_Poster !== null" class="poster" src="{{currWatchListQueue.IMDB_Poster}}" (click)="this.dataService.openDetailOverlay('watchlist-queue',currWatchListQueue.WatchListQueueItemID)">
                               </ion-col>
                 
                               <ion-col [size]="this.dataService.getColumnSize('Notes','WatchListQueueItems')">

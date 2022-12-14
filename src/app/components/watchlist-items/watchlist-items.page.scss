@@ -69,6 +69,20 @@ ion-label {
      border-width: 1px;
 }
 
+.pointer {
+     cursor: pointer;
+}
+
+.poster {
+     cursor: pointer;
+     max-height: 125px;
+     max-width: 87px;
+}
+
+.poster:hover {
+     max-height: 250px;
+}
+
 .nomargin {
      margin-left: 0px;
      margin-right: 0px;

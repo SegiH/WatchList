@@ -35,7 +35,7 @@ export class DataService {
      userData: IUser=this.iUserEmpty();
      watchList: IWatchList[];
      watchListItems: any;
-     watchListNames: any; // This contains a full, unfiltered copy of watchListItems that is used for the item names
+     watchListNames: any;
      watchListQueue: any;
      watchListSortActiveColumn = 'Name';
      watchListSortColumn = 'Name';
@@ -47,22 +47,20 @@ export class DataService {
      watchListTypes: IWatchListType[];
 
      private readonly watchListColumnSizes = {
-          ID: 1,
           Name: 2,
           StartDate: 2,
           EndDate: 2,
-          Source : 1,
+          Source : 2,
           Season : 1,
           Rating : 1,
           Notes : 2,
      };
 
      private readonly watchListItemsColumnSizes = {
-          ID: 1,
           Name: 5,
           Type: 1,
           IMDBURL: 4,
-          Notes : 1,
+          Notes : 2,
      };
 
      private readonly watchListQueueColumnSizes = {
@@ -126,6 +124,10 @@ export class DataService {
 
           if (currWatchListItem.IMDB_URL !== null && currWatchListItem.IMDB_URL !== '') {
                params = params.append('IMDB_URL',currWatchListItem.IMDB_URL);
+          }
+
+          if (currWatchListItem.IMDB_Poster !== null && currWatchListItem.IMDB_Poster !== '') {
+               params = params.append('IMDB_Poster',currWatchListItem.IMDB_Poster);
           }
 
           if (currWatchListItem.ItemNotes !== null && currWatchListItem.ItemNotes !== '') {
@@ -308,10 +310,6 @@ export class DataService {
 
      async getRecordLimit() {
           this.recordLimit = await this.storage.get('RecordLimitFilter');
-
-          if (this.recordLimit === null) {
-               this.recordLimit = 10;
-          }
      }
 
      async getIncompleteFilter() {
@@ -337,32 +335,12 @@ export class DataService {
      getWatchList() {
           let params = new HttpParams();
 
-          if (this.incompleteFilter === true) {
-               params = params.append('IncompleteFilter',true);
-          }
-
-          if (this.recordLimit !== null) {
-               params = params.append('RecordLimit',this.recordLimit);
-          }
-
-          if (this.searchTerm !== null && this.searchTerm !== '') {
-               params = params.append('SearchTerm',this.searchTerm);
-          }
-
-          if (this.sourceFilter !== null && this.sourceFilter !== '' && this.sourceFilter !== 'All') {
-               params = params.append('SourceFilter',this.sourceFilter);
-          }
-
-          if (this.typeFilter !== null && this.typeFilter !== '' && this.typeFilter !== 'All') {
-               params = params.append('TypeFilter',this.typeFilter);
-          }
-
           if (this.watchListSortColumn !== null && this.watchListSortDirection !== null) {
                params = params.append('SortColumn',this.watchListSortColumn);
                params = params.append('SortDirection', this.watchListSortDirection);
           }
 
-          return this.runRest(`/GetWatchList`,'GET',params);
+          return this.runRest(`/GetWatchList`,'GET',null);
      }
 
      getWatchListItemName(watchListItemID: number) {
@@ -381,21 +359,6 @@ export class DataService {
 
      getWatchListItems(loadAllData: boolean) {
           let params = new HttpParams();
-
-          // If watchListNames is not set get all data and ignore any filters that limit the data set returned
-          if (this.watchListNames !== null && loadAllData !== true) {
-               if (this.recordLimit !== null) {
-                    params = params.append('RecordLimit',this.recordLimit);
-               }
-
-               if (this.searchTerm !== null && this.searchTerm !== '') {
-                    params = params.append('SearchTerm',this.searchTerm);
-               }
-
-               if (this.imdb_url_missing === true) {
-                    params = params.append('IMDBURLMissing',true);
-               }
-          }
 
           if (this.watchListSortColumn !== null && this.watchListSortDirection !== null) {
                params = params.append('SortColumn',this.watchListItemsSortColumn);
@@ -599,6 +562,7 @@ export class DataService {
                WatchListSourceID: null,
                Season: null,
                Rating: null,
+               IMDB_Poster : null,
                Notes: null
           };
      }
@@ -609,6 +573,7 @@ export class DataService {
                WatchListItemName: null,
                WatchListTypeID: null,
                IMDB_URL: null,
+               IMDB_Poster : null,
                ItemNotes: null,
                Previous: null
           };
@@ -867,22 +832,8 @@ export class DataService {
      }
 
      searchTermChangeHandler(event: any) {
-          const currentRoute=this.router.url.replace('/tabs/','');
-
           if (event !== null)
                this.setSearchTerm(event.target.value);
-
-          switch(currentRoute) {
-               case 'watchlist':
-                    this.getWatchListSubscription();
-                    break;
-               case 'watchlist-items':
-                    this.getWatchListItemsSubscription(false);
-                    break;
-               case 'watchlist-queue':
-                    this.getWatchListQueueSubscription();
-                    break;
-          }
      }
 
      async setBackendURL() {
@@ -979,17 +930,13 @@ export class DataService {
 
      updateWatchListItem(currWatchListItem: IWatchListItem) {
           let params = new HttpParams();
+
           params = params.append('WatchListItemID',currWatchListItem.WatchListItemID);
           params = params.append('WatchListItemName',currWatchListItem.WatchListItemName);
           params = params.append('WatchListTypeID',currWatchListItem.WatchListTypeID);
-
-          if (currWatchListItem.IMDB_URL !== null && currWatchListItem.IMDB_URL !== '') {
-               params = params.append('IMDB_URL',currWatchListItem.IMDB_URL);
-          }
-
-          if (currWatchListItem.ItemNotes !== null && currWatchListItem.ItemNotes !== '') {
-               params = params.append('ItemNotes',currWatchListItem.ItemNotes);
-          }
+          params = params.append('IMDB_URL',currWatchListItem.IMDB_URL);
+          params = params.append('IMDB_Poster',currWatchListItem.IMDB_Poster);
+          params = params.append('ItemNotes',currWatchListItem.ItemNotes);
 
           return this.runRest(`/UpdateWatchListItem`,'PUT',params);
      }

@@ -21,6 +21,15 @@
     margin-top: 8px;
 }
 
+.poster {
+    cursor: pointer;
+    max-height: 125px;
+}
+
+.poster:hover {
+    max-height: 250px;
+}
+
 ion-content {
     overflow: auto;
 }

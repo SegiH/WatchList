@@ -34,10 +34,13 @@ export class IMDBSearchComponent {
           }
 
           currWatchListItem.IMDB_URL=`https://www.imdb.com/title/${currSearchResult['imdbID']}/`;
+          currWatchListItem.IMDB_Poster=currSearchResult['Poster'];
 
           this.dataService.addWatchListItem(currWatchListItem).subscribe((response) => {
                if (response == null) { // No response on success
                     this.searchResults.splice(index,1); // Remove it from the the search results since its been added
+
+                    this.dataService.getWatchListSubscription();
 
                     // When adding item through IMDB search, it may exist already. In this case, it won't have a new ID
                     this.dataService.autoAddWatchListRecord(currWatchListItem.IMDB_URL);

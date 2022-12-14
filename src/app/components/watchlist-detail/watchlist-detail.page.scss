@@ -29,6 +29,14 @@ ion-input {
     background-color: white;
 }
 
+.nooutline {
+    outline:none !important;
+}
+
+.poster {
+     max-height: 125px;
+}
+
 .shortField {
     max-width: 75px;
 }

@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, DoCheck } from '@angular/core';
+import IWatchList from 'src/app/interfaces/watchlist.interface';
 import { DataService } from '../../core/data.service';
 
 @Component({
@@ -6,19 +7,40 @@ import { DataService } from '../../core/data.service';
      templateUrl: 'watchlist.page.html',
      styleUrls: ['watchlist.page.scss']
 })
-export class WatchListComponent {
+export class WatchListComponent implements DoCheck {
      currentPage = 1;
+     filteredWatchList: IWatchList[];
      readonly itemsPerPage = 20;
      readonly math = Math;
 
      constructor(public dataService: DataService) { }
+
+     ngDoCheck(): void {
+          if (typeof this.dataService.watchList !== 'undefined' && this.dataService.watchList.length > 0) {
+               this.filteredWatchList=this.dataService.watchList.filter((wl: IWatchList) => {
+                    return (
+                         (this.dataService.searchTerm === ""
+                         || (this.dataService.searchTerm !== ""
+                            && (
+                               this.dataService.getWatchListItemName(wl.WatchListItemID).toLowerCase().includes(this.dataService.searchTerm.toLowerCase())
+                               || (wl.WatchListSourceID !== null && this.dataService.getSourceName(wl.WatchListSourceID).toLowerCase().includes(this.dataService.searchTerm.toLowerCase())
+                            )
+                         || (wl.Notes  !== null && wl.Notes.toLowerCase().includes(this.dataService.searchTerm.toLowerCase())))
+                         ))
+                         &&
+                         ((this.dataService.incompleteFilter === true && wl.EndDate === null)
+                         || (this.dataService.incompleteFilter !== true && wl.EndDate !== null))
+                    )
+               });
+          }
+     }
 
      addWatchList() {
           this.dataService.openDetailOverlay('watchlist',null);
      }
 
      isShown(pageIndex: number) {
-          if (this.dataService.watchListItems.length < this.itemsPerPage)
+          if (typeof this.filteredWatchList !== 'undefined' && this.filteredWatchList.length < this.itemsPerPage)
                return true;
 
           if (pageIndex >= ((this.currentPage-1)*this.itemsPerPage) && pageIndex < ((this.currentPage-1)*this.itemsPerPage) + this.itemsPerPage)

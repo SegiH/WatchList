@@ -91,7 +91,8 @@ export class AppComponent {
           },
           error => {
                this.router.navigateByUrl('/tabs/login');
-          })
+          });
+
           setTimeout(() => {
                this.router.navigateByUrl('/tabs/login');
           }, 10000)

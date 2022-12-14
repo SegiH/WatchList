@@ -30,75 +30,68 @@
      <div class="ion-list-parent">
           <ion-list>
                <!-- Pagination -->
-               <ion-item lines="none">
-                    <span class="pageSpan" *ngIf="dataService.watchListItems && dataService.watchListItems.length > itemsPerPage">
+               <ion-item *ngIf="filteredWatchListItems && filteredWatchListItems.length > 0" lines="none">
+                    <span class="pageSpan" *ngIf="filteredWatchListItems && filteredWatchListItems.length > itemsPerPage">
                          <span class="page nomargin" *ngIf="currentPage > 1">Previous</span>
 
-                         <span class="page" [ngClass]="{'active': currentPage === (pageIndex + 1)}" (click)="paginationClickHandler(0,pageIndex + 1)" *ngFor="let number of numSequence(dataService.watchListItems.length/itemsPerPage > 1 ? math.round(dataService.watchListItems.length/itemsPerPage) : 1 );let pageIndex=index">
+                         <span class="page" [ngClass]="{'active': currentPage === (pageIndex + 1)}" (click)="paginationClickHandler(0,pageIndex + 1)" *ngFor="let number of numSequence(filteredWatchListItems.length/itemsPerPage > 1 ? math.round(filteredWatchListItems.length/itemsPerPage) : 1 );let pageIndex=index">
                               {{ pageIndex + 1 }}
                          </span>
 
-                         <span class="page nomargin" *ngIf="currentPage < dataService.watchListItems.length/itemsPerPage" (click)="paginationClickHandler(1)">Next</span>
+                         <span class="page nomargin" *ngIf="currentPage < filteredWatchListItems.length/itemsPerPage" (click)="paginationClickHandler(1)">Next</span>
                     </span>
                </ion-item>
 
                <ion-item> <!-- Table headers -->
                     <ion-grid>
                          <ion-row>
-                              <ion-col [size]="this.dataService.getColumnSize('ID','WatchListItems')">
-                                   <ion-label>ID</ion-label>
-                                   <!--<ion-icon *ngIf="dataService.watchListItemsSortDirection =='ASC' && !dataService.isAdding && !dataService.isEditing" [ngClass]="dataService.watchListItemsSortActiveColumn === 'ID' ? 'upArrow IDArrowIcon active' : 'upArrow IDArrowIcon'" name="caret-up-outline" (click)="dataService.sortClick('ID','ASC','WatchListItems')"></ion-icon><ion-icon *ngIf="dataService.watchListItemsSortDirection =='DESC' && !dataService.isAdding && !dataService.isEditing" [ngClass]="dataService.watchListItemsSortActiveColumn === 'ID' ? 'downArrow IDArrowIcon active' : 'downArrow IDArrowIcon'" name="caret-down-outline" (click)="dataService.sortClick('ID','DESC','WatchListItems')"></ion-icon>-->
+                              <ion-col [size]="dataService.getColumnSize('Name','WatchListItems')">
+                                   <ion-label>Name</ion-label><!--<ion-icon *ngIf="filteredWatchListItemsSortDirection =='ASC' && !dataService.isAdding && !dataService.isEditing" [ngClass]="dataService.watchListItemsSortActiveColumn === 'Name' ? 'upArrow NameArrowIcon active' : 'upArrow NameArrowIcon'" name="caret-up-outline" (click)="dataService.sortClick('Name','ASC','WatchListItems')"></ion-icon><ion-icon *ngIf="dataService.watchListItemsSortDirection =='DESC' && !dataService.isAdding && !dataService.isEditing" [ngClass]="dataService.watchListItemsSortActiveColumn === 'Name' ? 'downArrow NameArrowIcon active' : 'downArrow NameArrowIcon'" name="caret-down-outline" (click)="dataService.sortClick('Name','DESC','WatchListItems')"></ion-icon>-->
                               </ion-col>
 
-                              <ion-col [size]="this.dataService.getColumnSize('Name','WatchListItems')">
-                                   <ion-label>Name</ion-label><!--<ion-icon *ngIf="dataService.watchListItemsSortDirection =='ASC' && !dataService.isAdding && !dataService.isEditing" [ngClass]="dataService.watchListItemsSortActiveColumn === 'Name' ? 'upArrow NameArrowIcon active' : 'upArrow NameArrowIcon'" name="caret-up-outline" (click)="dataService.sortClick('Name','ASC','WatchListItems')"></ion-icon><ion-icon *ngIf="dataService.watchListItemsSortDirection =='DESC' && !dataService.isAdding && !dataService.isEditing" [ngClass]="dataService.watchListItemsSortActiveColumn === 'Name' ? 'downArrow NameArrowIcon active' : 'downArrow NameArrowIcon'" name="caret-down-outline" (click)="dataService.sortClick('Name','DESC','WatchListItems')"></ion-icon>-->
-                              </ion-col>
-
-                              <ion-col [size]="this.dataService.getColumnSize('Type','WatchListItems')">
+                              <ion-col [size]="dataService.getColumnSize('Type','WatchListItems')">
                                    <ion-label>Type</ion-label><!--<ion-icon *ngIf="dataService.watchListItemsSortDirection =='ASC' && !dataService.isAdding && !dataService.isEditing" [ngClass]="dataService.watchListItemsSortActiveColumn === 'Type' ? 'upArrow TypeArrowIcon active' : 'upArrow TypeArrowIcon'" name="caret-up-outline" (click)="dataService.sortClick('Type','ASC','WatchListItems')"></ion-icon><ion-icon *ngIf="dataService.watchListItemsSortDirection =='DESC' && !dataService.isAdding && !dataService.isEditing" [ngClass]="dataService.watchListItemsSortActiveColumn === 'Type' ? 'downArrow TypeArrowIcon active' : 'downArrow TypeArrowIcon'" name="caret-down-outline" (click)="dataService.sortClick('Type','DESC','WatchListItems')"></ion-icon>-->
                               </ion-col>
 
-                              <ion-col [size]="this.dataService.getColumnSize('IMDBURL','WatchListItems')">
+                              <ion-col [size]="dataService.getColumnSize('IMDBURL','WatchListItems')">
                                    <ion-label>IMDB URL</ion-label><!--<ion-icon *ngIf="dataService.watchListItemsSortDirection =='ASC' && !dataService.isAdding && !dataService.isEditing" [ngClass]="dataService.watchListItemsSortActiveColumn === 'IMDB_URL' ? 'upArrow IMDBURLArrowIcon active' : 'upArrow IMDBURLArrowIcon'" name="caret-up-outline" (click)="dataService.sortClick('IMDB_URL','ASC','WatchListItems')"></ion-icon><ion-icon *ngIf="dataService.watchListItemsSortDirection =='DESC' && !dataService.isAdding && !dataService.isEditing" [ngClass]="dataService.watchListItemsSortActiveColumn === 'IMDB_URL' ? 'downArrow IMDBURLArrowIcon active' : 'downArrow IMDBURLArrowIcon'" name="caret-down-outline" (click)="dataService.sortClick('IMDB_URL','DESC','WatchListItems')"></ion-icon>-->
                               </ion-col>
 
-                              <ion-col [size]="this.dataService.getColumnSize('Notes','WatchListItems')">
+                              <ion-col [size]="dataService.getColumnSize('Notes','WatchListItems')">
                                    <ion-label>Notes</ion-label>
                               </ion-col>
 
-                              <ion-col [size]="this.dataService.getColumnSize('Action','WatchListItems')">
+                              <ion-col [size]="dataService.getColumnSize('Action','WatchListItems')">
                                    <ion-label></ion-label>
                               </ion-col>
                          </ion-row>
                     </ion-grid>               
                </ion-item>
 
-               <div *ngFor="let currWatchListItem of dataService.watchListItems;let index=index">
+               <div *ngFor="let currWatchListItem of filteredWatchListItems;let index=index">
                     <ion-item *ngIf="isShown(index)">
                          <ion-grid>
                               <ion-row>
-                                   <ion-col [size]="this.dataService.getColumnSize('ID','WatchListItems')">
-                                        <ion-label><a class="detailLink" (click)="this.dataService.openDetailOverlay('watchlist-items',currWatchListItem.WatchListItemID)">{{ currWatchListItem.WatchListItemID }}</a></ion-label>
-                                   </ion-col>
-
-                                   <ion-col [size]="this.dataService.getColumnSize('Name','WatchListItems')">
-                                        <ion-label className="WatchListItemName">
+                                   <ion-col class="pointer" [size]="dataService.getColumnSize('Name','WatchListItems')">
+                                        <ion-label className="WatchListItemName" (click)="dataService.openDetailOverlay('watchlist-items',currWatchListItem.WatchListItemID)">
                                              {{ currWatchListItem.WatchListItemName }}
                                         </ion-label>
+
+                                        <img *ngIf="currWatchListItem.IMDB_Poster !== null" class="poster" src="{{currWatchListItem.IMDB_Poster}}" (click)="dataService.openDetailOverlay('watchlist-items',currWatchListItem.WatchListItemID)">
                                    </ion-col>
 
-                                   <ion-col [size]="this.dataService.getColumnSize('Type','WatchListItems')">
+                                   <ion-col [size]="dataService.getColumnSize('Type','WatchListItems')">
                                         <ion-label>{{ dataService.getWatchListTypeName(currWatchListItem.WatchListTypeID) }}</ion-label>
                                    </ion-col>
 
-                                   <ion-col [size]="this.dataService.getColumnSize('IMDBURL','WatchListItems')">
+                                   <ion-col [size]="dataService.getColumnSize('IMDBURL','WatchListItems')">
                                         <ion-label>
                                              <a *ngIf="currWatchListItem.IMDB_URL !== null" href="{{ currWatchListItem.IMDB_URL }}" target="_blank">{{ currWatchListItem.IMDB_URL }}</a>
                                         </ion-label>
                                    </ion-col>
 
-                                   <ion-col [size]="this.dataService.getColumnSize('Notes','WatchListItems')">
-                                        <ion-label>{{ currWatchListItem.Notes }}</ion-label>
+                                   <ion-col [size]="dataService.getColumnSize('Notes','WatchListItems')">
+                                        <ion-label>{{ currWatchListItem.ItemNotes }}</ion-label>
                                    </ion-col>
                               </ion-row>                    
                          </ion-grid>                   
@@ -108,17 +101,17 @@
 
           <!-- Pagination -->
           <ion-item lines="none">
-               <span class="pageSpan" *ngIf="dataService.watchListItems && dataService.watchListItems.length > itemsPerPage">
+               <span class="pageSpan" *ngIf="filteredWatchListItems && filteredWatchListItems.length > itemsPerPage">
                     <span class="page nomargin" *ngIf="currentPage > 1">Previous</span>
 
-                    <span class="page" [ngClass]="{'active': currentPage === (pageIndex + 1)}" (click)="paginationClickHandler(0,pageIndex + 1)" *ngFor="let number of numSequence(dataService.watchListItems.length/itemsPerPage > 1 ? math.round(dataService.watchListItems.length/itemsPerPage) : 1 );let pageIndex=index">
+                    <span class="page" [ngClass]="{'active': currentPage === (pageIndex + 1)}" (click)="paginationClickHandler(0,pageIndex + 1)" *ngFor="let number of numSequence(filteredWatchListItems.length/itemsPerPage > 1 ? math.round(filteredWatchListItems.length/itemsPerPage) : 1 );let pageIndex=index">
                          {{ pageIndex + 1 }}
                     </span>
 
-                    <span class="page nomargin" *ngIf="currentPage < dataService.watchListItems.length/itemsPerPage" (click)="paginationClickHandler(1)">Next</span>
+                    <span class="page nomargin" *ngIf="currentPage < filteredWatchListItems.length/itemsPerPage" (click)="paginationClickHandler(1)">Next</span>
                </span>
           </ion-item>
 
-          <div *ngIf="dataService.watchListItems">{{ dataService.watchListItems.length }} records</div>
+          <div *ngIf="filteredWatchListItems">{{ filteredWatchListItems.length }} records</div>
      </div>
 </ion-content>

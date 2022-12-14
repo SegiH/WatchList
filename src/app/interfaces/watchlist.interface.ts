@@ -7,6 +7,7 @@ interface IWatchList {
 	WatchListSourceID: number;
 	Season: number;
 	Rating: number;
+	IMDB_Poster : string;
 	Notes: string;
 }
 

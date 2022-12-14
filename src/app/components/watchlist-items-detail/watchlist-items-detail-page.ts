@@ -10,6 +10,7 @@ import { DataService } from '../../core/data.service';
 export class WatchListItemsDetailComponent implements DoCheck {
      addItemName = '';
      addItemType = '';
+     addItemIMDBPoster = '';
      addItemIMDBURL = '';
      addItemNotes= '';
      detailObject: IWatchListItem;
@@ -93,6 +94,7 @@ export class WatchListItemsDetailComponent implements DoCheck {
           currWatchList.Name=this.addItemName;
           currWatchList.Type=this.addItemType;
           currWatchList.IMDB_URL=this.addItemIMDBURL;
+          currWatchList.IMDB_Poster=this.addItemIMDBPoster;
           currWatchList.ItemNotes=this.addItemNotes;
 
           this.dataService.addWatchListItem(currWatchList).subscribe((response) => {
@@ -107,6 +109,7 @@ export class WatchListItemsDetailComponent implements DoCheck {
                this.addItemName = '';
                this.addItemType = '';
                this.addItemIMDBURL = '';
+               this.addItemIMDBPoster = '';
                this.addItemNotes= '';
           },
           error => {

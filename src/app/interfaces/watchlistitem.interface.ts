@@ -3,6 +3,7 @@ interface IWatchListItem {
     WatchListItemName: string;
 	WatchListTypeID: number;
     IMDB_URL: string;
+    IMDB_Poster: string;
 	ItemNotes: string;
     Previous: IWatchListItem;
 }

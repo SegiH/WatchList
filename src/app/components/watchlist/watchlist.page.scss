@@ -33,6 +33,15 @@
      width: 65px;
 }
 
+.poster {
+     cursor: pointer;
+     max-height: 125px;
+}
+
+.poster:hover {
+     max-height: 250px;
+}
+
 .item-inner {
      border-style: hidden;
 }

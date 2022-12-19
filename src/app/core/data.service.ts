@@ -47,19 +47,21 @@ export class DataService {
      watchListTypes: IWatchListType[];
 
      private readonly watchListColumnSizes = {
+          ID: 1,
           Name: 2,
           StartDate: 2,
           EndDate: 2,
           Source : 2,
           Season : 1,
           Rating : 1,
-          Notes : 2,
+          Notes : 1,
      };
 
      private readonly watchListItemsColumnSizes = {
-          Name: 5,
-          Type: 1,
-          IMDBURL: 4,
+          ID: 1,
+          Name: 4,
+          Type: 2,
+          IMDBURL: 3,
           Notes : 2,
      };
 
@@ -316,6 +318,32 @@ export class DataService {
           this.incompleteFilter = await this.storage.get('IncompleteFilter');
      }
 
+     getSortClass(columnName: string, sortDirection: string, activeSortColumn: string) {
+          const icons = {
+               "ID": "IDArrowIcon",
+               "Name": "NameArrowIcon",
+               "StartDate": "StartDateArrowIcon",
+               "EndDate": "EndDateArrowIcon",
+               "WatchListSourceID": "SourceArrowIcon",
+               "WatchListTypeID": "TypeArrowIcon",
+               "IMDB_URL": "IMDBURLArrowIcon"
+          }
+
+          const className=(sortDirection ==='ASC' ? "upArrow " : "downArrow ") +
+          icons[columnName] + " " +
+          (activeSortColumn === columnName ? "active " : "") +
+          "header"
+
+          return className;
+     }
+
+     getSortIconName(sortDirection: string) {
+          if (typeof sortDirection === 'undefined')
+               return;
+
+          return (sortDirection === "ASC" ? "caret-up-outline" : "caret-down-outline")
+     }
+
      async getSourceFilter() {
           this.sourceFilter = await this.storage.get('SourceFilter');
      }
@@ -340,7 +368,7 @@ export class DataService {
                params = params.append('SortDirection', this.watchListSortDirection);
           }
 
-          return this.runRest(`/GetWatchList`,'GET',null);
+          return this.runRest(`/GetWatchList`,'GET',params);
      }
 
      getWatchListItemName(watchListItemID: number) {

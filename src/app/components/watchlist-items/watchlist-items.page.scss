@@ -1,31 +1,31 @@
+.actionColumn {
+     display: inline-flex;
+}
+
 .detailLink {
      cursor: pointer;
      text-decoration: underline;
 }
 
+.IDColumn, .nameColumn {
+     margin-top: 8px;
+}
+
 .ion-list-parent {
      width: 100%;
+     height: 100%;
      overflow: auto;
 }
 
-ion-card {
-     display: flex;
-     width: 100%;
+.item-inner {
+     border-style: hidden;
 }
 
-ion-content {
-     overflow: auto;
+.nomargin {
+     margin-left: 0px;
+     margin-right: 0px;
 }
 
-ion-icon {
-     width: 45px;
-     height: 45px;
-     cursor: pointer;
-}
-
-ion-label {
-     margin-top: 10px;
-}
 .page {
      cursor: pointer;
      padding-left: 5px;
@@ -36,14 +36,6 @@ ion-label {
      padding: 8px 16px;
      text-decoration: none;
      overflow-x: visible;
-}
-
-.pageSelect {
-     width: 65px;
-}
-
-.item-inner {
-     border-style: hidden;
 }
 
 .page:first-child {
@@ -61,9 +53,13 @@ ion-label {
     color: white;
 }
 
+.pageSelect {
+     width: 65px;
+}
+
 .pageSpan {
      display: flex;
-     overflow: scroll;
+     overflow: auto;
      width: fit-content;
      border-style: dashed;
      border-width: 1px;
@@ -83,21 +79,30 @@ ion-label {
      max-height: 250px;
 }
 
-.nomargin {
-     margin-left: 0px;
-     margin-right: 0px;
+span > .page:first-child {
+     border-top-left-radius: 5px;
+     border-bottom-left-radius: 5px;
 }
 
-ion-list.md.list-md {
-     min-width: 1000px;
-     overflow: scroll;
+span > .page:last-child {
+     border-top-right-radius: 5px;
+     border-bottom-right-radius: 5px;
+}
+
+ion-card {
+     display: flex;
+     width: 100%;
+}
+
+ion-content {
+     overflow: auto;
 }
 
 ion-grid > ion-row > ion-col > ion-icon.IDArrowIcon, 
 ion-grid > ion-row > ion-col > ion-icon.NameArrowIcon,
 ion-grid > ion-row > ion-col > ion-icon.TypeArrowIcon,
 ion-grid > ion-row > ion-col > ion-icon.IMDBURLArrowIcon {
-     width: 50px;
+     width: 30px;
      position: relative;
      vertical-align: bottom;
 }
@@ -106,10 +111,33 @@ ion-grid > ion-row > ion-col > ion-icon.active {
      color: #30A199;
 }
 
+ion-icon {
+     width: 45px;
+     height: 45px;
+     cursor: pointer;
+}
+
+ion-icon.header {
+     vertical-align: middle !important;
+}
+
 ion-item > ion-grid > ion-row > ion-col > ion-label {
      word-break: break-all;
      overflow-wrap: break-word;
      word-wrap: break-word;
      hyphens: auto;
+     overflow: auto;
+}
+
+ion-label {
+     margin-top: 10px;
+}
+
+ion-label.header {
+     display: inline;
+}
+
+ion-list.md.list-md {
+     min-width: 1000px;
      overflow: auto;
 }

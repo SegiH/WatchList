@@ -1,0 +1,3 @@
+After adding an item, the add window stays in edit mode but is empty
+watchlist id column needs sort arrow
+watchlist source column is too narrow

@@ -234,6 +234,8 @@ export class WatchListDetailComponent implements DoCheck {
                this.isAdding=false;
 
                this.wasModified = true;
+
+               this.dataService.closeOverlay();
           },
           error => {
                // Restore fields values in case the user made a mistake & wants to resubmit

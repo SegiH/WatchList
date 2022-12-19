@@ -644,7 +644,7 @@ export class DataService {
      loginSuccessfullActions(response) {
           this.isLoggedIn = true;
 
-          try { // when check if logged in already, user payload is not resent so ignore any errors
+          try { // when check if logged in already, user payload is not present so ignore any errors
                if (typeof response[0].UserID !== 'undefined' && typeof this.userData !== 'undefined') {
                     this.userData.UserID = response[0].UserID;
                }

@@ -10,7 +10,6 @@ import { DataService } from '../../core/data.service';
 export class WatchListComponent implements DoCheck {
      currentPage = 1;
      filteredWatchList: IWatchList[];
-     readonly itemsPerPage = 20;
      readonly math = Math;
 
      constructor(public dataService: DataService) { }
@@ -40,10 +39,10 @@ export class WatchListComponent implements DoCheck {
      }
 
      isShown(pageIndex: number) {
-          if (typeof this.filteredWatchList !== 'undefined' && this.filteredWatchList.length < this.itemsPerPage)
+          if (typeof this.filteredWatchList !== 'undefined' && this.filteredWatchList.length < this.dataService.itemsPerPage)
                return true;
 
-          if (pageIndex >= ((this.currentPage-1)*this.itemsPerPage) && pageIndex < ((this.currentPage-1)*this.itemsPerPage) + this.itemsPerPage)
+          if (pageIndex >= ((this.currentPage-1)*this.dataService.itemsPerPage) && pageIndex < ((this.currentPage-1)*this.dataService.itemsPerPage) + this.dataService.itemsPerPage)
                return true;
           
           return false;

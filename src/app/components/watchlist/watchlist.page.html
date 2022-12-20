@@ -31,14 +31,14 @@
           <ion-list lines="none">
                <!-- Pagination -->
                <ion-item *ngIf="filteredWatchList && filteredWatchList.length > 0" lines="none">
-                    <span class="pageSpan" *ngIf="filteredWatchList && filteredWatchList.length > itemsPerPage">
+                    <span class="pageSpan" *ngIf="filteredWatchList && filteredWatchList.length > dataService.itemsPerPage">
                          <span class="page nomargin" *ngIf="currentPage > 1">Previous</span>
 
-                         <span class="page" [ngClass]="{'active': currentPage === (pageIndex + 1)}" (click)="paginationClickHandler(0,pageIndex + 1)" *ngFor="let number of numSequence(filteredWatchList.length/itemsPerPage > 1 ? math.round(filteredWatchList.length/itemsPerPage) : 1 );let pageIndex=index">
+                         <span class="page" [ngClass]="{'active': currentPage === (pageIndex + 1)}" (click)="paginationClickHandler(0,pageIndex + 1)" *ngFor="let number of numSequence(filteredWatchList.length/dataService.itemsPerPage > 1 ? math.round(filteredWatchList.length/dataService.itemsPerPage) : 1 );let pageIndex=index">
                               {{ pageIndex + 1 }}
                          </span>
 
-                         <span class="page nomargin" *ngIf="currentPage < filteredWatchList.length/itemsPerPage" (click)="paginationClickHandler(1)">Next</span>
+                         <span class="page nomargin" *ngIf="currentPage < filteredWatchList.length/dataService.itemsPerPage" (click)="paginationClickHandler(1)">Next</span>
                     </span>
                </ion-item>
 
@@ -78,9 +78,9 @@
                                    <ion-label>Rating</ion-label>
                               </ion-col>
 
-                              <ion-col [size]="dataService.getColumnSize('Notes','WatchList')">
+                              <!--<ion-col [size]="dataService.getColumnSize('Notes','WatchList')">
                                    <ion-label>Notes</ion-label>
-                              </ion-col>
+                              </ion-col>-->
 
                               <ion-col [size]="dataService.getColumnSize('Action','WatchList')"> <!-- Action column -->
                               </ion-col>
@@ -135,11 +135,11 @@
                                         </ion-label>
                                    </ion-col>
 
-                                   <ion-col [size]="dataService.getColumnSize('Notes','WatchList')">
+                                   <!--<ion-col [size]="dataService.getColumnSize('Notes','WatchList')">
                                         <ion-label>
                                              {{ currWatchList['Notes'] }}
                                         </ion-label>
-                                   </ion-col>
+                                   </ion-col>-->
                               </ion-row>
                          </ion-grid>
                     </ion-item>
@@ -147,14 +147,14 @@
 
                <!-- Pagination -->
                <ion-item lines="none">
-                    <span class="pageSpan" *ngIf="filteredWatchList && filteredWatchList.length > itemsPerPage">
+                    <span class="pageSpan" *ngIf="filteredWatchList && filteredWatchList.length > dataService.itemsPerPage">
                          <span class="page nomargin" *ngIf="currentPage > 1">Previous</span>
 
-                         <span class="page" [ngClass]="{'active': currentPage === (pageIndex + 1)}" (click)="paginationClickHandler(0,pageIndex + 1)" *ngFor="let number of numSequence(filteredWatchList.length/itemsPerPage > 1 ? math.round(filteredWatchList.length/itemsPerPage) : 1 );let pageIndex=index">
+                         <span class="page" [ngClass]="{'active': currentPage === (pageIndex + 1)}" (click)="paginationClickHandler(0,pageIndex + 1)" *ngFor="let number of numSequence(filteredWatchList.length/dataService.itemsPerPage > 1 ? math.round(filteredWatchList.length/dataService.itemsPerPage) : 1 );let pageIndex=index">
                               {{ pageIndex + 1 }}
                          </span>
 
-                         <span class="page nomargin" *ngIf="currentPage < filteredWatchList.length/itemsPerPage" (click)="paginationClickHandler(1)">Next</span>
+                         <span class="page nomargin" *ngIf="currentPage < filteredWatchList.length/dataService.itemsPerPage" (click)="paginationClickHandler(1)">Next</span>
                     </span>
                </ion-item>
           </ion-list>

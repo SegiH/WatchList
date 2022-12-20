@@ -27,6 +27,7 @@ export class DataService {
      isIMDBSearchEnabled = false;
      isLoggedIn = false;
      isLoggedInCheckComplete = false;
+     itemsPerPage = 20;
      readonly ratingMax = 5;
      recordLimit = 10;
      searchTerm = '';
@@ -54,15 +55,15 @@ export class DataService {
           Source : 2,
           Season : 1,
           Rating : 1,
-          Notes : 1,
+          //Notes : 1,
      };
 
      private readonly watchListItemsColumnSizes = {
           ID: 1,
           Name: 4,
           Type: 2,
-          IMDBURL: 3,
-          Notes : 2,
+          IMDBURL: 4,
+          //Notes : 2,
      };
 
      private readonly watchListQueueColumnSizes = {
@@ -84,6 +85,8 @@ export class DataService {
                  public toastController: ToastController,
                  private router: Router) {
           this.getBackendURL();
+
+          this.getItemsPerPageFilter();
 
           this.getIncompleteFilter();
 
@@ -312,6 +315,14 @@ export class DataService {
 
      async getRecordLimit() {
           this.recordLimit = await this.storage.get('RecordLimitFilter');
+     }
+
+     async getItemsPerPageFilter() {
+          this.itemsPerPage = await this.storage.get('ItemsPerPage');
+           
+          if (this.itemsPerPage === null) {
+               this.itemsPerPage=20;
+          }
      }
 
      async getIncompleteFilter() {
@@ -831,6 +842,10 @@ export class DataService {
                case 'PUT':
                     return this.http.put<any>(this.userData.BackendURL + path + (params !== null ? '?' + params : ''), null,headers);
           }
+     }
+
+     async saveItemsPerPageFilter() {
+          await this.storage.set('ItemsPerPage',this.itemsPerPage);
      }
 
      async saveIncompleteFilter() {

@@ -1,3 +1,4 @@
-After adding an item, the add window stays in edit mode but is empty
-watchlist id column needs sort arrow
-watchlist source column is too narrow
+make app not reload data and filter locally
+upload new screenshots
+make sure imdb url not set option gets saved and loaded
+in readme, add explanaction for WL, WLI and WLQ

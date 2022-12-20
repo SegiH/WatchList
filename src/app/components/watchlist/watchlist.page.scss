@@ -148,3 +148,7 @@ ion-item > ion-grid > ion-row > ion-col > ion-label {
      hyphens: auto;
      overflow: auto;
 }
+
+ion-item > ion-grid > ion-row > ion-col > ion-input {
+     overflow: auto;
+}

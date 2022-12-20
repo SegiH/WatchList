@@ -14,30 +14,40 @@
                          </ion-col>
 
                          <ion-col size="9">
-                              <ion-select placeholder='Record Limit' name="recordLimit" [(ngModel)]="dataService.recordLimit" (ionChange)="reloadData($event)">
+                              <ion-select placeholder='Record Limit' name="recordLimit" [(ngModel)]="dataService.recordLimit" (ionChange)="optionChangeHandler($event)">
                                    <ion-select-option *ngFor="let currItem of recordLimitOptions;trackBy: trackByFn" [value]="currItem">{{currItem}}</ion-select-option>
                               </ion-select>
                          </ion-col>
 
-                         <ion-col size="12" *ngIf="currentRoute==='WatchList'">
-                              <ion-item>Still watching<ion-toggle [(ngModel)]="dataService.incompleteFilter" color="primary" (ionChange)="reloadData($event)"></ion-toggle></ion-item>
+                         <ion-col size="3" id="rowsLabel">
+                              <ion-label>Items per page</ion-label>
                          </ion-col>
 
-                         <ion-col size="12" *ngIf="currentRoute==='WatchListItems'">
-                              <ion-item>IMDB URL Missing<ion-toggle id="IMDBURLMissing" [(ngModel)]="dataService.imdb_url_missing" color="primary" (ionChange)="reloadData($event)"></ion-toggle></ion-item>
-                         </ion-col>
-
-                         <ion-col size="12" *ngIf="currentRoute==='WatchList'">
-                              <ion-select placeholder='Source' name="source" [(ngModel)]="dataService.sourceFilter" (ionChange)="reloadData($event)">
-                                   <ion-select-option value="All">All</ion-select-option>
-                                   <ion-select-option *ngFor="let currItem of dataService.watchListSources;trackBy: trackByFn" [value]="currItem['WatchListSourceID']" (ionChange)="reloadData($event)">{{currItem['WatchListSourceName']}}</ion-select-option>
+                         <ion-col size="9">
+                              <ion-select placeholder='Items per page' name="itemsPerPage" [(ngModel)]="dataService.itemsPerPage" (ionChange)="optionChangeHandler($event)">
+                                   <ion-select-option *ngFor="let currItem of itemsPerPage;trackBy: trackByFn" [value]="currItem">{{currItem}}</ion-select-option>
                               </ion-select>
                          </ion-col>
 
                          <ion-col size="12" *ngIf="currentRoute==='WatchList'">
-                              <ion-select placeholder='Type' name="type" [(ngModel)]="dataService.typeFilter" (ionChange)="reloadData($event)">
+                              <ion-item>Still watching<ion-toggle [(ngModel)]="dataService.incompleteFilter" color="primary" (ionChange)="optionChangeHandler($event)"></ion-toggle></ion-item>
+                         </ion-col>
+
+                         <ion-col size="12" *ngIf="currentRoute==='WatchListItems'">
+                              <ion-item>IMDB URL Missing<ion-toggle id="IMDBURLMissing" [(ngModel)]="dataService.imdb_url_missing" color="primary" (ionChange)="optionChangeHandler($event)"></ion-toggle></ion-item>
+                         </ion-col>
+
+                         <ion-col size="12" *ngIf="currentRoute==='WatchList'">
+                              <ion-select placeholder='Source' name="source" [(ngModel)]="dataService.sourceFilter" (ionChange)="optionChangeHandler($event)">
                                    <ion-select-option value="All">All</ion-select-option>
-                                   <ion-select-option *ngFor="let currItem of dataService.watchListTypes;trackBy: trackByFn" [value]="currItem['WatchListTypeID']" (ionChange)="reloadData($event)">{{currItem['WatchListTypeName']}}</ion-select-option>
+                                   <ion-select-option *ngFor="let currItem of dataService.watchListSources;trackBy: trackByFn" [value]="currItem['WatchListSourceID']" (ionChange)="optionChangeHandler($event)">{{currItem['WatchListSourceName']}}</ion-select-option>
+                              </ion-select>
+                         </ion-col>
+
+                         <ion-col size="12" *ngIf="currentRoute==='WatchList'">
+                              <ion-select placeholder='Type' name="type" [(ngModel)]="dataService.typeFilter" (ionChange)="optionChangeHandler($event)">
+                                   <ion-select-option value="All">All</ion-select-option>
+                                   <ion-select-option *ngFor="let currItem of dataService.watchListTypes;trackBy: trackByFn" [value]="currItem['WatchListTypeID']" (ionChange)="optionChangeHandler($event)">{{currItem['WatchListTypeName']}}</ion-select-option>
                               </ion-select>
                          </ion-col>
                     </ion-row>

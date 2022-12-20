@@ -230,10 +230,13 @@ export class WatchListDetailComponent implements DoCheck {
                this.addItemNotes= '';
                this.addItemSource = '';
                this.addSeason = '';
+               this.addRating = 0;
 
                this.isAdding=false;
 
                this.wasModified = true;
+
+               this.dataService.getWatchListSubscription();
 
                this.dataService.closeOverlay();
           },
@@ -277,6 +280,8 @@ export class WatchListDetailComponent implements DoCheck {
                this.isEditing = false;
                
                this.wasModified = true;
+
+               this.dataService.getWatchListSubscription();
           },
           error => {
                this.dataService.handleError(error);

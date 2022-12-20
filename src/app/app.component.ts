@@ -12,7 +12,17 @@ import { MenuController } from '@ionic/angular';
 export class AppComponent {
      currentRoute = '';
      isEditingOptions = false;
-     readonly recordLimitOptions = [ // Only applied to WatchList not WatchlistItems
+     
+     readonly itemsPerPage = [
+          10,
+          20,
+          50,
+          100,
+          500,
+          1000
+     ]
+
+     readonly recordLimitOptions = [
           10,
           50,
           100,
@@ -40,12 +50,14 @@ export class AppComponent {
           this.isEditingOptions = true;
      }
 
-     reloadData(event: any) {
+     optionChangeHandler(event: any) {
           this.dataService.saveIncompleteFilter();
           this.dataService.saveRecordLimitFilter();
           this.dataService.saveSourceFilter();
           this.dataService.saveTypeFilter();
+          this.dataService.saveItemsPerPageFilter();
 
+          // Continue here. Comment this out and apply filters locally
           if (event != null && event.target.id === 'IMDBURLMissing') {
                this.dataService.getWatchListItemsSubscription(true);
           } else {
@@ -75,7 +87,7 @@ export class AppComponent {
 
           this.isEditingOptions=false;
 
-          this.reloadData(null);
+          this.optionChangeHandler(null);
      }
 
      signOut() {

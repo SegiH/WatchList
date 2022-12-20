@@ -54,7 +54,7 @@ export class WatchListItemsDetailComponent implements DoCheck {
 
      deleteWatchListItemCallback(currWatchListItem) {
           this.dataService.deleteWatchListItem(currWatchListItem.WatchListItemID).subscribe((response) => {
-               this.dataService.getWatchListItemsSubscription(true);
+               this.dataService.getWatchListItemsSubscription(true); // Reload WatchListItems after deleting a WatchList record
           },
           error => {
                console.log(`An error occurred deleting WatchList Item with ID ${currWatchListItem.WatchListID}`);
@@ -98,7 +98,7 @@ export class WatchListItemsDetailComponent implements DoCheck {
           currWatchList.ItemNotes=this.addItemNotes;
 
           this.dataService.addWatchListItem(currWatchList).subscribe((response) => {
-               this.dataService.getWatchListItemsSubscription(true);
+               this.dataService.getWatchListItemsSubscription(true); // Reload WatchListItems after adding a WatchList record
 
                this.isAdding=false;
 
@@ -131,7 +131,7 @@ export class WatchListItemsDetailComponent implements DoCheck {
           this.dataService.updateWatchListItem(this.detailObject).subscribe((response) => {
                this.isEditing = false;
 
-               this.dataService.getWatchListItemsSubscription(true);
+               this.dataService.getWatchListItemsSubscription(true); // Reload WatchListItems after updating a WatchList record
           },
           error => {
                this.dataService.handleError(error);

@@ -72,7 +72,7 @@ export class WatchListQueueDetailComponent implements DoCheck {
           this.dataService.addWatchList(newWatchList).subscribe((response) => {
                this.deleteWatchListQueueItemCallback();
 
-               this.dataService.getWatchListSubscription();
+               this.dataService.getWatchListSubscription(); // Reload WatchList after moving a WatchList record from the queue to WatchList
           },
           error => {
                this.dataService.handleError(error);

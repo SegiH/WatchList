@@ -10,7 +10,6 @@ import { DataService } from '../../core/data.service';
 export class WatchListItemsComponent implements DoCheck {
      currentPage = 1;
      filteredWatchListItems: IWatchListItem[]
-     //readonly itemsPerPage = 20;
      readonly math = Math;
 
      constructor(public dataService: DataService) { }
@@ -22,11 +21,15 @@ export class WatchListItemsComponent implements DoCheck {
                          (this.dataService.searchTerm === ""
                          || (this.dataService.searchTerm !== ""
                             && (
-                               this.dataService.getWatchListItemName(wli.WatchListItemID).toLowerCase().includes(this.dataService.searchTerm.toLowerCase())
-                               || (wli.WatchListTypeID !== null && this.dataService.getWatchListTypeName(wli.WatchListTypeID).toLowerCase().includes(this.dataService.searchTerm.toLowerCase())
-                            )
+                                    this.dataService.getWatchListItemName(wli.WatchListItemID).toLowerCase().includes(this.dataService.searchTerm.toLowerCase())
+                                    || (wli.WatchListTypeID !== null && this.dataService.getWatchListTypeName(wli.WatchListTypeID).toLowerCase().includes(this.dataService.searchTerm.toLowerCase())
+                               )
                          || (wli.ItemNotes  !== null && wli.ItemNotes.toLowerCase().includes(this.dataService.searchTerm.toLowerCase())))
                          ))
+                         && (
+                              this.dataService.imdb_url_missing === true && wli.IMDB_URL === null
+                              || this.dataService.imdb_url_missing === false
+                         )
                     )
                });
           }

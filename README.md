@@ -7,6 +7,15 @@ This app has the ability to search IMDB for a movie or TV show within the API if
 
 This app can be built as a web app, an Android app or an iOS app.
 
+# Sections
+The application has 5 different sections:
+
+WatchList: These are the records where you track each time you watch a movie, tv show or special
+WatchListItems: These are the records that contain the movie, TV show or special which you only add once and then add a record that references the WatchListItem
+WatchListQueue: These are records of a movie, tv show or special that you want to watch
+IMDB Search: If enabled, (see below) the IMDB search tab
+WatchList Stats: Stats of the movies and shows that you have watched over time
+
 ## Build web application
 Run these commands to build the web application
 
@@ -40,3 +49,6 @@ Watchlist Queue (Movies or TV shows that you want to watch later)
 
 IMDB Search
 ![Watchlist Items](https://github.com/SegiH/WatchList/blob/main/screenshots/imdb-search.png?raw=true)
+
+WatchList Stats
+![Watchlist Stats](https://github.com/SegiH/WatchList/blob/main/screenshots/watchliststats.png?raw=true)

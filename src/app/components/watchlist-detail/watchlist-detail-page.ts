@@ -82,7 +82,7 @@ export class WatchListDetailComponent implements DoCheck {
           this.dataService.addWatchListQueueItem(this.detailObject).subscribe((response) => {
                this.deleteWatchListCallback();
 
-               this.dataService.getWatchListSubscription();
+               this.dataService.getWatchListSubscription(); // Reload WatchList after moving item from WatchList to WatchListQueue
 
                this.dataService.getWatchListQueueSubscription();
 
@@ -119,7 +119,7 @@ export class WatchListDetailComponent implements DoCheck {
 
      closeClickHandler() {
           if (this.wasModified)
-               this.dataService.getWatchListSubscription();
+               this.dataService.getWatchListSubscription(); // TODO: Verify if this is needed
 
           this.dataService.closeOverlay();
      }
@@ -132,7 +132,7 @@ export class WatchListDetailComponent implements DoCheck {
           this.dataService.deleteWatchList(this.detailObject['WatchListID']).subscribe((response) => {
                this.dataService.closeOverlay();
                
-               this.dataService.getWatchListSubscription();
+               this.dataService.getWatchListSubscription(); // Reload WatchList after deleting a WatchList record
           },
           error => {
                console.log(`An error occurred deleting WatchList Item with ID ${this.detailObject['WatchListID']}`);
@@ -236,7 +236,7 @@ export class WatchListDetailComponent implements DoCheck {
 
                this.wasModified = true;
 
-               this.dataService.getWatchListSubscription();
+               this.dataService.getWatchListSubscription(); // Reload WatchList after adding a WatchList record
 
                this.dataService.closeOverlay();
           },
@@ -281,7 +281,7 @@ export class WatchListDetailComponent implements DoCheck {
                
                this.wasModified = true;
 
-               this.dataService.getWatchListSubscription();
+               this.dataService.getWatchListSubscription(); // Reload WatchList after updating a WatchList record
           },
           error => {
                this.dataService.handleError(error);

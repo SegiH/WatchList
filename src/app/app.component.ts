@@ -56,38 +56,7 @@ export class AppComponent {
           this.dataService.saveSourceFilter();
           this.dataService.saveTypeFilter();
           this.dataService.saveItemsPerPageFilter();
-
-          // Continue here. Comment this out and apply filters locally
-          if (event != null && event.target.id === 'IMDBURLMissing') {
-               this.dataService.getWatchListItemsSubscription(true);
-          } else {
-               this.dataService.getWatchListSubscription();
-
-               this.dataService.getWatchListItemsSubscription(true);
-          }
-     }
-
-     saveOptions() {
-          if (this.dataService.userData.BackendURL === null || this.dataService.userData.BackendURL === '') {
-               this.dataService.alert('Please set the Backend URL');
-               return;
-          }
-
-          this.dataService.getIMDBSearchEnabledSubscription();
-
-          this.dataService.getWatchListItemsSubscription(false);
-
-          this.dataService.getWatchListSubscription();
-
-          this.dataService.getWatchListQueueSubscription();
-
-          this.dataService.getWatchListTypesSubscription();
-
-          this.dataService.getWatchListSourcesSubscription();
-
-          this.isEditingOptions=false;
-
-          this.optionChangeHandler(null);
+          this.dataService.saveIMDBURLMissingFilter();
      }
 
      signOut() {

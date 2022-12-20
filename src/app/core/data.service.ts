@@ -90,11 +90,13 @@ export class DataService {
 
           this.getIncompleteFilter();
 
-          this.getRecordLimit();
+          this.getRecordLimitFilter();
 
           this.getSourceFilter();
 
           this.getTypeFilter();
+
+          this.getIMDBURLMissingFilter();
      }
 
      addWatchList(currWatchList: IWatchList) {
@@ -295,6 +297,10 @@ export class DataService {
           });
      }
 
+     async getIMDBURLMissingFilter() {
+          this.imdb_url_missing = await this.storage.get('IMDBURLMissingFilter');
+     }
+
      getIMDBURL(watchListItemID: number) {
           if (this.getWatchListItems.length === 0) {
                return;
@@ -313,7 +319,7 @@ export class DataService {
           return null;
      }
 
-     async getRecordLimit() {
+     async getRecordLimitFilter() {
           this.recordLimit = await this.storage.get('RecordLimitFilter');
      }
 
@@ -704,17 +710,15 @@ export class DataService {
 
           this.getIMDBSearchEnabledSubscription();
 
-          this.getWatchListItemsSubscription(true);
+          this.getWatchListSubscription(); // Load WatchList
+
+          this.getWatchListItemsSubscription(true); // Load WatchList
 
           this.getWatchListQueueSubscription();
 
           this.getWatchListTypesSubscription();
 
           this.getWatchListSourcesSubscription();
-
-          this.getWatchListSubscription();
-
-          this.getWatchListSubscription();
 
           this.router.navigateByUrl('/tabs/watchlist');
      }
@@ -844,12 +848,16 @@ export class DataService {
           }
      }
 
-     async saveItemsPerPageFilter() {
-          await this.storage.set('ItemsPerPage',this.itemsPerPage);
+     async saveIMDBURLMissingFilter() {
+          await this.storage.set('IMDBURLMissingFilter',this.imdb_url_missing);
      }
 
      async saveIncompleteFilter() {
           await this.storage.set('IncompleteFilter',this.incompleteFilter);
+     }
+
+     async saveItemsPerPageFilter() {
+          await this.storage.set('ItemsPerPage',this.itemsPerPage);
      }
 
      async saveRecordLimitFilter() {
@@ -923,7 +931,7 @@ export class DataService {
                     this.watchListSortDirection = 'ASC';
                }
 
-               this.getWatchListSubscription();
+               this.getWatchListSubscription(); // Reload WatchList after user clicks on sort icons
           } else if (component ==='WatchListItems') {
                this.watchListItemsSortColumn = name;
                this.watchListItemsSortActiveColumn = name;
@@ -934,7 +942,7 @@ export class DataService {
                     this.watchListItemsSortDirection = 'ASC';
                }
 
-               this.getWatchListItemsSubscription(false);
+               this.getWatchListItemsSubscription(false); // Reload WatchListItems after user clicks on sort icons
           }
      }
 

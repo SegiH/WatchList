@@ -28,7 +28,7 @@ export class WatchListItemsComponent implements DoCheck {
                          ))
                          && (
                               this.dataService.imdb_url_missing === true && wli.IMDB_URL === null
-                              || this.dataService.imdb_url_missing === false
+                              || this.dataService.imdb_url_missing === false && wli.IMDB_URL !== null
                          )
                     )
                });

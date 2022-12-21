@@ -1,0 +1,1 @@
+on new login, default filters are messed up and have to be toggled to fix

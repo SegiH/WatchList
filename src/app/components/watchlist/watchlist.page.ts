@@ -15,6 +15,14 @@ export class WatchListComponent implements DoCheck {
      constructor(public dataService: DataService) { }
 
      ngDoCheck(): void {
+          if (this.dataService.incompleteFilter === null) {
+               this.dataService.incompleteFilter = true;
+          }
+
+          if (this.dataService.recordLimit=== null) {
+               this.dataService.recordLimit=50;
+          }
+     
           if (typeof this.dataService.watchList !== 'undefined' && this.dataService.watchList.length > 0) {
                this.filteredWatchList=this.dataService.watchList.filter((wl: IWatchList, index: number) => {
                     return (
@@ -24,7 +32,7 @@ export class WatchListComponent implements DoCheck {
                                this.dataService.getWatchListItemName(wl.WatchListItemID).toLowerCase().includes(this.dataService.searchTerm.toLowerCase())
                                || (wl.WatchListSourceID !== null && this.dataService.getSourceName(wl.WatchListSourceID).toLowerCase().includes(this.dataService.searchTerm.toLowerCase())
                             )
-                         || (wl.Notes  !== null && wl.Notes.toLowerCase().includes(this.dataService.searchTerm.toLowerCase())))
+                         || (wl.Notes !== null && wl.Notes.toLowerCase().includes(this.dataService.searchTerm.toLowerCase())))
                          ))
                          &&
                          ((this.dataService.incompleteFilter === true && wl.EndDate === null)

@@ -42,7 +42,60 @@
                     </span>
                </ion-item>
 
-               <ion-item> <!-- Table headers -->
+               <ion-list>
+                    <div *ngFor="let currWatchList of filteredWatchList;let index=index">
+                         <ion-item *ngIf="isShown(index)">
+                              <ion-grid>
+                                   <ion-row>
+                                        <ion-col size="1">
+                                             <ion-label>{{ currWatchList.WatchListID }}</ion-label>
+                                        </ion-col>
+
+                                        <ion-col *ngIf="currWatchList.IMDB_Poster !== null" size="1">
+                                             <ion-label><img class="poster" src="{{currWatchList.IMDB_Poster}}" (click)="dataService.openDetailOverlay('watchlist',currWatchList.WatchListID)"></ion-label>
+                                        </ion-col>
+
+                                        <ion-col size="2">
+                                             <ion-label>Watched {{ currWatchList.StartDate | date:"MM/dd/yyyy" }}</ion-label>
+                                        </ion-col>
+
+                                        <ion-col *ngIf="currWatchList.EndDate !== null" size="2">
+                                             <ion-label>to {{currWatchList.EndDate | date:"MM/dd/yyyy"}}</ion-label>
+                                        </ion-col>
+
+                                        <ion-col size="2">
+                                             <ion-label>
+                                                  {{ dataService.getSourceName(currWatchList.WatchListSourceID) }}
+                                             </ion-label>
+                                        </ion-col>
+
+                                        <ion-col size="2">
+                                             <ion-label *ngIf="currWatchList.Season !== null">
+                                                  Season {{ currWatchList.Season }}
+                                             </ion-label>
+                                        </ion-col>
+
+                                        <ion-col size="2">
+                                             <ion-label>
+                                                  {{ currWatchList.Rating }} <span *ngIf="currWatchList['Rating'] !== null">/ {{ dataService.ratingMax }}</span>
+                                             </ion-label>
+                                        </ion-col>
+                                   </ion-row>
+
+                                   <ion-row>
+                                        <ion-col size="1"></ion-col>
+
+                                        <ion-col size="11">
+                                             <ion-label>{{dataService.getWatchListItemName(currWatchList.WatchListItemID)}}</ion-label>
+                                        </ion-col>
+                                   </ion-row>
+                              </ion-grid>
+                         </ion-item>
+                    </div>
+               </ion-list>
+
+               <!-- Table headers -->
+               <!--<ion-item>
                     <ion-grid>
                          <ion-row>
                               <ion-col [size]="dataService.getColumnSize('ID','WatchList')">
@@ -76,13 +129,6 @@
 
                               <ion-col [size]="dataService.getColumnSize('Rating','WatchList')">
                                    <ion-label>Rating</ion-label>
-                              </ion-col>
-
-                              <!--<ion-col [size]="dataService.getColumnSize('Notes','WatchList')">
-                                   <ion-label>Notes</ion-label>
-                              </ion-col>-->
-
-                              <ion-col [size]="dataService.getColumnSize('Action','WatchList')"> <!-- Action column -->
                               </ion-col>
                          </ion-row>
                     </ion-grid>               
@@ -134,16 +180,11 @@
                                              {{ currWatchList.Rating }} <span *ngIf="currWatchList['Rating'] !== null">/ {{ dataService.ratingMax }}</span>
                                         </ion-label>
                                    </ion-col>
-
-                                   <!--<ion-col [size]="dataService.getColumnSize('Notes','WatchList')">
-                                        <ion-label>
-                                             {{ currWatchList['Notes'] }}
-                                        </ion-label>
-                                   </ion-col>-->
                               </ion-row>
                          </ion-grid>
                     </ion-item>
                </div>
+          -->
 
                <!-- Pagination -->
                <ion-item lines="none">

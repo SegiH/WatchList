@@ -15,6 +15,10 @@ export class WatchListItemsComponent implements DoCheck {
      constructor(public dataService: DataService) { }
 
      ngDoCheck(): void {
+          if (this.dataService.imdb_url_missing === null) {
+               this.dataService.imdb_url_missing = false;
+          }
+
           if (typeof this.dataService.watchListItems !== 'undefined' && this.dataService.watchListItems.length > 0) {
                this.filteredWatchListItems=this.dataService.watchListItems.filter((wli: IWatchListItem) => {
                     return (
@@ -27,8 +31,7 @@ export class WatchListItemsComponent implements DoCheck {
                          || (wli.ItemNotes  !== null && wli.ItemNotes.toLowerCase().includes(this.dataService.searchTerm.toLowerCase())))
                          ))
                          && (
-                              this.dataService.imdb_url_missing === true && wli.IMDB_URL === null
-                              || this.dataService.imdb_url_missing === false && wli.IMDB_URL !== null
+                               (this.dataService.imdb_url_missing === false)
                          )
                     )
                });

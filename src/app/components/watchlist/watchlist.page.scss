@@ -60,6 +60,7 @@
 .pageSpan {
      display: flex;
      overflow: auto;
+     scrollbar-width: thin;
      width: fit-content;
      border-style: dashed;
      border-width: 1px;
@@ -151,4 +152,10 @@ ion-item > ion-grid > ion-row > ion-col > ion-label {
 
 ion-item > ion-grid > ion-row > ion-col > ion-input {
      overflow: auto;
+}
+
+ion-list ion-item ion-grid {
+     background-color: #F1EBE4;
+     border-style: dashed;
+     border-width: 1px;
 }

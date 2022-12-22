@@ -69,3 +69,9 @@ ion-content {
       pointer-events: auto;
     }
 }
+
+ion-list ion-item ion-grid {
+    background-color: #F1EBE4;
+    border-style: dashed;
+    border-width: 1px;
+}

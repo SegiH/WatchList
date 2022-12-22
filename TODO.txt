@@ -1,3 +1,2 @@
-on new login, default filters are messed up and have to be toggled to fix
-in WL detail, move typw to the left by 1 or 2 getColumnSize
-on main page fix start and end date being cut off
+recreate screenshots
+display alert if localhost and browser is chrome/edge/i.e.

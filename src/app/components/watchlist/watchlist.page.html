@@ -3,7 +3,7 @@
           <ion-buttons slot="start"> 
                <ion-menu-button></ion-menu-button>                
           </ion-buttons>
-          
+
           <ion-grid>
                <ion-row>
                     <ion-col size="12">
@@ -18,7 +18,7 @@
      <ion-refresher slot="fixed" (ionRefresh)="dataService.pullToRefresh($event,'WatchList')">
           <ion-refresher-content></ion-refresher-content>
      </ion-refresher>
-     
+
      <ion-grid *ngIf="!dataService.isError">
           <ion-row>
                <ion-col size="6">
@@ -46,7 +46,7 @@
                     <div *ngFor="let currWatchList of filteredWatchList;let index=index">
                          <ion-item *ngIf="isShown(index)">
                               <ion-grid>
-                                   <ion-row>
+                                   <ion-row class="ion-align-items-center">
                                         <ion-col size="1">
                                              <ion-label>{{ currWatchList.WatchListID }}</ion-label>
                                         </ion-col>
@@ -55,12 +55,8 @@
                                              <ion-label><img class="poster" src="{{currWatchList.IMDB_Poster}}" (click)="dataService.openDetailOverlay('watchlist',currWatchList.WatchListID)"></ion-label>
                                         </ion-col>
 
-                                        <ion-col size="2">
-                                             <ion-label>Watched {{ currWatchList.StartDate | date:"MM/dd/yyyy" }}</ion-label>
-                                        </ion-col>
-
-                                        <ion-col *ngIf="currWatchList.EndDate !== null" size="2">
-                                             <ion-label>to {{currWatchList.EndDate | date:"MM/dd/yyyy"}}</ion-label>
+                                        <ion-col size="4">
+                                             <ion-label>{{(currWatchList.EndDate === null ? 'Starting watching' : 'Watched')}} <br /> <br /> {{ currWatchList.StartDate | date:"MM/dd/yyyy" }}<span *ngIf="currWatchList.EndDate !== null"> - {{currWatchList.EndDate | date:"MM/dd/yyyy"}}</span></ion-label>
                                         </ion-col>
 
                                         <ion-col size="2">
@@ -76,8 +72,8 @@
                                         </ion-col>
 
                                         <ion-col size="2">
-                                             <ion-label>
-                                                  {{ currWatchList.Rating }} <span *ngIf="currWatchList['Rating'] !== null">/ {{ dataService.ratingMax }}</span>
+                                             <ion-label *ngIf="currWatchList['Rating'] !== null">
+                                                  {{ currWatchList.Rating }} <span>/ {{ dataService.ratingMax }}</span>
                                              </ion-label>
                                         </ion-col>
                                    </ion-row>
@@ -86,7 +82,7 @@
                                         <ion-col size="1"></ion-col>
 
                                         <ion-col size="11">
-                                             <ion-label>{{dataService.getWatchListItemName(currWatchList.WatchListItemID)}}</ion-label>
+                                             <h3 (click)="dataService.openDetailOverlay('watchlist',currWatchList.WatchListID)">{{dataService.getWatchListItemName(currWatchList.WatchListItemID)}}</h3>
                                         </ion-col>
                                    </ion-row>
                               </ion-grid>
@@ -131,7 +127,7 @@
                                    <ion-label>Rating</ion-label>
                               </ion-col>
                          </ion-row>
-                    </ion-grid>               
+                    </ion-grid>
                </ion-item>
 
                <div *ngFor="let currWatchList of filteredWatchList;let index=index">

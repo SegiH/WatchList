@@ -1,5 +1,5 @@
 <ion-tabs>
-     <ion-tab-bar slot="bottom">
+     <ion-tab-bar *ngIf="!dataService.isError" slot="bottom">
           <ion-tab-button tab="login" *ngIf="!dataService.isLoggedIn">
                <!-- <ion-icon name="triangle"></ion-icon> -->
                <ion-label>Login</ion-label>

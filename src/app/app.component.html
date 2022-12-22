@@ -7,7 +7,7 @@
           </ion-header> 
 
           <ion-content>
-               <ion-grid>
+               <ion-grid *ngIf="!dataService.isError">
                     <ion-row>
                          <ion-col size="3" id="rowsLabel">
                               <ion-label>Rows</ion-label>

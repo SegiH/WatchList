@@ -24,6 +24,7 @@ export class DataService {
      IMDBSearchEnabled = false;
      imdb_url_missing = false;
      incompleteFilter = true;
+     isError = false;
      isIMDBSearchEnabled = false;
      isLoggedIn = false;
      isLoggedInCheckComplete = false;
@@ -291,9 +292,11 @@ export class DataService {
      getIMDBSearchEnabledSubscription() {
           this.getIMDBSearchEnabled().subscribe((response) => {
                this.isIMDBSearchEnabled=response;
+
+               this.getWatchListSubscription(); // Load WatchList
           },
           error => {
-               this.handleError(error);
+               this.handleError(`The error "${error.error}" occurred while getting the IMDB Search enabled status`);
           });
      }
 
@@ -414,6 +417,9 @@ export class DataService {
      }
 
      getWatchListItemsSubscription(loadAllData: boolean) {
+          if (this.isError)
+               return;
+
           this.getWatchListItems(loadAllData).subscribe((response) => {
                if (response === null || (response.length === 1 && response[0] === 'ERROR')) {
                     if (response !== null) {
@@ -434,9 +440,11 @@ export class DataService {
                if (this.watchListNames === null || loadAllData === true) {
                     this.watchListNames = response;
                }
+
+               this.getWatchListQueueSubscription();
           },
           error => {
-               this.handleError(error);
+               this.handleError(`The error "${error.error}" occurred while getting the WatchList Items`);
           });
      }
 
@@ -455,6 +463,9 @@ export class DataService {
      }
 
      getWatchListQueueSubscription() {
+          if (this.isError)
+               return;
+
           this.getWatchListQueue().subscribe((response) => {
                if (response !== null) {
                     for (let i=0;i<response.length;i++) {
@@ -463,9 +474,11 @@ export class DataService {
                }
 
                this.watchListQueue=response;
+
+               this.getWatchListTypesSubscription();
           },
           error => {
-               this.handleError(error);
+               this.handleError(`The error "${error.error}" occurred while getting the WatchList Queue`);
           });
      }
 
@@ -478,15 +491,21 @@ export class DataService {
      }
 
      getWatchListSourcesSubscription() {
+          if (this.isError)
+               return;
+
           this.getWatchListSources().subscribe((response) => {
                this.watchListSources=response;
           },
           error => {
-               this.handleError(error);
+               this.handleError(`The error "${error.error}" occurred while getting the WatchList Sources`);
           });
      }
 
      getWatchListSubscription() {
+          if (this.isError)
+               return;
+
           this.getWatchList().subscribe((response) => {
                if (response !== null) {
                     for (let i=0;i<response.length;i++) {
@@ -495,9 +514,11 @@ export class DataService {
                }
 
                this.watchList=response;
+
+               this.getWatchListItemsSubscription(true); // Load WatchList Items
           },
           error => {
-               this.handleError(error);
+               this.handleError(`The error "${error.error}" occurred while getting the WatchList`);
           });
      }
 
@@ -555,15 +576,22 @@ export class DataService {
      }
 
      getWatchListTypesSubscription() {
+          if (this.isError)
+               return;
+
           this.getWatchListTypes().subscribe((response) => {
                this.watchListTypes=response;
+
+               this.getWatchListSourcesSubscription();
           },
           error => {
-               this.handleError(error);
+               this.handleError(`The error "${error.error}" occurred while getting the WatchList Types`);
           });
      }
 
      handleError(error: Response | any) {
+          this.isError = true;
+
           console.log(error);
           this.alert(error);
 
@@ -708,17 +736,7 @@ export class DataService {
                }
           } catch(err) {}
 
-          this.getIMDBSearchEnabledSubscription();
-
-          this.getWatchListSubscription(); // Load WatchList
-
-          this.getWatchListItemsSubscription(true); // Load WatchList
-
-          this.getWatchListQueueSubscription();
-
-          this.getWatchListTypesSubscription();
-
-          this.getWatchListSourcesSubscription();
+          this.getIMDBSearchEnabledSubscription();          
 
           this.router.navigateByUrl('/tabs/watchlist');
      }

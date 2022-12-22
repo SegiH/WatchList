@@ -1,5 +1,5 @@
 <ion-header [translucent]="true">
-     <ion-toolbar>
+     <ion-toolbar *ngIf="!dataService.isError">
           <ion-buttons slot="start"> 
                <ion-menu-button></ion-menu-button>                
           </ion-buttons>
@@ -19,7 +19,7 @@
           <ion-refresher-content></ion-refresher-content>
      </ion-refresher>
      
-     <ion-grid>
+     <ion-grid *ngIf="!dataService.isError">
           <ion-row>
                <ion-col size="6">
                     <ion-icon *ngIf="!dataService.isAdding && !dataService.isEditing" name="add-outline" (click)="addWatchList()"></ion-icon>

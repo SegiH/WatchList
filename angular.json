@@ -76,10 +76,7 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "app:build",
-            "ssl": true,
-            "sslCert": "./certificates/localhost.crt",
-            "sslKey": "./certificates/localhost.key"
+            "browserTarget": "app:build"
           },
           "configurations": {
             "production": {
@@ -162,10 +159,7 @@
           "builder": "@ionic/angular-toolkit:cordova-serve",
           "options": {
             "cordovaBuildTarget": "app:ionic-cordova-build",
-            "devServerTarget": "app:serve",
-            "ssl": true,
-            "sslCert": "./certificates/localhost.crt",
-            "sslKey": "./certificates/localhost.key"
+            "devServerTarget": "app:serve"
           },
           "configurations": {
             "production": {

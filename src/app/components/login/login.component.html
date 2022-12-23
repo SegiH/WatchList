@@ -1,4 +1,4 @@
-<ion-content id="login" *ngIf="dataService.isLoggedInCheckComplete">
+<ion-content id="login" *ngIf="!dataService.isError && dataService.isLoggedInCheckComplete">
      <ion-toolbar>
           <ion-title>Log In</ion-title>
     </ion-toolbar>

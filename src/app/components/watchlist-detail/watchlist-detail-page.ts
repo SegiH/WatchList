@@ -222,17 +222,12 @@ export class WatchListDetailComponent implements DoCheck {
           this.addItemNotes= '';
           this.addItemSource = '';
           this.addSeason = '';
+          this.addRating = 0;
 
           this.dataService.addWatchList(currWatchList).subscribe((response) => {
-               this.addItemID = 0;
-               this.addItemStartDate = '';
-               this.addItemEndDate = '';
-               this.addItemNotes= '';
-               this.addItemSource = '';
-               this.addSeason = '';
-               this.addRating = 0;
-
                this.isAdding=false;
+
+               this.dataService.detailID = null;
 
                this.wasModified = true;
 

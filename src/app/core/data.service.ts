@@ -85,13 +85,6 @@ export class DataService {
                  private storage: Storage,
                  public toastController: ToastController,
                  private router: Router) {
-
-          // Prevent use from running this app using Chrome when url is http://localhost. http->https
-          if (window.navigator.userAgent.includes("Chrome/") && window.location.hostname === "localhost") {
-               this.alert("Error! You appear to be using Chrome and are running on localhost. Due to a cross site cookie policy, you will not be able to use Chrome on localhost. Please use Firefox for testing");
-               this.isError = true;
-          }
-
           this.getBackendURL();
 
           this.getItemsPerPageFilter();

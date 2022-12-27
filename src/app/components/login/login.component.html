@@ -1,6 +1,6 @@
 <ion-content id="login" *ngIf="!dataService.isError && dataService.isLoggedInCheckComplete">
      <ion-toolbar>
-          <ion-title>Log In</ion-title>
+          <ion-title (click)="loginClickCountHandler()">WatchList Login</ion-title>
     </ion-toolbar>
 
     <div class="ion-list-parent">
@@ -15,7 +15,7 @@
                     <ion-input type="password" [(ngModel)]="password" [value]="password" required (keyup.enter)="login()"></ion-input>
                </ion-item>
 
-               <ion-item lines="full">
+               <ion-item *ngIf="backendURLVisible" lines="full">
                     <ion-label position="floating">Backend URL</ion-label>
                     <ion-input type="text" [(ngModel)]="backendURL" [value]="backendURL" required (keyup.enter)="login()"></ion-input>
                </ion-item>

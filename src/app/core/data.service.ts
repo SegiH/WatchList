@@ -235,7 +235,12 @@ export class DataService {
      async getBackendURL() {
           await this.storage.create();
 
-          let url = await this.storage.get('BackEndURL');
+          let url = '';
+
+          try {
+               url = await this.storage.get('BackEndURL');
+          } catch(e) {
+          }
 
           if (url !== null && url.length > 0 && url.endsWith('/')) {
                url=url.slice(0,-1);
@@ -243,8 +248,12 @@ export class DataService {
 
           if (typeof this.userData !== 'undefined') {
                this.userData.BackendURL = url;
+          } else {
+               this.userData = this.iUserEmpty();
+               this.userData.BackendURL=window.location.origin;
           }
 
+          //this.userData.BackendURL=window.location.origin;
           this.loginWorkflow();
      }
 
@@ -688,18 +697,23 @@ export class DataService {
           return this.http.put<any>(`${this.userData.BackendURL}/Login`,null, headers);
      }
 
-     loginSubscription(username: string, password: string, backendURL: string) {
+     loginSubscription(username: string, password: string,  backendURL: string) {
           if (typeof this.userData !== 'undefined') {
                this.userData.Username=username;
                this.userData.Password=password;
-               this.userData.BackendURL=backendURL;
+
+               if (backendURL !== null && backendURL !== '') {
+                    this.userData.BackendURL=backendURL;
+               }
           }
 
           // save to local storage
           localStorage.setItem('WL_Username', username);
           localStorage.setItem('WL_Password', password);
 
-          this.setBackendURL();
+          if (backendURL !== null && backendURL !== '') {
+               this.setBackendURL();
+          }
 
           this.login().subscribe((response) => {
                if (response[0] === 'OK') {
@@ -730,7 +744,11 @@ export class DataService {
                     this.userData.Realname = response[0].Realname;
                }
 
-               if (typeof response[0].BackendURL !== 'undefined' && typeof this.userData !== 'undefined') {
+               if (typeof response[0].Realname !== 'undefined' && typeof this.userData !== 'undefined') {
+                    this.userData.Realname = response[0].Realname;
+               }
+
+               if (typeof response[0].BackEndURL !== 'undefined' && typeof this.userData !== 'undefined') {
                     this.userData.BackendURL = response[0].BackendURL;
                     this.setBackendURL();
                }

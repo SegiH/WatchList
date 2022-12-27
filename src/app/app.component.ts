@@ -64,8 +64,10 @@ export class AppComponent {
      }
 
      signOutConfirmClickHandler() {
-          this.dataService.setBackendURL();
+          //this.dataService.setBackendURL();
 
+          this.dataService.isLoggedIn = false;
+          
           this.dataService.runRest('/SignOut','GET',null).subscribe((response) => {
                this.menu.close();
                this.router.navigateByUrl('/tabs/login');

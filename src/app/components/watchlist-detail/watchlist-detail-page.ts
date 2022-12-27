@@ -119,7 +119,7 @@ export class WatchListDetailComponent implements DoCheck {
 
      closeClickHandler() {
           if (this.wasModified)
-               this.dataService.getWatchListSubscription(); // TODO: Verify if this is needed
+               this.dataService.getWatchListSubscription();
 
           this.dataService.closeOverlay();
      }

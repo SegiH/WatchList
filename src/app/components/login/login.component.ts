@@ -8,10 +8,21 @@ import { DataService } from '../../core/data.service';
 })
 export class LoginComponent {
      backendURL = '';
+     backendURLVisible = false;
+     loginClickCount = 0;
      password = '';
      username='';
 
      constructor(public dataService: DataService) { }
+
+     loginClickCountHandler() {
+          this.loginClickCount++;
+
+          if (this.loginClickCount === 3) {
+               this.backendURLVisible=!this.backendURLVisible;
+               this.loginClickCount=0;
+          }
+     }
 
      login() {
           if (this.username === null || this.username === '') {
@@ -24,7 +35,7 @@ export class LoginComponent {
                return;
           }
 
-          if (this.backendURL === null || this.backendURL === '') {
+          if (this.backendURLVisible && (this.backendURL === null || this.backendURL === '')) {
                this.dataService.alert('Please enter the backendURL');
                return;
           }

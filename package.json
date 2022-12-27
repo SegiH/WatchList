@@ -7,8 +7,9 @@
   "scripts": {
     "ng": "ng",
     "start": "ionic serve --host=0.0.0.0",
-    "build": "ng build",
-    "deploy": "ionic build && ionic cap copy && ionic cap sync && ionic cap open android",
+    "build-og": "ng build",
+    "build": "ionic build && ionic cap copy && ionic cap sync",
+    "deploy": "ionic build && ionic cap copy && ionic cap sync && deploy",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e"

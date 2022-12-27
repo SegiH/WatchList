@@ -1,2 +1,1 @@
 recreate screenshots
-display alert if localhost and browser is chrome/edge/i.e.

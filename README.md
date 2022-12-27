@@ -31,6 +31,7 @@ WatchList Stats: Stats of the movies and shows that you have watched over time
    e. WatchList_DB - Database name
    f. Secret - Secret random letters and string, up to 15 characters. 
    g. RAPIDAPI_KEY - (Optional) If you want to be able to search IMDB, you need a RapidAPI key (see below);
+1. Run `npm install`
 1. Run `npm deploy` to build and deploy WatchList to a folder called WatchList-Buils
 1. cd WatchList-Build
 1. `node watchlist.js`

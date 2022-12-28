@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { DataService } from '../../core/data.service';
+import { Platform } from '@ionic/angular';
 
 @Component({
   selector: 'app-login',
@@ -9,11 +10,20 @@ import { DataService } from '../../core/data.service';
 export class LoginComponent {
      backendURL = '';
      backendURLVisible = false;
+     isApp = false;
      loginClickCount = 0;
      password = '';
      username='';
 
-     constructor(public dataService: DataService) { }
+     constructor(public dataService: DataService, private platform: Platform) { 
+          if(this.platform.is('ios') || this.platform.is('android')) {
+               this.isApp = false;
+          } else {
+               this.isApp = true;
+          }
+
+          //alert("it is " + this.isApp)
+     }
 
      loginClickCountHandler() {
           this.loginClickCount++;

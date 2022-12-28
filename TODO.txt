@@ -1,1 +1,4 @@
 recreate screenshots
+signing out does not work!
+cant sign in on mobile
+show backend on mobile

@@ -36,6 +36,8 @@
      padding: 8px 16px;
      text-decoration: none;
      overflow-x: visible;
+     height: 40px;
+     vertical-align: middle;
 }
 
 .page:first-child {
@@ -60,7 +62,6 @@
 .pageSpan {
      display: flex;
      overflow: auto;
-     scrollbar-width: thin;
      width: fit-content;
      border-style: dashed;
      border-width: 1px;

@@ -10,22 +10,23 @@ import { Platform } from '@ionic/angular';
 export class LoginComponent {
      backendURL = '';
      backendURLVisible = false;
-     isApp = false;
+     forceBackendURLVisible = false;
      loginClickCount = 0;
      password = '';
      username='';
 
      constructor(public dataService: DataService, private platform: Platform) { 
-          if(this.platform.is('ios') || this.platform.is('android')) {
-               this.isApp = false;
-          } else {
-               this.isApp = true;
+          if (this.platform.is('ios') || this.platform.is('android')) {
+               this.backendURLVisible = true; 
+               this.forceBackendURLVisible = true;
           }
-
-          //alert("it is " + this.isApp)
      }
 
      loginClickCountHandler() {
+          // Ignore this logic if forceBackendURLVisible = true. This is needed because I don't want to allow the user to hide the backendURL on iOS or Android
+          if (this.forceBackendURLVisible)
+               return;
+
           this.loginClickCount++;
 
           if (this.loginClickCount === 3) {

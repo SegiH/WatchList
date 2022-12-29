@@ -13,6 +13,7 @@ import { WatchListQueueDetailComponent } from './components/watchlist-queue-deta
 import { IonicStorageModule } from '@ionic/storage-angular';
 import { HttpClientModule } from '@angular/common/http';
 
+
 @NgModule({
     declarations: [AppComponent, WatchListDetailComponent, WatchListItemsDetailComponent, WatchListQueueDetailComponent, DetailOverlayComponent],
     imports: [BrowserModule, FormsModule, HttpClientModule, IonicModule.forRoot(), IonicStorageModule.forRoot(), AppRoutingModule, OverlayModule],

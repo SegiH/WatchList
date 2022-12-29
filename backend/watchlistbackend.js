@@ -256,7 +256,7 @@ app.use('/swagger',swaggerUi.serve,swaggerUi.setup(swaggerDocs));
 
 // Middleware that is called before any endpoint is reached
 app.use(function (req, res, next) {
-     if (!req.url === "/" && !req.url.endsWith(".css") && !req.url.endsWith(".js")){
+     if (req.url !== "/" && !req.url.endsWith(".css") && !req.url.endsWith(".js") && !req.url.startsWith("/IsLoggedIn")){
          if (req.session.page_views) {
               req.session.page_views++;
 
@@ -273,6 +273,10 @@ app.use(function (req, res, next) {
      } else {
          next();
      }
+});
+
+app.get('/IsLoggedIn', (req, res) => {
+	res.send(req.session.page_views);
 });
 
 //Default route doesn't need to return anything 

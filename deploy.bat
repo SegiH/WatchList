@@ -1,7 +1,8 @@
 @echo off
-IF EXIST WatchList-Build rd /s /q WatchList-Build && mkdir WatchList-Build
-mkdir WatchList-Build\Web
-xcopy /E www\*.* WatchList-Build\Web
-xcopy backend\*.* WatchList-Build
-cd WatchList-Build
+SET BuildPath=WatchList-Build
+IF EXIST %BuildPath% rd /s /q %BuildPath% && mkdir %BuildPath%
+mkdir %BuildPath%\Web
+xcopy /E www\*.* %BuildPath%\Web
+xcopy backend\*.* %BuildPath%
+cd %BuildPath%
 npm install

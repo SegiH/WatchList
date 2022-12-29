@@ -1,0 +1,31 @@
+version: '3.7'
+
+networks:
+    default:
+         name: NETWORKNAME
+         external: true
+
+services:
+    WatchListBackend:
+        container_name: WatchListBackend
+        stdin_open: true
+        tty: true
+        image: watchlistbackend:latest
+        hostname: WatchListBackend
+        environment:
+               - SECRET=YOUR_SECRET
+               
+               # RAPID_API_KEY is optional and is only required if you want to be able to search IMDB instead of manually adding an IMDB URL. Register for a 
+               # free account at https://rapidapi.com and add a "Movie Database (IMDB Alternative)" API to get an API key. Please note that even though it is 
+               # free, RapidAPI requires you to "subscribe" by adding a credit card to your account. This is required in order for your RapidAPI account to show
+               # the status "subscribed" which is needed in order for the API key to work. I think that RapidAPI will only charge you if you go over their daily
+               # quota. If you do not add a credit card to your account, RapidAPI will return the message that you are not subscribed when you try to use the API
+               # key and will not return any results.
+               - RAPID_API_KEY=YOURRAPID_API_KEY
+               - WatchList_User=DB_USERNAME
+               - WatchList_Password=DB_PASSWORD
+               - WatchList_Host=DB_HOST
+               - WatchList_DB=DB_NAME
+        networks:
+            - default
+        restart: always

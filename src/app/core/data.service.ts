@@ -253,7 +253,6 @@ export class DataService {
                this.userData.BackendURL=window.location.origin;
           }
 
-          //this.userData.BackendURL=window.location.origin;
           this.loginWorkflow();
      }
 
@@ -707,10 +706,6 @@ export class DataService {
                }
           }
 
-          // save to local storage
-          localStorage.setItem('WL_Username', username);
-          localStorage.setItem('WL_Password', password);
-
           if (backendURL !== null && backendURL !== '') {
                this.setBackendURL();
           }
@@ -760,28 +755,26 @@ export class DataService {
      }
 
      loginWorkflow() {
-          // This gets called after the backend URL has been retreived from localStorage
+          // This gets called after the backend URL is set
           if (this.userData.BackendURL === null || this.userData.BackendURL === '') {
                this.isLoggedInCheckComplete=true;
                this.router.navigateByUrl('/tabs/login');
                return;
           } else {
-               const headers = {
-                    headers: {
-                         wl_username: localStorage.getItem('WL_Username'),
-                         wl_password: localStorage.getItem('WL_Password'),
-                    },
+               const headers = {                    
                     withCredentials: true
                };
 
-               this.http.put<any>(`${this.userData.BackendURL}/Login`,null,headers).subscribe((response) => {
+               this.http.get<any>(`${this.userData.BackendURL}/IsLoggedIn`,headers).subscribe((response) => {
+                    var isLoggedIn = response[1];
+
                     this.isLoggedInCheckComplete=true;
 
-                    if (response[0] === 'OK') {
-                         this.loginSuccessfullActions(response[1]);
-                    } else {
+                    if (isLoggedIn === null) {
                          this.router.navigateByUrl('/tabs/login');
-                    }
+                    } else {
+                         this.loginSuccessfullActions(response[1]);
+                    }                    
                },
                error => {
                    this.isLoggedInCheckComplete=true;

@@ -70,15 +70,18 @@ export class AppComponent {
           
           this.dataService.runRest('/SignOut','GET',null).subscribe((response) => {
                this.menu.close();
-               this.router.navigateByUrl('/tabs/login');
+               this.router.navigateByUrl('/');
+
+               // TODO: There is a bug where after logging out, the login form is ready only
+               window.location.reload();
           },
           error => {
                this.router.navigateByUrl('/tabs/login');
           });
 
-          setTimeout(() => {
+          /*setTimeout(() => {
                this.router.navigateByUrl('/tabs/login');
-          }, 10000)
+          }, 10000)*/
      }
 
      // Used to prevent the entire DOM tree from being re-rendered every time that there is a change

@@ -10,6 +10,7 @@
     "build-og": "ng build",
     "build": "ionic build && ionic cap copy && ionic cap sync",
     "deploy": "ionic build && ionic cap copy && ionic cap sync && deploy",
+    "deploy-docker": "ionic build && ionic cap copy && ionic cap sync && deploy-docker",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e"

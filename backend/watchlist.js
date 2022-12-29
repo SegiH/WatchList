@@ -276,7 +276,7 @@ app.use(function (req, res, next) {
 });
 
 app.get('/IsLoggedIn', (req, res) => {
-	res.send(req.session.page_views);
+	res.send(["OK",req.session.page_views]);
 });
 
 //Default route doesn't need to return anything 

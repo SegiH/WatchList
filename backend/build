@@ -4,4 +4,4 @@ docker build docker/ -t watchlist:latest
 
 docker stop WatchList && docker rm WatchList
 
-docker-compose -f watchlist-compose.yml up -d
+docker-compose -f watchlist.yml up -d

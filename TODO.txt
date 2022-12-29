@@ -1,1 +1,3 @@
+--Fixed After signing out, can still reload in prod !!! WTF!!!
+--Fixed Have to enter url in prod
 recreate screenshots

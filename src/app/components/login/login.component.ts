@@ -46,9 +46,13 @@ export class LoginComponent {
                return;
           }
 
-          if (this.backendURLVisible && (this.backendURL === null || this.backendURL === '')) {
-               this.dataService.alert('Please enter the backendURL');
-               return;
+          if (this.backendURLVisible) { 
+               if (this.backendURL === null || this.backendURL === '') {
+                    this.dataService.alert('Please enter the backendURL');
+                    return;
+               }
+          } else {
+               this.backendURL=window.location.origin;
           }
 
           this.dataService.loginSubscription(this.username,this.password,this.backendURL);

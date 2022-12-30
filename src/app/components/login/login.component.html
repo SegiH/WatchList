@@ -18,6 +18,12 @@
                </ion-item>
           </div>
 
+          <div class="input-group">
+               <ion-item lines="full">
+                    <ion-input name="backendURL" type="text" [(ngModel)]="backendURL" [value]="backendURL" placeholder="Backend URL" required (keyup.enter)="login()"></ion-input>
+               </ion-item>
+          </div>
+
           <ion-button type="submit" expand="block" (click)="login()">Sign In</ion-button>
     </form>
 

@@ -7,20 +7,20 @@
 <ion-content id="login" *ngIf="!dataService.isError && dataService.isLoggedInCheckComplete">
     <form (ngSubmit)="login()">
           <div class="input-group">
-               <ion-item lines="full">
-                    <ion-input name="username" type="text" [(ngModel)]="username" [value]="username" placeholder="Username" required (keyup.enter)="login()"></ion-input>
+               <ion-item>
+                    <ion-input class="inputField" name="username" type="text" [(ngModel)]="username" [value]="username" placeholder="Username" required (keyup.enter)="login()"></ion-input>
                </ion-item>
           </div>
 
           <div class="input-group">
                <ion-item lines="full">
-                    <ion-input name="password" type="password" [(ngModel)]="password" [value]="password" placeholder="Password" required (keyup.enter)="login()"></ion-input>
+                    <ion-input class="inputField" name="password" type="password" [(ngModel)]="password" [value]="password" placeholder="Password" required (keyup.enter)="login()"></ion-input>
                </ion-item>
           </div>
 
           <div class="input-group">
-               <ion-item lines="full">
-                    <ion-input name="backendURL" type="text" [(ngModel)]="backendURL" [value]="backendURL" placeholder="Backend URL" required (keyup.enter)="login()"></ion-input>
+               <ion-item lines="full" *ngIf="backendURLVisible">
+                    <ion-input class="inputField" name="backendURL" type="text" [(ngModel)]="backendURL" [value]="backendURL" placeholder="Backend URL" required (keyup.enter)="login()"></ion-input>
                </ion-item>
           </div>
 

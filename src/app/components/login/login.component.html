@@ -1,9 +1,27 @@
-<ion-content id="login" *ngIf="!dataService.isError && dataService.isLoggedInCheckComplete">
-     <ion-toolbar>
-          <ion-title (click)="loginClickCountHandler()"><h2>WatchList</h2></ion-title>
+<ion-header>
+     <ion-toolbar color="primary" >
+          <ion-title (click)="loginClickCountHandler()">WatchList</ion-title>
     </ion-toolbar>
+</ion-header>
 
-    <div class="ion-list-parent">
+<ion-content id="login" *ngIf="!dataService.isError && dataService.isLoggedInCheckComplete">
+    <form (ngSubmit)="login()">
+          <div class="input-group">
+               <ion-item lines="full">
+                    <ion-input name="username" type="text" [(ngModel)]="username" [value]="username" placeholder="Username" required (keyup.enter)="login()"></ion-input>
+               </ion-item>
+          </div>
+
+          <div class="input-group">
+               <ion-item lines="full">
+                    <ion-input name="password" type="password" [(ngModel)]="password" [value]="password" placeholder="Password" required (keyup.enter)="login()"></ion-input>
+               </ion-item>
+          </div>
+
+          <ion-button type="submit" expand="block" (click)="login()">Sign In</ion-button>
+    </form>
+
+    <!--<div class="ion-list-parent">
           <ion-list>
                <ion-item lines="full">
                     <ion-label position="floating">Username</ion-label>
@@ -22,5 +40,5 @@
      
                <ion-button color="primary" expand="block" (click)="login()">Sign In</ion-button>
           </ion-list>
-     </div>
+     </div>-->
 </ion-content>

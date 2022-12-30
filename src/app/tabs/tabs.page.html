@@ -1,4 +1,4 @@
-<ion-tabs>
+<ion-tabs [ngClass]="{'hiddenTabBar': !dataService.isLoggedIn}">
      <ion-tab-bar *ngIf="!dataService.isError" slot="bottom">
           <!--<ion-tab-button tab="login" *ngIf="!dataService.isLoggedIn">
                <ion-label>Login</ion-label>

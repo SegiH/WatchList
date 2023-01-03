@@ -1,3 +1,9 @@
+@media only screen and (max-width: 600px) {
+	ion-content {
+		--padding-start: 10% !important;
+	}
+  }
+
 .input-group {
 	background: #fff;
 	border-radius: 10px;
@@ -7,7 +13,7 @@
 
 ion-content {
 	--padding-top: 15%;
-	--padding-start: 30%;
+	--padding-start: 38%;
 	--padding-end: 10%;
 	--background: url('/assets/background.png') 0 0/100% 100% no-repeat;
 }

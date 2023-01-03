@@ -757,6 +757,8 @@ export class DataService {
                if (typeof response[0].BackEndURL !== 'undefined' && typeof this.userData !== 'undefined') {
                     this.userData.BackendURL = response[0].BackendURL;
                     this.setBackendURL();
+
+                    //localStorage.setItem('BackendURL', response[0].BackendURL);
                }
           } catch(err) {}
 

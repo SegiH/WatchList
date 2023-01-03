@@ -1,4 +1,4 @@
-<ion-header>
+<ion-header *ngIf="!dataService.isLoggedIn">
      <ion-toolbar color="primary" >
           <ion-title (click)="loginClickCountHandler()">WatchList</ion-title>
     </ion-toolbar>

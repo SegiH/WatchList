@@ -1,4 +1,3 @@
-improve app ui
 make register screen
 After successful login, save backendURL and use when making call to isLoggedIn
 

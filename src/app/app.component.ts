@@ -14,12 +14,13 @@ export class AppComponent {
      isEditingOptions = false;
      
      readonly itemsPerPage = [
-          10,
-          20,
-          50,
-          100,
-          500,
-          1000
+          24,
+          48,
+          72,
+          120,
+          288,
+          576,
+          1152
      ]
 
      readonly recordLimitOptions = [

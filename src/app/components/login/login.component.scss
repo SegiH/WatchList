@@ -7,10 +7,9 @@
 
 ion-content {
 	--padding-top: 15%;
-	--padding-start: 40%;
+	--padding-start: 30%;
 	--padding-end: 10%;
-	--background: url('/assets/background.png')
-		0 0/100% 100% no-repeat;
+	--background: url('/assets/background.png') 0 0/100% 100% no-repeat;
 }
 
 #login > form > div, #login > form > ion-button  {

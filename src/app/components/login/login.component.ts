@@ -1,6 +1,6 @@
 import { Component, isDevMode } from '@angular/core';
 import { DataService } from '../../core/data.service';
-import { Platform } from '@ionic/angular';
+
 
 @Component({
   selector: 'app-login',
@@ -15,8 +15,8 @@ export class LoginComponent {
      password = '';
      username='';
 
-     constructor(public dataService: DataService, private platform: Platform) {
-          if (this.platform.is('ios') || this.platform.is('android') || (window.location.origin.startsWith("http://") && isDevMode())) {
+     constructor(public dataService: DataService) {
+          if (dataService.isMobile || (window.location.origin.startsWith("http://") && isDevMode())) {
                this.backendURLVisible = true; 
                this.forceBackendURLVisible = true;
           }

@@ -42,11 +42,19 @@ export class WatchListComponent implements DoCheck {
 
                if (this.filteredWatchList.length > this.dataService.recordLimit)
                     this.filteredWatchList.length = this.dataService.recordLimit;
+
+               for (let i=0;i<this.filteredWatchList.length;i++) {
+                    this.filteredWatchList[i]["Tooltip"]="ID " + this.filteredWatchList[i].WatchListID + ": " + (this.filteredWatchList[i].EndDate == null ? 'Started watching ' : 'Watched ') + (this.filteredWatchList[i].Season !== null ? 'season ' + this.filteredWatchList[i].Season + ' ' : '' ) + 'on ' + this.dataService.getSourceName(this.filteredWatchList[i].WatchListSourceID) + ` ${new Date(this.filteredWatchList[i].StartDate).toLocaleDateString()}` + (this.filteredWatchList[i].EndDate != null && this.filteredWatchList[i].EndDate != this.filteredWatchList[i].StartDate ? `- ${new Date(this.filteredWatchList[i].EndDate).toLocaleDateString()}` : ``);
+               }
           }
      }
 
      addWatchList() {
           this.dataService.openDetailOverlay('watchlist',null);
+     }
+
+     getRatingIcon(index: number, currWatchList: IWatchList) {
+          return currWatchList?.Rating > index + 0.5 ? "heart" : currWatchList?.Rating === index + 0.5 ? "heart-half" : "heart-outline"
      }
 
      isShown(pageIndex: number) {
@@ -73,5 +81,25 @@ export class WatchListComponent implements DoCheck {
                this.currentPage+=relativePage;
           else if (absolutePage)
                this.currentPage=absolutePage;
+     }
+
+     ratingClickHandler(index: number, currWatchList: IWatchList) {
+          if (String(currWatchList.Rating + ".0") === String(index + ".0")) {
+               currWatchList.Rating = index + 0.5;
+          } else if (String(currWatchList.Rating) === String(index + ".5")) {
+               currWatchList.Rating = parseFloat((index+1).toFixed(1));
+          } else {
+               currWatchList.Rating = parseFloat(index.toFixed(1));
+          }
+
+          this.dataService.updateWatchList(currWatchList).subscribe((response) => {
+               if (response !== null && response.length > 0 && response[0] === "ERROR") {
+                    alert(response[1]);
+                    return;
+               }
+          },
+          error => {
+               this.dataService.handleError(error);
+          });
      }
 }

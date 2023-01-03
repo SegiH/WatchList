@@ -27,14 +27,14 @@
           </ion-row>
      </ion-grid>
      
-     <div class="ion-list-parent">
+     <div class="ion-list-parent" *ngIf="!dataService.isError && filteredWatchListItems && filteredWatchListItems.length > 0">
           <ion-list>
                <!-- Pagination -->
                <ion-item *ngIf="filteredWatchListItems && filteredWatchListItems.length > 0" lines="none">
                     <span class="pageSpan" *ngIf="filteredWatchListItems && filteredWatchListItems.length > dataService.itemsPerPage">
                          <span class="page nomargin" *ngIf="currentPage > 1" (click)="paginationClickHandler(-1)">Previous</span>
 
-                         <span class="page" [ngClass]="{'active': currentPage === (pageIndex + 1)}" (click)="paginationClickHandler(0,pageIndex + 1)" *ngFor="let number of numSequence(filteredWatchListItems.length/dataService.itemsPerPage > 1 ? math.round(filteredWatchListItems.length/dataService.itemsPerPage) : 1 );let pageIndex=index">
+                         <span class="page" [ngClass]="{'active': currentPage === (pageIndex + 1)}" (click)="paginationClickHandler(0,pageIndex + 1)" *ngFor="let number of numSequence(filteredWatchListItems.length/dataService.itemsPerPage > 1 ? math.round(filteredWatchListItems.length/dataService.itemsPerPage) +1 : 1 );let pageIndex=index">
                               {{ pageIndex + 1 }}
                          </span>
 
@@ -42,7 +42,31 @@
                     </span>
                </ion-item>
 
-               <ion-list>
+               <ion-grid id="data" *ngIf="!dataService.isMobile">
+                    <div>
+                         <ion-row>
+                              <ion-col size="2" [ngClass]="{'hidden': !isShown(index)}" *ngFor="let currWatchListItem of filteredWatchListItems;let index=index">
+                                   <div title={{currWatchListItem.Tooltip}}>
+                                        <ion-list>
+                                             <ion-item class="narrowHeight"> <!-- here to make look consistent with WL -->
+                                                  <a *ngIf="currWatchListItem.IMDB_URL" href="{{ currWatchListItem.IMDB_URL }}" target="_blank">IMDB</a>
+                                             </ion-item>
+
+                                             <ion-item>
+                                                  <img src="{{currWatchListItem.IMDB_Poster}}" (click)="dataService.openDetailOverlay('watchlist-items',currWatchListItem.WatchListItemID)">
+                                             </ion-item>
+          
+                                             <ion-item>
+                                                  <ion-label (click)="dataService.openDetailOverlay('watchlist-items',currWatchListItem.WatchListItemID)">{{currWatchListItem.WatchListItemName}}</ion-label>
+                                             </ion-item>
+                                        </ion-list>
+                                   </div>
+                              </ion-col>
+                         </ion-row>
+                    </div>
+               </ion-grid>
+
+               <ion-list *ngIf="dataService.isMobile">
                     <div *ngFor="let currWatchListItem of filteredWatchListItems;let index=index">
                          <ion-item *ngIf="isShown(index)">
                               <ion-grid>
@@ -75,20 +99,20 @@
                          </ion-item>
                     </div>
                </ion-list>
-          </ion-list>
 
-          <!-- Pagination -->
-          <ion-item lines="none">
-               <span class="pageSpan" *ngIf="filteredWatchListItems && filteredWatchListItems.length > dataService.itemsPerPage">
-                    <span class="page nomargin" *ngIf="currentPage > 1" (click)="paginationClickHandler(-1)">Previous</span>
+               <!-- Pagination -->
+               <ion-item lines="none">
+                    <span class="pageSpan" *ngIf="filteredWatchListItems && filteredWatchListItems.length > dataService.itemsPerPage">
+                         <span class="page nomargin" *ngIf="currentPage > 1" (click)="paginationClickHandler(-1)">Previous</span>
 
-                    <span class="page" [ngClass]="{'active': currentPage === (pageIndex + 1)}" (click)="paginationClickHandler(0,pageIndex + 1)" *ngFor="let number of numSequence(filteredWatchListItems.length/dataService.itemsPerPage > 1 ? math.round(filteredWatchListItems.length/dataService.itemsPerPage) : 1 );let pageIndex=index">
-                         {{ pageIndex + 1 }}
+                         <span class="page" [ngClass]="{'active': currentPage === (pageIndex + 1)}" (click)="paginationClickHandler(0,pageIndex + 1)" *ngFor="let number of numSequence(filteredWatchListItems.length/dataService.itemsPerPage > 1 ? math.round(filteredWatchListItems.length/dataService.itemsPerPage) : 1 );let pageIndex=index">
+                              {{ pageIndex + 1 }}
+                         </span>
+
+                         <span class="page nomargin" *ngIf="currentPage < filteredWatchListItems.length/dataService.itemsPerPage" (click)="paginationClickHandler(1)">Next</span>
                     </span>
-
-                    <span class="page nomargin" *ngIf="currentPage < filteredWatchListItems.length/dataService.itemsPerPage" (click)="paginationClickHandler(1)">Next</span>
-               </span>
-          </ion-item>
+               </ion-item>
+          </ion-list>
 
           <div *ngIf="filteredWatchListItems">{{ filteredWatchListItems.length }} records</div>
      </div>

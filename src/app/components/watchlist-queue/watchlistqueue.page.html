@@ -28,7 +28,30 @@
      </ion-grid>
 
      <div class="ion-list-parent">
-          <ion-list>
+          <ion-grid id="data" *ngIf="!dataService.isMobile">
+               <div>
+                    <ion-row>
+                         <ion-col size="2" [ngClass]="{'hidden': !isShown(index)}" *ngFor="let currWatchListQueue of filteredWatchListQueueItems;let index=index">
+                              <div title={{currWatchListQueue.Tooltip}}>
+                                   <ion-list>
+                                        <ion-item class="narrowHeight"> <!-- here to make look consistent with WL -->
+                                        </ion-item>
+
+                                        <ion-item>
+                                             <img src="{{currWatchListQueue.IMDB_Poster}}" (click)="dataService.openDetailOverlay('watchlist-queue',currWatchListQueue.WatchListQueueItemID)">
+                                        </ion-item>
+     
+                                        <ion-item>
+                                             <ion-label (click)="dataService.openDetailOverlay('watchlist-queue',currWatchListQueue.WatchListQueueItemID)">{{currWatchListQueue.WatchListItemName}}</ion-label>
+                                        </ion-item>
+                                   </ion-list>
+                              </div>
+                         </ion-col>
+                    </ion-row>
+               </div>
+          </ion-grid>
+
+          <ion-list *ngIf="dataService.isMobile">
                <div *ngFor="let currWatchListQueue of dataService.watchListQueue;let index=index">
                     <ion-item>
                          <ion-grid>
@@ -56,49 +79,6 @@
                          </ion-grid>
                     </ion-item>
                </div>
-               <!-- Table headers -->
-               <!--<ion-item>
-                    <ion-grid>
-                         <ion-row>
-                              <ion-col [size]="this.dataService.getColumnSize('ID','WatchListQueueItems')">
-                                   <ion-label>ID</ion-label>
-                              </ion-col>
-
-                              <ion-col [size]="this.dataService.getColumnSize('Name','WatchListQueueItems')">
-                                   <ion-label>Name</ion-label>
-                              </ion-col>
-  
-                              <ion-col [size]="this.dataService.getColumnSize('Notes','WatchListQueueItems')">
-                                   <ion-label>Notes</ion-label>
-                              </ion-col>
-                        </ion-row>
-                    </ion-grid>               
-               </ion-item>-->
-
-               <!-- Data Panel -->
-               <!--<ion-item *ngFor="let currWatchListQueue of dataService.watchListQueue">
-                    <ion-grid>
-                         <ion-row>
-                              <ion-col [size]="this.dataService.getColumnSize('ID','WatchListQueueItems')" class="nameColumn">
-                                   <ion-label className="WatchListItemID">
-                                        {{ currWatchListQueue.WatchListItemID }}
-                                   </ion-label>
-                              </ion-col>
-
-                              <ion-col [size]="this.dataService.getColumnSize('Name','WatchListQueueItems')" class="nameColumn">
-                                   <ion-label class="poster" className="WatchListItemName" (click)="this.dataService.openDetailOverlay('watchlist-queue',currWatchListQueue.WatchListQueueItemID)">
-                                        {{ currWatchListQueue.WatchListItemName }}
-                                   </ion-label>
-
-                                   <img *ngIf="currWatchListQueue.IMDB_Poster !== null" class="poster" src="{{currWatchListQueue.IMDB_Poster}}" (click)="this.dataService.openDetailOverlay('watchlist-queue',currWatchListQueue.WatchListQueueItemID)">
-                              </ion-col>
-                
-                              <ion-col [size]="this.dataService.getColumnSize('Notes','WatchListQueueItems')">
-                                   {{ currWatchListQueue.Notes }}
-                              </ion-col>
-                         </ion-row>
-                    </ion-grid>
-                </ion-item>-->
           </ion-list>
      </div>
 </ion-content>

@@ -26,3 +26,86 @@
 @import "~@ionic/angular/css/flex-utils.css";
 
 @import '@angular/cdk/overlay-prebuilt.css';
+
+body {
+    --ion-background-color: #F1EBE4;
+}
+
+.page {
+    cursor: pointer;
+    padding-left: 5px;
+    padding-right: 5px;
+    border: 1px solid #ddd;
+    color: black;
+    float: left;
+    padding: 8px 16px;
+    text-decoration: none;
+    overflow-x: visible;
+    height: 40px;
+    vertical-align: middle;
+}
+
+.page:first-child {
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+  }
+  
+.page:last-child {
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+}
+
+.page.active {
+   background-color: #4285f4;
+   color: white;
+}
+
+.pageSelect {
+    width: 65px;
+}
+
+.pageSpan {
+    display: flex;
+    overflow: auto;
+    width: fit-content;
+    border-style: dashed;
+    border-width: 1px;
+}
+
+ion-icon {
+    width: 45px;
+    height: 45px;
+    cursor: pointer;
+}
+
+#data ion-col img {
+    width: 190px;
+    height: 270px;
+}
+
+#data ion-list {
+    cursor: pointer;
+    width: 190px;
+    height: 380px;
+    box-shadow: 0 2px 2px 0 rgba(0,0,0,.14),0 3px 1px -2px rgba(0,0,0,.12),0 1px 5px 0 rgba(0,0,0,.2);
+    margin-bottom: 15px;
+}
+
+#data ion-list ion-item {
+    text-align: center;
+}
+
+#data ion-list ion-item ion-label {
+    font-size: 14px;
+    overflow-wrap: break-word;
+    white-space: break-spaces !important; /* This fixes the word wrap issue but prevents horizontal scrolling */
+    word-wrap: break-word
+}
+
+.hidden {
+    display: none;
+}
+
+.narrowHeight {
+    height: 35px !important;
+}

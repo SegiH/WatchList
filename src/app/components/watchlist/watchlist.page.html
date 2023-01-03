@@ -1,4 +1,4 @@
-<ion-header [translucent]="true">
+<ion-header [translucent]="true" *ngIf="dataService.isLoggedInCheckComplete">
      <ion-toolbar *ngIf="!dataService.isError">
           <ion-buttons slot="start"> 
                <ion-menu-button></ion-menu-button>                
@@ -19,22 +19,22 @@
           <ion-refresher-content></ion-refresher-content>
      </ion-refresher>
 
-     <ion-grid *ngIf="!dataService.isError">
-          <ion-row>
+     <ion-grid *ngIf="!dataService.isError && filteredWatchList && filteredWatchList.length > 0">
+          <ion-row class="addPanel">
                <ion-col size="6">
                     <ion-icon *ngIf="!dataService.isAdding && !dataService.isEditing" name="add-outline" (click)="addWatchList()"></ion-icon>
                </ion-col>
           </ion-row>
      </ion-grid>
 
-     <div class="ion-list-parent">
-          <ion-list lines="none">
+     <div class="ion-list-parent" *ngIf="!dataService.isError && filteredWatchList && filteredWatchList.length > 0">
+          <ion-list>
                <!-- Pagination -->
-               <ion-item *ngIf="filteredWatchList && filteredWatchList.length > 0" lines="none">
+               <ion-item class="pagination" *ngIf="filteredWatchList && filteredWatchList.length > 0" lines="none">
                     <span class="pageSpan" *ngIf="filteredWatchList && filteredWatchList.length > dataService.itemsPerPage">
                          <span class="page nomargin" *ngIf="currentPage > 1" (click)="paginationClickHandler(-1)">Previous</span>
 
-                         <span class="page" [ngClass]="{'active': currentPage === (pageIndex + 1)}" (click)="paginationClickHandler(0,pageIndex + 1)" *ngFor="let number of numSequence(filteredWatchList.length/dataService.itemsPerPage > 1 ? math.round(filteredWatchList.length/dataService.itemsPerPage) : 1 );let pageIndex=index">
+                         <span class="page" [ngClass]="{'active': currentPage === (pageIndex + 1)}" (click)="paginationClickHandler(0,pageIndex + 1)" *ngFor="let number of numSequence(filteredWatchList.length/dataService.itemsPerPage > 1 ? math.round(filteredWatchList.length/dataService.itemsPerPage) +1: 1 );let pageIndex=index">
                               {{ pageIndex + 1 }}
                          </span>
 
@@ -42,7 +42,31 @@
                     </span>
                </ion-item>
 
-               <ion-list>
+               <ion-grid id="data" *ngIf="!dataService.isMobile">
+                    <div>
+                         <ion-row>
+                              <ion-col size="2" [ngClass]="{'hidden': !isShown(index)}" *ngFor="let currWatchList of filteredWatchList;let index=index">
+                                   <div title={{currWatchList.Tooltip}}>
+                                        <ion-list>
+                                             <ion-item class="narrowHeight">
+                                                  <ion-icon *ngFor="let number of numSequence(dataService.ratingMax); let index=index" [name]="getRatingIcon(index, currWatchList)" class="favoritePreview" (click)="ratingClickHandler(index,currWatchList)"></ion-icon>
+                                             </ion-item>
+
+                                             <ion-item>
+                                                  <img src="{{currWatchList.IMDB_Poster}}" (click)="dataService.openDetailOverlay('watchlist',currWatchList.WatchListID)">
+                                             </ion-item>
+
+                                             <ion-item>
+                                                  <ion-label (click)="dataService.openDetailOverlay('watchlist',currWatchList.WatchListID)">{{dataService.getWatchListItemName(currWatchList.WatchListItemID)}}</ion-label>
+                                             </ion-item>
+                                        </ion-list>
+                                   </div>
+                              </ion-col>
+                         </ion-row>
+                    </div>
+               </ion-grid>
+
+               <ion-list  *ngIf="dataService.isMobile">
                     <div *ngFor="let currWatchList of filteredWatchList;let index=index">
                          <ion-item *ngIf="isShown(index)">
                               <ion-grid>

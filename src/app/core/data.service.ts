@@ -12,6 +12,7 @@ import IWatchListQueueItem from '../interfaces/watchlistqueueitem.interface';
 import IWatchListSource from '../interfaces/watchlistsource.interface';
 import IWatchListType from '../interfaces/watchlisttype.interface';
 import IUser from '../interfaces/user.interface';
+import { Platform } from '@ionic/angular';
 
 @Injectable({
      providedIn: `root`,
@@ -28,6 +29,7 @@ export class DataService {
      isIMDBSearchEnabled = false;
      isLoggedIn = false;
      isLoggedInCheckComplete = false;
+     isMobile = false;
      itemsPerPage = 20;
      readonly ratingMax = 5;
      recordLimit = 10;
@@ -63,7 +65,7 @@ export class DataService {
           ID: 1,
           Name: 4,
           Type: 2,
-          IMDBURL: 4,
+          IMDBURL: 8,
           //Notes : 2,
      };
 
@@ -82,9 +84,15 @@ export class DataService {
 
      constructor(public alertController: AlertController,
                  private http: HttpClient,
+                 private platform: Platform,
                  private storage: Storage,
                  public toastController: ToastController,
                  private router: Router) {
+
+          if (this.platform.is('ios') || this.platform.is('android')) {
+               this.isMobile = true;
+          }
+
           this.getBackendURL();
 
           this.getItemsPerPageFilter();
@@ -665,6 +673,9 @@ export class DataService {
                WatchListQueueItemID: null,
                UserID: null,
                WatchListItemID: null,
+               WatchListItemName: null,
+               WatchListTypeID: null,
+	          IMDB_Poster: null,
                Notes: null,
                Previous: null
           };

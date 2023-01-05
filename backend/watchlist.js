@@ -275,10 +275,6 @@ app.use(function (req, res, next) {
      }
 });
 
-app.get('/IsLoggedIn', (req, res) => {
-	res.send(["OK",req.session.page_views]);
-});
-
 //Default route doesn't need to return anything 
 app.get('/', (req, res) => {
      //res.send("");
@@ -1196,6 +1192,21 @@ app.get('/IsIMDBSearchEnabled', (req, res) => {
 
 /** 
  * @swagger 
+ * /IsLoggedIn: 
+ *    get:
+ *        summary: Get logged in status
+ *        description: Get logged in status
+ *        responses:  
+ *          200: 
+ *            description: "Returns ["OK",true or null]"
+ *   
+ */
+app.get('/IsLoggedIn', (req, res) => {
+	res.send(["OK",req.session.page_views]);
+});
+
+/** 
+ * @swagger 
  * /Login: 
  *    put:
  *        tags: 
@@ -1664,4 +1675,3 @@ async function execSQL(res,SQL, params, isQuery = false, returnData=false) { // 
 
 app.listen(PORT, HOST);
 console.log(`Running on http://${HOST}:${PORT}`);
-

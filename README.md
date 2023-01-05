@@ -18,11 +18,11 @@ WatchList Stats: Stats of the movies and shows that you have watched over time
 
 # Setting up WatchList
 1. Create database with the name WatchList in SQL Server.
-1. Edit SQL\Setup.sql and set the master key encryption password (write down this password in case you forget it!!)
+1. Edit setup\SQL\Setup.sql and set the master key encryption password (write down this password in case you forget it!!)
 1. Run the SQL script SQL\Setup.sql on the database WatchList as a user with db_creator permission. All of the commands should completed without any errors.
-1. Create user account: Edit SQL\CreateUser.sql and set the username, realname and password 
-1. Run the SQL script SQL\CreateUser.sql
-1. If you ever want to change a users' password, use SQL\SetPassword.sql
+1. Create user account: Edit setup\SQL\CreateUser.sql and set the username, realname and password 
+1. Run the SQL script setup\SQL\CreateUser.sql
+1. If you ever want to change a users' password, use setup\SQL\SetPassword.sql
 1. Set the following encironment variables:
    a. Public_URL - The URL that you will use to access WatchList ex. https://watchlist.mysite.com
    b. WatchList_User - Database username

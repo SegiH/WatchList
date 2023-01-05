@@ -1,5 +1,2 @@
-After successful login, save backendURL and use when making call to isLoggedIn
-
-
 Update app icon
 recreate screenshots

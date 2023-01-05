@@ -714,6 +714,8 @@ export class DataService {
 
                if (backendURL !== null && backendURL !== '') {
                     this.userData.BackendURL=backendURL;
+
+                    localStorage.setItem('BackendURL', backendURL);
                }
           }
 
@@ -734,7 +736,7 @@ export class DataService {
           });
      }
 
-     loginSuccessfullActions(response) {
+     loginSuccessfullActions(response: any) {
           this.isLoggedIn = true;
 
           try { // when check if logged in already, user payload is not present so ignore any errors
@@ -754,12 +756,10 @@ export class DataService {
                     this.userData.Realname = response[0].Realname;
                }
 
-               if (typeof response[0].BackEndURL !== 'undefined' && typeof this.userData !== 'undefined') {
+               /*if (typeof response[0].BackEndURL !== 'undefined' && typeof this.userData !== 'undefined') {
                     this.userData.BackendURL = response[0].BackendURL;
                     this.setBackendURL();
-
-                    //localStorage.setItem('BackendURL', response[0].BackendURL);
-               }
+               }*/
           } catch(err) {}
 
           this.getIMDBSearchEnabledSubscription();          

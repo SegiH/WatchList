@@ -20,6 +20,10 @@ export class LoginComponent {
                this.backendURLVisible = true; 
                this.forceBackendURLVisible = true;
           }
+
+          if (localStorage.getItem('BackendURL') !== "" && localStorage.getItem('BackendURL') !== null) {
+               this.backendURL = localStorage.getItem('BackendURL');
+          }
      }
 
      loginClickCountHandler() {

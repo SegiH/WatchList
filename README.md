@@ -27,3 +27,59 @@ Admin: If you are an administrator, you will have access to the admin section wh
 When you log into WatchList, you will need to enter the WatchList backend URL that you will be logging into. 
 
 Once you have logged into WatchList, you should not have to enter the backend url again on subsequent logins unless you need to change the WatchList URL. The last WatchList instance URL that was used is saved and automatically populated into this URL field. 
+
+# Screenshot
+
+WatchList List
+![WatchList List] (https://github.com/SegiH/WatchList/blob/main/Web/screenshots/WatchList-Main.jpg)
+
+WatchList - View Item
+![WatchList Main] (https://github.com/SegiH/WatchList/blob/main/Web/screenshots/WatchList-ViewItem.jpg)
+
+WatchList - Edit Item
+![WatchList Edit] (https://github.com/SegiH/WatchList/blob/main/Web/screenshots/WatchListItems-EditItem.jpg)
+
+WatchList - Add Item
+![WatchList Add] (https://github.com/SegiH/WatchList/blob/main/Web/screenshots/WatchList-Add-Item.jpg)
+
+WatchList Items List
+![WatchList List] (https://github.com/SegiH/WatchList/blob/main/Web/screenshots/WatchListItems-Main.jpg)
+
+WatchList Item - View Item
+![WatchList Main] (https://github.com/SegiH/WatchList/blob/main/Web/screenshots/WatchListItems-ViewItem.jpg)
+
+WatchList Item - Edit Item
+![WatchList Edit] (https://github.com/SegiH/WatchList/blob/main/Web/screenshots/WatchListItems-EditItem.jpg)
+
+WatchList Item - Add Item
+![WatchList Add] (https://github.com/SegiH/WatchList/blob/main/Web/screenshots/WatchListItems-Add.jpg)
+
+IMDB Search
+![IMDB Search] (https://github.com/SegiH/WatchList/blob/main/Web/screenshots/IMDBSearch.jpg)
+
+WatchList Stats - Most Watched Sources
+![WatchList Stats - Most Watched Sources] (https://github.com/SegiH/WatchList/blob/main/Web/screenshots/Stats-MostWatchSources.jpg)
+
+WatchList Stats - Top Rated
+![WatchList Stats - Top Rated] (https://github.com/SegiH/WatchList/blob/main/Web/screenshots/Stats-TopRated.jpg)
+
+WatchList Stats - Top 10 Movies
+![WatchList Stats - Top 10 Movies] (https://github.com/SegiH/WatchList/blob/main/Web/screenshots/Stats-Top10Movies.jpg)
+
+WatchList Stats - Top 10 TV Shows
+![WatchList Stats - Top 10 TV Shows] (https://github.com/SegiH/WatchList/blob/main/Web/screenshots/Stats-Top10Shows.jpg)
+
+Admin - Manage Users
+![Admin - Manage Users] (https://github.com/SegiH/WatchList/blob/main/Web/screenshots/Admin-ManageUsers.jpg)
+
+Admin - Manage Sources
+![Admin - Manage Sources] (https://github.com/SegiH/WatchList/blob/main/Web/screenshots/Admin-ManageSources.jpg)
+
+Admin - Manage Types
+![Admin - Manage Types] (https://github.com/SegiH/WatchList/blob/main/Web/screenshots/Admin-ManageTypes.jpg)
+
+Settings - WatchList
+![Settings - WatchList] (https://github.com/SegiH/WatchList/blob/main/Web/screenshots/Settings-WatchList.jpg)
+
+Settings - WatchList Items
+![Settings - WatchList Items] (https://github.com/SegiH/WatchList/blob/main/Web/screenshots/Settings-WatchListItems.jpg)

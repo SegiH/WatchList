@@ -31,55 +31,55 @@ Once you have logged into WatchList, you should not have to enter the backend ur
 # Screenshot
 
 WatchList List
-![WatchList List] (https://github.com/SegiH/WatchList/blob/main/Web/screenshots/WatchList-Main.jpg)
+![WatchList List] (https://github.com/SegiH/WatchList/blob/main/Web/screenshots/WatchList-Main.jpg?raw=true)
 
 WatchList - View Item
-![WatchList Main] (https://github.com/SegiH/WatchList/blob/main/Web/screenshots/WatchList-ViewItem.jpg)
+![WatchList Main] (https://github.com/SegiH/WatchList/blob/main/Web/screenshots/WatchList-ViewItem.jpg?raw=true)
 
 WatchList - Edit Item
-![WatchList Edit] (https://github.com/SegiH/WatchList/blob/main/Web/screenshots/WatchListItems-EditItem.jpg)
+![WatchList Edit] (https://github.com/SegiH/WatchList/blob/main/Web/screenshots/WatchListItems-EditItem.jpg?raw=true)
 
 WatchList - Add Item
-![WatchList Add] (https://github.com/SegiH/WatchList/blob/main/Web/screenshots/WatchList-Add-Item.jpg)
+![WatchList Add] (https://github.com/SegiH/WatchList/blob/main/Web/screenshots/WatchList-Add-Item.jpg?raw=true)
 
 WatchList Items List
-![WatchList List] (https://github.com/SegiH/WatchList/blob/main/Web/screenshots/WatchListItems-Main.jpg)
+![WatchList List] (https://github.com/SegiH/WatchList/blob/main/Web/screenshots/WatchListItems-Main.jpg?raw=true)
 
 WatchList Item - View Item
-![WatchList Main] (https://github.com/SegiH/WatchList/blob/main/Web/screenshots/WatchListItems-ViewItem.jpg)
+![WatchList Main] (https://github.com/SegiH/WatchList/blob/main/Web/screenshots/WatchListItems-ViewItem.jpg?raw=true)
 
 WatchList Item - Edit Item
-![WatchList Edit] (https://github.com/SegiH/WatchList/blob/main/Web/screenshots/WatchListItems-EditItem.jpg)
+![WatchList Edit] (https://github.com/SegiH/WatchList/blob/main/Web/screenshots/WatchListItems-EditItem.jpg?raw=true)
 
 WatchList Item - Add Item
-![WatchList Add] (https://github.com/SegiH/WatchList/blob/main/Web/screenshots/WatchListItems-Add.jpg)
+![WatchList Add] (https://github.com/SegiH/WatchList/blob/main/Web/screenshots/WatchListItems-Add.jpg?raw=true)
 
 IMDB Search
-![IMDB Search] (https://github.com/SegiH/WatchList/blob/main/Web/screenshots/IMDBSearch.jpg)
+![IMDB Search] (https://github.com/SegiH/WatchList/blob/main/Web/screenshots/IMDBSearch.jpg?raw=true)
 
 WatchList Stats - Most Watched Sources
-![WatchList Stats - Most Watched Sources] (https://github.com/SegiH/WatchList/blob/main/Web/screenshots/Stats-MostWatchSources.jpg)
+![WatchList Stats - Most Watched Sources] (https://github.com/SegiH/WatchList/blob/main/Web/screenshots/Stats-MostWatchSources.jpg?raw=true)
 
 WatchList Stats - Top Rated
-![WatchList Stats - Top Rated] (https://github.com/SegiH/WatchList/blob/main/Web/screenshots/Stats-TopRated.jpg)
+![WatchList Stats - Top Rated] (https://github.com/SegiH/WatchList/blob/main/Web/screenshots/Stats-TopRated.jpg?raw=true)
 
 WatchList Stats - Top 10 Movies
-![WatchList Stats - Top 10 Movies] (https://github.com/SegiH/WatchList/blob/main/Web/screenshots/Stats-Top10Movies.jpg)
+![WatchList Stats - Top 10 Movies] (https://github.com/SegiH/WatchList/blob/main/Web/screenshots/Stats-Top10Movies.jpg?raw=true)
 
 WatchList Stats - Top 10 TV Shows
-![WatchList Stats - Top 10 TV Shows] (https://github.com/SegiH/WatchList/blob/main/Web/screenshots/Stats-Top10Shows.jpg)
+![WatchList Stats - Top 10 TV Shows] (https://github.com/SegiH/WatchList/blob/main/Web/screenshots/Stats-Top10Shows.jpg?raw=true)
 
 Admin - Manage Users
-![Admin - Manage Users] (https://github.com/SegiH/WatchList/blob/main/Web/screenshots/Admin-ManageUsers.jpg)
+![Admin - Manage Users] (https://github.com/SegiH/WatchList/blob/main/Web/screenshots/Admin-ManageUsers.jpg?raw=true)
 
 Admin - Manage Sources
-![Admin - Manage Sources] (https://github.com/SegiH/WatchList/blob/main/Web/screenshots/Admin-ManageSources.jpg)
+![Admin - Manage Sources] (https://github.com/SegiH/WatchList/blob/main/Web/screenshots/Admin-ManageSources.jpg?raw=true)
 
 Admin - Manage Types
-![Admin - Manage Types] (https://github.com/SegiH/WatchList/blob/main/Web/screenshots/Admin-ManageTypes.jpg)
+![Admin - Manage Types] (https://github.com/SegiH/WatchList/blob/main/Web/screenshots/Admin-ManageTypes.jpg?raw=true)
 
 Settings - WatchList
-![Settings - WatchList] (https://github.com/SegiH/WatchList/blob/main/Web/screenshots/Settings-WatchList.jpg)
+![Settings - WatchList] (https://github.com/SegiH/WatchList/blob/main/Web/screenshots/Settings-WatchList.jpg?raw=true)
 
 Settings - WatchList Items
-![Settings - WatchList Items] (https://github.com/SegiH/WatchList/blob/main/Web/screenshots/Settings-WatchListItems.jpg)
+![Settings - WatchList Items] (https://github.com/SegiH/WatchList/blob/main/Web/screenshots/Settings-WatchListItems.jpg?raw=true)

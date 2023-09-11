@@ -1,0 +1,12 @@
+{
+     "SQLServer": {
+          "username": "",
+          "password": "",
+          "host": "",
+          "database": ""
+     },
+     "CORS": ["http://localhost:8080"],
+     "Port": "8080",
+     "Secret": "yoursecretpassword",
+     "RapidAPIKey": ""
+}

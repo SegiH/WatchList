@@ -1,0 +1,21 @@
+version: '3.7'
+
+networks:
+    default:
+         name: NETWORKNAME
+         external: true
+
+services:
+    WatchListBackend:
+        container_name: WatchListBackend
+        stdin_open: true
+        tty: true
+        image: watchlistbackend:latest
+        hostname: WatchListBackend
+        ports:
+            - 8080:8080
+        volumes:
+            - /path/to/watchlistdb.sqlite:/watchlistdb.sqlite
+        networks:
+            - default
+        restart: always

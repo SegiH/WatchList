@@ -1,0 +1,18 @@
+// Add ability to manage sources and types in admin
+// when logging in, admin is not visible until you reload page
+// See if you can organize components
+// When adding/editing in admin, dont allow switching tabs until you hit save
+// Convert to TypeScript (Maybe)
+// In WatchListStats component,create interface for each stat and use instead of using any
+// Find all occurrences of ": any" and fix as much as possible
+// After saving WLI WL shows add and sort order of WLI is wrong
+// Auto add default watchlist types and sources 
+// Login has error: defaultRoute unknown props
+// Cannot rate on mobile without opening up display
+// App locks up for a long time when you open up dev console - May be related to WebSocket issue - see note
+// work on Dtl layout and optimize for mobile
+// see if you can remove all references to <BR />
+// When you reload on WLI, active route isn't set properly and causes settings to not show any options
+// add screenshots
+// ADD instructions on how to add cors and maybe read cors from config
+// There's a bug where dates get saved as yyyymmdd winstead of yyyy-mm-dd and I can only fix it in the database

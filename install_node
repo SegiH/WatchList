@@ -1,0 +1,32 @@
+#!/bin/bash
+
+if [ "$(id -u)" != "0" ]; then
+   echo "This script must be run as root" 1>&2
+   exit 1
+fi
+
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
+
+source ~/.profile
+
+chmod +x /config/.nvm/nvm.sh
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+ls -l /config/.nvm/nvm.sh 
+
+version=$(nvm install node | grep "Downloading")
+
+read -a version <<< $version
+
+version=${version[1]}
+
+sudo chmod 755  /config/.nvm/versions/node/${version}/bin/*
+
+sudo mv /config/.nvm/versions/node/${version}/bin/* /usr/local/bin
+
+sudo mv /config/.nvm/versions/node/${version}/lib/node_modules /usr/local/lib
+
+echo NPM Version `npm --version`
+echo Node Version `node --version`

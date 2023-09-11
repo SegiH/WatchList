@@ -1,7 +1,0 @@
-{
-  "name": "watchlist",
-  "integrations": {
-    "capacitor": {}
-  },
-  "type": "angular"
-}

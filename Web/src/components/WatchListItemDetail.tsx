@@ -166,7 +166,7 @@ const WatchListItemDetail = ({ backendURL, BrokenImageIcon, CancelIcon, isAdding
 
           setIsAdding(false);
 
-          closeDetail();
+          //closeDetail();
 
           const addNewWatchListPrompt = confirm("Do you want to add a new WatchList record now ?");
 

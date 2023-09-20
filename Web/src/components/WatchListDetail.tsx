@@ -272,7 +272,7 @@ const WatchListDetail = ({ backendURL, BrokenImageIcon, CancelIcon, isAdding, Ed
 
           setAddModified(true);
 
-          closeDetail();
+          //closeDetail();
         }
       })
       .catch((err: Error) => {

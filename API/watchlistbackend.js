@@ -1802,7 +1802,7 @@ app.put("/UpdateWatchList", async (req, res) => {
 
   if (archived !== null) {
     //updateStr += (updateStr == "" ? "" : ",") + "Archived=:Archived";
-    updateColumns['Season']=season;
+    updateColumns['Archived']=(archived === "true" ? 1 : 0);
   }
 
   if (rating !== null) {

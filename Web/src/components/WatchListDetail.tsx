@@ -509,11 +509,11 @@ const WatchListDetail = ({ backendURL, BrokenImageIcon, CancelIcon, isAdding, Ed
                                         })}
                                       </span>*/}
 
-                                      <span className="ratingAlt">
+                                      {watchListDtl.Rating !== null && watchListDtl.Rating !== "" &&
                                         <div>
                                           {watchListDtl.Rating}/{ratingMax}
                                         </div>
-                                      </span>
+                                      }
                                  </td>
                             </tr>
                         </tbody>

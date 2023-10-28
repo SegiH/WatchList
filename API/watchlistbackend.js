@@ -1353,7 +1353,7 @@ app.get("/Login", async (req, res) => {
 
           userSession = req.session;
 
-          res.send(["OK", results]);
+          res.send(["OK", results[0]]);
         })
         .catch(function (err) {
           console.dir(err);

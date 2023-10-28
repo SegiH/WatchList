@@ -50,7 +50,7 @@ const Login = ({  defaultRoute, setIsLoggedIn, setActiveRoute, setIsLoggedInChec
       .get(`${backendURL}/Login?wl_username=${username}&wl_password=${password}`)
       .then((res: typeof IUser) => {
         if (res.data[0] === "OK") {
-          loginSuccessfullActions(res.data[1][0][0]);
+          loginSuccessfullActions(res.data[1][0]);
         } else {
           alert("Login failed. Please check your username and password");
         }

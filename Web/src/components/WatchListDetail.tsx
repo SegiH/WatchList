@@ -499,7 +499,7 @@ const WatchListDetail = ({ backendURL, BrokenImageIcon, CancelIcon, isAdding, Ed
                                  </td>
 
                                  <td>
-                                      <span>
+                                      {/*<span>
                                         {Array.from(Array(ratingMax), (e: Event, index: number) => {
                                           return (
                                             <span className="favoriteIcon" key={index}>
@@ -507,7 +507,7 @@ const WatchListDetail = ({ backendURL, BrokenImageIcon, CancelIcon, isAdding, Ed
                                             </span>
                                           );
                                         })}
-                                      </span>
+                                      </span>*/}
 
                                       <span className="ratingAlt">
                                         <div>

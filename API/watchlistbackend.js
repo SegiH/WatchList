@@ -1353,7 +1353,7 @@ app.get("/Login", async (req, res) => {
 
           userSession = req.session;
 
-          res.send(["OK", results[0]]);
+          res.send(["OK", results]);
         })
         .catch(function (err) {
           console.dir(err);
@@ -1802,7 +1802,7 @@ app.put("/UpdateWatchList", async (req, res) => {
 
   if (archived !== null) {
     //updateStr += (updateStr == "" ? "" : ",") + "Archived=:Archived";
-    updateColumns['Archived']=(archived === "true" ? 1 : 0);
+    updateColumns['Archive']=archived;
   }
 
   if (rating !== null) {

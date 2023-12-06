@@ -339,6 +339,7 @@ const WatchListDetail = ({ backendURL, BrokenImageIcon, CancelIcon, isAdding, Ed
         const newWatchListDtl = Object.assign({}, watchListDtl);
         newWatchListDtl["WatchListItemID"] = watchListItem[0].WatchListItemID;
         newWatchListDtl["WatchListItem"] = watchListItem[0];
+        newWatchListDtl[`WatchListItemIDIsModified`] = true;
         setWatchListDtl(newWatchListDtl);
       }
     }
@@ -371,7 +372,7 @@ const WatchListDetail = ({ backendURL, BrokenImageIcon, CancelIcon, isAdding, Ed
     } else if (isAdding) {
       const newAddWatchListDtl : typeof IWatchList = {};
       newAddWatchListDtl.WatchListItemID = newWatchListItemDtlID !== null ? newWatchListItemDtlID : "-1";
-      newAddWatchListDtl.StartDate = "";
+      newAddWatchListDtl.StartDate = new Date().toISOString().slice(0, 10);
       newAddWatchListDtl.EndDate = "";
       newAddWatchListDtl.WatchListSourceID = "";
       newAddWatchListDtl.Season = "";
@@ -423,7 +424,16 @@ const WatchListDetail = ({ backendURL, BrokenImageIcon, CancelIcon, isAdding, Ed
                             <tr>
                               <td>
                                    <div className="textLabel">
-                                        {watchListDtl.WatchListItem.WatchListItemName}
+                                        {typeof watchListDtl.WatchListItem.IMDB_URL !== "undefined" &&
+                                             <a href={watchListDtl.WatchListItem.IMDB_URL} target='_blank'>{watchListDtl.WatchListItem.WatchListItemName}</a>
+                                        }
+
+                                        {typeof watchListDtl.WatchListItem.IMDB_URL === "undefined" &&
+                                             <div>
+                                                  {watchListDtl.WatchListItem.WatchListItemName}
+                                             </div>
+                                        }
+
                                         {watchListDtl.Archived === true ? " (A)" : ""}
                                    </div>
                               </td>
@@ -499,7 +509,7 @@ const WatchListDetail = ({ backendURL, BrokenImageIcon, CancelIcon, isAdding, Ed
                                  </td>
 
                                  <td>
-                                      {/*<span>
+                                      <span>
                                         {Array.from(Array(ratingMax), (e: Event, index: number) => {
                                           return (
                                             <span className="favoriteIcon" key={index}>
@@ -507,13 +517,13 @@ const WatchListDetail = ({ backendURL, BrokenImageIcon, CancelIcon, isAdding, Ed
                                             </span>
                                           );
                                         })}
-                                      </span>*/}
+                                      </span>
 
-                                      {watchListDtl.Rating !== null && watchListDtl.Rating !== "" &&
+                                      <span className="ratingAlt">
                                         <div>
                                           {watchListDtl.Rating}/{ratingMax}
                                         </div>
-                                      }
+                                      </span>
                                  </td>
                             </tr>
                         </tbody>

@@ -33,7 +33,7 @@ If you do not want to create a RapidAPI account, you don't have to but when you 
 1. Go to the API directory
 1. Edit config\default.json and fill in the following values:
    a. If you plan on using SQL Server as the database, fill in the "SQLServer" section or leave it blank otherwise
-   b. CORS: Enter the address where you will host the WatchList Web app like this: `["http://localhost:8080","https://watchlist.mysite.com"]` where you add each URL with double quotes around it and separated by a comma.
+   b. CORS: **THIS IS VERY IMPORTANT. YOU WILL NOT BE ABLE TO LOG IN IF THIS IS NOT SET CORRECTLY** Enter the address where you will host the WatchList Web app like this: `["http://localhost:8080","https://watchlist.mysite.com"]` where you add each URL with double quotes around it and separated by a comma.
    c. Port: If you want to run the backend on a different port, change the default port here.
    d. Secret: Enter a random string of letters and numbers. This can be any random string.
    e. RapidAPIKey: Your RapidAPIKey if you have one. Leave blank otherwise

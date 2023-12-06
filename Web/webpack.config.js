@@ -8,7 +8,7 @@ module.exports = {
   mode: "development",
   target: 'web',
   resolve: {
-    extensions: ['.tsx','.ts', '.js','.css','.png'],
+    extensions: ['.tsx','.ts', '.js','.css','.png','.ico'],
   },
   output: {
     filename: "bundle.js",
@@ -46,6 +46,7 @@ module.exports = {
   },
   devServer: {
     historyApiFallback: true,
+    allowedHosts: "all"
   },
   plugins:[
      new Dotenv(),

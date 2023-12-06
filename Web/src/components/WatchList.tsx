@@ -175,7 +175,16 @@ const WatchList = ({
                     </a>
 
                     <div className="show-title">
-                      {currentWatchList.WatchListItem.WatchListItemName}
+                      {typeof currentWatchList.WatchListItem.IMDB_URL !== "undefined" &&
+                           <a href={currentWatchList.WatchListItem.IMDB_URL} target='_blank'>{currentWatchList.WatchListItem.WatchListItemName}</a>
+                      }
+
+                      {typeof currentWatchList.WatchListItem.IMDB_URL === "undefined" &&
+                           <div>
+                                {currentWatchList.WatchListItem.WatchListItemName}
+                           </div>
+                      }
+
                       {currentWatchList.Archived === true ? " (A)" : ""}
                     </div>
 
@@ -187,12 +196,16 @@ const WatchList = ({
                     </div>
 
                     <div>
-                      {currentWatchList.WatchListItem.WatchListType.WatchListTypeName} watched on {currentWatchList.WatchListSource.WatchListSourceName}
+                      {currentWatchList.WatchListItem.WatchListType.WatchListTypeName}
+                    </div>
+
+                    <div>
+                      {currentWatchList.WatchListSource.WatchListSourceName}
                     </div>
 
                     {currentWatchList.Rating !== null && (
                       <div>
-                        Rated {currentWatchList.Rating}/{ratingMax}
+                        {currentWatchList.Rating}/{ratingMax}
                       </div>
                     )}
                   </li>

@@ -156,20 +156,30 @@ const WatchListItems = ({ AddIcon, archivedVisible, backendURL, BrokenImageIcon,
                     </a>
 
                     <div>
-                      {currentWatchListItem.WatchListItemName}
+                      {typeof currentWatchListItem.IMDB_URL !== "undefined" &&
+                           <a href={currentWatchListItem.IMDB_URL} target='_blank'>{currentWatchListItem.WatchListItemName}</a>
+                      }
+
+                      {typeof currentWatchListItem.IMDB_URL === "undefined" &&
+                           <div>
+                                {currentWatchListItem.WatchListItemName}
+                           </div>
+                      }
+
+                      
                       {currentWatchListItem.Archived === true ? " (A)" : ""}
                     </div>
                     <span>
                       <div>{currentWatchListItem.WatchListType.WatchListTypeName}</div>
                     </span>
 
-                    {currentWatchListItem.IMDB_URL != null && (
+                    {/*{currentWatchListItem.IMDB_URL != null && (
                       <span>
                         <a href={currentWatchListItem.IMDB_URL} target="_blank" title={currentWatchListItem.WatchListItemName}>
                           IMDB
                         </a>
                       </span>
-                    )}
+                    )}*/}
                   </li>
                 )}
               </React.Fragment>

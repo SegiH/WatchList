@@ -396,8 +396,122 @@ const WatchListDetail = ({ backendURL, BrokenImageIcon, CancelIcon, isAdding, Ed
     }
   }, [watchListItems]);
 
-  return (
-    <>
+     return (
+          <>
+               {/*<div className="modal">
+                    <div className={`modal-content ${watchListDtlID != null ? "fade-in" : "fade-out"}`}>
+                         <div className="container">
+                              <div className="cards">
+                                   <div className="narrow card">
+                                        {!isAdding && !isEditing &&
+                                             <span onClick={startEditing}>
+                                                  <span className="clickable editsaveCancelButton">{EditIcon}</span>
+                                             </span>
+                                        }
+
+                                        {(isAdding || isEditing) &&
+                                             <span className="clickable editsaveCancelButton saveIcon" onClick={saveClickHandler}>
+                                                  {SaveIcon}
+                                             </span>
+                                        }
+                                   </div>
+
+                                   <div className="narrow card"></div>
+                                   
+                                   <div className="narrow card">
+                                        {!isAdding && !isEditing &&
+                                            <span className="clickable closeButton" onClick={closeDetail}>
+                                                  X
+                                            </span>
+                                        }
+
+                                        {(isAdding || isEditing) &&
+                                            <span className="clickable editsaveCancelButton iconCancel" onClick={cancelClickHandler}>
+                                                  {CancelIcon}
+                                            </span>
+                                        }
+                                   </div>
+                              </div>
+
+                              <div className="cards">
+                                   <div className="narrow card">
+                                        <div>
+                                            {typeof watchListDtl?.WatchListItem.IMDB_URL !== "undefined" &&
+                                                  <a className="text-label" href={watchListDtl?.WatchListItem.IMDB_URL} target='_blank'>{watchListDtl?.WatchListItem.WatchListItemName}</a>
+                                            }
+
+                                            {typeof watchListDtl?.WatchListItem.IMDB_URL === "undefined" &&
+                                                  <div>
+                                                      {watchListDtl?.WatchListItem.WatchListItemName}
+                                                  </div>
+                                            }
+
+                                            {watchListDtl?.Archived === true ? " (A)" : ""}
+                                        </div>
+                                   </div>
+
+                                   <div className="narrow card">
+                                        <span className="textLabel">Start Date:&nbsp;</span>
+                                   </div>
+
+                                   <div className="narrow card">
+                                        <span>{watchListDtl?.StartDate && watchListDtl?.StartDate}</span>
+                                   </div>
+
+                                   <div className="narrow card"></div>
+
+                                   <div className="narrow card">
+                                        <span className="textLabel">End Date:&nbsp;</span>
+                                   </div>
+
+                                   <div className="narrow card">
+                                        <span>{watchListDtl?.EndDate && watchListDtl?.EndDate}</span>
+                                   </div>
+
+                                   <div className="narrow card">
+                                        {watchListDtl?.WatchListItem.IMDB_Poster !== null && watchListDtl?.IMDB_Poster_Error !== true && <img className="poster-detail" src={watchListDtl?.WatchListItem.IMDB_Poster} onError={() => showDefaultSrc()} />}
+
+                                        {(watchListDtl?.WatchListItem.IMDB_Poster === null || watchListDtl?.IMDB_Poster_Error === true) && <>{BrokenImageIcon}</>}
+                                   </div>
+
+                                   <div className="narrow card">
+                                        <div className="textLabel">Source:</div>
+                                   </div>
+
+                                   <div className="narrow card">
+                                        <div>{watchListDtl?.WatchListSource.WatchListSourceName}</div>
+                                   </div>
+
+                                   {watchListDtl?.WatchListItem.WatchListType.WatchListTypeID === 2 &&
+                                        <>
+                                             <div className="narrow card"></div>
+
+                                             <div className="narrow card">
+                                                  <div className="textLabel">Season:</div>
+                                             </div>
+
+                                             <div className="narrow card">
+                                                  <div>{watchListDtl?.Season}</div>
+                                             </div>
+                                        </>
+                                   }
+
+                                   <div className="narrow card"></div>
+
+                                   <div className="narrow card">
+                                        <div className="textLabel">Notes:</div>
+                                   </div>
+
+                                   <div className="narrow card">
+                                        <div>{watchListDtl?.Notes}</div>
+                                   </div>
+                              </div>
+                         </div>
+                    </div>
+               </div>
+          </>
+      )}*/}
+
       {(isAdding || isEditing || (!isEditing && watchListDtlLoadingComplete)) && (
         <div className="modal">
           <div className={`modal-content ${watchListDtlID != null ? "fade-in" : "fade-out"}`}>
@@ -453,7 +567,7 @@ const WatchListDetail = ({ backendURL, BrokenImageIcon, CancelIcon, isAdding, Ed
                         <tbody>
                             <tr>
                                  <td>
-                                      <span className="textLabel">Start Date:&nbsp;</span>                                      
+                                      <span className="textLabel">Start Date:&nbsp;</span>
                                  </td>
                                  
                                  <td>
@@ -834,7 +948,7 @@ const WatchListDetail = ({ backendURL, BrokenImageIcon, CancelIcon, isAdding, Ed
         </div>
       )}
     </>
-  );
+    );
 };
 
 WatchListDetail.propTypes = exact({

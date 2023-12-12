@@ -70,8 +70,10 @@ input:checked + .slider:before {
 }
 
 .closeButton {
+  /*new display: flex;*/
   float: right;
-  transform: scale(1.8);
+  /*new transform: scale(2.4) !important;*/
+  transform: scale(1.8) !important;
   position: relative;
   top: -10px;
   font-weight: bolder;
@@ -95,6 +97,7 @@ input:checked + .slider:before {
   transform: scale(1.6);
   margin-bottom: 15px;
   position: relative;
+  /*top: -33px;*/
   top: -18px;
 }
 
@@ -124,6 +127,7 @@ input:checked + .slider:before {
   position: relative;
   display: inline-block;
   top: -10px;
+  /*top: -10px;*/
 }
 
 .brokenImage, .image-crop svg, .editSaveCancelPanel .brokenImage {
@@ -230,6 +234,8 @@ input:checked + .slider:before {
 
 .poster-detail {
   max-height: 175px;
+  /*position: relative;
+  top: 115px;*/
 }
 
 .ratingAlt {
@@ -247,6 +253,7 @@ input:checked + .slider:before {
 
 .saveIcon {
   position: relative;
+  /*new top: -25px;*/
   top: 5px;
 }
 
@@ -459,4 +466,36 @@ input:checked + .slider:before {
 
 .smallInputField {
   max-width: 150px;
+}
+
+
+
+
+
+.container {
+  /*display: flex;*/
+  justify-content: center;
+}
+
+.cards {
+  display: grid;
+  width: 600px;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+}
+
+/* Style the cards */
+.card {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  height: 80px;
+  width: 120px;
+}
+
+.narrow {
+     height: 30px;
+}
+
+.text-label {
+  font-family: "Brush Script MT", cursive;
 }

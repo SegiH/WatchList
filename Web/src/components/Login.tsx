@@ -49,7 +49,6 @@ const Login = ({  defaultRoute, setIsLoggedIn, setActiveRoute, setIsLoggedInChec
     axios
       .get(`${backendURL}/Login?wl_username=${username}&wl_password=${password}`)
       .then((res: typeof IUser) => {
-        debugger
         if (res.data[0] === "OK") {
           loginSuccessfullActions(res.data[1][0][0]);
         } else {

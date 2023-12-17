@@ -32,13 +32,13 @@ Once you have logged into WatchList, you should not have to enter the backend ur
 
 # Screenshots
 
-![WatchList List] (https://github.com/SegiH/WatchList/blob/main/Web/screenshots/WatchList-Main.jpg?raw=true)
+![WatchList List](https://github.com/SegiH/WatchList/blob/main/Web/screenshots/WatchList-Main.jpg?raw=true)
 
-![WatchList Main] (https://github.com/SegiH/WatchList/blob/main/Web/screenshots/WatchList-ViewItem.jpg?raw=true)
+![WatchList Main](https://github.com/SegiH/WatchList/blob/main/Web/screenshots/WatchList-ViewItem.jpg?raw=true)
 
-![WatchList Edit] (https://github.com/SegiH/WatchList/blob/main/Web/screenshots/WatchListItems-EditItem.jpg?raw=true)
+![WatchList Edit](https://github.com/SegiH/WatchList/blob/main/Web/screenshots/WatchListItems-EditItem.jpg?raw=true)
 
-![WatchList Add] (https://github.com/SegiH/WatchList/blob/main/Web/screenshots/WatchList-Add-Item.jpg?raw=true)
+![WatchList Add](https://github.com/SegiH/WatchList/blob/main/Web/screenshots/WatchList-Add-Item.jpg?raw=true)
 
 ![WatchList List](https://github.com/SegiH/WatchList/blob/main/Web/screenshots/WatchListItems-Main.jpg?raw=true)
 

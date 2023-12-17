@@ -71,7 +71,7 @@ If you do not want to create a RapidAPI account, you don't have to but when you 
    b. bundle.js
    c. favicon.ico
    d. index.html
-   e. logo192.png
+   e. maskable.png
    f. manifest.json
    g. service-worker.js
    

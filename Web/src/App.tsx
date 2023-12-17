@@ -12,7 +12,6 @@
 //
 // sluggish overall in dev and console locks up when you open it for 20 - 30 seconds
 // SQLite is not encrypted. Look into sqlite encryption options
-// make app run as standalone exe or web
 // Create netflix importer
 const axios = require("axios");
 const useEffect = require("react").useEffect;

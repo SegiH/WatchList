@@ -209,7 +209,9 @@ const Settings = ({ activeRoute, archivedVisible, autoAdd, backendURL, isLoggedI
           )}
         </ul>
 
-        <div className="small-text">Connected to {backendURL}</div>
+        {typeof backendURL !== "undefined" &&
+             <div className="small-text">Connected to {backendURL}</div>
+        }
       </div>
     </div>
   );

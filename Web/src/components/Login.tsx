@@ -20,6 +20,15 @@ const Login = ({  defaultRoute, setIsLoggedIn, setActiveRoute, setIsLoggedInChec
   const [password, setPassword] = useState("");
   const [username, setUsername] = useState("");
 
+  const backendURLChangeHandler= (newBackendURL: string) => {
+    debugger
+         if (newBackendURL.endsWith("/")) {
+              newBackendURL = newBackendURL.slice(0,-1);
+         }
+
+         setBackendURL(newBackendURL);
+  }
+
   const handleKeyUp = (event: React.KeyboardEvent<HTMLDivElement>) => {
     if (event.key === 'Enter') {
       // Submit when enter is pressed
@@ -124,7 +133,7 @@ const Login = ({  defaultRoute, setIsLoggedIn, setActiveRoute, setIsLoggedInChec
             <input type="text" autoFocus value={username} placeholder="username" required onChange={(event) => setUsername(event.target.value)} onKeyUp={handleKeyUp} />
             <input type="password" value={password} placeholder="password" required onChange={(event) => setPassword(event.target.value)} onKeyUp={handleKeyUp} />
 
-            <input type="text" value={backendURL} placeholder="Backend URL" required onChange={(event) => setBackendURL(event.target.value)} onKeyUp={handleKeyUp}></input>
+            <input type="text" value={backendURL} placeholder="Backend URL" required onChange={(event) => backendURLChangeHandler(event.target.value)} onKeyUp={handleKeyUp}></input>
 
             <button type="button" onClick={login}>
               Login

@@ -65,7 +65,17 @@ If you do not want to create a RapidAPI account, you don't have to but when you 
 1. cd to the Web directory
 1. Run `npm install`
 1. Run `npm run build`
-1. Open index.html. If you see `<script src="/dist/bundle.js">`, change it to `<script src="./bundle.js">`. 
+1. cd dist
+1. You should have the following files/folders in the dist folder. If any of these files/folders are missing copy them from Web/public
+   a. assets
+   b. bundle.js
+   c. favicon.ico
+   d. index.html
+   e. logo192.png
+   f. manifest.json
+   g. service-worker.js
+   
+1. Open index.html. If you see `<script src="/dist/bundle.js">`, change it to `<script src="./bundle.js">`.
 1. Copy the contents of the dist to your web server
 
 ## Build WatchList Desktop app using Electron

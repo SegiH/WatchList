@@ -10,7 +10,7 @@
 //
 // Known Issues/Future features
 //
-// You cannot log in when passing login params through req.headers when deployed (I think!). only works with local ip. headers are deleted so you can't log in
+// sluggish overall in dev and console locks up when you open it for 20 - 30 seconds
 // SQLite is not encrypted. Look into sqlite encryption options
 // make app run as standalone exe or web
 // Create netflix importer
@@ -35,6 +35,8 @@ import WatchList from "./components/WatchList";
 import WatchListItems from "./components/WatchListItems";
 import WatchListStats from "./components/WatchListStats";
 import TabParent from "./components/TabsComponent/TabParent";
+
+import "./App.css";
 
 const ratingMax = 5;
 
@@ -579,6 +581,7 @@ const App = () => {
           activeRoute={activeRoute}
           archivedVisible={archivedVisible}
           autoAdd={autoAdd}
+          backendURL={userData.BackendURL}
           isLoggedIn={isLoggedIn}
           LogOutIconComponent={LogOutIconComponent}
           searchTerm={searchTerm}

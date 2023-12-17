@@ -50,6 +50,7 @@ input:checked + .slider:before {
 
 #wl_autocomplete {
   margin-bottom: 5px;
+  min-width: 300px;
 }
 
 .addSearchResultIcon {
@@ -64,19 +65,27 @@ input:checked + .slider:before {
   z-index: 999;
 }
 
+.cancelIcon {
+  padding-left: 85%;
+  display: flex;
+  float: right;
+  margin-top: 25px;
+  transform: scale(1.8) !important;
+}
+
 .clickable {
   cursor: pointer !important;
   pointer-events: auto !important;
 }
 
 .closeButton {
-  /*new display: flex;*/
+  display: flex;
   float: right;
-  /*new transform: scale(2.4) !important;*/
-  transform: scale(1.8) !important;
+  transform: scale(2.4) !important;
   position: relative;
-  top: -10px;
-  font-weight: bolder;
+  top: -8px;
+  margin-left: auto; 
+  margin-right: 0;
 }
 
 .column {
@@ -97,8 +106,7 @@ input:checked + .slider:before {
   transform: scale(1.6);
   margin-bottom: 15px;
   position: relative;
-  /*top: -33px;*/
-  top: -18px;
+  top: -10px;
 }
 
 .editSaveCancelPanel {
@@ -121,14 +129,6 @@ input:checked + .slider:before {
   transform: scale(1.8) !important;
 }
 
-.iconCancel {
-  float: right;
-  margin-left: 20px;
-  position: relative;
-  display: inline-block;
-  top: -10px;
-  /*top: -10px;*/
-}
 
 .brokenImage, .image-crop svg, .editSaveCancelPanel .brokenImage {
   width: 128px !important;
@@ -226,6 +226,7 @@ input:checked + .slider:before {
   margin: auto;
   padding: 20px;
   width: fit-content;
+  /*max-height: 300px;*/
 }
 
 .narrowWidth {
@@ -233,9 +234,10 @@ input:checked + .slider:before {
 }
 
 .poster-detail {
-  max-height: 175px;
-  /*position: relative;
-  top: 115px;*/
+  max-height: 215px;
+  position: relative;
+  top: 70px;
+  
 }
 
 .ratingAlt {
@@ -253,8 +255,7 @@ input:checked + .slider:before {
 
 .saveIcon {
   position: relative;
-  /*new top: -25px;*/
-  top: 5px;
+  top: -25px;
 }
 
 .saveCancelIcons {
@@ -488,8 +489,9 @@ input:checked + .slider:before {
   display: flex;
   justify-content: flex-start;
   align-items: center;
-  height: 80px;
-  width: 120px;
+  height: 40px;
+  width: 100px;
+  margin-bottom:10px;
 }
 
 .narrow {
@@ -498,4 +500,20 @@ input:checked + .slider:before {
 
 .text-label {
   font-family: "Brush Script MT", cursive;
+}
+
+.labelWidth {
+  width: fit-content;
+  position: relative;
+  top: -5px;
+  z-index: 999;
+}
+
+.margin-bottom {
+  margin-bottom: -15px;
+}
+
+.small-text {
+  font-size: small;
+  margin-top: 15%;
 }

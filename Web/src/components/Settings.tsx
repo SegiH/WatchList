@@ -7,9 +7,9 @@ const MuiIcon = require("@mui/icons-material").MuiIcon;
 const PropTypes = require("prop-types");
 const React = require("react");
 
-const Settings = ({ activeRoute, archivedVisible, autoAdd, isLoggedIn, LogOutIconComponent, searchTerm, setSearchTerm, setArchivedVisible, setAutoAdd, setSettingsVisible, setShowMissingArtwork, setSourceFilter, setStillWatching, setTypeFilter, setWatchListSortColumn, setWatchListSortDirection, showMissingArtwork, signOut, stillWatching, sourceFilter, typeFilter, watchListItemsSortColumns, watchListSortColumn, watchListSortColumns, watchListSortDirection, watchListSources, watchListTypes }
+const Settings = ({ activeRoute, archivedVisible, autoAdd, backendURL, isLoggedIn, LogOutIconComponent, searchTerm, setSearchTerm, setArchivedVisible, setAutoAdd, setSettingsVisible, setShowMissingArtwork, setSourceFilter, setStillWatching, setTypeFilter, setWatchListSortColumn, setWatchListSortDirection, showMissingArtwork, signOut, stillWatching, sourceFilter, typeFilter, watchListItemsSortColumns, watchListSortColumn, watchListSortColumns, watchListSortDirection, watchListSources, watchListTypes }
   :
-  { activeRoute: string, archivedVisible: boolean, autoAdd: boolean, isLoggedIn: boolean, LogOutIconComponent: typeof MuiIcon, searchTerm: string, setSearchTerm: (arg0: string) => void, setArchivedVisible: (arg0: boolean) => void, setAutoAdd: (arg0: boolean) => void, setSettingsVisible: (arg0: boolean) => void, setShowMissingArtwork: (arg0: boolean) => void, setSourceFilter: (arg0: string) => void, setStillWatching: (arg0: boolean) => void, setTypeFilter: (arg0: string) => void, setWatchListSortColumn: (arg0: string) => void, setWatchListSortDirection: (arg0: string) => void, showMissingArtwork: boolean, signOut: typeof MuiIcon, stillWatching: boolean, sourceFilter: string, typeFilter: string, watchListItemsSortColumns: typeof IWatchListItemsSortColumn, watchListSortColumn: string, watchListSortColumns: typeof IWatchListSortColumn, watchListSortDirection: string, watchListSources: typeof IWatchListSource, watchListTypes: typeof IWatchListType }
+  { activeRoute: string, archivedVisible: boolean, autoAdd: boolean, backendURL: string, isLoggedIn: boolean, LogOutIconComponent: typeof MuiIcon, searchTerm: string, setSearchTerm: (arg0: string) => void, setArchivedVisible: (arg0: boolean) => void, setAutoAdd: (arg0: boolean) => void, setSettingsVisible: (arg0: boolean) => void, setShowMissingArtwork: (arg0: boolean) => void, setSourceFilter: (arg0: string) => void, setStillWatching: (arg0: boolean) => void, setTypeFilter: (arg0: string) => void, setWatchListSortColumn: (arg0: string) => void, setWatchListSortDirection: (arg0: string) => void, showMissingArtwork: boolean, signOut: typeof MuiIcon, stillWatching: boolean, sourceFilter: string, typeFilter: string, watchListItemsSortColumns: typeof IWatchListItemsSortColumn, watchListSortColumn: string, watchListSortColumns: typeof IWatchListSortColumn, watchListSortDirection: string, watchListSources: typeof IWatchListSource, watchListTypes: typeof IWatchListType }
   ) => {
   const closeDetail = async () => {
     setSettingsVisible(false);
@@ -208,6 +208,8 @@ const Settings = ({ activeRoute, archivedVisible, autoAdd, isLoggedIn, LogOutIco
             </li>
           )}
         </ul>
+
+        <div className="small-text">Connected to {backendURL}</div>
       </div>
     </div>
   );

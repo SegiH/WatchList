@@ -649,7 +649,7 @@ const WatchListDetail = ({ backendURL, BrokenImageIcon, CancelIcon, isAdding, Ed
                                         <div className="textLabel">Notes:</div>
                                    </div>
 
-                                   <div className="labelWidth narrow card">
+                                   <div className="narrow card">
                                         {!isAdding && !isEditing &&
                                              <div>{watchListDtl?.Notes}</div>
                                         }

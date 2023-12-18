@@ -59,7 +59,7 @@ const WatchListStats = ({ backendURL, isLoggedIn, isLoggedInCheckComplete, ratin
               <tr>
                 <td>
                   <div className="testLabel">
-                    {/* This monstrosity accounts for items where StartDate is null which should never be and factors that int othe total count */}
+                    {/* This monstrosity watchListSourceDtlStats.filter accounts for items where StartDate is null which should never be and factors that into the total count */}
                     {currentWatchListSourceStat.WatchListSourceName} watched {
                     currentWatchListSourceStat.SourceCount
                     -

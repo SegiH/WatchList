@@ -3,6 +3,7 @@
         "noImplicitAny": true,
         "target": "ES5",
         "module": "ES2015",
-        "jsx": "react"
+        "jsx": "react",
+        "moduleResolution":"node"
     }
 }

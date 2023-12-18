@@ -40,7 +40,8 @@
     "prop-types-exact": "^1.2.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-router-dom": "^6.8.1"
+    "react-router-dom": "^6.8.1",
+    "webpack-bundle-analyzer": "^4.10.1"
   },
   "devDependencies": {
     "@babel/core": "^7.20.12",

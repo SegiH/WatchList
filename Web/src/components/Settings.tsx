@@ -1,9 +1,10 @@
 const exact = require ("prop-types-exact");
+const MuiIcon = require("@mui/icons-material").MuiIcon;
+
 const IWatchListSortColumn = require("../interfaces/IWatchListSortColumn");
 const IWatchListItemsSortColumn = require("../interfaces/IWatchListItemsSortColumn");
 const IWatchListSource = require("../interfaces/IWatchListSource");
 const IWatchListType = require("../interfaces/IWatchListType");
-const MuiIcon = require("@mui/icons-material").MuiIcon;
 const PropTypes = require("prop-types");
 const React = require("react");
 
@@ -22,6 +23,7 @@ const Settings = ({ activeRoute, archivedVisible, autoAdd, backendURL, isLoggedI
         <span className="clickable closeButton" onClick={closeDetail}>
           X
         </span>
+
         <ul className="menuContent">
           {(activeRoute === "WatchList" || activeRoute === "WatchListItems") && (
             <li>

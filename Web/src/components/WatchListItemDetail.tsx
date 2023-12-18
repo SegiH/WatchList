@@ -133,7 +133,7 @@ const WatchListItemDetail = ({ backendURL, BrokenImageIcon, CancelIcon, isAdding
           if (queryURL != "") {
                queryURL = `${backendURL}/UpdateWatchListItem?WatchListItemID=${watchListItemDtl.WatchListItemID}${queryURL}`;
 
-               axios.put(queryURL).then((res: typeof WatchListItem) => {
+               axios.put(queryURL).then((res: typeof IWatchListItem) => {
                     if (res.data[0] === "ERROR") {
                          alert(`The error ${res.data[1]} occurred while  updating the item detail`);
                     } else {

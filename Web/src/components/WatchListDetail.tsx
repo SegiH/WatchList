@@ -1,6 +1,7 @@
 const Autocomplete = require("@mui/material/Autocomplete").default;
 const axios = require("axios");
 const exact = require ("prop-types-exact");
+const MuiIcon = require("@mui/icons-material").MuiIcon;
 const IWatchList = require("../interfaces/IWatchList");
 const IWatchListItem = require("../interfaces/IWatchListItem");
 const IWatchListSource = require("../interfaces/IWatchListSource");
@@ -368,7 +369,18 @@ const WatchListDetail = ({ backendURL, BrokenImageIcon, CancelIcon, isAdding, Ed
           } else if (isAdding) {
                const newAddWatchListDtl : typeof IWatchList = {};
                newAddWatchListDtl.WatchListItemID = newWatchListItemDtlID !== null ? newWatchListItemDtlID : "-1";
-               newAddWatchListDtl.StartDate = new Date().toLocaleString().slice(0, 10);
+
+               const currentDate = new Date().toLocaleDateString();
+               const dateSpl = currentDate.split("/");
+
+               if (navigator.languages.includes("en-US")) { // Date is in format mm/dd/yyyy
+                    newAddWatchListDtl.StartDate = `${dateSpl[2]}-${dateSpl[0]}-${dateSpl[1]}`;
+               } else { // Date is in format dd/mm/yyyy
+                    try {
+                         newAddWatchListDtl.StartDate = `${dateSpl[2]}-${dateSpl[1]}-${dateSpl[0]}`;
+                    } catch(e) {}
+               }
+
                newAddWatchListDtl.EndDate = "";
                newAddWatchListDtl.WatchListSourceID = "-1";
                newAddWatchListDtl.Season = "";
@@ -387,8 +399,6 @@ const WatchListDetail = ({ backendURL, BrokenImageIcon, CancelIcon, isAdding, Ed
                });
 
                const namesOnly = namesOnlyItems.sort();
-
-               setAutoCompleteNames(namesOnly);
           }
      }, [watchListItems]);
 

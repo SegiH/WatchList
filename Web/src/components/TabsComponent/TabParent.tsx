@@ -11,9 +11,9 @@ const TabParent = ({ activeRoute, admin, defaultRoute, isIMDBSearchEnabled, isLo
   ) => {
   return (
     <>
-      <HashRouter>
-        <Tabs activeRoute={activeRoute} admin={admin} defaultRoute={defaultRoute} isLoggedIn={isLoggedIn} isLoggedInCheckComplete={isLoggedInCheckComplete} isIMDBSearchEnabled={isIMDBSearchEnabled} routeList={routeList} setActiveRoute={setActiveRoute} setActiveRouteDisplayName={setActiveRouteDisplayName} />
-      </HashRouter>
+         <HashRouter>
+              <Tabs activeRoute={activeRoute} admin={admin} defaultRoute={defaultRoute} isLoggedIn={isLoggedIn} isLoggedInCheckComplete={isLoggedInCheckComplete} isIMDBSearchEnabled={isIMDBSearchEnabled} routeList={routeList} setActiveRoute={setActiveRoute} setActiveRouteDisplayName={setActiveRouteDisplayName} />
+         </HashRouter>
     </>
   );
 };

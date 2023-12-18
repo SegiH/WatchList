@@ -1,6 +1,0 @@
-vim
-node
-nodemon
-google-chrome
-browserpreview extension for VS Code
-iputils-ping

@@ -261,11 +261,11 @@ const WatchListItemDetail = ({ backendURL, BrokenImageIcon, CancelIcon, isAdding
                });
           } else if (isAdding && watchListItemDtlID === -1) {
                const newAddWatchListItemDtl : typeof IWatchListItem = {};
-               /*newAddWatchListItemDtl.WatchListItemName = "";
+               newAddWatchListItemDtl.WatchListItemName = "";
                newAddWatchListItemDtl.WatchListTypeID = "-1";
                newAddWatchListItemDtl.IMDB_URL = "";
                newAddWatchListItemDtl.IMDB_Poster = "";
-               newAddWatchListItemDtl.ItemNotes = "";*/
+               newAddWatchListItemDtl.ItemNotes = "";
 
                setAddWatchListItemDtl(newAddWatchListItemDtl);
           }
@@ -285,10 +285,44 @@ const WatchListItemDetail = ({ backendURL, BrokenImageIcon, CancelIcon, isAdding
                                         }
 
                                         {(isAdding || isEditing) &&
-                                             <span className="clickable editsaveCancelButton" onClick={saveClickHandler}>
+                                             <span className="clickable editsaveCancelButton" onClick={isAdding ? saveNewClickHandler : saveClickHandler}>
                                                   {SaveIcon}
                                              </span>
                                         }
+                                   </div>
+
+                                   <div className="narrow card"></div>
+                                   
+                                   <div className="narrow card">
+                                        {!isAdding && !isEditing &&
+                                             <span className="clickable closeButton" onClick={closeDetail}>
+                                                  X
+                                             </span>
+                                        }
+
+                                        {(isAdding || isEditing) &&
+                                             <span className="clickable editsaveCancelButton cancelIcon" onClick={isAdding ? closeDetail : cancelClickHandler}>
+                                                   {CancelIcon}
+                                             </span>
+                                        }
+                                   </div>
+                         
+                                   <div className="narrow card">
+                                        {!isAdding &&
+                                             <>
+                                                  {watchListItemDtl?.IMDB_Poster !== null && watchListItemDtl?.IMDB_Poster_Error !== true && <img className="poster-detail" src={watchListItemDtl?.IMDB_Poster} onError={() => showDefaultSrc()} />}
+
+                                                  {(watchListItemDtl?.IMDB_Poster === null || watchListItemDtl?.IMDB_Poster_Error === true) && <>{BrokenImageIcon}</>}
+                                             </>
+                                        }
+
+                                        {isAdding && addWatchListItemDtl !== null && 
+                                             <span className="column">{addWatchListItemDtl?.IMDB_Poster !== null && addWatchListItemDtl?.IMDB_Poster_Error !== true && <img className="poster-detail" src={addWatchListItemDtl?.IMDB_Poster} />}</span>
+                                        }
+                                   </div>
+
+                                   <div className="narrow card">
+                                        <span className="textLabel">Name:&nbsp;</span>
                                    </div>
 
                                    <div className="labelWidth card">
@@ -307,343 +341,139 @@ const WatchListItemDetail = ({ backendURL, BrokenImageIcon, CancelIcon, isAdding
                                                   {watchListItemDtl?.Archived === true ? " (A)" : ""}
                                              </>
                                         }
+
+                                        {isEditing &&
+                                             <div className="narrow card">
+                                                  <input className="inputStyle" autoFocus value={watchListItemDtl?.WatchListItemName} onChange={(event) => watchListItemDetailChangeHandler("WatchListItemName", event.target.value)} />
+                                             </div>
+                                        }
+
+                                        {isAdding &&
+                                             <input className="inputStyle" autoFocus value={addWatchListItemDtl?.WatchListItemName} onChange={(event: React.ChangeEvent<HTMLInputElement>) => addWatchListItemDetailChangeHandler("WatchListItemName", event.target.value)} />
+                                        }
                                    </div>
-                                   
+
+                                   <div className="narrow card"></div>
+
+                                   <div className="narrow card">
+                                        <span className="textLabel">Type:&nbsp;</span>
+                                   </div>
+
                                    <div className="narrow card">
                                         {!isAdding && !isEditing &&
-                                             <span className="clickable closeButton" onClick={closeDetail}>
-                                                  X
-                                             </span>
+                                             <span>{watchListItemDtl?.WatchListType.WatchListTypeName}</span>
                                         }
 
-                                        {(isAdding || isEditing) &&
-                                             <span className="clickable editsaveCancelButton cancelIcon" onClick={cancelClickHandler}>
-                                                   {CancelIcon}
-                                             </span>
+                                        {isEditing &&
+                                             <select className="selectStyle selectWidth" value={watchListItemDtl.WatchListTypeID} onChange={(event) => watchListItemDetailChangeHandler("WatchListTypeID", event.target.value)}>
+                                                  <option value="-1">Please select</option>
+
+                                                  {watchListTypes?.map((watchListType: typeof IWatchListType, index: number) => {
+                                                       return (
+                                                            <option key={index} value={watchListType.WatchListTypeID}>
+                                                                 {watchListType.WatchListTypeName}
+                                                            </option>
+                                                       );
+                                                  })}
+                                             </select>
+                                        }
+                                        
+                                        {isAdding &&
+                                             <select className="selectStyle selectWidth" value={addWatchListItemDtl?.WatchListTypeID} onChange={(event: React.ChangeEvent<HTMLSelectElement>) => addWatchListItemDetailChangeHandler("WatchListTypeID", event.target.value)}>
+                                                  <option value="-1">Please select</option>
+                                                  
+                                                  {watchListTypes?.map((watchListType: typeof IWatchListType, index: number) => {
+                                                  return (
+                                                  <option key={index} value={watchListType.WatchListTypeID}>
+                                                       {watchListType.WatchListTypeName}
+                                                  </option>
+                                                  );
+                                                  })}
+                                             </select>
                                         }
                                    </div>
-                              </div>
 
-                              <div className="cards">
+                                   <div className="narrow card"></div>
+
                                    <div className="narrow card">
-                                        {!isAdding &&
-                                             <>
-                                                  {watchListItemDtl?.IMDB_Poster !== null && watchListItemDtl?.IMDB_Poster_Error !== true && <img className="poster-detail" src={watchListItemDtl?.IMDB_Poster} onError={() => showDefaultSrc()} />}
+                                        <span className="textLabel">URL:&nbsp;</span>
+                                   </div>
 
-                                                  {(watchListItemDtl?.IMDB_Poster === null || watchListItemDtl?.IMDB_Poster_Error === true) && <>{BrokenImageIcon}</>}
-                                             </>
+                                   <div className="narrow card">
+                                        {!isAdding && !isEditing &&
+                                             <a href={watchListItemDtl?.IMDB_URL} target="_blank">
+                                                  Open in IMDB
+                                             </a>
                                         }
 
-                                        {isAdding && addWatchListItemDtl !== null && 
-                                             <span className="column">{addWatchListItemDtl.IMDB_Poster !== null && addWatchListItemDtl.IMDB_Poster_Error !== true && <img className="poster-detail" src={addWatchListItemDtl.IMDB_Poster} />}</span>
+                                        {isEditing &&
+                                             <input className="inputStyle" value={watchListItemDtl.IMDB_URL} onChange={(event) => watchListItemDetailChangeHandler("IMDB_URL", event.target.value)} />
+                                        }
+
+                                        {isAdding &&
+                                             <input className="inputStyle" value={addWatchListItemDtl?.IMDB_URL} onChange={(event: React.ChangeEvent<HTMLInputElement>) => addWatchListItemDetailChangeHandler("IMDB_URL", event.target.value)} />
                                         }
                                    </div>
 
-                                   {!isAdding && !isEditing &&
+                                   {(isAdding || isEditing) &&
                                         <>
                                              <div className="narrow card"></div>
-                                             <div className="narrow card"></div>
+
+                                             <div className="narrow card">
+                                                  <div className="textLabel">Image:&nbsp;</div>
+                                             </div>
+
+                                             <div className="narrow card">
+                                                  {isEditing &&
+                                                       <input className="inputStyle" value={watchListItemDtl.IMDB_Poster} onBlur={(event: React.ChangeEvent<HTMLInputElement>) => onIMDBPosterChangeHandler(event.target.value)} onChange={(event) => watchListItemDetailChangeHandler("IMDB_Poster", event.target.value)} />
+                                                  }
+
+                                                  {isAdding &&
+                                                       <input className="inputStyle" value={addWatchListItemDtl?.IMDB_Poster} onChange={(event: React.ChangeEvent<HTMLInputElement>) => addWatchListItemDetailChangeHandler("IMDB_Poster", event.target.value)} />
+                                                  }
+                                             </div>
                                         </>
                                    }
 
-                                   {/* CONTINUE HERE */}
+                                   <div className="narrow card"></div>
+
+                                   <div className="narrow card">
+                                        <div className="textLabel">Notes:&nbsp;</div>
+                                   </div>
+
+                                   <div className="narrow card no-width">
+                                        {!isAdding && !isEditing &&
+                                             <div className="textLabel">{watchListItemDtl?.ItemNotes}</div>
+                                        }
+
+                                        {isEditing &&
+                                             <input className="inputStyle" value={watchListItemDtl.ItemNotes} onChange={(event: React.ChangeEvent<HTMLInputElement>) => watchListItemDetailChangeHandler("ItemNotes", event.target.value)} />
+                                        }
+
+                                        {isAdding &&
+                                             <input className="inputStyle" value={addWatchListItemDtl?.ItemNotes} onChange={(event: React.ChangeEvent<HTMLInputElement>) => addWatchListItemDetailChangeHandler("ItemNotes", event.target.value)} />
+                                        }
+                                   </div>
+
+                                   {isEditing &&
+                                        <>
+                                             <div className="narrow card"></div>
+
+                                             <div className="narrow card">
+                                                  <div className="textLabel">Archived:&nbsp;</div>
+                                             </div>
+
+                                             <div className="narrow card">
+                                                  <input type="checkbox" checked={watchListItemDtl.Archived} onChange={(event: React.ChangeEvent<HTMLInputElement>) => watchListItemDetailChangeHandler("Archived", event.target.checked)} />
+                                             </div>
+                                        </>
+                                   }
                               </div>
                          </div>
                     </div>
                </div>
-
-      {/*{(isAdding || isEditing || (!isEditing && watchListItemDtlLoadingComplete)) && (
-        <div className="modal">
-          <div className={`modal-content ${watchListItemDtlID != null ? "fade-in" : "fade-out"}`}>
-            {!isAdding && !isEditing && (
-              <span className="clickable closeButton" onClick={closeDetail}>
-                X
-              </span>
-            )}
-
-            <div className="row">
-                 {watchListItemDtl !== null && !isEditing &&
-                      <>
-                           <table className="datagrid">
-                                <tbody className="data">
-                                     <tr>
-                                          <td>
-                                              <span>
-                                                   <span onClick={startEditing}>
-                                                        <span className="clickable editsaveCancelButton">{EditIcon}</span>
-                                                   </span>
-                                              </span>
-                                          </td>
-                                     </tr>
-                                     
-                                     <tr>
-                                          <td>
-                                               {watchListItemDtl.IMDB_Poster !== null && watchListItemDtl.IMDB_Poster_Error !== true && <img className="poster-detail" src={watchListItemDtl.IMDB_Poster} onError={() => showDefaultSrc()} />}
-
-                                               {(watchListItemDtl.IMDB_Poster === null || watchListItemDtl.IMDB_Poster_Error === true) && <>{BrokenImageIcon}</>}
-                                           </td>
-                                     </tr>
-                                </tbody>
-                           </table>
-
-                           <table>
-                                <tbody>
-                                     <tr>
-                                          <td>
-                                               <span className="leftMargin textLabel topMargin">Name:&nbsp;</span>
-                                          </td>
-
-                                          <td>
-                                            <div className="textLabel">
-                                                 {watchListItemDtl.WatchListItemName}
-                                                 {watchListItemDtl.Archived === true ? " (A)" : ""}
-                                            </div>
-                                          </td>
-                                     </tr>
-                                     
-                                     <tr>
-                                          <td>
-                                               <span className="leftMargin textLabel topMargin">Type:&nbsp;</span>
-                                          </td>
-
-                                          <td>
-                                               <span>{watchListItemDtl.WatchListType.WatchListTypeName}</span>
-                                          </td>
-                                     </tr>
-
-                                     <tr>
-                                          <td>
-                                               <span className="leftMargin textLabel topMargin">URL:&nbsp;</span>
-                                          </td>
-
-                                          <td>
-                                               <a href={watchListItemDtl.IMDB_URL} target="_blank">
-                                                    {watchListItemDtl.IMDB_URL}
-                                               </a>
-                                          </td>
-                                     </tr>
-
-                                     <tr>
-                                          <td>
-                                               <div className="leftMargin textLabel">Notes:&nbsp;</div>
-                                          </td>
-
-                                          <td>
-                                               <div className="leftMargin textLabel">{watchListItemDtl.ItemNotes}</div>
-                                          </td>
-                                     </tr>
-                                </tbody>
-                           </table>
-                      </>
-                 }
-
-                 {watchListItemDtl !== null && isEditing &&
-                      <>
-                           <table className="datagrid">
-                                <tbody className="data">
-                                    <tr>
-                                         <td>
-                                              <span className="saveCancelIcons editSaveCancelPanel">
-                                                   <span className="clickable editsaveCancelButton saveIcon" onClick={saveClickHandler}>
-                                                        {SaveIcon}
-                                                   </span>
-                                              </span>
-                                         </td>
-                                              
-                                         <td>
-                                              <span className="clickable editsaveCancelButton cancelIcon" onClick={cancelClickHandler}>
-                                                   {CancelIcon}
-                                              </span>
-                                         </td>                                         
-                                    </tr>
-
-                                    <tr>
-                                         <td>
-                                              {watchListItemDtl.IMDB_Poster !== null && watchListItemDtl.IMDB_Poster_Error !== true && <img className="poster-detail" src={watchListItemDtl.IMDB_Poster} onError={() => showDefaultSrc()} />}
-
-                                              {(watchListItemDtl.IMDB_Poster === null || watchListItemDtl.IMDB_Poster_Error === true) && <span className="brokenImage">{BrokenImageIcon}</span>}
-                                         </td>
-                                    </tr>
-                                </tbody>
-                           </table>
-
-                           <table>
-                                <tbody>
-                                    <tr>
-                                         <td>
-                                              <span className="leftMargin textLabel topMargin">Name:</span>
-                                         </td>
-
-                                         <td>
-                                              <input className="inputStyle leftMargin" autoFocus value={watchListItemDtl.WatchListItemName} onChange={(event) => watchListItemDetailChangeHandler("WatchListItemName", event.target.value)} />
-                                         </td>
-                                    </tr>
-
-                                    <tr>
-                                         <td>
-                                              <span className="leftMargin textLabel topMargin">Type:</span>
-                                         </td>
-
-                                         <td>
-                                              <select className="leftMargin selectStyle selectWidth" value={watchListItemDtl.WatchListTypeID} onChange={(event) => watchListItemDetailChangeHandler("WatchListTypeID", event.target.value)}>
-                                                <option value="-1">Please select</option>
-
-                                                {watchListTypes?.map((watchListType: typeof IWatchListType, index: number) => {
-                                                  return (
-                                                    <option key={index} value={watchListType.WatchListTypeID}>
-                                                      {watchListType.WatchListTypeName}
-                                                    </option>
-                                                  );
-                                                })}
-                                              </select>
-                                         </td>
-                                    </tr>
-
-                                    <tr>
-                                         <td>
-                                              <span className="leftMargin textLabel topMargin">URL:</span>
-                                         </td>
-
-                                         <td>
-                                              <input className="inputStyle leftMargin" value={watchListItemDtl.IMDB_URL} onChange={(event) => watchListItemDetailChangeHandler("IMDB_URL", event.target.value)} />
-                                         </td>
-                                    </tr>
-
-                                    <tr>
-                                         <td>
-                                              <span className="leftMargin textLabel topMargin">Image:</span>
-                                         </td>
-
-                                         <td>
-                                              <input className="inputStyle leftMargin" value={watchListItemDtl.IMDB_Poster} onBlur={(event: React.ChangeEvent<HTMLInputElement>) => onIMDBPosterChangeHandler(event.target.value)} onChange={(event) => watchListItemDetailChangeHandler("IMDB_Poster", event.target.value)} />
-                                         </td>
-                                    </tr>
-
-                                    <tr>
-                                         <td>
-                                              <span className="leftMargin textLabel topMargin">Notes:</span>
-                                         </td>
-
-                                         <td>
-                                              <input className="inputStyle leftMargin" value={watchListItemDtl.ItemNotes} onChange={(event: React.ChangeEvent<HTMLInputElement>) => watchListItemDetailChangeHandler("ItemNotes", event.target.value)} />
-                                         </td>
-                                    </tr>
-
-                                    <tr>
-                                         <td>
-                                              <span className="leftMargin textLabel topMargin">Archived:</span>
-                                         </td>
-
-                                         <td>
-                                              <input type="checkbox" checked={watchListItemDtl.Archived} onChange={(event: React.ChangeEvent<HTMLInputElement>) => watchListItemDetailChangeHandler("Archived", event.target.checked)} />
-                                         </td>
-                                    </tr>
-                                </tbody>
-                           </table>
-                      </>
-                 }
-
-                 {!isEditing && isAdding && addWatchListItemDtl !== null &&
-                      <>
-                           <table className="datagrid">
-                                <tbody className="data">
-                                     <tr>
-                                          <td>
-                                               <span className="saveCancelIcons editSaveCancelPanel">
-                                                    <span className="clickable editsaveCancelButton saveIcon" onClick={saveNewClickHandler}>
-                                                         {SaveIcon}
-                                                    </span>
-                                                </span>
-                                          </td>
-
-                                          <td>
-                                               <span className="clickable editsaveCancelButton cancelIcon" onClick={closeDetail}>
-                                                    {CancelIcon}
-                                                </span>
-                                          </td>
-                                      </tr>
-                                      
-                                      {addWatchListItemDtl.IMDB_Poster !== "" &&
-                                           <tr>
-                                               <td>
-                                                    <span className="column">{addWatchListItemDtl.IMDB_Poster !== null && addWatchListItemDtl.IMDB_Poster_Error !== true && <img className="poster-detail" src={addWatchListItemDtl.IMDB_Poster} />}</span>
-                                               </td>
-                                           </tr>
-                                      }
-                                </tbody>
-                            </table>
-
-                            <table className="datagrid">
-                                <tbody className="data">
-                                     <tr>
-                                          <td>
-                                               <span className="leftMargin textLabel topMargin">Name:</span>
-                                          </td>
-
-                                          <td>
-                                               <input className="inputStyle leftMargin" autoFocus value={addWatchListItemDtl.WatchListItemName} onChange={(event: React.ChangeEvent<HTMLInputElement>) => addWatchListItemDetailChangeHandler("WatchListItemName", event.target.value)} />
-                                          </td>
-                                     </tr>
-
-                                     <tr>
-                                          <td>
-                                               <span className="leftMargin textLabel topMargin">Type:</span>
-                                          </td>
-
-                                          <td>
-                                               <select className="leftMargin selectStyle selectWidth" value={addWatchListItemDtl.WatchListTypeID} onChange={(event: React.ChangeEvent<HTMLSelectElement>) => addWatchListItemDetailChangeHandler("WatchListTypeID", event.target.value)}>
-                                                    <option value="-1">Please select</option>
-
-                                                    {watchListTypes?.map((watchListType: typeof IWatchListType, index: number) => {
-                                                      return (
-                                                        <option key={index} value={watchListType.WatchListTypeID}>
-                                                          {watchListType.WatchListTypeName}
-                                                        </option>
-                                                      );
-                                                    })}
-                                               </select>
-                                          </td>
-                                     </tr>
-
-                                     <tr>
-                                          <td>
-                                               <span className="leftMargin textLabel topMargin">URL:</span>
-                                          </td>
-
-                                          <td>
-                                               <input className="inputStyle leftMargin" value={addWatchListItemDtl.IMDB_URL} onChange={(event: React.ChangeEvent<HTMLInputElement>) => addWatchListItemDetailChangeHandler("IMDB_URL", event.target.value)} />
-                                          </td>
-                                     </tr>
-
-                                     <tr>
-                                          <td>
-                                               <span className="leftMargin textLabel topMargin">Image:</span>
-                                          </td>
-
-                                          <td>
-                                               <input className="inputStyle leftMargin" value={addWatchListItemDtl.IMDB_Poster} onChange={(event: React.ChangeEvent<HTMLInputElement>) => addWatchListItemDetailChangeHandler("IMDB_Poster", event.target.value)} />
-                                          </td>
-                                     </tr>
-
-                                     <tr>
-                                          <td>
-                                               <span className="leftMargin textLabel topMargin">Notes:</span>
-                                          </td>
-
-                                          <td>
-                                               <input className="inputStyle leftMargin" value={addWatchListItemDtl.temNotes} onChange={(event: React.ChangeEvent<HTMLInputElement>) => addWatchListItemDetailChangeHandler("ItemNotes", event.target.value)} />
-                                          </td>
-                                     </tr>
-                                </tbody>
-                            </table>
-                      </>
-                 }
-            </div>
-          </div>
-        </div>
-      )}*/}
-    </>
-  );
+          </>
+     );
 };
 
 WatchListItemDetail.propTypes = exact({

@@ -449,9 +449,7 @@ const WatchListDetail = ({ backendURL, BrokenImageIcon, CancelIcon, isAdding, Ed
                                              </span>
                                         }
                                    </div>
-                              </div>
 
-                              <div className="cards">
                                    <div className="narrow card">
                                         {!isAdding &&
                                              <>
@@ -533,7 +531,7 @@ const WatchListDetail = ({ backendURL, BrokenImageIcon, CancelIcon, isAdding, Ed
                                         }
 
                                         {isAdding &&
-                                             <input type="date" className="leftMargin" value={addWatchListDtl?.StartDate} onChange={(event) => addWatchListDetailChangeHandler("StartDate", event.target.value)} />
+                                             <input type="date" value={addWatchListDtl?.StartDate} onChange={(event) => addWatchListDetailChangeHandler("StartDate", event.target.value)} />
                                         }
                                    </div>
 
@@ -553,7 +551,7 @@ const WatchListDetail = ({ backendURL, BrokenImageIcon, CancelIcon, isAdding, Ed
                                         }
 
                                         {isAdding &&
-                                             <input type="date" className="leftMargin" value={addWatchListDtl?.EndDate} onChange={(event) => addWatchListDetailChangeHandler("EndDate", event.target.value)} />
+                                             <input type="date" value={addWatchListDtl?.EndDate} onChange={(event) => addWatchListDetailChangeHandler("EndDate", event.target.value)} />
                                         }
                                    </div>
 
@@ -583,7 +581,7 @@ const WatchListDetail = ({ backendURL, BrokenImageIcon, CancelIcon, isAdding, Ed
                                         }
 
                                         {isAdding &&
-                                             <select className="leftMargin selectStyle" value={addWatchListDtl?.WatchListSourceID} onChange={(event) => addWatchListDetailChangeHandler("WatchListSourceID", event.target.value)}>
+                                             <select className="selectStyle" value={addWatchListDtl?.WatchListSourceID} onChange={(event) => addWatchListDetailChangeHandler("WatchListSourceID", event.target.value)}>
                                                   <option value="-1">Please select</option>
 
                                                   {watchListSources?.map((watchListSource: typeof IWatchListSource, index: number) => {
@@ -615,7 +613,7 @@ const WatchListDetail = ({ backendURL, BrokenImageIcon, CancelIcon, isAdding, Ed
                                                   }
 
                                                   {isAdding &&
-                                                       <input className="inputStyle leftMargin narrowWidth" type="number" value={addWatchListDtl?.Season} onChange={(event) => addWatchListDetailChangeHandler("Season", event.target.value)} />
+                                                       <input className="inputStyle narrowWidth" type="number" value={addWatchListDtl?.Season} onChange={(event) => addWatchListDetailChangeHandler("Season", event.target.value)} />
                                                   }
                                              </div>
                                         </>
@@ -639,7 +637,7 @@ const WatchListDetail = ({ backendURL, BrokenImageIcon, CancelIcon, isAdding, Ed
                                                   }
 
                                                   {isAdding &&
-                                                       <input className="inputStyle leftMargin narrowWidth" type="number" value={addWatchListDtl?.Season} onChange={(event) => addWatchListDetailChangeHandler("Season", event.target.value)} />
+                                                       <input className="inputStyle narrowWidth" type="number" value={addWatchListDtl?.Season} onChange={(event) => addWatchListDetailChangeHandler("Season", event.target.value)} />
                                                   }
                                              </div>
                                         </>

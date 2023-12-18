@@ -226,7 +226,7 @@ input:checked + .slider:before {
   margin: auto;
   padding: 20px;
   width: fit-content;
-  /*max-height: 300px;*/
+  min-height: 225px;
 }
 
 .narrowWidth {
@@ -237,7 +237,6 @@ input:checked + .slider:before {
   max-height: 215px;
   position: relative;
   top: 70px;
-  
 }
 
 .ratingAlt {
@@ -516,4 +515,8 @@ input:checked + .slider:before {
 .small-text {
   font-size: small;
   margin-top: 15%;
+}
+
+.no-width {
+  width: unset;
 }

@@ -71,10 +71,8 @@ input:checked + .slider:before {
 }
 
 .cancelIcon {
-  padding-left: 85%;
   display: flex;
   float: right;
-  margin-top: 25px;
   transform: scale(1.8) !important;
 }
 
@@ -104,8 +102,6 @@ input:checked + .slider:before {
   transform: scale(2.4) !important;
   position: relative;
   top: -8px;
-  margin-left: auto; 
-  margin-right: 0;
 }
 
 .column {
@@ -309,10 +305,17 @@ input:checked + .slider:before {
   max-height: 215px;
   position: relative;
   top: 70px;
+  margin-top: 20px;
 }
 
 .ratingAlt {
   display: none;
+}
+
+.rightAligned {
+  display: block;
+  margin-left: auto;
+  margin-right: 0;
 }
 
 .rightMargin {
@@ -326,7 +329,8 @@ input:checked + .slider:before {
 
 .saveIcon {
   position: relative;
-  top: -25px;
+  top: -5px;
+  transform: scale(1.8);
 }
 
 .saveCancelIcons {

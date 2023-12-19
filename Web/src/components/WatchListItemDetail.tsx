@@ -287,7 +287,7 @@ const WatchListItemDetail = ({ backendURL, BrokenImageIcon, CancelIcon, isAdding
                                         }
 
                                         {(isAdding || isEditing) &&
-                                             <span className="clickable editsaveCancelButton" onClick={isAdding ? saveNewClickHandler : saveClickHandler}>
+                                             <span className="clickable saveIcon" onClick={isAdding ? saveNewClickHandler : saveClickHandler}>
                                                   {SaveIcon}
                                              </span>
                                         }
@@ -295,7 +295,7 @@ const WatchListItemDetail = ({ backendURL, BrokenImageIcon, CancelIcon, isAdding
 
                                    <div className="narrow card"></div>
                                    
-                                   <div className="narrow card">
+                                   <div className="narrow card rightAligned">
                                         {!isAdding && !isEditing &&
                                              <span className="clickable closeButton" onClick={closeDetail}>
                                                   X
@@ -303,7 +303,7 @@ const WatchListItemDetail = ({ backendURL, BrokenImageIcon, CancelIcon, isAdding
                                         }
 
                                         {(isAdding || isEditing) &&
-                                             <span className="clickable editsaveCancelButton cancelIcon" onClick={isAdding ? closeDetail : cancelClickHandler}>
+                                             <span className="clickable cancelIcon" onClick={isAdding ? closeDetail : cancelClickHandler}>
                                                    {CancelIcon}
                                              </span>
                                         }

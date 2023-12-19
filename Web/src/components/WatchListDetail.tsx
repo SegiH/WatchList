@@ -401,6 +401,8 @@ const WatchListDetail = ({ backendURL, BrokenImageIcon, CancelIcon, isAdding, Ed
                });
 
                const namesOnly = namesOnlyItems.sort();
+
+               setAutoCompleteNames(namesOnly);
           }
      }, [watchListItems]);
 
@@ -418,7 +420,7 @@ const WatchListDetail = ({ backendURL, BrokenImageIcon, CancelIcon, isAdding, Ed
                                         }
 
                                         {(isAdding || isEditing) &&
-                                             <span className="clickable editsaveCancelButton" onClick={isAdding ? saveNewClickHandler : saveClickHandler}>
+                                             <span className="clickable saveIcon" onClick={isAdding ? saveNewClickHandler : saveClickHandler}>
                                                   {SaveIcon}
                                              </span>
                                         }
@@ -441,14 +443,14 @@ const WatchListDetail = ({ backendURL, BrokenImageIcon, CancelIcon, isAdding, Ed
                                              </>
                                         }
 
-                                        {(isEditing || isAdding) &&
+                                        {(isEditing || isAdding) && autoCompleteNames &&
                                              <div className="narrow card">
-                                                  <Autocomplete id="wl_autocomplete" className="labelWidth" size="small" sx={{ width: 250, height: 40 }} {...defaultProps} value={autoComplete} onChange={(event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => autoCompleteChangeHandler(event)} renderInput={(params: typeof ReactNode) => <TextField {...params} label="Search" />} />
+                                                  <Autocomplete id="wl_autocomplete" className="labelWidth" size="small" sx={{ width: 250, height: 40 }} {...defaultProps} options={autoCompleteNames} value={autoComplete} onChange={(event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => autoCompleteChangeHandler(event)} renderInput={(params: typeof ReactNode) => <TextField {...params} label="Search" />} />
                                              </div>
                                         }
                                    </div>
                                    
-                                   <div className="narrow card">
+                                   <div className="narrow card rightAligned">
                                         {!isAdding && !isEditing &&
                                              <span className="clickable closeButton" onClick={closeDetail}>
                                                   X
@@ -456,7 +458,7 @@ const WatchListDetail = ({ backendURL, BrokenImageIcon, CancelIcon, isAdding, Ed
                                         }
 
                                         {(isAdding || isEditing) &&
-                                             <span className="clickable editsaveCancelButton cancelIcon" onClick={isAdding ? closeDetail : cancelClickHandler}>
+                                             <span className="clickable cancelIcon" onClick={isAdding ? closeDetail : cancelClickHandler}>
                                                    {CancelIcon}
                                              </span>
                                         }
@@ -661,9 +663,9 @@ const WatchListDetail = ({ backendURL, BrokenImageIcon, CancelIcon, isAdding, Ed
                                         <div className="textLabel">Notes:</div>
                                    </div>
 
-                                   <div className="narrow card">
+                                   <div className="narrow card no-width">
                                         {!isAdding && !isEditing &&
-                                             <div>{watchListDtl?.Notes}</div>
+                                             <div className="textLabel">{watchListDtl?.Notes}</div>
                                         }
 
                                         {isEditing &&

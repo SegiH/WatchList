@@ -251,6 +251,9 @@ const SQLiteSequelize = new Sequelize("WatchList", "watchlist_user", "wlp123!@#0
   logging: false
 });
 
+//SQLiteSequelize.query('PRAGMA cipher_compatibility = 3');
+//SQLiteSequelize.query("PRAGMA key = 'mysysma'");
+
 const MSSQLSequelize = new Sequelize(config.get(`SQLServer.database`), config.get(`SQLServer.username`), config.get(`SQLServer.password`), {
   host: config.get(`SQLServer.host`),
   encrypt: false,
@@ -1389,21 +1392,6 @@ app.put("/Setup", async (req, res) => {
       res.send(["ERROR", err]);
       return;
     }
-  }
-
-  // If there is at least once admin account, this is not a brand new instance of WatchList so abort
-  const adminAccounts = await models.Users.findAll({
-    where: {
-      UserID: 1,
-    },
-  }).catch(function (err) {
-    res.send(["ERROR", `/GetUsers: The error ${err} occurred getting the users`]);
-    return;
-  });
-
-  if (adminAccounts.length > 0) {
-    res.send[("ERROR", `Error! This database has already been set up. WatchList setup can only bu used to set up new WatchList instances. Aborting...`)];
-    return;
   }
 
   addUser(req, res, true);

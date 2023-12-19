@@ -44,15 +44,15 @@ If you do not want to create a RapidAPI account, you don't have to but when you 
    - Replace NETWORKNAME with your own Docker network name
 ~~1. If you use a reverse proxy:
    - Make sure to allow GET, OPTIONS and PUT
-   - Allow CORS header for the following URLS: http://localhost, http://localhost:8080 and the public URL that this WatchList backend service will be accessible at.~~
+   - Allow CORS header for the following URLS: http://localhost, http://localhost:8080 and the public URL that this WatchList backend service will be accessible at.
 1. Build the backend container `docker-compose -f watchlistbackend-compose.yml up -d`
 1. Check the status of your Docker container `docker logs WatchList`. It should say `Running on http://0.0.0.0:8080`
 
-## Build WatchList Backend (Complete this step if you are NOT using Docker)
+## Setup WatchList Backend (Complete this step if you are NOT using Docker)
 1. cd to the API directory
 1. Edit config\default.json and set the following values:
    a. If you plan on using SQL Server as the database, fill in the "SQLServer" section or leave it blank otherwise
-   b. CORS: Enter the address where you will host the WatchList Web app like this: `["http://localhost:8080","https://watchlist.mysite.com"]` where you add each URL with double quotes around it and separated by a comma.
+   b. CORS: **THIS IS VERY IMPORTANT. YOU WILL NOT BE ABLE TO LOG IN IF THIS IS NOT SET CORRECTLY** Enter the address where you will host the WatchList Web app like this: `["http://localhost:8080","https://watchlist.mysite.com"]` where you add each URL with double quotes around it and separated by a comma.
    c. Port: If you want to run the backend on a different port, change the default port here.
    d. Secret: Enter a random string of letters and numbers. This can be any random string.
    e. RapidAPIKey: Your RapidAPIKey if you have one. Leave blank otherwise

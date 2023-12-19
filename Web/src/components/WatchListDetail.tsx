@@ -103,6 +103,8 @@ const WatchListDetail = ({ backendURL, BrokenImageIcon, CancelIcon, isAdding, Ed
           setIsEditing(false);
           setWatchListDtl(originalWatchListDtl);
           setOriginalWatchListDtl(null);
+          setAddModified(false);
+          setEditModified(false);
      };
 
      const closeDetail = async () => {

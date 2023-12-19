@@ -6,11 +6,10 @@
 //
 // In backend, clear config\default.json
 // publish backend and frontend packages to releases for web, windows and linux
-// add screenshots
 //
 // Known Issues/Future features
 //
-// sluggish overall in dev and console locks up when you open it for 20 - 30 seconds
+// Bundle is ~ 27MB. Sluggish overall in dev and console locks up when you open it for 20 - 30 seconds
 // SQLite is not encrypted. Look into sqlite encryption options
 // Create netflix importer
 const axios = require("axios");

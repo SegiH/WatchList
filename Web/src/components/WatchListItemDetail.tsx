@@ -49,6 +49,8 @@ const WatchListItemDetail = ({ backendURL, BrokenImageIcon, CancelIcon, isAdding
           setIsEditing(false);
           setWatchListItemDtl(originalWatchListItemDtl);
           setOriginalWatchListItemDtl(null);
+          setAddModified(false);
+          setEditModified(false);
      };
 
      const checkURL = async (URL: string) => {

@@ -1,0 +1,1 @@
+sed -i 's/\/dist\/bundle.js/\.\/bundle.js/g' dist/index.html

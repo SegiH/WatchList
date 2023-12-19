@@ -4,7 +4,7 @@
   "description": "WatchList application is a multi-user app that lets you track the movies and TV that you watch, how many times you watched them and when you watched them. You can also rate movies or shows.",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "webpack --mode production",
+    "build": "webpack --mode production && ./fix-bundle-path.sh",
     "build-win": "webpack --mode production && copy electron-package.json dist\\package.json",
     "build-linux": "webpack --mode production && cp electron-package.json dist/package.json",
     "build-mac": "webpack --mode production && cp electron-package.json dist/package.json",

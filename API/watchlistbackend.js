@@ -1,5 +1,4 @@
 // move all sensitive info to external file. especially sqlite!!!
-// dont output sql. especially in login!!!
 "use strict";
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");

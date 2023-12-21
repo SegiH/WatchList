@@ -1,1 +1,6 @@
 API/node_modules/
+Web/node_modules
+API/docker files/docker/config
+API/docker files/docker/watchlistbackend.js
+API/watchlistdb.sqlite
+Web/dist

@@ -60,7 +60,7 @@ cd dist
 
 echo Replacing /dist/bundle.js with ./bundle.js in index.html...
 echo.
-cmd /c powershell -Command "(gc index.html) -replace '/dist/bundle.js', './bundle.js' | Out-File -encoding ASCII index.html"
+cmd /c powershell -Command "(gc dist/index.html) -replace '/dist/bundle.js', './bundle.js' | Out-File -encoding ASCII index.html"
 
 echo Renaming bundle.js...
 echo.

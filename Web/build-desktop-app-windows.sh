@@ -2,7 +2,7 @@
 
 npm install
 
-npm run build-mac --prod
+npm run build-win --prod
 
 rm ../API/Web/*
 
@@ -14,7 +14,7 @@ cp electron-package.json dist/package.json
 
 npm run build:electron
 
-npm run deploy-mac
+npm run deploy-win
 
 echo REACT_APP_WATCHLIST_ENV=LOCAL > .env
 

@@ -21,7 +21,6 @@ const Login = ({  defaultRoute, setIsLoggedIn, setActiveRoute, setIsLoggedInChec
   const [username, setUsername] = useState("");
 
   const backendURLChangeHandler= (newBackendURL: string) => {
-    debugger
          if (newBackendURL.endsWith("/")) {
               newBackendURL = newBackendURL.slice(0,-1);
          }

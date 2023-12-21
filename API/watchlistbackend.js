@@ -246,13 +246,9 @@ const swaggerOptions = {
 // SQLite
 const SQLiteSequelize = new Sequelize("WatchList", "watchlist_user", "wlp123!@#04F", {
   dialect: "sqlite",
-  // we will be saving our db as a file on this path
-  storage: DBFile, // or ':memory:'
+  storage: DBFile,
   logging: false
 });
-
-//SQLiteSequelize.query('PRAGMA cipher_compatibility = 3');
-//SQLiteSequelize.query("PRAGMA key = 'mysysma'");
 
 const MSSQLSequelize = new Sequelize(config.get(`SQLServer.database`), config.get(`SQLServer.username`), config.get(`SQLServer.password`), {
   host: config.get(`SQLServer.host`),
@@ -2086,7 +2082,7 @@ async function addUser(req, res, IsNewInstance = false) {
   } else {
     if (IsNewInstance === true) {
       await sequelize.sync({ alter: true }); // Init the DB
-      fs.chmodSync(DBFile, "755");
+
 
       // Initialize the default watchlist sources so this table is not empty by default
       defaultSources.forEach(async (element) => { 

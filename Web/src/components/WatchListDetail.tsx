@@ -5,6 +5,7 @@ const MuiIcon = require("@mui/icons-material").MuiIcon;
 const IWatchList = require("../interfaces/IWatchList");
 const IWatchListItem = require("../interfaces/IWatchListItem");
 const IWatchListSource = require("../interfaces/IWatchListSource");
+const Link = require("react-router-dom").Link;
 const PropTypes = require("prop-types");
 const React = require("react");
 const ReactNode = require("react").ReactNode;
@@ -21,7 +22,7 @@ const FullIconComponent = <FullIcon />;
 const HalfIcon = require("@mui/icons-material/StarHalf").default;
 const HalfIconComponent = <HalfIcon />;
 
-const WatchListDetail = ({ backendURL, BrokenImageIcon, CancelIcon, isAdding, EditIcon, isEditing, newWatchListItemDtlID, ratingMax, SaveIcon, setIsAdding, setIsEditing, setNewWatchListItemDtlID, setWatchListDtlID, setWatchListLoadingStarted, setWatchListLoadingComplete, setWatchListSortingComplete, watchListDtlID, watchListItems, watchListSortDirection, watchListSources }
+const WatchListDetail = ({ backendURL, BrokenImageIcon, CancelIcon, isAdding, EditIcon, isEditing, isIMDBSearchEnabled, newWatchListItemDtlID, ratingMax, SaveIcon, setActiveRoute, setIsAdding, setIsEditing, setNewWatchListItemDtlID, setWatchListDtlID, setWatchListLoadingStarted, setWatchListLoadingComplete, setWatchListSortingComplete, watchListDtlID, watchListItems, watchListSortDirection, watchListSources }
      :
      {
           backendURL: string,
@@ -30,11 +31,13 @@ const WatchListDetail = ({ backendURL, BrokenImageIcon, CancelIcon, isAdding, Ed
           isAdding: boolean,
           EditIcon: typeof MuiIcon,
           isEditing: boolean,
+          isIMDBSearchEnabled: boolean,
           isLoggedIn: boolean,
           newWatchListItemDtlID: number,
           ratingMax: number,
           SaveIcon: typeof MuiIcon,
           searchTerm: string,
+          setActiveRoute: (arg0: string) => void,
           setIsAdding: (arg0: boolean) => void,
           setIsEditing: (arg0: boolean) => void,
           setNewWatchListItemDtlID: (arg0: number) => void,
@@ -61,6 +64,11 @@ const WatchListDetail = ({ backendURL, BrokenImageIcon, CancelIcon, isAdding, Ed
      const defaultProps = {
           options: autoCompleteNames,
           getOptionLabel: (option: typeof ReactNode) => option.toString(),
+     };
+
+     const addNewChangeHandler= () => {
+          closeDetail();
+          setActiveRoute("/IMDBSearch");
      };
 
      const addWatchListDetailChangeHandler = (fieldName: string, fieldValue: string) => {
@@ -484,52 +492,52 @@ const WatchListDetail = ({ backendURL, BrokenImageIcon, CancelIcon, isAdding, Ed
                                              <div className="narrow card"></div>
                                         </>
                                    }
+
+                                   {isAdding &&
+                                        <select className="selectStyle" autoFocus value={addWatchListDtl?.WatchListItemID} onChange={(event) => addWatchListDetailChangeHandler("WatchListItemID", event.target.value)}>
+                                             <option value="-1">Please select</option>
+
+                                             {watchListItems
+                                             ?.filter((currentWatchListItem: typeof IWatchListItem) => currentWatchListItem.Archived === false)
+                                             ?.sort((a: typeof IWatchListItem , b: typeof IWatchListItem) => {
+                                                  return String(a.WatchListItemName) > String(b.WatchListItemName) ? 1 : -1;
+                                             })
+                                             .map((watchListItem: typeof IWatchListItem, index: number) => {
+                                                  return (
+                                                       <option key={index} value={watchListItem.WatchListItemID}>
+                                                            {watchListItem.WatchListItemName}
+                                                       </option>
+                                                  )
+                                             })}
+                                        </select>
+                                   }
                               
-                                   {(isAdding || isEditing) &&
+                                   {isEditing &&
                                         <>
-                                             {isEditing &&
-                                                  <div className="narrow card">
-                                                       <select className="selectStyle selectWidth" autoFocus value={watchListDtl.WatchListItemID} onChange={(event) => watchListDetailChangeHandler("WatchListItemID", event.target.value)}>
-                                                            <option value="-1">Please select</option>
-
-                                                            {watchListItems?.sort((a: typeof IWatchListItem, b: typeof IWatchListItem) => {
-                                                                 return String(a.WatchListItemName) > String(b.WatchListItemName) ? (watchListSortDirection === "ASC" ? 1 : -1) : watchListSortDirection === "ASC" ? -1 : 1;
-                                                            })
-                                                            .map((watchListItem: typeof IWatchListItem, index: number) => {
-                                                                 return (
-                                                                      <option key={index} value={watchListItem.WatchListItemID}>
-                                                                           {watchListItem.WatchListItemName}
-                                                                      </option>
-                                                                 );
-                                                            })}
-                                                       </select>
-                                                  </div>
-                                             }
-
-                                             {isAdding &&
-                                                  <select className="selectStyle" autoFocus value={addWatchListDtl?.WatchListItemID} onChange={(event) => addWatchListDetailChangeHandler("WatchListItemID", event.target.value)}>
+                                             <div className="narrow card">
+                                                  <select className="selectStyle selectWidth" autoFocus value={watchListDtl?.WatchListItemID} onChange={(event) => watchListDetailChangeHandler("WatchListItemID", event.target.value)}>
                                                        <option value="-1">Please select</option>
-              
-                                                       {watchListItems
-                                                       ?.filter((currentWatchListItem: typeof IWatchListItem) => currentWatchListItem.Archived === false)
-                                                       ?.sort((a: typeof IWatchListItem , b: typeof IWatchListItem) => {
-                                                            return String(a.WatchListItemName) > String(b.WatchListItemName) ? 1 : -1;
+
+                                                       {watchListItems?.sort((a: typeof IWatchListItem, b: typeof IWatchListItem) => {
+                                                            return String(a.WatchListItemName) > String(b.WatchListItemName) ? (watchListSortDirection === "ASC" ? 1 : -1) : watchListSortDirection === "ASC" ? -1 : 1;
                                                        })
                                                        .map((watchListItem: typeof IWatchListItem, index: number) => {
                                                             return (
                                                                  <option key={index} value={watchListItem.WatchListItemID}>
                                                                       {watchListItem.WatchListItemName}
                                                                  </option>
-                                                            )
+                                                            );
                                                        })}
                                                   </select>
-                                             }
-
-                                             <div className="narrow card"></div>
+                                             </div>
                                         </>
                                    }
 
-                                   <div className="narrow card"></div> 
+                                   <div className="narrow card">
+                                        {(isIMDBSearchEnabled && (isAdding || isEditing)) &&
+                                              <Link className="rightAligned text-label" onClick={addNewChangeHandler}>Add</Link>
+                                        }
+                                   </div> 
 
                                    <div className="narrow card">
                                         <span className="textLabel">Start Date:&nbsp;</span>
@@ -541,7 +549,7 @@ const WatchListDetail = ({ backendURL, BrokenImageIcon, CancelIcon, isAdding, Ed
                                         }
 
                                         {isEditing &&
-                                             <input type="date" value={watchListDtl.StartDate !== null ? watchListDtl.StartDate : ""} onChange={(event) => watchListDetailChangeHandler("StartDate", event.target.value)} />
+                                             <input type="date" value={watchListDtl?.StartDate !== null ? watchListDtl.StartDate : ""} onChange={(event) => watchListDetailChangeHandler("StartDate", event.target.value)} />
                                         }
 
                                         {isAdding &&
@@ -561,7 +569,7 @@ const WatchListDetail = ({ backendURL, BrokenImageIcon, CancelIcon, isAdding, Ed
                                         }
 
                                         {isEditing &&
-                                             <input type="date" value={watchListDtl.EndDate !== null ? watchListDtl.EndDate : ""} onChange={(event) => watchListDetailChangeHandler("EndDate", event.target.value)} />
+                                             <input type="date" value={watchListDtl?.EndDate !== null ? watchListDtl.EndDate : ""} onChange={(event) => watchListDetailChangeHandler("EndDate", event.target.value)} />
                                         }
 
                                         {isAdding &&
@@ -679,6 +687,10 @@ const WatchListDetail = ({ backendURL, BrokenImageIcon, CancelIcon, isAdding, Ed
 
                                    <div className="narrow card"></div>
 
+                                   {(isAdding || isEditing) &&
+                                        <div className="narrow card"></div>
+                                   }
+
                                    <div className="narrow card">
                                         <div className="textLabel">Rating:</div>
                                    </div>
@@ -746,12 +758,14 @@ WatchListDetail.propTypes = exact({
   backendURL: PropTypes.string.isRequired,
   BrokenImageIcon: PropTypes.object.isRequired,
   CancelIcon: PropTypes.object.isRequired,
-  isAdding: PropTypes.bool.isRequired,
   EditIcon: PropTypes.object.isRequired,
+  isAdding: PropTypes.bool.isRequired,
   isEditing: PropTypes.bool.isRequired,
+  isIMDBSearchEnabled: PropTypes.bool.isRequired,
   newWatchListItemDtlID: PropTypes.number,
   ratingMax: PropTypes.number.isRequired,
   SaveIcon: PropTypes.object.isRequired,
+  setActiveRoute: PropTypes.func.isRequired,
   setIsAdding: PropTypes.func.isRequired,
   setIsEditing: PropTypes.func.isRequired,
   setNewWatchListItemDtlID: PropTypes.func.isRequired,

@@ -18,12 +18,14 @@ const WatchList = ({
   CancelIcon,
   isAdding,
   EditIcon,
+  isIMDBSearchEnabled,
   isEditing,
   isLoggedIn,
   newWatchListItemDtlID,
   ratingMax,
   SaveIcon,
   searchTerm,
+  setActiveRoute,
   setIsAdding,
   setIsEditing,
   setNewWatchListItemDtlID,
@@ -52,12 +54,14 @@ const WatchList = ({
   CancelIcon: typeof MuiIcon,
   isAdding: boolean,
   EditIcon: typeof MuiIcon,
+  isIMDBSearchEnabled: boolean,
   isEditing: boolean,
   isLoggedIn: boolean,
   newWatchListItemDtlID: number,
   ratingMax: number,
   SaveIcon: typeof MuiIcon,
   searchTerm: string,
+  setActiveRoute: (arg0: string) => void,
   setIsAdding: (arg0: boolean) => void,
   setIsEditing: (arg0: boolean) => void,
   setNewWatchListItemDtlID: (arg0: number) => void,
@@ -223,9 +227,11 @@ const WatchList = ({
           EditIcon={EditIcon}
           isAdding={isAdding}
           isEditing={isEditing}
+          isIMDBSearchEnabled={isIMDBSearchEnabled}
           newWatchListItemDtlID={newWatchListItemDtlID}
           ratingMax={ratingMax}
           SaveIcon={SaveIcon}
+          setActiveRoute={setActiveRoute}
           setIsAdding={setIsAdding}
           setIsEditing={setIsEditing}
           setNewWatchListItemDtlID={setNewWatchListItemDtlID}
@@ -252,12 +258,14 @@ WatchList.propTypes = exact({
   CancelIcon: PropTypes.object.isRequired,
   isAdding: PropTypes.bool.isRequired,
   EditIcon: PropTypes.object.isRequired,
+  isIMDBSearchEnabled: PropTypes.bool.isRequired,
   isEditing: PropTypes.bool.isRequired,
   isLoggedIn: PropTypes.bool.isRequired,
   newWatchListItemDtlID: PropTypes.number,
   ratingMax: PropTypes.number.isRequired,
   SaveIcon: PropTypes.object.isRequired,
   searchTerm: PropTypes.string.isRequired,
+  setActiveRoute: PropTypes.func.isRequired,
   setIsAdding: PropTypes.func.isRequired,
   setIsEditing: PropTypes.func.isRequired,
   setNewWatchListItemDtlID: PropTypes.func.isRequired,

@@ -1,4 +1,4 @@
-// NOTE: If you run this script in VS Docker, you HAVE to run the web app on port 8080 or websocket will stop working which breaks hot reloading
+// NOTE: If you run this script in VS Code in Docker, you HAVE to run the web app on port 8080 or websocket will stop working which breaks hot reloading
 //
 // FIX
 //
@@ -11,7 +11,6 @@
 //
 // Bundle is ~ 27MB. Sluggish overall in dev and console locks up when you open it for 20 - 30 seconds
 // SQLite is not encrypted. Look into sqlite encryption options
-// Create netflix importer
 const axios = require("axios");
 const useEffect = require("react").useEffect;
 const useState = require("react").useState;
@@ -404,7 +403,7 @@ const App = () => {
         .get(`${userData.BackendURL}/IsIMDBSearchEnabled`, { withCredentials: true })
         .then((res: typeof IimdbSearch) => {
           if (res.data === true) {
-            setIsIMDBSearchEnabled(true);
+               setIsIMDBSearchEnabled(true);
           }
 
           setIsIMDBSearchEnabledCheckComplete(true);
@@ -452,11 +451,13 @@ const App = () => {
           CancelIcon={CancelIconComponent}
           EditIcon={EditIconComponent}
           isEditing={isEditing}
+          isIMDBSearchEnabled={isIMDBSearchEnabled}
           isLoggedIn={isLoggedIn}
           newWatchListItemDtlID={newWatchListItemDtlID}
           ratingMax={ratingMax}
           SaveIcon={SaveIconComponent}
           searchTerm={searchTerm}
+          setActiveRoute={setActiveRoute}
           setIsAdding={setIsAdding}
           setIsEditing={setIsEditing}
           setNewWatchListItemDtlID={setNewWatchListItemDtlID}

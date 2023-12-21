@@ -1,4 +1,3 @@
-// move all sensitive info to external file. especially sqlite!!!
 "use strict";
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
@@ -26,28 +25,43 @@ const defaultSources = ['Amazon','Hulu','Movie Theatre','Netflix','Plex','Prime'
 const defaultTypes = ['Movie','Other','Special','TV'];
 
 // Validate config file properties that are required
-if (DBType === "MSSQL" && !config.has(`SQLServer.username`)) {
-  console.log(`Config file error: SQLServer.username property is missing`);
+if (DBType === "MSSQL" && (!config.has(`SQLServer.username`) || (config.has(`SQLServer.username`) && config.get(`SQLServer.username`) === "") )) {
+  console.log(`Config file error: SQLServer.username property is missing or not set`);
   process.exit(1);
 }
 
-if (DBType === "MSSQL" && !config.has(`SQLServer.password`)) {
-  console.log(`Config file error: SQLServer.password property is missing`);
+if (DBType === "MSSQL" && (!config.has(`SQLServer.password`) || (config.has(`SQLServer.password`) && config.get(`SQLServer.password`) === ""))) {
+  console.log(`Config file error: SQLServer.password property is missing or not set`);
   process.exit(1);
 }
 
-if (DBType === "MSSQL" && !config.has(`SQLServer.host`)) {
-  console.log(`Config file error: SQLServer.host property is missing`);
+if (DBType === "MSSQL" && (!config.has(`SQLServer.host`) || (config.has(`SQLServer.host`) && config.get(`SQLServer.host`) === ""))) {
+  console.log(`Config file error: SQLServer.host property is missing or not set`);
   process.exit(1);
 }
 
-if (DBType === "MSSQL" && !config.has(`SQLServer.database`)) {
-  console.log(`Config file error: SQLServer.database property is missing`);
+if (DBType === "MSSQL" && (!config.has(`SQLServer.database`) || (config.has(`SQLServer.database`) && config.get(`SQLServer.database`) === ""))) {
+  console.log(`Config file error: SQLServer.database property is missing or not set`);
   process.exit(1);
 }
 
-if (!config.has(`Secret`)) {
-  console.log(`Config file error: Secret property is missing`);
+if (DBType === "SQLite" && (!config.has(`SQLite.username`) || (config.has(`SQLite.username`) && config.get(`SQLite.username`) === ""))) {
+  console.log(`Config file error: SQLite.username property is missing or not set`);
+  process.exit(1);
+}
+
+if (DBType === "SQLite" && (!config.has(`SQLite.password`) || (config.has(`SQLite.password`) && config.get(`SQLite.password`) === ""))) {
+  console.log(`Config file error: SQLite.password property is missing or not set`);
+  process.exit(1);
+}
+
+if (DBType === "SQLite" && (!config.has(`SQLite.database`) || (config.has(`SQLite.database`) && config.get(`SQLite.database`) === ""))) {
+  console.log(`Config file error: SQLite.database property is missing or not set`);
+  process.exit(1);
+}
+
+if (!config.has(`Secret`) || (config.has(`Secret`) && config.get(`Secret`) === "")) {
+  console.log(`Config file error: Secret property is missing or not set`);
   process.exit(1);
 }
 
@@ -243,7 +257,7 @@ const swaggerOptions = {
 };
 
 // SQLite
-const SQLiteSequelize = new Sequelize("WatchList", "watchlist_user", "wlp123!@#04F", {
+const SQLiteSequelize = new Sequelize(config.get(`SQLite.database`), config.get(`SQLite.username`), config.get(`SQLite.password`), {
   dialect: "sqlite",
   storage: DBFile,
   logging: false

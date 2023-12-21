@@ -5,8 +5,13 @@
           "host": "",
           "database": ""
      },
-     "CORS": ["http://localhost:8080"],
+     "SQLite": {
+          "username": "",
+          "password": "",
+          "database": ""
+     },
      "Port": "8080",
+     "CORS": ["http://localhost:8080"],
      "Secret": "yoursecretpassword",
      "RapidAPIKey": ""
 }

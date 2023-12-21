@@ -67,6 +67,20 @@ const WatchListDetail = ({ backendURL, BrokenImageIcon, CancelIcon, isAdding, Ed
      };
 
      const addNewChangeHandler= () => {
+          if (addModified && (addWatchListDtl.WatchListItemID !== "-1" || addWatchListDtl.StartDate !== "" || addWatchListDtl.EndDate !== "" || addWatchListDtl.WatchListSourceID !== "-1" || addWatchListDtl.Season !== "" || addWatchListDtl.Rating !== "0" || addWatchListDtl.Notes !== "")) {
+               const confirmLeave = confirm("You have started to add a record. Are you sure you weant to leave ?");
+
+               if (!confirmLeave) {
+                    return;
+               }
+          } else if (editModified) {
+               const confirmLeave = confirm("You have edited this record. Save it now ?");
+
+               if (confirmLeave) {
+                    updateWatchList(true);
+               }
+          }
+
           closeDetail();
           setActiveRoute("/IMDBSearch");
      };
@@ -78,6 +92,8 @@ const WatchListDetail = ({ backendURL, BrokenImageIcon, CancelIcon, isAdding, Ed
           newAddWatchListDtl.IsModified = true;
 
           setAddWatchListDtl(newAddWatchListDtl);
+
+          setAddModified(true);
      };
 
      const autoCompleteChangeHandler = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
@@ -95,12 +111,14 @@ const WatchListDetail = ({ backendURL, BrokenImageIcon, CancelIcon, isAdding, Ed
                     newAddWatchListDtl["WatchListItemID"] = watchListItem[0].WatchListItemID;
                     newAddWatchListDtl["WatchListItem"] = watchListItem[0];
                     setAddWatchListDtl(newAddWatchListDtl);
+                    setAddModified(true);
                } else if (isEditing) {
                     const newWatchListDtl = Object.assign({}, watchListDtl);
                     newWatchListDtl["WatchListItemID"] = watchListItem[0].WatchListItemID;
                     newWatchListDtl["WatchListItem"] = watchListItem[0];
                     newWatchListDtl[`WatchListItemIDIsModified`] = true;
                     setWatchListDtl(newWatchListDtl);
+                    setEditModified(true);
                }
 
                setAutoComplete("");
@@ -182,6 +200,10 @@ const WatchListDetail = ({ backendURL, BrokenImageIcon, CancelIcon, isAdding, Ed
      };
 
      const saveClickHandler = async () => {
+          updateWatchList(false);
+     };
+
+     const updateWatchList = (silent: boolean) => {
           if (watchListDtl.WatchListItemID === "-1") {
                alert("Please select the Movie or TV Show");
                return;
@@ -239,27 +261,27 @@ const WatchListDetail = ({ backendURL, BrokenImageIcon, CancelIcon, isAdding, Ed
 
           if (watchListDtl.NotesIsModified === true) {
                queryURL += `&Notes=${watchListDtl.Notes}`;
-           }
+          }
 
           if (queryURL != "") {
                queryURL = `${backendURL}/UpdateWatchList?WatchListID=${watchListDtl.WatchListID}${queryURL}`;
-  
+
                axios.put(queryURL).then((res: typeof IWatchListItem) => {
                     if (res.data[0] === "ERROR") {
                          alert(`The error ${res.data[1]} occurred while  updating the detail`);
                     } else {
                          setIsEditing(false);
-
-                         setEditModified(true);
                     }
                })
                .catch((err: Error) => {
-                    alert(`The error ${err.message} occurred while updating the detail`);
+                    if (!silent) {
+                         alert(`The error ${err.message} occurred while updating the detail`);
+                    }
                });
           } else {
                setIsEditing(false);
           }
-     };
+     }
 
      const saveNewClickHandler = async () => {
           if (addWatchListDtl.WatchListItemID === "-1") {
@@ -303,8 +325,6 @@ const WatchListDetail = ({ backendURL, BrokenImageIcon, CancelIcon, isAdding, Ed
                     setWatchListDtlID(res.data[1]);
 
                      setIsAdding(false);
-
-                     setAddModified(true);
                }
           })
           .catch((err: Error) => {
@@ -350,6 +370,8 @@ const WatchListDetail = ({ backendURL, BrokenImageIcon, CancelIcon, isAdding, Ed
           }
 
           setWatchListDtl(newWatchListDtl);
+
+          setEditModified(true);
      };
 
      useEffect(() => {

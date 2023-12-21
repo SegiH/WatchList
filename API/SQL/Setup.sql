@@ -22,7 +22,9 @@ CREATE TABLE [dbo].[Users](
 	[UserID] [int] IDENTITY(1,1) NOT NULL,
 	[Username] [varbinary](256) NOT NULL,
 	[Realname] [varbinary](256) NOT NULL,
-	[Password] [varbinary](256) NOT NULL
+	[Password] [varbinary](256) NOT NULL,
+        [Admin] INT NOT NULL,
+        [Enabled] INT NOT NULL
 ) ON [PRIMARY]
 GO
 

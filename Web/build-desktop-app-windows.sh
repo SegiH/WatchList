@@ -1,8 +1,14 @@
 #!/bin/bash
 
+if ! command -v wine64 &> /dev/null
+then
+    echo "wine64 could not be found and is required to build the Windows WatchList desktop app. Please install it using your package manager"
+    exit 1
+fi
+
 npm install
 
-npm run build-win --prod
+npm run build-linux --prod
 
 rm ../API/Web/*
 

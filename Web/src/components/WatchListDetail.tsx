@@ -51,6 +51,8 @@ const WatchListDetail = ({ backendURL, BrokenImageIcon, CancelIcon, isAdding, Ed
           watchListSources: typeof IWatchListSource
      }
   ) => {
+     const currentDate = new Date().toLocaleDateString();
+
      const [addWatchListDtl, setAddWatchListDtl] = useState(null);
      const [autoComplete, setAutoComplete] = useState(null);
      const [autoCompleteNames, setAutoCompleteNames] = useState(null);
@@ -67,7 +69,7 @@ const WatchListDetail = ({ backendURL, BrokenImageIcon, CancelIcon, isAdding, Ed
      };
 
      const addNewChangeHandler= () => {
-          if (addModified && (addWatchListDtl.WatchListItemID !== "-1" || addWatchListDtl.StartDate !== "" || addWatchListDtl.EndDate !== "" || addWatchListDtl.WatchListSourceID !== "-1" || addWatchListDtl.Season !== "" || addWatchListDtl.Rating !== "0" || addWatchListDtl.Notes !== "")) {
+          if (addModified && (addWatchListDtl.WatchListItemID !== "-1" || addWatchListDtl.StartDate !== getLocaleDate() || addWatchListDtl.EndDate !== "" || addWatchListDtl.WatchListSourceID !== "-1" || addWatchListDtl.Season !== "" || addWatchListDtl.Rating !== "0" || addWatchListDtl.Notes !== "")) {
                const confirmLeave = confirm("You have started to add a record. Are you sure you weant to leave ?");
 
                if (!confirmLeave) {
@@ -203,6 +205,76 @@ const WatchListDetail = ({ backendURL, BrokenImageIcon, CancelIcon, isAdding, Ed
           updateWatchList(false);
      };
 
+     const saveNewClickHandler = async () => {
+          if (addWatchListDtl.WatchListItemID === "-1") {
+               alert("Please select the Movie or TV Show");
+               return;
+          }
+
+          if (addWatchListDtl.StartDate === "") {
+               alert("Please enter the start date");
+               return;
+          }
+
+          if (addWatchListDtl.WatchListSourceID === "-1") {
+               alert("Please select the source");
+               return;
+          }
+
+          let queryURL = `${backendURL}/AddWatchList?WatchListItemID=${addWatchListDtl.WatchListItemID}&StartDate=${addWatchListDtl.StartDate.substring(0, 10)}&WatchListSourceID=${addWatchListDtl.WatchListSourceID}`;
+
+          if (addWatchListDtl.EndDate !== "") {
+               queryURL += `&EndDate=${addWatchListDtl.EndDate.substring(0, 10)}`;
+          }
+
+          if (addWatchListDtl.Season !== "") {
+               queryURL += `&Season=${addWatchListDtl.Season}`;
+          }
+
+          if (addWatchListDtl.Rating != "0") {
+               queryURL += `&Rating=${addWatchListDtl.Rating}`;
+          }
+
+          if (addWatchListDtl.Notes !== "") {
+               queryURL += `&Notes=${addWatchListDtl.Notes}`;
+          }
+
+          axios.put(queryURL).then((res: typeof IWatchListItem) => {
+               if (res.data[0] === "ERROR") {
+                    alert(`The error ${res.data[1]} occurred while  adding the detail`);
+               } else {
+                    //Update data
+                    setWatchListDtlID(res.data[1]);
+
+                     setIsAdding(false);
+               }
+          })
+          .catch((err: Error) => {
+               alert(`The error ${err.message} occurred while adding the detail`);
+          });
+     };
+
+     const startEditing = () => {
+          setOriginalWatchListDtl(watchListDtl);
+          setIsEditing(!isEditing);
+     };
+
+     const showDefaultSrc = () => {
+          if (isAdding) {
+               const newAddWatchListDtl = Object.assign([], addWatchListDtl);
+
+               newAddWatchListDtl["IMDB_Poster_Error"] = true;
+
+               setAddWatchListDtl(newAddWatchListDtl);
+          } else {
+               const newWatchListDtl = Object.assign([], watchListDtl);
+
+               newWatchListDtl["IMDB_Poster_Error"] = true;
+
+               setWatchListDtl(newWatchListDtl);
+          }
+     };
+
      const updateWatchList = (silent: boolean) => {
           if (watchListDtl.WatchListItemID === "-1") {
                alert("Please select the Movie or TV Show");
@@ -283,76 +355,6 @@ const WatchListDetail = ({ backendURL, BrokenImageIcon, CancelIcon, isAdding, Ed
           }
      }
 
-     const saveNewClickHandler = async () => {
-          if (addWatchListDtl.WatchListItemID === "-1") {
-               alert("Please select the Movie or TV Show");
-               return;
-          }
-
-          if (addWatchListDtl.StartDate === "") {
-               alert("Please enter the start date");
-               return;
-          }
-
-          if (addWatchListDtl.WatchListSourceID === "-1") {
-               alert("Please select the source");
-               return;
-          }
-
-          let queryURL = `${backendURL}/AddWatchList?WatchListItemID=${addWatchListDtl.WatchListItemID}&StartDate=${addWatchListDtl.StartDate.substring(0, 10)}&WatchListSourceID=${addWatchListDtl.WatchListSourceID}`;
-
-          if (addWatchListDtl.EndDate !== "") {
-               queryURL += `&EndDate=${addWatchListDtl.EndDate.substring(0, 10)}`;
-          }
-
-          if (addWatchListDtl.Season !== "") {
-               queryURL += `&Season=${addWatchListDtl.Season}`;
-          }
-
-          if (addWatchListDtl.Rating != "0") {
-               queryURL += `&Rating=${addWatchListDtl.Rating}`;
-          }
-
-          if (addWatchListDtl.Notes !== "") {
-               queryURL += `&Notes=${addWatchListDtl.Notes}`;
-          }
-
-          axios.put(queryURL).then((res: typeof IWatchListItem) => {
-               if (res.data[0] === "ERROR") {
-                    alert(`The error ${res.data[1]} occurred while  adding the detail`);
-               } else {
-                    //Update data
-                    setWatchListDtlID(res.data[1]);
-
-                     setIsAdding(false);
-               }
-          })
-          .catch((err: Error) => {
-               alert(`The error ${err.message} occurred while adding the detail`);
-          });
-     };
-
-     const startEditing = () => {
-          setOriginalWatchListDtl(watchListDtl);
-          setIsEditing(!isEditing);
-     };
-
-     const showDefaultSrc = () => {
-          if (isAdding) {
-               const newAddWatchListDtl = Object.assign([], addWatchListDtl);
-
-               newAddWatchListDtl["IMDB_Poster_Error"] = true;
-
-               setAddWatchListDtl(newAddWatchListDtl);
-          } else {
-               const newWatchListDtl = Object.assign([], watchListDtl);
-
-               newWatchListDtl["IMDB_Poster_Error"] = true;
-
-               setWatchListDtl(newWatchListDtl);
-          }
-     };
-
      const watchListDetailChangeHandler = (fieldName: string, fieldValue: boolean | string) => {
           const newWatchListDtl = Object.assign({}, watchListDtl);
 
@@ -373,6 +375,19 @@ const WatchListDetail = ({ backendURL, BrokenImageIcon, CancelIcon, isAdding, Ed
 
           setEditModified(true);
      };
+
+     const getLocaleDate = () => {
+          const dateSpl = currentDate.split("/");
+
+          if (navigator.languages.includes("en-US")) { // Date is in format mm/dd/yyyy
+               return `${dateSpl[2]}-${dateSpl[0]}-${dateSpl[1]}`;
+          } else { // Date is in format dd/mm/yyyy
+               try {
+                    return `${dateSpl[2]}-${dateSpl[1]}-${dateSpl[0]}`;
+               } catch(e) {}
+          }
+
+     }
 
      useEffect(() => {
           if (!watchListDtlLoadingStarted && !watchListDtlLoadingComplete && watchListDtlID !== null && watchListDtlID !== -1 && !isNaN(watchListDtlID)) {
@@ -401,18 +416,7 @@ const WatchListDetail = ({ backendURL, BrokenImageIcon, CancelIcon, isAdding, Ed
           } else if (isAdding) {
                const newAddWatchListDtl : typeof IWatchList = {};
                newAddWatchListDtl.WatchListItemID = newWatchListItemDtlID !== null ? newWatchListItemDtlID : "-1";
-
-               const currentDate = new Date().toLocaleDateString();
-               const dateSpl = currentDate.split("/");
-
-               if (navigator.languages.includes("en-US")) { // Date is in format mm/dd/yyyy
-                    newAddWatchListDtl.StartDate = `${dateSpl[2]}-${dateSpl[0]}-${dateSpl[1]}`;
-               } else { // Date is in format dd/mm/yyyy
-                    try {
-                         newAddWatchListDtl.StartDate = `${dateSpl[2]}-${dateSpl[1]}-${dateSpl[0]}`;
-                    } catch(e) {}
-               }
-
+               newAddWatchListDtl.StartDate = getLocaleDate();
                newAddWatchListDtl.EndDate = "";
                newAddWatchListDtl.WatchListSourceID = "-1";
                newAddWatchListDtl.Season = "";

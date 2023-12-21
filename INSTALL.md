@@ -2,6 +2,19 @@ WatchList can be set up to run as a web application with or without Docker.
 
 It has 2 parts to it: The web application and a backend service that needs to be installed separately from the web application which interacts with the database.
 
+# Setup
+
+## Quick Setup
+
+If you want to start using WatchList as quickly as possible, you can use the release builds from [Github](https://github.com/SegiH/WatchList) which will use SQLite as the database.
+
+1. Download the WatchList-Web.zip version and install it on your web server (Apache and Nginx tested) or download one of the Electron based builds for your operating system (Windows, Mac and Linux supported).
+1. Download the WatchList-Backend.zip.
+1. Follow the instructions below under the heading "Setup WatchList Backend (Complete this step if you are NOT using Docker)".
+1. Run the backend service with Node on your server. It should be running on port 8080.
+1. Follow the instructions below under the heading "Logging in for the first time".
+
+
 # RapidAPI
 WatchList has the ability to let you to search for a movie or tv show on IMDB.com. To do this, you need to create a free RAPIDAPI Key. 
 
@@ -17,9 +30,8 @@ a. Visit [RapidAPI](rapidapi.com) and create a free account.
      h. Click on the eye icon to show your API key and copy it to the clipboard.
      i. Add a variable in the compose file RAPIDAPIKEY=APIKEY
 
-If you do not want to create a RapidAPI account, you don't have to but when you want to add a movie or TV show, you will have to manually enter the name, IMDB link , artwork link and type.
+If you do not want to create a RapidAPI account, you don't have to but when you want to add a movie or TV show, you will have to manually enter the name, IMDB link, link to the poster image and type.
 
-# Setup
 
 ## Setting up WatchList database for SQL Server (Optional: Skip this step if you want to use the default SQLite3 database)
 1. Create database with the name WatchList in SQL Server.
@@ -57,7 +69,6 @@ If you do not want to create a RapidAPI account, you don't have to but when you 
    - Secret: Enter a random string of letters and numbers. This can be any random string.
    - RapidAPIKey: Your RapidAPIKey if you have one. Leave blank otherwise
 1. Run `npm install`
-1. If you want to run the Web application on the same computer as the backend, edit `watchlistbackend.js` and change the port on the line that says `const PORT = 8080;` to a different PORT. The web frontend runs on port 8080.
 1. Run `node watchlistbackend.js`
 1. You should see the message `Running on http://YOURIP:8080`
 

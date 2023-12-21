@@ -152,6 +152,19 @@ const WatchListDetail = ({ backendURL, BrokenImageIcon, CancelIcon, isAdding, Ed
           setWatchListDtlID(null);
      };
 
+     const getLocaleDate = () => {
+          const dateSpl = currentDate.split("/");
+
+          if (navigator.languages.includes("en-US")) { // Date is in format mm/dd/yyyy
+               return `${dateSpl[2]}-${dateSpl[0]}-${dateSpl[1]}`;
+          } else { // Date is in format dd/mm/yyyy
+               try {
+                    return `${dateSpl[2]}-${dateSpl[1]}-${dateSpl[0]}`;
+               } catch(e) {}
+          }
+
+     }
+
      const getWatchListTypeID = (watchListItemID: number) => {
           const results = watchListItems?.filter((watchListItem: typeof IWatchListItem) => {
                return String(watchListItem.WatchListItemID) === String(watchListItemID);
@@ -375,19 +388,6 @@ const WatchListDetail = ({ backendURL, BrokenImageIcon, CancelIcon, isAdding, Ed
 
           setEditModified(true);
      };
-
-     const getLocaleDate = () => {
-          const dateSpl = currentDate.split("/");
-
-          if (navigator.languages.includes("en-US")) { // Date is in format mm/dd/yyyy
-               return `${dateSpl[2]}-${dateSpl[0]}-${dateSpl[1]}`;
-          } else { // Date is in format dd/mm/yyyy
-               try {
-                    return `${dateSpl[2]}-${dateSpl[1]}-${dateSpl[0]}`;
-               } catch(e) {}
-          }
-
-     }
 
      useEffect(() => {
           if (!watchListDtlLoadingStarted && !watchListDtlLoadingComplete && watchListDtlID !== null && watchListDtlID !== -1 && !isNaN(watchListDtlID)) {

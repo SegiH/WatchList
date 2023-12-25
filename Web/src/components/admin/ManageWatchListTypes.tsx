@@ -9,153 +9,165 @@ const IWatchListType = require("../../interfaces/IWatchListType");
 const MuiIcon = require("@mui/icons-material").MuiIcon;
 const PropTypes = require("prop-types");
 const React = require("react");
-const useEffect = require("react").useEffect;
 const useState = require("react").useState;
 
 const ManageWatchListTypes = ({backendURL, CancelIcon, EditIcon, SaveIcon, setIsAdding, setIsEditing, setWatchListTypes, setWatchListTypesLoadingComplete, setWatchListTypesLoadingStarted, watchListTypes }
-  :
-  {backendURL: string, CancelIcon: typeof MuiIcon, EditIcon: typeof MuiIcon, SaveIcon: typeof MuiIcon, setIsAdding: (arg0: boolean) => void, setIsEditing: (arg0: boolean) => void, setWatchListTypes: (arg0: typeof IWatchListType) => void, setWatchListTypesLoadingComplete: (arg0: boolean) => void, setWatchListTypesLoadingStarted: (arg0: boolean) => void, watchListSources: typeof IWatchListType, watchListTypes: typeof IWatchListType}
-  ) => {
-  const [rowModesModel, setRowModesModel] = useState({});
-  const section = "Type";
+     :
+     {
+          backendURL: string,
+          CancelIcon: typeof MuiIcon,
+          EditIcon: typeof MuiIcon,
+          SaveIcon: typeof MuiIcon,
+          setIsAdding: (arg0: boolean) => void,
+          setIsEditing: (arg0: boolean) => void,
+          setWatchListTypes: (arg0: typeof IWatchListType) => void,
+          setWatchListTypesLoadingComplete: (arg0: boolean) => void,
+          setWatchListTypesLoadingStarted: (arg0: boolean) => void,
+          watchListSources: typeof IWatchListType,
+          watchListTypes: typeof IWatchListType
+     }) => {
+          const [rowModesModel, setRowModesModel] = useState({});
+          const section = "Type";
 
-  const cancelRowEditClickHandler = (id: number) => () => {
-    setRowModesModel({
-      ...rowModesModel,
-      [id]: { mode: GridRowModes.View, ignoreModifications: true },
-    });
+          const cancelRowEditClickHandler = (id: number) => () => {
+               setRowModesModel({
+                    ...rowModesModel,
+                    [id]: { mode: GridRowModes.View, ignoreModifications: true },
+               });
 
-    const editedRow = watchListTypes.find((row: typeof IWatchListType) => row.WatchListTypeID === id);
+               const editedRow = watchListTypes.find((row: typeof IWatchListType) => row.WatchListTypeID === id);
 
-    if (editedRow.isNew) {
-        setWatchListTypes(watchListTypes.filter((row: typeof IWatchListType) => row.WatchListTypeID !== id));
-    }
+               if (editedRow.isNew) {
+                    setWatchListTypes(watchListTypes.filter((row: typeof IWatchListType) => row.WatchListTypeID !== id));
+               }
 
-    setIsAdding(false);
-    setIsEditing(false);
-  };
+               setIsAdding(false);
+               setIsEditing(false);
+          };
 
-  const enterEditModeClickHandler = (id: number) => () => {
-    setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } });
+          const enterEditModeClickHandler = (id: number) => () => {
+               setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } });
 
-    setIsEditing(true);
-  };
+               setIsEditing(true);
+          };
 
-  const processRowUpdateHandler = (newRow: typeof IWatchListType) => {
-    // validate rows
-    if (typeof newRow.WatchListTypeName === "undefined" || newRow.WatchListTypeName === "") {
-      alert("Please enter the type name");
+          const processRowUpdateHandler = (newRow: typeof IWatchListType) => {
+               // validate rows
+               if (typeof newRow.WatchListTypeName === "undefined" || newRow.WatchListTypeName === "") {
+                    alert("Please enter the type name");
 
-      setRowModesModel({ ...rowModesModel, [newRow.WatchListTypeID]: { mode: GridRowModes.Edit } });
+                    setRowModesModel({ ...rowModesModel, [newRow.WatchListTypeID]: { mode: GridRowModes.Edit } });
 
-      return;
-    }
+                    return;
+               }
 
-    let columns = ``;
+               let columns = ``;
 
-    if (newRow.isNew !== true) {
-      columns = `?WatchListTypeID=${newRow.WatchListTypeID}&WatchListTypeName=${encodeURIComponent(newRow.WatchListTypeName)}`;
-    } else {
-      columns = `?WatchListTypeName=${encodeURIComponent(newRow.WatchListTypeName)}`;
-    }
+               if (newRow.isNew !== true) {
+                    columns = `?WatchListTypeID=${newRow.WatchListTypeID}&WatchListTypeName=${encodeURIComponent(newRow.WatchListTypeName)}`;
+               } else {
+                    columns = `?WatchListTypeName=${encodeURIComponent(newRow.WatchListTypeName)}`;
+               }
 
-    const endPoint = (newRow.isNew == true ? `${backendURL}/AddWatchListType` : `${backendURL}/UpdateWatchListType`) + columns;
+               const endPoint = (newRow.isNew == true ? `${backendURL}/AddWatchListType` : `${backendURL}/UpdateWatchListType`) + columns;
 
-    axios
-      .put(endPoint, { withCredentials: true })
-      .then((response: typeof IWatchListType) => {
-        if (response !== null && response.data !== null && response.data[0] === "OK") {
-          alert("Saved");
+               axios.put(endPoint, { withCredentials: true })
+               .then((response: typeof IWatchListType) => {
+                    if (response !== null && response.data !== null && response.data[0] === "OK") {
+                         alert("Saved");
 
-          setWatchListTypesLoadingStarted(false);
-          setWatchListTypesLoadingComplete(false);
+                         setWatchListTypesLoadingStarted(false);
+                         setWatchListTypesLoadingComplete(false);
 
-          setIsEditing(false);
-        } else {
-          alert(response.data[1]);
-        }
-      })
-      .catch((err: Error) => {
-        alert("Failed to update types with the error " + err.message);
-      });
+                         setIsEditing(false);
+                    } else {
+                         alert(response.data[1]);
+                    }
+               })
+               .catch((err: Error) => {
+                    alert("Failed to update types with the error " + err.message);
+               });
 
-    return newRow;
-  };
+               return newRow;
+          };
 
-  const processRowUpdateErrorHandler = React.useCallback((error: Error) => {}, []);
+          const processRowUpdateErrorHandler = React.useCallback((error: Error) => {}, []);
 
-  const startRowEditingClickHandler = (params: typeof IWatchListType, event: typeof GridEventListener) => {
-    event.defaultMuiPrevented = true;
-  };
+          const startRowEditingClickHandler = (params: typeof IWatchListType, event: typeof GridEventListener) => {
+               event.defaultMuiPrevented = true;
+          };
 
-  const stopRowEditingClickHandler = (params: typeof IWatchListType, event: typeof GridEventListener) => {
-    event.defaultMuiPrevented = true;
-  };
+          const stopRowEditingClickHandler = (params: typeof IWatchListType, event: typeof GridEventListener) => {
+               event.defaultMuiPrevented = true;
+          };
 
-  const saveRowEditClickHandler = (id: number) => async () => {
-    setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
-  };
+          const saveRowEditClickHandler = (id: number) => async () => {
+               setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
+          };
 
-  const columns = [
-    { field: "WatchListTypeID", headerName: "ID", width: 70 },
-    {
-      field: "WatchListTypeName",
-      headerName: "Type name",
-      editable: true,
-      width: 150,
-    },
-    {
-      field: "actions",
-      type: "actions",
-      headerName: "Actions",
-      width: 100,
-      cellClassName: "actions",
-      getActions: ({ id } : { id: number }) => {
-        const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
-        if (isInEditMode) {
-          return [<GridActionsCellItem icon={<SaveIcon />} className="icon" label="Save" onClick={saveRowEditClickHandler(id)} />, <GridActionsCellItem icon={<CancelIcon />} label="Cancel" className="icon textPrimary" onClick={cancelRowEditClickHandler(id)} color="inherit" />];
-        }
+          const columns = [
+               {
+                    field: "WatchListTypeID",
+                    headerName: "ID",
+                    width: 70
+               },
+               {
+                    field: "WatchListTypeName",
+                    headerName: "Type name",
+                    editable: true,
+                    width: 150,
+               },
+               {
+                    field: "actions",
+                    type: "actions",
+                    headerName: "Actions",
+                    width: 100,
+                    cellClassName: "actions",
+                    getActions: ({ id } : { id: number }) => {
+                         const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
+        
+                         if (isInEditMode) {
+                              return [<GridActionsCellItem icon={<SaveIcon />} className="icon" label="Save" onClick={saveRowEditClickHandler(id)} />, <GridActionsCellItem icon={<CancelIcon />} label="Cancel" className="icon textPrimary" onClick={cancelRowEditClickHandler(id)} color="inherit" />];
+                         }
 
-        return [<GridActionsCellItem icon={<EditIcon />} label="Edit" className="icon textPrimary" onClick={enterEditModeClickHandler(id)} color="inherit" />];
-      },
-    },
-  ];
+                         return [<GridActionsCellItem icon={<EditIcon />} label="Edit" className="icon textPrimary" onClick={enterEditModeClickHandler(id)} color="inherit" />];
+                    },
+               },
+          ];
 
-  return (
-    <>
-      <DataGrid
-        rows={watchListTypes}
-        columns={columns}
-        editMode="row"
-        getRowId={(row: typeof IWatchListType) => row.WatchListTypeID}
-        rowModesModel={rowModesModel}
-        onRowEditStart={startRowEditingClickHandler}
-        onRowEditStop={stopRowEditingClickHandler}
-        processRowUpdate={processRowUpdateHandler}
-        onProcessRowUpdateError={processRowUpdateErrorHandler}
-        components={{
-          Toolbar: EditToolbar,
-        }}
-        componentsProps={{
-          toolbar: { section, setIsAdding, setWatchListTypes, setRowModesModel, watchListTypes },
-        }}
-        experimentalFeatures={{ newEditingApi: true }}
-      />
-    </>
-  );
+          return (
+               <DataGrid
+                    rows={watchListTypes}
+                    columns={columns}
+                    editMode="row"
+                    getRowId={(row: typeof IWatchListType) => row.WatchListTypeID}
+                    rowModesModel={rowModesModel}
+                    onRowEditStart={startRowEditingClickHandler}
+                    onRowEditStop={stopRowEditingClickHandler}
+                    processRowUpdate={processRowUpdateHandler}
+                    onProcessRowUpdateError={processRowUpdateErrorHandler}
+                    components={{
+                         Toolbar: EditToolbar,
+                    }}
+                    componentsProps={{
+                         toolbar: { section, setIsAdding, setWatchListTypes, setRowModesModel, watchListTypes },
+                    }}
+                    experimentalFeatures={{ newEditingApi: true }}
+               />
+          );
 };
 
 ManageWatchListTypes.propTypes = exact({
-  backendURL: PropTypes.string.isRequired,
-  CancelIcon: PropTypes.object.isRequired,
-  EditIcon: PropTypes.object.isRequired,
-  SaveIcon: PropTypes.object.isRequired,
-  setIsAdding: PropTypes.func.isRequired,
-  setIsEditing: PropTypes.func.isRequired,
-  setWatchListTypes: PropTypes.func.isRequired,
-  setWatchListTypesLoadingComplete: PropTypes.func.isRequired,
-  setWatchListTypesLoadingStarted: PropTypes.func.isRequired,
-  watchListTypes: PropTypes.array.isRequired,
+     backendURL: PropTypes.string.isRequired,
+     CancelIcon: PropTypes.object.isRequired,
+     EditIcon: PropTypes.object.isRequired,
+     SaveIcon: PropTypes.object.isRequired,
+     setIsAdding: PropTypes.func.isRequired,
+     setIsEditing: PropTypes.func.isRequired,
+     setWatchListTypes: PropTypes.func.isRequired,
+     setWatchListTypesLoadingComplete: PropTypes.func.isRequired,
+     setWatchListTypesLoadingStarted: PropTypes.func.isRequired,
+     watchListTypes: PropTypes.array.isRequired,
 });
 
 

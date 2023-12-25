@@ -10,232 +10,225 @@ const useState = require("react").useState;
 const WatchListItemDetail = require("./WatchListItemDetail").default;
 
 const WatchListItems = ({ AddIcon, archivedVisible, backendURL, BrokenImageIcon, CancelIcon, isAdding, EditIcon, isEditing, SaveIcon, searchTerm, setIsAdding, setIsEditing, setNewWatchListItemDtlID, setWatchListItems, setWatchListItemsLoadingComplete, setWatchListItemsLoadingStarted, setWatchListItemsSortingComplete, setWatchListLoadingComplete, setWatchListLoadingStarted, showMissingArtwork, typeFilter, watchListCount, watchListItems, watchListItemsLoadingComplete, watchListItemsSortingComplete, watchListSortColumn, watchListSortDirection, watchListTypes }
-  :
-  { AddIcon: typeof MuiIcon,
-    archivedVisible: boolean,
-    backendURL: string,
-    BrokenImageIcon: typeof MuiIcon,
-    CancelIcon: typeof MuiIcon,
-    isAdding: boolean,
-    EditIcon: typeof MuiIcon,
-    isEditing: boolean,
-    SaveIcon: typeof MuiIcon,
-    searchTerm: string,
-    setIsAdding: (arg0: boolean) => void,
-    setIsEditing: (arg0: boolean) => void,
-    setNewWatchListItemDtlID: (arg0: number) => void,
-    setWatchListItems: (arg0: typeof IWatchListItem) => void,
-    setWatchListItemsLoadingComplete: (arg0: boolean) => void,
-    setWatchListItemsLoadingStarted: (arg0: boolean) => void,
-    setWatchListItemsSortingComplete: (arg0: boolean) => void,
-    setWatchListLoadingComplete: (arg0: boolean) => void,
-    setWatchListLoadingStarted: (arg0: boolean) => void,
-    showMissingArtwork: boolean,
-    typeFilter: string,
-    watchListCount: number,
-    watchListItems: typeof IWatchListItem,
-    watchListItemsLoadingComplete: boolean,
-    watchListSortColumn: string,
-    watchListSortDirection: string,
-    watchListItemsSortingComplete: boolean,
-    watchListTypes: typeof IWatchListType
-    }
-  ) => {
-  const [watchListItemDtlID, setWatchListItemDtlID] = useState(null);
-  const openDetailClickHandler = (watchListItemID: number) => {
-    if (watchListItemID !== null) {
-      if (watchListItemID === -1) {
-        setIsAdding(true);
-      }
+     :
+     {
+          AddIcon: typeof MuiIcon,
+          archivedVisible: boolean,
+          backendURL: string,
+          BrokenImageIcon: typeof MuiIcon,
+          CancelIcon: typeof MuiIcon,
+          isAdding: boolean,
+          EditIcon: typeof MuiIcon,
+          isEditing: boolean,
+          SaveIcon: typeof MuiIcon,
+          searchTerm: string,
+          setIsAdding: (arg0: boolean) => void,
+          setIsEditing: (arg0: boolean) => void,
+          setNewWatchListItemDtlID: (arg0: number) => void,
+          setWatchListItems: (arg0: typeof IWatchListItem) => void,
+          setWatchListItemsLoadingComplete: (arg0: boolean) => void,
+          setWatchListItemsLoadingStarted: (arg0: boolean) => void,
+          setWatchListItemsSortingComplete: (arg0: boolean) => void,
+          setWatchListLoadingComplete: (arg0: boolean) => void,
+          setWatchListLoadingStarted: (arg0: boolean) => void,
+          showMissingArtwork: boolean,
+          typeFilter: string,
+          watchListCount: number,
+          watchListItems: typeof IWatchListItem,
+          watchListItemsLoadingComplete: boolean,
+          watchListSortColumn: string,
+          watchListSortDirection: string,
+          watchListItemsSortingComplete: boolean,
+          watchListTypes: typeof IWatchListType
+     }) => {
+          const [watchListItemDtlID, setWatchListItemDtlID] = useState(null);
 
-      setWatchListItemDtlID(watchListItemID);
-    }
-  };
+          const openDetailClickHandler = (watchListItemID: number) => {
+               if (watchListItemID !== null) {
+                    if (watchListItemID === -1) {
+                         setIsAdding(true);
+                    }
 
-  const setImageLoaded = (watchListItemID: number) => () : void => {
-    const newWatchListItems : typeof IWatchListItem = Object.assign(typeof WatchListItems, watchListItems);
+                    setWatchListItemDtlID(watchListItemID);
+               }
+          };
 
-    const currentWatchListItemsResult = newWatchListItems?.filter((currentWatchListItems: typeof IWatchListItem) => {
-      return String(currentWatchListItems.WatchListItemID) === String(watchListItemID);
-    });
+          const setImageLoaded = (watchListItemID: number) => () : void => {
+               const newWatchListItems : typeof IWatchListItem = Object.assign(typeof WatchListItems, watchListItems);
 
-    if (currentWatchListItemsResult === 0) {
-      // this shouldn't ever happen!
-      return null;
-    }
+               const currentWatchListItemsResult = newWatchListItems?.filter((currentWatchListItems: typeof IWatchListItem) => {
+                    return String(currentWatchListItems.WatchListItemID) === String(watchListItemID);
+               });
 
-    const currentWatchListItems = currentWatchListItemsResult[0];
+               if (currentWatchListItemsResult === 0) {
+                    // this shouldn't ever happen!
+                    return null;
+               }
 
-    currentWatchListItems["ImageLoaded"] = true;
+               const currentWatchListItems = currentWatchListItemsResult[0];
 
-    setWatchListItems(newWatchListItems);
-  };
+               currentWatchListItems["ImageLoaded"] = true;
 
-  const showDefaultSrc = (watchListItemID: number) => () : void => {
-    const newWatchListItems = Object.assign([], watchListItems);
+               setWatchListItems(newWatchListItems);
+          };
 
-    const currentWatchListItemsResult = newWatchListItems?.filter((currentWatchListItems: typeof IWatchListItem) => {
-      return String(currentWatchListItems.WatchListItemID) === String(watchListItemID);
-    });
+          const showDefaultSrc = (watchListItemID: number) => () : void => {
+               const newWatchListItems = Object.assign([], watchListItems);
 
-    if (currentWatchListItemsResult === 0) {
-      // this shouldn't ever happen!
-      return null;
-    }
+               const currentWatchListItemsResult = newWatchListItems?.filter((currentWatchListItems: typeof IWatchListItem) => {
+                    return String(currentWatchListItems.WatchListItemID) === String(watchListItemID);
+               });
 
-    const currentWatchListItems = currentWatchListItemsResult[0];
+               if (currentWatchListItemsResult === 0) {
+                    // this shouldn't ever happen!
+                    return null;
+               }
 
-    currentWatchListItems["IMDB_Poster_Error"] = true;
+               const currentWatchListItems = currentWatchListItemsResult[0];
 
-    setWatchListItems(newWatchListItems);
-  };
+               currentWatchListItems["IMDB_Poster_Error"] = true;
 
-  useEffect(() => {
-    if (!watchListItemsSortingComplete && watchListItemsLoadingComplete) {
-      const newWatchListItems = Object.assign([], watchListItems);
+               setWatchListItems(newWatchListItems);
+          };
 
-      newWatchListItems.sort((a: typeof IWatchListSortColumn, b: typeof IWatchListSortColumn) => {
-        switch (watchListSortColumn) {
-          case "ID":
-            return parseInt(a.WatchListItemID) > parseInt(b.WatchListItemID) ? (watchListSortDirection === "ASC" ? 1 : -1) : watchListSortDirection === "ASC" ? -1 : 1;
-          case "Name":
-            return String(a.WatchListItemName) > String(b.WatchListItemName) ? (watchListSortDirection === "ASC" ? 1 : -1) : watchListSortDirection === "ASC" ? -1 : 1;
-        }
-      });
+          useEffect(() => {
+               if (!watchListItemsSortingComplete && watchListItemsLoadingComplete) {
+                    const newWatchListItems = Object.assign([], watchListItems);
 
-      setWatchListItems(newWatchListItems);
-      setWatchListItemsSortingComplete(true);
-    }
-  }, [watchListItemsLoadingComplete, watchListItemsSortingComplete]);
+                    newWatchListItems.sort((a: typeof IWatchListSortColumn, b: typeof IWatchListSortColumn) => {
+                         switch (watchListSortColumn) {
+                              case "ID":
+                                   return parseInt(a.WatchListItemID) > parseInt(b.WatchListItemID) ? (watchListSortDirection === "ASC" ? 1 : -1) : watchListSortDirection === "ASC" ? -1 : 1;
+                              case "Name":
+                                   return String(a.WatchListItemName) > String(b.WatchListItemName) ? (watchListSortDirection === "ASC" ? 1 : -1) : watchListSortDirection === "ASC" ? -1 : 1;
+                         }
+                    });
 
-  useEffect(() => {
-    if (watchListCount === 0) {
-      setWatchListLoadingStarted(false);
-      setWatchListLoadingComplete(false);
-    }
+                    setWatchListItems(newWatchListItems);
+                    setWatchListItemsSortingComplete(true);
+               }
+           }, [watchListItemsLoadingComplete, watchListItemsSortingComplete]);
 
-    if (watchListItems.length === 0) {
-      setWatchListItemsLoadingStarted(false);
-      setWatchListItemsLoadingComplete(false);
-      setWatchListItemsSortingComplete(false);
-    }
-  }, []);
+           useEffect(() => {
+               if (watchListCount === 0) {
+                    setWatchListLoadingStarted(false);
+                    setWatchListLoadingComplete(false);
+               }
 
-  return (
-    <>
-      <span className="clickable customTopMargin" onClick={() => openDetailClickHandler(-1)}>
-        {AddIcon}
-      </span>
+               if (watchListItems.length === 0) {
+                    setWatchListItemsLoadingStarted(false);
+                    setWatchListItemsLoadingComplete(false);
+                    setWatchListItemsSortingComplete(false);
+               }
+          }, []);
 
-      <ul className="clickable show-list">
-        {watchListItems
-          ?.filter(
-            (currentWatchListItem: typeof IWatchListItem) =>
-              currentWatchListItem.Archived === archivedVisible &&
-              (searchTerm === "" || (searchTerm !== "" && (String(currentWatchListItem.WatchListItemName).toLowerCase().includes(searchTerm) || String(currentWatchListItem.IMDB_URL) == searchTerm || String(currentWatchListItem.IMDB_Poster) == searchTerm))) &&
-              (typeFilter === "-1" || (typeFilter !== "-1" && String(currentWatchListItem.WatchListTypeID) === String(typeFilter))) &&
-              (showMissingArtwork === false || (showMissingArtwork === true && currentWatchListItem.IMDB_Poster_Error === true)),
-          )
-          .map((currentWatchListItem: typeof IWatchListItem, index: number) => {
-            return (
-              <React.Fragment key={index}>
-                {watchListItemsSortingComplete && (
-                  <li className="show-item">
-                    <span className="item-id" onClick={() => openDetailClickHandler(currentWatchListItem.WatchListItemID)}>
-                      <div>{currentWatchListItem.WatchListItemID}</div>
+          return (
+               <>
+                    <span className="clickable customTopMargin" onClick={() => openDetailClickHandler(-1)}>
+                         {AddIcon}
                     </span>
 
-                    <a className="show-link" onClick={() => openDetailClickHandler(currentWatchListItem.WatchListItemID)}>
-                      <div className="image-crop">
-                        {currentWatchListItem.IMDB_Poster !== null && currentWatchListItem.IMDB_Poster_Error !== true && <img src={currentWatchListItem.IMDB_Poster} onLoad={() => setImageLoaded(currentWatchListItem.WatchListItemID)} onError={() => showDefaultSrc(currentWatchListItem.WatchListItemID)} />}
+                    <ul className="clickable show-list">
+                         {watchListItems?.filter(
+                              (currentWatchListItem: typeof IWatchListItem) =>
+                                   currentWatchListItem.Archived === archivedVisible &&
+                                   (searchTerm === "" || (searchTerm !== "" && (String(currentWatchListItem.WatchListItemName).toLowerCase().includes(searchTerm) || String(currentWatchListItem.IMDB_URL) == searchTerm || String(currentWatchListItem.IMDB_Poster) == searchTerm))) &&
+                                   (typeFilter === "-1" || (typeFilter !== "-1" && String(currentWatchListItem.WatchListTypeID) === String(typeFilter))) &&
+                                   (showMissingArtwork === false || (showMissingArtwork === true && currentWatchListItem.IMDB_Poster_Error === true)),
+                              )
+                         .map((currentWatchListItem: typeof IWatchListItem, index: number) => {
+                              return (
+                                   <React.Fragment key={index}>
+                                        {watchListItemsSortingComplete && (
+                                             <li className="show-item">
+                                                  <span className="item-id" onClick={() => openDetailClickHandler(currentWatchListItem.WatchListItemID)}>
+                                                       <div>{currentWatchListItem.WatchListItemID}</div>
+                                                  </span>
 
-                        {(currentWatchListItem.IMDB_Poster === null || currentWatchListItem.IMDB_Poster_Error === true) && <>{BrokenImageIcon}</>}
-                      </div>
-                    </a>
+                                                  <a className="show-link" onClick={() => openDetailClickHandler(currentWatchListItem.WatchListItemID)}>
+                                                       <div className="image-crop">
+                                                            {currentWatchListItem.IMDB_Poster !== null && currentWatchListItem.IMDB_Poster_Error !== true && <img src={currentWatchListItem.IMDB_Poster} onLoad={() => setImageLoaded(currentWatchListItem.WatchListItemID)} onError={() => showDefaultSrc(currentWatchListItem.WatchListItemID)} />}
 
-                    <div>
-                      {typeof currentWatchListItem.IMDB_URL !== "undefined" &&
-                           <a href={currentWatchListItem.IMDB_URL} target='_blank'>{currentWatchListItem.WatchListItemName}</a>
-                      }
+                                                            {(currentWatchListItem.IMDB_Poster === null || currentWatchListItem.IMDB_Poster_Error === true) && <>{BrokenImageIcon}</>}
+                                                       </div>
+                                                  </a>
 
-                      {typeof currentWatchListItem.IMDB_URL === "undefined" &&
-                           <div>
-                                {currentWatchListItem.WatchListItemName}
-                           </div>
-                      }
+                                                  <div>
+                                                       {typeof currentWatchListItem.IMDB_URL !== "undefined" &&
+                                                            <a href={currentWatchListItem.IMDB_URL} target='_blank'>{currentWatchListItem.WatchListItemName}</a>
+                                                       }
+
+                                                       {typeof currentWatchListItem.IMDB_URL === "undefined" &&
+                                                            <div>
+                                                                 {currentWatchListItem.WatchListItemName}
+                                                            </div>
+                                                       }
                       
-                      {currentWatchListItem.Archived === true ? " (A)" : ""}
-                    </div>
-                    <span>
-                      <div>{currentWatchListItem.WatchListType.WatchListTypeName}</div>
-                    </span>
+                                                       {currentWatchListItem.Archived === true ? " (A)" : ""}
+                                                  </div>
+                                                  
+                                                  <span>
+                                                       <div>{currentWatchListItem.WatchListType.WatchListTypeName}</div>
+                                                  </span>
+                                             </li>
+                                        )}
+                                   </React.Fragment>
+                              );
+                         })}
+                    </ul>
 
-                    {/*{currentWatchListItem.IMDB_URL != null && (
-                      <span>
-                        <a href={currentWatchListItem.IMDB_URL} target="_blank" title={currentWatchListItem.WatchListItemName}>
-                          IMDB
-                        </a>
-                      </span>
-                    )}*/}
-                  </li>
-                )}
-              </React.Fragment>
-            );
-          })}
-      </ul>
-
-      {watchListItemDtlID !== null && (
-        <WatchListItemDetail
-          backendURL={backendURL}
-          BrokenImageIcon={BrokenImageIcon}
-          CancelIcon={CancelIcon}
-          EditIcon={EditIcon}
-          isAdding={isAdding}
-          isEditing={isEditing}
-          SaveIcon={SaveIcon}
-          setIsAdding={setIsAdding}
-          setIsEditing={setIsEditing}
-          setNewWatchListItemDtlID={setNewWatchListItemDtlID}
-          setWatchListItemDtlID={setWatchListItemDtlID}
-          setWatchListItemsLoadingComplete={setWatchListItemsLoadingComplete}
-          setWatchListItemsLoadingStarted={setWatchListItemsLoadingStarted}
-          watchListItemDtlID={watchListItemDtlID}
-          watchListTypes={watchListTypes}
-        />
-      )}
-    </>
-  );
+                    {watchListItemDtlID !== null && (
+                         <WatchListItemDetail
+                              backendURL={backendURL}
+                              BrokenImageIcon={BrokenImageIcon}
+                              CancelIcon={CancelIcon}
+                              EditIcon={EditIcon}
+                              isAdding={isAdding}
+                              isEditing={isEditing}
+                              SaveIcon={SaveIcon}
+                              setIsAdding={setIsAdding}
+                              setIsEditing={setIsEditing}
+                              setNewWatchListItemDtlID={setNewWatchListItemDtlID}
+                              setWatchListItemDtlID={setWatchListItemDtlID}
+                              setWatchListItemsLoadingComplete={setWatchListItemsLoadingComplete}
+                              setWatchListItemsLoadingStarted={setWatchListItemsLoadingStarted}
+                              watchListItemDtlID={watchListItemDtlID}
+                              watchListTypes={watchListTypes}
+                         />
+                    )}
+               </>
+          );
 };
 
 WatchListItems.propTypes = exact({
-  AddIcon: PropTypes.object.isRequired,
-  archivedVisible: PropTypes.bool.isRequired,
-  backendURL: PropTypes.string.isRequired,
-  BrokenImageIcon: PropTypes.object.isRequired,
-  CancelIcon: PropTypes.object.isRequired,
-  isAdding: PropTypes.bool.isRequired,
-  EditIcon: PropTypes.object.isRequired,
-  isEditing: PropTypes.bool.isRequired,
-  SaveIcon: PropTypes.object.isRequired,
-  searchTerm: PropTypes.string.isRequired,
-  setIsAdding: PropTypes.func.isRequired,
-  setIsEditing: PropTypes.func.isRequired,
-  setNewWatchListItemDtlID: PropTypes.func.isRequired,
-  setWatchListItems: PropTypes.func.isRequired,
-  setWatchListLoadingComplete: PropTypes.func.isRequired,
-  setWatchListLoadingStarted: PropTypes.func.isRequired,
-  setWatchListItemsLoadingStarted: PropTypes.func.isRequired,
-  setWatchListItemsLoadingComplete: PropTypes.func.isRequired,
-  setWatchListItemsSortingComplete: PropTypes.func.isRequired,
-  showMissingArtwork: PropTypes.bool.isRequired,
-  typeFilter: PropTypes.string.isRequired,
-  watchListCount: PropTypes.number.isRequired,
-  watchListItems: PropTypes.array.isRequired,
-  watchListItemsLoadingComplete: PropTypes.bool.isRequired,
-  watchListItemsSortingComplete: PropTypes.bool.isRequired,
-  watchListSortColumn: PropTypes.string.isRequired,
-  watchListSortDirection: PropTypes.string.isRequired,
-  watchListTypes: PropTypes.array.isRequired,
+     AddIcon: PropTypes.object.isRequired,
+     archivedVisible: PropTypes.bool.isRequired,
+     backendURL: PropTypes.string.isRequired,
+     BrokenImageIcon: PropTypes.object.isRequired,
+     CancelIcon: PropTypes.object.isRequired,
+     isAdding: PropTypes.bool.isRequired,
+     EditIcon: PropTypes.object.isRequired,
+     isEditing: PropTypes.bool.isRequired,
+     SaveIcon: PropTypes.object.isRequired,
+     searchTerm: PropTypes.string.isRequired,
+     setIsAdding: PropTypes.func.isRequired,
+     setIsEditing: PropTypes.func.isRequired,
+     setNewWatchListItemDtlID: PropTypes.func.isRequired,
+     setWatchListItems: PropTypes.func.isRequired,
+     setWatchListLoadingComplete: PropTypes.func.isRequired,
+     setWatchListLoadingStarted: PropTypes.func.isRequired,
+     setWatchListItemsLoadingStarted: PropTypes.func.isRequired,
+     setWatchListItemsLoadingComplete: PropTypes.func.isRequired,
+     setWatchListItemsSortingComplete: PropTypes.func.isRequired,
+     showMissingArtwork: PropTypes.bool.isRequired,
+     typeFilter: PropTypes.string.isRequired,
+     watchListCount: PropTypes.number.isRequired,
+     watchListItems: PropTypes.array.isRequired,
+     watchListItemsLoadingComplete: PropTypes.bool.isRequired,
+     watchListItemsSortingComplete: PropTypes.bool.isRequired,
+     watchListSortColumn: PropTypes.string.isRequired,
+     watchListSortDirection: PropTypes.string.isRequired,
+     watchListTypes: PropTypes.array.isRequired,
 });
 
 export default WatchListItems;

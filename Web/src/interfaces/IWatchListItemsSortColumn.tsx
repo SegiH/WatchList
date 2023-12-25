@@ -1,4 +1,4 @@
-interface  IWatchListItemsSortColumn {
-    key: string,
-    value: string
+export default interface IWatchListItemsSortColumn {
+     key: string,
+     value: string
 }

@@ -306,7 +306,6 @@ app.use(cookieParser());
 app.use(
   cors({
     credentials: true,
-    //allowedHeaders: ['WL_Username', 'WL_Password','content-type'],
     methods: ['GET','OPTIONS','PUT'],
     origin: config.has(`CORS`) ? config.get(`CORS`) : [],
   }),

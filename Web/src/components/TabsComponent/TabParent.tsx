@@ -6,16 +6,23 @@ const React = require("react");
 const Tabs = require("./Tabs").default;
 
 const TabParent = ({ activeRoute, admin, defaultRoute, isIMDBSearchEnabled, isLoggedIn, isLoggedInCheckComplete, routeList, setActiveRoute, setActiveRouteDisplayName }
-  :
-  { activeRoute: string, admin: boolean, defaultRoute: string, isIMDBSearchEnabled: boolean, isLoggedIn: boolean, isLoggedInCheckComplete: boolean, routeList: typeof IRoute, setActiveRoute: (arg0: string) => void, setActiveRouteDisplayName: (arg0: string) => void }
-  ) => {
-  return (
-    <>
-         <HashRouter>
-              <Tabs activeRoute={activeRoute} admin={admin} defaultRoute={defaultRoute} isLoggedIn={isLoggedIn} isLoggedInCheckComplete={isLoggedInCheckComplete} isIMDBSearchEnabled={isIMDBSearchEnabled} routeList={routeList} setActiveRoute={setActiveRoute} setActiveRouteDisplayName={setActiveRouteDisplayName} />
-         </HashRouter>
-    </>
-  );
+     :
+     {
+          activeRoute: string,
+          admin: boolean,
+          defaultRoute: string,
+          isIMDBSearchEnabled: boolean,
+          isLoggedIn: boolean,
+          isLoggedInCheckComplete: boolean,
+          routeList: typeof IRoute,
+          setActiveRoute: (arg0: string) => void,
+          setActiveRouteDisplayName: (arg0: string) => void
+     }) => {
+          return (
+               <HashRouter>
+                    <Tabs activeRoute={activeRoute} admin={admin} defaultRoute={defaultRoute} isLoggedIn={isLoggedIn} isLoggedInCheckComplete={isLoggedInCheckComplete} isIMDBSearchEnabled={isIMDBSearchEnabled} routeList={routeList} setActiveRoute={setActiveRoute} setActiveRouteDisplayName={setActiveRouteDisplayName} />
+               </HashRouter>
+          );
 };
 
 TabParent.propTypes = exact({

@@ -12,150 +12,161 @@ const React = require("react");
 const useState = require("react").useState;
 
 const ManageWatchListSources = ({backendURL, CancelIcon, EditIcon, SaveIcon, setIsAdding, setIsEditing, setWatchListSources, setWatchListSourcesLoadingComplete, setWatchListSourcesLoadingStarted, watchListSources }
-  :
-  {backendURL: string, CancelIcon: typeof MuiIcon, EditIcon: typeof MuiIcon, SaveIcon: typeof MuiIcon, setIsAdding: (arg0: boolean) => void, setIsEditing: (arg0: boolean) => void, setWatchListSources: (arg0: typeof IWatchListSource) => void, setWatchListSourcesLoadingComplete: (arg0: boolean) => void, setWatchListSourcesLoadingStarted: (arg0: boolean) => void, watchListSources: typeof IWatchListSource}
-  ) => {
-  const [rowModesModel, setRowModesModel] = useState({});
-  const section = "Source";
+     :
+     {
+          backendURL: string,
+          CancelIcon: typeof MuiIcon,
+          EditIcon: typeof MuiIcon,
+          SaveIcon: typeof MuiIcon,
+          setIsAdding: (arg0: boolean) => void,
+          setIsEditing: (arg0: boolean) => void,
+          setWatchListSources: (arg0: typeof IWatchListSource) => void,
+          setWatchListSourcesLoadingComplete: (arg0: boolean) => void,
+          setWatchListSourcesLoadingStarted: (arg0: boolean) => void,
+          watchListSources: typeof IWatchListSource
+     }) => {
+          const [rowModesModel, setRowModesModel] = useState({});
+          const section = "Source";
 
-  const cancelRowEditClickHandler = (id: typeof IWatchListSource) => () => {
-    setRowModesModel({
-      ...rowModesModel,
-      [id]: { mode: GridRowModes.View, ignoreModifications: true },
-    });
+          const cancelRowEditClickHandler = (id: typeof IWatchListSource) => () => {
+               setRowModesModel({
+                    ...rowModesModel,
+                    [id]: { mode: GridRowModes.View, ignoreModifications: true },
+               });
 
-    const editedRow = watchListSources.find((row: typeof IWatchListSource) => row.WatchListSourceID === id);
+               const editedRow = watchListSources.find((row: typeof IWatchListSource) => row.WatchListSourceID === id);
 
-    if (editedRow.isNew) {
-        setWatchListSources(watchListSources.filter((row: typeof IWatchListSource) => row.WatchListSourceID !== id));
-    }
+               if (editedRow.isNew) {
+                    setWatchListSources(watchListSources.filter((row: typeof IWatchListSource) => row.WatchListSourceID !== id));
+               }
 
-    setIsAdding(false);
-    setIsEditing(false);
-  };
+               setIsAdding(false);
+               setIsEditing(false);
+          };
 
-  const enterEditModeClickHandler = (id: number) => () => {
-    setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } });
+          const enterEditModeClickHandler = (id: number) => () => {
+               setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } });
 
-    setIsEditing(true);
-  };
+               setIsEditing(true);
+          };
 
-  const processRowUpdateHandler = (newRow: typeof IWatchListSource) => {
-    // validate rows
-    if (typeof newRow.WatchListSourceName === "undefined" || newRow.WatchListSourceName === "") {
-      alert("Please enter the source name");
+          const processRowUpdateHandler = (newRow: typeof IWatchListSource) => {
+               // validate rows
+               if (typeof newRow.WatchListSourceName === "undefined" || newRow.WatchListSourceName === "") {
+                    alert("Please enter the source name");
 
-      setRowModesModel({ ...rowModesModel, [newRow.WatchListSourceID]: { mode: GridRowModes.Edit } });
+                    setRowModesModel({ ...rowModesModel, [newRow.WatchListSourceID]: { mode: GridRowModes.Edit } });
 
-      return;
-    }
+                    return;
+               }
 
-    let columns = ``;
+               let columns = ``;
 
-    if (newRow.isNew !== true) {
-      columns = `?WatchListSourceID=${newRow.WatchListSourceID}&WatchListSourceName=${encodeURIComponent(newRow.WatchListSourceName)}`;
-    } else {
-      columns = `?WatchListSourceName=${encodeURIComponent(newRow.WatchListSourceName)}`;
-    }
+               if (newRow.isNew !== true) {
+                    columns = `?WatchListSourceID=${newRow.WatchListSourceID}&WatchListSourceName=${encodeURIComponent(newRow.WatchListSourceName)}`;
+               } else {
+                    columns = `?WatchListSourceName=${encodeURIComponent(newRow.WatchListSourceName)}`;
+               }
 
-    const endPoint = (newRow.isNew == true ? `${backendURL}/AddWatchListSource` : `${backendURL}/UpdateWatchListSource`) + columns;
+               const endPoint = (newRow.isNew == true ? `${backendURL}/AddWatchListSource` : `${backendURL}/UpdateWatchListSource`) + columns;
 
-    axios
-      .put(endPoint, { withCredentials: true })
-      .then((response: typeof IWatchListSource) => {
-        if (response !== null && response.data !== null && response.data[0] === "OK") {
-          alert("Saved");
+               axios.put(endPoint, { withCredentials: true })
+               .then((response: typeof IWatchListSource) => {
+                    if (response !== null && response.data !== null && response.data[0] === "OK") {
+                         alert("Saved");
 
-          setWatchListSourcesLoadingStarted(false);
-          setWatchListSourcesLoadingComplete(false);
+                         setWatchListSourcesLoadingStarted(false);
+                         setWatchListSourcesLoadingComplete(false);
 
-          setIsEditing(false);
-        } else {
-          alert(response.data[1]);
-        }
-      })
-      .catch((err: Error) => {
-        alert("Failed to update sources with the error " + err.message);
-      });
+                         setIsEditing(false);
+                    } else {
+                         alert(response.data[1]);
+                    }
+               })
+               .catch((err: Error) => {
+                    alert("Failed to update sources with the error " + err.message);
+               });
 
-    return newRow;
-  };
+               return newRow;
+          };
 
-  const processRowUpdateErrorHandler = React.useCallback((error: Error) => {}, []);
+          const processRowUpdateErrorHandler = React.useCallback((error: Error) => {}, []);
 
-  const startRowEditingClickHandler = (params: typeof IWatchListSource, event: typeof GridEventListener) => {
-    event.defaultMuiPrevented = true;
-  };
+          const startRowEditingClickHandler = (params: typeof IWatchListSource, event: typeof GridEventListener) => {
+               event.defaultMuiPrevented = true;
+          };
 
-  const stopRowEditingClickHandler = (params: typeof IWatchListSource, event: typeof GridEventListener) => {
-    event.defaultMuiPrevented = true;
-  };
+          const stopRowEditingClickHandler = (params: typeof IWatchListSource, event: typeof GridEventListener) => {
+               event.defaultMuiPrevented = true;
+          };
 
-  const saveRowEditClickHandler = (id: number) => async () => {
-    setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
-  };
+          const saveRowEditClickHandler = (id: number) => async () => {
+               setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
+          };
 
-  const columns = [
-    { field: "WatchListSourceID", headerName: "ID", width: 70 },
-    {
-      field: "WatchListSourceName",
-      headerName: "Source name",
-      editable: true,
-      width: 150,
-    },
-    {
-      field: "actions",
-      type: "actions",
-      headerName: "Actions",
-      width: 100,
-      cellClassName: "actions",
-      getActions: ({ id } : { id: number }) => {
-        const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
-        if (isInEditMode) {
-          return [<GridActionsCellItem icon={<SaveIcon />} className="icon" label="Save" onClick={saveRowEditClickHandler(id)} />, <GridActionsCellItem icon={<CancelIcon />} label="Cancel" className="icon textPrimary" onClick={cancelRowEditClickHandler(id)} color="inherit" />];
-        }
+          const columns = [
+               {
+                    field: "WatchListSourceID",
+                    headerName: "ID",
+                    width: 70
+               },
+               {
+                    field: "WatchListSourceName",
+                    headerName: "Source name",
+                    editable: true,
+                    width: 150,
+               },
+               {
+                    field: "actions",
+                    type: "actions",
+                    headerName: "Actions",
+                    width: 100,
+                    cellClassName: "actions",
+                    getActions: ({ id } : { id: number }) => {
+                         const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
+                    
+                         if (isInEditMode) {
+                              return [<GridActionsCellItem icon={<SaveIcon />} className="icon" label="Save" onClick={saveRowEditClickHandler(id)} />, <GridActionsCellItem icon={<CancelIcon />} label="Cancel" className="icon textPrimary" onClick={cancelRowEditClickHandler(id)} color="inherit" />];
+                         }
 
-        return [<GridActionsCellItem icon={<EditIcon />} label="Edit" className="icon textPrimary" onClick={enterEditModeClickHandler(id)} color="inherit" />];
-      },
-    },
-  ];
+                         return [<GridActionsCellItem icon={<EditIcon />} label="Edit" className="icon textPrimary" onClick={enterEditModeClickHandler(id)} color="inherit" />];
+                    },
+               },
+          ];
 
-  return (
-    <>
-      <DataGrid
-        rows={watchListSources}
-        columns={columns}
-        editMode="row"
-        getRowId={(row: typeof IWatchListSource) => row.WatchListSourceID}
-        rowModesModel={rowModesModel}
-        onRowEditStart={startRowEditingClickHandler}
-        onRowEditStop={stopRowEditingClickHandler}
-        processRowUpdate={processRowUpdateHandler}
-        onProcessRowUpdateError={processRowUpdateErrorHandler}
-        components={{
-          Toolbar: EditToolbar,
-        }}
-        componentsProps={{
-          toolbar: { section, setIsAdding, setWatchListSources, setRowModesModel, watchListSources },
-        }}
-        experimentalFeatures={{ newEditingApi: true }}
-      />
-    </>
-  );
+          return (
+               <DataGrid
+                    rows={watchListSources}
+                    columns={columns}
+                    editMode="row"
+                    getRowId={(row: typeof IWatchListSource) => row.WatchListSourceID}
+                    rowModesModel={rowModesModel}
+                    onRowEditStart={startRowEditingClickHandler}
+                    onRowEditStop={stopRowEditingClickHandler}
+                    processRowUpdate={processRowUpdateHandler}
+                    onProcessRowUpdateError={processRowUpdateErrorHandler}
+                    components={{
+                         Toolbar: EditToolbar,
+                    }}
+                    componentsProps={{
+                         toolbar: { section, setIsAdding, setWatchListSources, setRowModesModel, watchListSources },
+                    }}
+                    experimentalFeatures={{ newEditingApi: true }}
+               />
+          );
 };
 
 ManageWatchListSources.propTypes = exact({
-  backendURL: PropTypes.string.isRequired,
-  CancelIcon: PropTypes.object.isRequired,
-  EditIcon: PropTypes.object.isRequired,
-  SaveIcon: PropTypes.object.isRequired,
-  setIsAdding: PropTypes.func.isRequired,
-  setIsEditing: PropTypes.func.isRequired,
-  setWatchListSources: PropTypes.func.isRequired,
-  setWatchListSourcesLoadingComplete: PropTypes.func.isRequired,
-  setWatchListSourcesLoadingStarted: PropTypes.func.isRequired,
-  watchListSources: PropTypes.array.isRequired,
+     backendURL: PropTypes.string.isRequired,
+     CancelIcon: PropTypes.object.isRequired,
+     EditIcon: PropTypes.object.isRequired,
+     SaveIcon: PropTypes.object.isRequired,
+     setIsAdding: PropTypes.func.isRequired,
+     setIsEditing: PropTypes.func.isRequired,
+     setWatchListSources: PropTypes.func.isRequired,
+     setWatchListSourcesLoadingComplete: PropTypes.func.isRequired,
+     setWatchListSourcesLoadingStarted: PropTypes.func.isRequired,
+     watchListSources: PropTypes.array.isRequired,
 });
-
 
 export default ManageWatchListSources;

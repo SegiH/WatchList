@@ -1,4 +1,4 @@
-interface WatchListType {
-    WatchListTypID: number,
-    WatchListTypName: string
+export default interface WatchListType {
+     WatchListTypID: number,
+     WatchListTypName: string
 }

@@ -14,124 +14,122 @@ const Recommendations = ({ backendURL, BrokenImageIcon, queryTerm, setRecommenda
           setRecommendationName: (arg0: string) => void,
           setRecommendationType: (arg0: string) => void,
           setRecommendationsVisible: (arg0: boolean) => void,
-          type: string}
-     ) => {          
-     const [recommendations, setRecommendations] = useState([]);
-     const [recommendationsError, setRecommendationsError] = useState(false);
-     const [recommendationsLoadingStarted, setRecommendationsLoadingStarted] = useState(false);
-     const [recommendationsLoadingComplete, setRecommendationsLoadingComplete] = useState(false);
+          type: string
+     }) => {          
+          const [recommendations, setRecommendations] = useState([]);
+          const [recommendationsError, setRecommendationsError] = useState(false);
+          const [recommendationsLoadingStarted, setRecommendationsLoadingStarted] = useState(false);
+          const [recommendationsLoadingComplete, setRecommendationsLoadingComplete] = useState(false);
 
-     const closeRecommendations = async () => {
-          setRecommendationName("");
-          setRecommendationType("");
-          setRecommendationsVisible(false);
-     }
+          const closeRecommendations = async () => {
+               setRecommendationName("");
+               setRecommendationType("");
+               setRecommendationsVisible(false);
+          }
 
-     const showDefaultSrc = (id: number) => () : void => {
-          const newRecommendations = Object.assign([], recommendations);
+          const showDefaultSrc = (id: number) => () : void => {
+               const newRecommendations = Object.assign([], recommendations);
           
-          newRecommendations.filter((currentRecommendation: any) => {
-               return String(currentRecommendation.id) === String(id);
-          });
-
-          if (newRecommendations.length === 0) {
-               console.log("Unable to find recommendation");
-               return;
-          }
-
-          newRecommendations[0]["Image_Error"] = true;
-
-          setRecommendationName(newRecommendations);
-     }
-
-     useEffect(() => {
-          if (queryTerm !== "" && type !== "" && !recommendationsLoadingStarted) {
-               setRecommendationsLoadingStarted(true);
-
-               const url = `${backendURL}/Recommendations?QueryTerm=${encodeURIComponent(queryTerm)}&Type=${type}`;
-
-               axios.get(url)
-               .then((res: any) => {
-                    setRecommendationsLoadingComplete(true);
-
-                    if (res.data[0] === "OK") {
-                         setRecommendations(res.data[1]);
-                    } else { // I do not want to display an alert if the recommendations returns an error
-                         console.log(`The error ${res.data[1].length} occurred while searching for recommendations`);
-
-                         setRecommendationsError(true);
-                    }
-               })
-               .catch((err: Error) => {
-                    console.log(err.message);
+               newRecommendations.filter((currentRecommendation: any) => {
+                    return String(currentRecommendation.id) === String(id);
                });
-          }
-     }, []);
 
-     return (
-          <>
-               {recommendationsLoadingComplete &&
-                    <span className="clickable closeButton" onClick={closeRecommendations}>
-                         X
-                    </span>
+               if (newRecommendations.length === 0) {
+                    console.log("Unable to find recommendation");
+                    return;
                }
 
-               <ul className="clickable show-list">
-                    {!recommendationsLoadingComplete &&
-                          <>
-                              Loading
-                              <div className="loader-container">
-                                   <div className="spinner"></div>
-                              </div>
-                         </>
+               newRecommendations[0]["Image_Error"] = true;
+
+               setRecommendationName(newRecommendations);
+          }
+
+          useEffect(() => {
+               if (queryTerm !== "" && type !== "" && !recommendationsLoadingStarted) {
+                    setRecommendationsLoadingStarted(true);
+
+                    const url = `${backendURL}/Recommendations?QueryTerm=${encodeURIComponent(queryTerm)}&Type=${type}`;
+
+                    axios.get(url).then((res: any) => {
+                         setRecommendationsLoadingComplete(true);
+
+                         if (res.data[0] === "OK") {
+                              setRecommendations(res.data[1]);
+                         } else { // I do not want to display an alert if the recommendations returns an error
+                              console.log(`The error ${res.data[1].length} occurred while searching for recommendations`);
+
+                              setRecommendationsError(true);
+                         }
+                    })
+                    .catch((err: Error) => {
+                         console.log(err.message);
+                    });
+               }
+          }, []);
+
+          return (
+               <>
+                    {recommendationsLoadingComplete &&
+                         <span className="clickable closeButton" onClick={closeRecommendations}>
+                              X
+                              </span>
                     }
 
-                    {recommendationsLoadingComplete && recommendations && recommendations.length > 0 && recommendations.map((recommendation: any, index: number) => {
-                         return (
-                              <li className="show-item" key={index}>
-                                   <span>
-                                        
+                    <ul className="clickable show-list">
+                         {!recommendationsLoadingComplete &&
+                              <>
+                                   Loading
+                                   <div className="loader-container">
+                                        <div className="spinner"></div>
+                                   </div>
+                              </>
+                         }
+
+                         {recommendationsLoadingComplete && recommendations && recommendations.length > 0 && recommendations.map((recommendation: any, index: number) => {
+                              return (
+                                   <li className="show-item" key={index}>
+                                        <span>
                                              {typeof recommendation.name !== "undefined" 
                                                   ? recommendation.name
                                                   : typeof recommendation.title !== "undefined"
-                                                  ? recommendation.title
-                                                  : ""
+                                                       ? recommendation.title
+                                                       : ""
                                              }
-                                   </span>
+                                        </span>
 
-                                   <br />
+                                        <br />
 
-                                   <span className="image-crop">
-                                        {!recommendation.Image_Error && recommendation.poster_path !== null &&
-                                             <img src={`https://image.tmdb.org/t/p/w500${recommendation.poster_path}`}  onError={() => showDefaultSrc(recommendation.id)} />
-                                        }
+                                        <span className="image-crop">
+                                             {!recommendation.Image_Error && recommendation.poster_path !== null &&
+                                                  <img src={`https://image.tmdb.org/t/p/w500${recommendation.poster_path}`}  onError={() => showDefaultSrc(recommendation.id)} />
+                                             }
 
-                                        {(recommendation.Image_Error || recommendation.poster_path === null) &&
-                                             <>
-                                                  {BrokenImageIcon}
-                                             </>
-                                        }
-                                   </span>
+                                             {(recommendation.Image_Error || recommendation.poster_path === null) &&
+                                                  <>
+                                                       {BrokenImageIcon}
+                                                  </>
+                                             }
+                                        </span>
 
-                                   <br />
+                                        <br />
 
-                                   <span className="no-font">
-                                        {recommendation.overview}
+                                        <span className="no-font">
+                                             {recommendation.overview}
+                                        </span>
+                                   </li>
+                              )
+                         })}
+
+                         {recommendationsLoadingComplete && recommendations && recommendations.length === 0 &&
+                              <li className="show-item no-border no-font">
+                                   <span>
+                                        {!recommendationsError ? "No recommendations" : "Unable to get recommendations"}
                                    </span>
                               </li>
-                         )
-                    })}
-
-                    {recommendationsLoadingComplete && recommendations && recommendations.length === 0 &&
-                         <li className="show-item no-border no-font">
-                              <span>
-                                   {!recommendationsError ? "No recommendations" : "Unable to get recommendations"}
-                              </span>
-                         </li>
-                    }
-               </ul>
-          </>
-     );
+                         }
+                    </ul>
+               </>
+          );
 };
 
 Recommendations.propTypes = exact({

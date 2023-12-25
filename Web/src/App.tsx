@@ -5,7 +5,7 @@
 // Before deploying:
 //
 // In backend, clear config\default.json
-// publish backend and frontend packages to releases for web, windows and linux
+// publish backend and frontend packages to releases for web, backend, windows and linux
 //
 // Known Issues/Future features
 //
@@ -475,6 +475,7 @@ const App = () => {
           watchListSortDirection={watchListSortDirection}
           watchListSortingComplete={watchListSortingComplete}
           watchListSources={watchListSources}
+          watchListTypes={watchListTypes}
         />
       ),
     },

@@ -1,6 +1,8 @@
 # WatchList
 WatchList is a multi-user app that lets you track the movies and TV that you watch, how many times you watched them and when you watched them. You can also rate movies or shows.
 
+When you add a movie or TV show, there will be a recommendations link where you can get recommendations based on the current movie/TV Show.
+
 Requirements: Web Server to run the WatchList web app and a server where you can run the Node JS backend
 
 It is possible to search IMDB for a movie or TV show if you provide a RapidAPI IMDB key. See INSTALL.MD for details.

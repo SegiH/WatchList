@@ -5,6 +5,7 @@ import WatchListItem from "../components/WatchListItems";
 import WatchListStats from "../components/WatchListStats";
 import AdminConsole from "../components/admin/AdminConsole";
 import Setup from "../components/Setup";
+const MuiIcon = require("@mui/icons-material").MuiIcon;
 
 //import MuiIcon from "@mui/icons-material";
 //const IMDBSearch = require("../components/IMDBSearch").default;
@@ -21,7 +22,7 @@ interface IRoute {
          Name: string,
          DisplayName: string,
          Path: string,
-         Icon: any, //typeof MuiIcon,
+         Icon: typeof MuiIcon,
          RequiresAuth: boolean,
          Component: typeof WatchList | typeof WatchListItem | typeof IMDBSearch | typeof WatchListStats | typeof AdminConsole | typeof Login | typeof Setup
     }

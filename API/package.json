@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@types/electron": "^1.6.10",
+    "axios": "^1.6.2",
     "body-parser": "^1.20.2",
     "config": "^3.3.9",
     "cookie-parser": "^1.4.6",

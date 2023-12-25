@@ -2,6 +2,7 @@ const exact = require ("prop-types-exact");
 const IWatchList = require("../interfaces/IWatchList");
 const IWatchListItem = require("../interfaces/IWatchListItem");
 const IWatchListSource = require("../interfaces/IWatchListSource");
+const IWatchListType = require("../interfaces/IWatchListType");
 const MuiIcon = require("@mui/icons-material").MuiIcon;
 const PropTypes = require("prop-types");
 const React = require("react");
@@ -43,6 +44,7 @@ const WatchList = ({
   watchListSortDirection,
   watchListSortingComplete,
   watchListSources,
+  watchListTypes
 }
 :
 {
@@ -79,6 +81,7 @@ const WatchList = ({
   watchListSortDirection: string,
   watchListSortingComplete: boolean,
   watchListSources: typeof IWatchListSource,
+  watchListTypes: typeof IWatchListType
 }
 ) => {
   const [watchListDtlID, setWatchListDtlID] = useState(null);
@@ -165,8 +168,8 @@ const WatchList = ({
             return (
               <React.Fragment key={index}>
                 {watchListSortingComplete && (
-                  <li className="show-item" key={index}>
-                    <span className="item-id">
+                    <li className="show-item" key={index}>
+                        <span className="item-id">
                       <div>{currentWatchList.WatchListID}</div>
                     </span>
 
@@ -243,6 +246,7 @@ const WatchList = ({
           watchListItems={watchListItems}
           watchListSortDirection={watchListSortDirection}
           watchListSources={watchListSources}
+          watchListTypes={watchListTypes}
         />
       )}
     </>
@@ -283,6 +287,7 @@ WatchList.propTypes = exact({
   watchListSortDirection: PropTypes.string.isRequired,
   watchListSortingComplete: PropTypes.bool.isRequired,
   watchListSources: PropTypes.array.isRequired,
+  watchListTypes: PropTypes.array.isRequired,
 });
 
 export default WatchList;

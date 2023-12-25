@@ -46,7 +46,8 @@ module.exports = {
   },
   devServer: {
     historyApiFallback: true,
-    allowedHosts: "all"
+    allowedHosts: "all",
+    hot: false
   },
   plugins:[
      new Dotenv(),

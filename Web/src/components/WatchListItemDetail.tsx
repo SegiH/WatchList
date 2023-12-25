@@ -2,9 +2,11 @@ const axios = require("axios");
 const exact = require ("prop-types-exact");
 const IWatchListItem = require("../interfaces/IWatchListItem");
 const IWatchListType = require("../interfaces/IWatchListType");
+const Link = require("react-router-dom").Link;
 const MuiIcon = require("@mui/icons-material").MuiIcon;
 const PropTypes = require("prop-types");
 const React = require("react");
+const Recommendations = require("./Recommendations").default;
 const useState = require("react").useState;
 const useEffect = require("react").useEffect;
 
@@ -32,6 +34,9 @@ const WatchListItemDetail = ({ backendURL, BrokenImageIcon, CancelIcon, isAdding
      const [editModified, setEditModified] = useState(false);
      const [addModified, setAddModified] = useState(false);
      const [originalWatchListItemDtl, setOriginalWatchListItemDtl] = useState(null);
+     const [recommendationsVisible, setRecommendationsVisible] = useState(false);
+     const [recommendationName, setRecommendationName] = useState("");
+     const [recommendationType, setRecommendationType] = useState("");
      const [watchListItemDtl, setWatchListItemDtl] = useState(null);
      const [watchListItemDtlLoadingStarted, setWatchListItemDtlLoadingStarted] = useState(false);
      const [watchListItemDtlLoadingComplete, setWatchListItemDtlLoadingComplete] = useState(false);
@@ -93,6 +98,23 @@ const WatchListItemDetail = ({ backendURL, BrokenImageIcon, CancelIcon, isAdding
                newWatchListItemDtl["IMDB_Poster_Error"] = !result;
                setWatchListItemDtl(newWatchListItemDtl);
           }
+     };
+
+     const recommendationsClickHandler = () => {
+          const name = watchListItemDtl?.WatchListItemName;
+
+          const typeID = watchListItemDtl?.WatchListTypeID;
+
+          const typeNameResult = watchListTypes.filter((currentType: typeof IWatchListType) =>currentType.WatchListTypeID === typeID);
+
+          if (typeNameResult.length === 0) {
+               console.log("typeNameResult is null in useEffect() in WatchListDetailComponent");
+          }
+
+          const typeName = typeNameResult[0].WatchListTypeName;
+
+          setRecommendationName(name);
+          setRecommendationType(typeName);
      };
 
      const saveClickHandler = async () => {
@@ -273,10 +295,16 @@ const WatchListItemDetail = ({ backendURL, BrokenImageIcon, CancelIcon, isAdding
           }
      }, [backendURL, watchListItemDtl, watchListItemDtlID]);
 
+     useEffect(() => {
+          if (recommendationName !== "" && recommendationType !== "") {
+               setRecommendationsVisible(true);
+          }
+     }, [recommendationName, recommendationType]);
+
      return (
-          <>
-               <div className="modal">
-                    <div className={`modal-content ${watchListItemDtlID != null ? "fade-in" : "fade-out"}`}>
+          <div className="modal">
+               <div className={`modal-content ${watchListItemDtlID != null ? "fade-in" : "fade-out"}`}>
+                    {!recommendationsVisible &&
                          <div className="container">
                               <div className="cards">
                                    <div className="narrow card">
@@ -304,7 +332,7 @@ const WatchListItemDetail = ({ backendURL, BrokenImageIcon, CancelIcon, isAdding
 
                                         {(isAdding || isEditing) &&
                                              <span className="clickable cancelIcon" onClick={isAdding ? closeDetail : cancelClickHandler}>
-                                                   {CancelIcon}
+                                                       {CancelIcon}
                                              </span>
                                         }
                                    </div>
@@ -457,6 +485,18 @@ const WatchListItemDetail = ({ backendURL, BrokenImageIcon, CancelIcon, isAdding
                                         }
                                    </div>
 
+                                   {!isAdding && !isEditing &&
+                                        <>
+                                             <div className="narrow card"></div>
+                                             <div className="narrow card"></div>
+                                             <div className="narrow card"></div>
+                                             
+                                             <div className="narrow card">
+                                                  <Link className="rightAligned text-label" onClick={recommendationsClickHandler}>Recommendations</Link>
+                                             </div>
+                                        </>
+                                   }
+
                                    {isEditing &&
                                         <>
                                              <div className="narrow card"></div>
@@ -472,9 +512,13 @@ const WatchListItemDetail = ({ backendURL, BrokenImageIcon, CancelIcon, isAdding
                                    }
                               </div>
                          </div>
-                    </div>
+                    }
+
+                    {recommendationsVisible && (
+                         <Recommendations backendURL={backendURL} BrokenImageIcon={BrokenImageIcon} queryTerm={recommendationName} type={recommendationType} setRecommendationName={setRecommendationName} setRecommendationType={setRecommendationName} setRecommendationsVisible={setRecommendationsVisible} />
+                    )}
                </div>
-          </>
+          </div>
      );
 };
 

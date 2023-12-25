@@ -42,8 +42,6 @@ const WatchListItems = ({ AddIcon, archivedVisible, backendURL, BrokenImageIcon,
     }
   ) => {
   const [watchListItemDtlID, setWatchListItemDtlID] = useState(null);
-  const [showMissingPoster, setShowMissingPoster] = useState(true);
-
   const openDetailClickHandler = (watchListItemID: number) => {
     if (watchListItemID !== null) {
       if (watchListItemID === -1) {
@@ -165,7 +163,6 @@ const WatchListItems = ({ AddIcon, archivedVisible, backendURL, BrokenImageIcon,
                                 {currentWatchListItem.WatchListItemName}
                            </div>
                       }
-
                       
                       {currentWatchListItem.Archived === true ? " (A)" : ""}
                     </div>

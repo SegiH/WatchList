@@ -1,14 +1,16 @@
 const Autocomplete = require("@mui/material/Autocomplete").default;
 const axios = require("axios");
 const exact = require ("prop-types-exact");
-const MuiIcon = require("@mui/icons-material").MuiIcon;
 const IWatchList = require("../interfaces/IWatchList");
 const IWatchListItem = require("../interfaces/IWatchListItem");
 const IWatchListSource = require("../interfaces/IWatchListSource");
+const IWatchListType = require("../interfaces/IWatchListType");
 const Link = require("react-router-dom").Link;
+const MuiIcon = require("@mui/icons-material").MuiIcon;
 const PropTypes = require("prop-types");
 const React = require("react");
 const ReactNode = require("react").ReactNode;
+const Recommendations = require("./Recommendations").default;
 const TextField = require("@mui/material/TextField").default;
 const useEffect = require("react").useEffect;
 const useState = require("react").useState;
@@ -22,7 +24,7 @@ const FullIconComponent = <FullIcon />;
 const HalfIcon = require("@mui/icons-material/StarHalf").default;
 const HalfIconComponent = <HalfIcon />;
 
-const WatchListDetail = ({ backendURL, BrokenImageIcon, CancelIcon, isAdding, EditIcon, isEditing, isIMDBSearchEnabled, newWatchListItemDtlID, ratingMax, SaveIcon, setActiveRoute, setIsAdding, setIsEditing, setNewWatchListItemDtlID, setWatchListDtlID, setWatchListLoadingStarted, setWatchListLoadingComplete, setWatchListSortingComplete, watchListDtlID, watchListItems, watchListSortDirection, watchListSources }
+const WatchListDetail = ({ backendURL, BrokenImageIcon, CancelIcon, isAdding, EditIcon, isEditing, isIMDBSearchEnabled, newWatchListItemDtlID, ratingMax, SaveIcon, setActiveRoute, setIsAdding, setIsEditing, setNewWatchListItemDtlID, setWatchListDtlID, setWatchListLoadingStarted, setWatchListLoadingComplete, setWatchListSortingComplete, watchListDtlID, watchListItems, watchListSortDirection, watchListSources, watchListTypes }
      :
      {
           backendURL: string,
@@ -48,17 +50,21 @@ const WatchListDetail = ({ backendURL, BrokenImageIcon, CancelIcon, isAdding, Ed
           watchListDtlID: number
           watchListItems: typeof IWatchListItem,
           watchListSortDirection: string,
-          watchListSources: typeof IWatchListSource
+          watchListSources: typeof IWatchListSource,
+          watchListTypes: typeof IWatchListType
      }
   ) => {
      const currentDate = new Date().toLocaleDateString();
 
+     const [addModified, setAddModified] = useState(false);
      const [addWatchListDtl, setAddWatchListDtl] = useState(null);
      const [autoComplete, setAutoComplete] = useState(null);
      const [autoCompleteNames, setAutoCompleteNames] = useState(null);
-     const [originalWatchListDtl, setOriginalWatchListDtl] = useState(null);
      const [editModified, setEditModified] = useState(false);
-     const [addModified, setAddModified] = useState(false);
+     const [originalWatchListDtl, setOriginalWatchListDtl] = useState(null);     
+     const [recommendationsVisible, setRecommendationsVisible] = useState(false);
+     const [recommendationName, setRecommendationName] = useState("");
+     const [recommendationType, setRecommendationType] = useState("");
      const [watchListDtl, setWatchListDtl] = useState(null);
      const [watchListDtlLoadingStarted, setWatchListDtlLoadingStarted] = useState(false);
      const [watchListDtlLoadingComplete, setWatchListDtlLoadingComplete] = useState(false);
@@ -150,7 +156,7 @@ const WatchListDetail = ({ backendURL, BrokenImageIcon, CancelIcon, isAdding, Ed
           }
 
           setWatchListDtlID(null);
-     };
+     };     
 
      const getLocaleDate = () => {
           const dateSpl = currentDate.split("/");
@@ -212,6 +218,23 @@ const WatchListDetail = ({ backendURL, BrokenImageIcon, CancelIcon, isAdding, Ed
 
                watchListDetailChangeHandler("Rating", watchListDtl.Rating);
           }
+     };
+
+     const recommendationsClickHandler = () => {
+          const name = watchListDtl?.WatchListItem.WatchListItemName;
+
+          const typeID = watchListDtl?.WatchListItem.WatchListTypeID;
+
+          const typeNameResult = watchListTypes.filter((currentType: typeof IWatchListType) =>currentType.WatchListTypeID === typeID);
+
+          if (typeNameResult.length === 0) {
+               console.log("typeNameResult is null in useEffect() in WatchListDetailComponent");
+          }
+
+          const typeName = typeNameResult[0].WatchListTypeName;
+
+          setRecommendationName(name);
+          setRecommendationType(typeName);
      };
 
      const saveClickHandler = async () => {
@@ -428,352 +451,353 @@ const WatchListDetail = ({ backendURL, BrokenImageIcon, CancelIcon, isAdding, Ed
      }, [backendURL, isAdding, newWatchListItemDtlID, watchListDtl, watchListDtlID, watchListDtlLoadingStarted, watchListDtlLoadingComplete]);
 
      useEffect(() => {
-               if (watchListItems.length > 0) {
-                    // Generate names for auto complete
-                    const namesOnlyItems = watchListItems.map((watchListItem: typeof IWatchListItem) => {
-                    return watchListItem.WatchListItemName;
-               });
-
-               const namesOnly = namesOnlyItems.sort();
-
-               setAutoCompleteNames(namesOnly);
+          if (recommendationName !== "" && recommendationType !== "") {
+               setRecommendationsVisible(true);
           }
-     }, [watchListItems]);
+     }, [recommendationName, recommendationType]);
 
      return (
           <>
                <div className="modal">
                     <div className={`modal-content ${watchListDtlID != null ? "fade-in" : "fade-out"}`}>
-                         <div className="container">
-                              <div className="cards">
-                                   <div className="narrow card">
-                                        {!isAdding && !isEditing &&
-                                             <span onClick={startEditing}>
-                                                  <span className="clickable editsaveCancelButton">{EditIcon}</span>
-                                             </span>
-                                        }
+                         {!recommendationsVisible &&
+                              <div className="container">
+                                   <div className="cards">
+                                        <div className="narrow card">
+                                             {!isAdding && !isEditing &&
+                                                  <span onClick={startEditing}>
+                                                       <span className="clickable editsaveCancelButton">{EditIcon}</span>
+                                                  </span>
+                                             }
 
-                                        {(isAdding || isEditing) &&
-                                             <span className="clickable saveIcon" onClick={isAdding ? saveNewClickHandler : saveClickHandler}>
-                                                  {SaveIcon}
-                                             </span>
-                                        }
-                                   </div>
+                                             {(isAdding || isEditing) &&
+                                                  <span className="clickable saveIcon" onClick={isAdding ? saveNewClickHandler : saveClickHandler}>
+                                                       {SaveIcon}
+                                                  </span>
+                                             }
+                                        </div>
 
-                                   <div className="labelWidth card">
+                                        <div className="labelWidth card">
+                                             {!isAdding && !isEditing &&
+                                                  <>
+                                                       {typeof watchListDtl?.WatchListItem.IMDB_URL !== "undefined" &&
+                                                            <a className="text-label" href={watchListDtl?.WatchListItem.IMDB_URL} target='_blank'>{watchListDtl?.WatchListItem.WatchListItemName}</a>
+                                                       }
+
+                                                       {typeof watchListDtl?.WatchListItem.IMDB_URL === "undefined" &&
+                                                            <div>
+                                                                 {watchListDtl?.WatchListItem.WatchListItemName}
+                                                            </div>
+                                                       }
+
+                                                       {watchListDtl?.Archived === true ? " (A)" : ""}
+                                                  </>
+                                             }
+
+                                             {(isEditing || isAdding) && autoCompleteNames &&
+                                                  <div className="narrow card">
+                                                       <Autocomplete id="wl_autocomplete" className="labelWidth" size="small" sx={{ width: 250, height: 40 }} {...defaultProps} options={autoCompleteNames} value={autoComplete} onChange={(event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => autoCompleteChangeHandler(event)} renderInput={(params: typeof ReactNode) => <TextField {...params} label="Search" />} />
+                                                  </div>
+                                             }
+                                        </div>
+                                        
+                                        <div className="narrow card rightAligned">
+                                             {!isAdding && !isEditing &&
+                                                  <span className="clickable closeButton" onClick={closeDetail}>
+                                                       X
+                                                  </span>
+                                             }
+
+                                             {(isAdding || isEditing) &&
+                                                  <span className="clickable cancelIcon" onClick={isAdding ? closeDetail : cancelClickHandler}>
+                                                       {CancelIcon}
+                                                  </span>
+                                             }
+                                        </div>
+
+                                        <div className="narrow card">
+                                             {!isAdding &&
+                                                  <>
+                                                       {watchListDtl?.WatchListItem.IMDB_Poster !== null && watchListDtl?.IMDB_Poster_Error !== true && <img className="poster-detail" src={watchListDtl?.WatchListItem.IMDB_Poster} onError={() => showDefaultSrc()} />}
+
+                                                       {(watchListDtl?.WatchListItem.IMDB_Poster === null || watchListDtl?.IMDB_Poster_Error === true) && <>{BrokenImageIcon}</>}
+                                                  </>
+                                             }
+
+                                             {isAdding && addWatchListDtl !== null && 
+                                                  <span className="column">{watchListItems?.filter((currentWatchListItem: typeof IWatchListItem) => String(currentWatchListItem.WatchListItemID) === String(addWatchListDtl?.WatchListItemID)).length === 1 && <img className="poster-detail" src={watchListItems?.filter((currentWatchListItem: typeof IWatchListItem) => String(currentWatchListItem.WatchListItemID) === String(addWatchListDtl?.WatchListItemID))[0].IMDB_Poster} />}</span>
+                                             }
+                                        </div>
+
                                         {!isAdding && !isEditing &&
                                              <>
-                                                  {typeof watchListDtl?.WatchListItem.IMDB_URL !== "undefined" &&
-                                                       <a className="text-label" href={watchListDtl?.WatchListItem.IMDB_URL} target='_blank'>{watchListDtl?.WatchListItem.WatchListItemName}</a>
-                                                  }
-
-                                                  {typeof watchListDtl?.WatchListItem.IMDB_URL === "undefined" &&
-                                                       <div>
-                                                            {watchListDtl?.WatchListItem.WatchListItemName}
-                                                       </div>
-                                                  }
-
-                                                  {watchListDtl?.Archived === true ? " (A)" : ""}
+                                                  <div className="narrow card"></div>
+                                                  <div className="narrow card"></div>
                                              </>
                                         }
 
-                                        {(isEditing || isAdding) && autoCompleteNames &&
-                                             <div className="narrow card">
-                                                  <Autocomplete id="wl_autocomplete" className="labelWidth" size="small" sx={{ width: 250, height: 40 }} {...defaultProps} options={autoCompleteNames} value={autoComplete} onChange={(event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => autoCompleteChangeHandler(event)} renderInput={(params: typeof ReactNode) => <TextField {...params} label="Search" />} />
-                                             </div>
+                                        {isAdding &&
+                                             <select className="selectStyle" autoFocus value={addWatchListDtl?.WatchListItemID} onChange={(event) => addWatchListDetailChangeHandler("WatchListItemID", event.target.value)}>
+                                                  <option value="-1">Please select</option>
+
+                                                  {watchListItems
+                                                  ?.filter((currentWatchListItem: typeof IWatchListItem) => currentWatchListItem.Archived === false)
+                                                  ?.sort((a: typeof IWatchListItem , b: typeof IWatchListItem) => {
+                                                       return String(a.WatchListItemName) > String(b.WatchListItemName) ? 1 : -1;
+                                                  })
+                                                  .map((watchListItem: typeof IWatchListItem, index: number) => {
+                                                       return (
+                                                            <option key={index} value={watchListItem.WatchListItemID}>
+                                                                 {watchListItem.WatchListItemName}
+                                                            </option>
+                                                       )
+                                                  })}
+                                             </select>
                                         }
-                                   </div>
                                    
-                                   <div className="narrow card rightAligned">
-                                        {!isAdding && !isEditing &&
-                                             <span className="clickable closeButton" onClick={closeDetail}>
-                                                  X
-                                             </span>
-                                        }
-
-                                        {(isAdding || isEditing) &&
-                                             <span className="clickable cancelIcon" onClick={isAdding ? closeDetail : cancelClickHandler}>
-                                                   {CancelIcon}
-                                             </span>
-                                        }
-                                   </div>
-
-                                   <div className="narrow card">
-                                        {!isAdding &&
+                                        {isEditing &&
                                              <>
-                                                  {watchListDtl?.WatchListItem.IMDB_Poster !== null && watchListDtl?.IMDB_Poster_Error !== true && <img className="poster-detail" src={watchListDtl?.WatchListItem.IMDB_Poster} onError={() => showDefaultSrc()} />}
+                                                  <div className="narrow card">
+                                                       <select className="selectStyle selectWidth" autoFocus value={watchListDtl?.WatchListItemID} onChange={(event) => watchListDetailChangeHandler("WatchListItemID", event.target.value)}>
+                                                            <option value="-1">Please select</option>
 
-                                                  {(watchListDtl?.WatchListItem.IMDB_Poster === null || watchListDtl?.IMDB_Poster_Error === true) && <>{BrokenImageIcon}</>}
+                                                            {watchListItems?.sort((a: typeof IWatchListItem, b: typeof IWatchListItem) => {
+                                                                 return String(a.WatchListItemName) > String(b.WatchListItemName) ? (watchListSortDirection === "ASC" ? 1 : -1) : watchListSortDirection === "ASC" ? -1 : 1;
+                                                            })
+                                                            .map((watchListItem: typeof IWatchListItem, index: number) => {
+                                                                 return (
+                                                                      <option key={index} value={watchListItem.WatchListItemID}>
+                                                                           {watchListItem.WatchListItemName}
+                                                                      </option>
+                                                                 );
+                                                            })}
+                                                       </select>
+                                                  </div>
                                              </>
                                         }
 
-                                        {isAdding && addWatchListDtl !== null && 
-                                             <span className="column">{watchListItems?.filter((currentWatchListItem: typeof IWatchListItem) => String(currentWatchListItem.WatchListItemID) === String(addWatchListDtl?.WatchListItemID)).length === 1 && <img className="poster-detail" src={watchListItems?.filter((currentWatchListItem: typeof IWatchListItem) => String(currentWatchListItem.WatchListItemID) === String(addWatchListDtl?.WatchListItemID))[0].IMDB_Poster} />}</span>
-                                        }
-                                   </div>
+                                        <div className="narrow card">
+                                             {(isIMDBSearchEnabled && (isAdding || isEditing)) &&
+                                                  <Link className="rightAligned text-label" onClick={addNewChangeHandler}>Add</Link>
+                                             }
+                                        </div> 
 
-                                   {!isAdding && !isEditing &&
-                                        <>
-                                             <div className="narrow card"></div>
-                                             <div className="narrow card"></div>
-                                        </>
-                                   }
+                                        <div className="narrow card">
+                                             <span className="textLabel">Start Date:&nbsp;</span>
+                                        </div>
 
-                                   {isAdding &&
-                                        <select className="selectStyle" autoFocus value={addWatchListDtl?.WatchListItemID} onChange={(event) => addWatchListDetailChangeHandler("WatchListItemID", event.target.value)}>
-                                             <option value="-1">Please select</option>
+                                        <div className="labelWidth narrow card">
+                                             {!isAdding && !isEditing &&
+                                                  <span>{watchListDtl?.StartDate && watchListDtl?.StartDate}</span>
+                                             }
 
-                                             {watchListItems
-                                             ?.filter((currentWatchListItem: typeof IWatchListItem) => currentWatchListItem.Archived === false)
-                                             ?.sort((a: typeof IWatchListItem , b: typeof IWatchListItem) => {
-                                                  return String(a.WatchListItemName) > String(b.WatchListItemName) ? 1 : -1;
-                                             })
-                                             .map((watchListItem: typeof IWatchListItem, index: number) => {
-                                                  return (
-                                                       <option key={index} value={watchListItem.WatchListItemID}>
-                                                            {watchListItem.WatchListItemName}
-                                                       </option>
-                                                  )
-                                             })}
-                                        </select>
-                                   }
-                              
-                                   {isEditing &&
-                                        <>
-                                             <div className="narrow card">
-                                                  <select className="selectStyle selectWidth" autoFocus value={watchListDtl?.WatchListItemID} onChange={(event) => watchListDetailChangeHandler("WatchListItemID", event.target.value)}>
+                                             {isEditing &&
+                                                  <input type="date" value={watchListDtl?.StartDate !== null ? watchListDtl.StartDate : ""} onChange={(event) => watchListDetailChangeHandler("StartDate", event.target.value)} />
+                                             }
+
+                                             {isAdding &&
+                                                  <input type="date" value={addWatchListDtl?.StartDate} onChange={(event) => addWatchListDetailChangeHandler("StartDate", event.target.value)} />
+                                             }
+                                        </div>
+
+                                        <div className="narrow card"></div>
+
+                                        <div className="narrow card">
+                                             <span className="textLabel">End Date:&nbsp;</span>
+                                        </div>
+
+                                        <div className="labelWidth narrow card">
+                                             {!isAdding && !isEditing &&
+                                                  <span>{watchListDtl?.EndDate && watchListDtl?.EndDate}</span>
+                                             }
+
+                                             {isEditing &&
+                                                  <input type="date" value={watchListDtl?.EndDate !== null ? watchListDtl.EndDate : ""} onChange={(event) => watchListDetailChangeHandler("EndDate", event.target.value)} />
+                                             }
+
+                                             {isAdding &&
+                                                  <input type="date" value={addWatchListDtl?.EndDate} onChange={(event) => addWatchListDetailChangeHandler("EndDate", event.target.value)} />
+                                             }
+                                        </div>
+
+                                        <div className="narrow card"></div>
+
+                                        <div className="narrow card">
+                                             <div className="textLabel">Source:</div>
+                                        </div>
+
+                                        <div className="narrow card">
+                                             {!isAdding && !isEditing &&
+                                                  <div>{watchListDtl?.WatchListSource.WatchListSourceName}</div>
+                                             }
+
+                                             {isEditing &&
+                                                  <select className="selectStyle selectWidth" value={watchListDtl.WatchListSourceID} onChange={(event) => watchListDetailChangeHandler("WatchListSourceID", event.target.value)}>
                                                        <option value="-1">Please select</option>
 
-                                                       {watchListItems?.sort((a: typeof IWatchListItem, b: typeof IWatchListItem) => {
-                                                            return String(a.WatchListItemName) > String(b.WatchListItemName) ? (watchListSortDirection === "ASC" ? 1 : -1) : watchListSortDirection === "ASC" ? -1 : 1;
-                                                       })
-                                                       .map((watchListItem: typeof IWatchListItem, index: number) => {
+                                                       {watchListSources?.map((watchListSource: typeof IWatchListSource, index: number) => {
                                                             return (
-                                                                 <option key={index} value={watchListItem.WatchListItemID}>
-                                                                      {watchListItem.WatchListItemName}
+                                                                 <option key={index} value={watchListSource.WatchListSourceID}>
+                                                                      {watchListSource.WatchListSourceName}
                                                                  </option>
                                                             );
                                                        })}
                                                   </select>
-                                             </div>
-                                        </>
-                                   }
+                                             }
 
-                                   <div className="narrow card">
-                                        {(isIMDBSearchEnabled && (isAdding || isEditing)) &&
-                                              <Link className="rightAligned text-label" onClick={addNewChangeHandler}>Add</Link>
-                                        }
-                                   </div> 
+                                             {isAdding &&
+                                                  <select className="selectStyle" value={addWatchListDtl?.WatchListSourceID} onChange={(event) => addWatchListDetailChangeHandler("WatchListSourceID", event.target.value)}>
+                                                       <option value="-1">Please select</option>
 
-                                   <div className="narrow card">
-                                        <span className="textLabel">Start Date:&nbsp;</span>
-                                   </div>
+                                                       {watchListSources?.map((watchListSource: typeof IWatchListSource, index: number) => {
+                                                            return (
+                                                                 <option key={index} value={watchListSource.WatchListSourceID}>
+                                                                      {watchListSource.WatchListSourceName}
+                                                                 </option>
+                                                            );
+                                                       })}
+                                                  </select>
+                                             }
+                                        </div>
 
-                                   <div className="labelWidth narrow card">
-                                        {!isAdding && !isEditing &&
-                                             <span>{watchListDtl?.StartDate && watchListDtl?.StartDate}</span>
-                                        }
+                                        {isEditing && watchListDtl?.WatchListItem.WatchListType.WatchListTypeID === 2 &&
+                                             <>
+                                                  <div className="narrow card"></div>
 
-                                        {isEditing &&
-                                             <input type="date" value={watchListDtl?.StartDate !== null ? watchListDtl.StartDate : ""} onChange={(event) => watchListDetailChangeHandler("StartDate", event.target.value)} />
-                                        }
+                                                  <div className="narrow card">
+                                                       <div className="textLabel">Season:</div>
+                                                  </div>
 
-                                        {isAdding &&
-                                             <input type="date" value={addWatchListDtl?.StartDate} onChange={(event) => addWatchListDetailChangeHandler("StartDate", event.target.value)} />
-                                        }
-                                   </div>
+                                                  <div className="narrow card">
+                                                       {!isAdding && !isEditing &&
+                                                            <div>{watchListDtl?.Season}</div>
+                                                       }
 
-                                   <div className="narrow card"></div>
+                                                       {isEditing &&
+                                                            <input className="inputStyle narrowWidth" type="number" value={watchListDtl.Season !== null ? watchListDtl.Season : ""} onChange={(event) => watchListDetailChangeHandler("Season", event.target.value)} /> 
+                                                       }
 
-                                   <div className="narrow card">
-                                        <span className="textLabel">End Date:&nbsp;</span>
-                                   </div>
-
-                                   <div className="labelWidth narrow card">
-                                        {!isAdding && !isEditing &&
-                                             <span>{watchListDtl?.EndDate && watchListDtl?.EndDate}</span>
-                                        }
-
-                                        {isEditing &&
-                                             <input type="date" value={watchListDtl?.EndDate !== null ? watchListDtl.EndDate : ""} onChange={(event) => watchListDetailChangeHandler("EndDate", event.target.value)} />
+                                                       {isAdding &&
+                                                            <input className="inputStyle narrowWidth" type="number" value={addWatchListDtl?.Season} onChange={(event) => addWatchListDetailChangeHandler("Season", event.target.value)} />
+                                                       }
+                                                  </div>
+                                             </>
                                         }
 
-                                        {isAdding &&
-                                             <input type="date" value={addWatchListDtl?.EndDate} onChange={(event) => addWatchListDetailChangeHandler("EndDate", event.target.value)} />
-                                        }
-                                   </div>
+                                        {isAdding && addWatchListDtl?.WatchListItemID !== "-1" && getWatchListTypeID(addWatchListDtl?.WatchListItemID) === 2 &&
+                                             <>
+                                                  <div className="narrow card"></div>
 
-                                   <div className="narrow card"></div>
+                                                  <div className="narrow card">
+                                                       <div className="textLabel">Season:</div>
+                                                  </div>
 
-                                   <div className="narrow card">
-                                        <div className="textLabel">Source:</div>
-                                   </div>
+                                                  <div className="narrow card">
+                                                       {!isAdding && !isEditing &&
+                                                            <div>{addWatchListDtl?.Season}</div>
+                                                       }
 
-                                   <div className="narrow card">
-                                        {!isAdding && !isEditing &&
-                                             <div>{watchListDtl?.WatchListSource.WatchListSourceName}</div>
-                                        }
+                                                       {isEditing &&
+                                                            <input className="inputStyle narrowWidth" type="number" value={watchListDtl.Season !== null ? watchListDtl.Season : ""} onChange={(event) => watchListDetailChangeHandler("Season", event.target.value)} /> 
+                                                       }
 
-                                        {isEditing &&
-                                             <select className="selectStyle selectWidth" value={watchListDtl.WatchListSourceID} onChange={(event) => watchListDetailChangeHandler("WatchListSourceID", event.target.value)}>
-                                                  <option value="-1">Please select</option>
-
-                                                  {watchListSources?.map((watchListSource: typeof IWatchListSource, index: number) => {
-                                                       return (
-                                                            <option key={index} value={watchListSource.WatchListSourceID}>
-                                                                 {watchListSource.WatchListSourceName}
-                                                            </option>
-                                                       );
-                                                  })}
-                                             </select>
+                                                       {isAdding &&
+                                                            <input className="inputStyle narrowWidth" type="number" value={addWatchListDtl?.Season} onChange={(event) => addWatchListDetailChangeHandler("Season", event.target.value)} />
+                                                       }
+                                                  </div>
+                                             </>
                                         }
 
-                                        {isAdding &&
-                                             <select className="selectStyle" value={addWatchListDtl?.WatchListSourceID} onChange={(event) => addWatchListDetailChangeHandler("WatchListSourceID", event.target.value)}>
-                                                  <option value="-1">Please select</option>
-
-                                                  {watchListSources?.map((watchListSource: typeof IWatchListSource, index: number) => {
-                                                       return (
-                                                            <option key={index} value={watchListSource.WatchListSourceID}>
-                                                                 {watchListSource.WatchListSourceName}
-                                                            </option>
-                                                       );
-                                                  })}
-                                             </select>
-                                        }
-                                   </div>
-
-                                   {isEditing && watchListDtl?.WatchListItem.WatchListType.WatchListTypeID === 2 &&
-                                        <>
-                                             <div className="narrow card"></div>
-
-                                             <div className="narrow card">
-                                                  <div className="textLabel">Season:</div>
-                                             </div>
-
-                                             <div className="narrow card">
-                                                  {!isAdding && !isEditing &&
-                                                       <div>{watchListDtl?.Season}</div>
-                                                  }
-
-                                                  {isEditing &&
-                                                       <input className="inputStyle narrowWidth" type="number" value={watchListDtl.Season !== null ? watchListDtl.Season : ""} onChange={(event) => watchListDetailChangeHandler("Season", event.target.value)} /> 
-                                                  }
-
-                                                  {isAdding &&
-                                                       <input className="inputStyle narrowWidth" type="number" value={addWatchListDtl?.Season} onChange={(event) => addWatchListDetailChangeHandler("Season", event.target.value)} />
-                                                  }
-                                             </div>
-                                        </>
-                                   }
-
-                                   {isAdding && addWatchListDtl?.WatchListItemID !== "-1" && getWatchListTypeID(addWatchListDtl?.WatchListItemID) === 2 &&
-                                        <>
-                                             <div className="narrow card"></div>
-
-                                             <div className="narrow card">
-                                                  <div className="textLabel">Season:</div>
-                                             </div>
-
-                                             <div className="narrow card">
-                                                  {!isAdding && !isEditing &&
-                                                       <div>{addWatchListDtl?.Season}</div>
-                                                  }
-
-                                                  {isEditing &&
-                                                       <input className="inputStyle narrowWidth" type="number" value={watchListDtl.Season !== null ? watchListDtl.Season : ""} onChange={(event) => watchListDetailChangeHandler("Season", event.target.value)} /> 
-                                                  }
-
-                                                  {isAdding &&
-                                                       <input className="inputStyle narrowWidth" type="number" value={addWatchListDtl?.Season} onChange={(event) => addWatchListDetailChangeHandler("Season", event.target.value)} />
-                                                  }
-                                             </div>
-                                        </>
-                                   }
-
-                                   <div className="narrow card"></div>
-
-                                   <div className="narrow card">
-                                        <div className="textLabel">Notes:</div>
-                                   </div>
-
-                                   <div className="narrow card no-width">
-                                        {!isAdding && !isEditing &&
-                                             <div className="textLabel">{watchListDtl?.Notes}</div>
-                                        }
-
-                                        {isEditing &&
-                                             <input className="inputStyle" value={watchListDtl.Notes} onChange={(event) => watchListDetailChangeHandler("Notes", event.target.value)} />
-                                        }
-
-                                        {isAdding &&
-                                             <input className="inputStyle" value={addWatchListDtl?.Notes} onChange={(event) => addWatchListDetailChangeHandler("Notes", event.target.value)} />
-                                        }
-                                   </div>
-
-                                   <div className="narrow card"></div>
-
-                                   {(isAdding || isEditing) &&
                                         <div className="narrow card"></div>
-                                   }
 
-                                   <div className="narrow card">
-                                        <div className="textLabel">Rating:</div>
-                                   </div>
+                                        <div className="narrow card">
+                                             <div className="textLabel">Notes:</div>
+                                        </div>
 
-                                   <div className="labelWidth narrow card">
-                                        {!isAdding && !isEditing &&
-                                             <span>
-                                                  {Array.from(Array(ratingMax), (e: Event, index: number) => {
-                                                       return (
-                                                            <span className="favoriteIcon" key={index}>
-                                                                 {getRatingIcon(index)}
-                                                            </span>
-                                                       );
-                                                  })}
-                                             </span>
+                                        <div className="narrow card no-width">
+                                             {!isAdding && !isEditing &&
+                                                  <div className="textLabel">{watchListDtl?.Notes}</div>
+                                             }
+
+                                             {isEditing &&
+                                                  <input className="inputStyle" value={watchListDtl.Notes} onChange={(event) => watchListDetailChangeHandler("Notes", event.target.value)} />
+                                             }
+
+                                             {isAdding &&
+                                                  <input className="inputStyle" value={addWatchListDtl?.Notes} onChange={(event) => addWatchListDetailChangeHandler("Notes", event.target.value)} />
+                                             }
+                                        </div>
+
+                                        <div className="narrow card">
+                                             <Link className="rightAligned text-label" onClick={recommendationsClickHandler}>Recommendations</Link>
+                                        </div>
+
+                                        {(isAdding || isEditing) &&
+                                             <div className="narrow card"></div>
                                         }
+
+                                        <div className="narrow card">
+                                             <div className="textLabel">Rating:</div>
+                                        </div>
+
+                                        <div className="labelWidth narrow card">
+                                             {!isAdding && !isEditing &&
+                                                  <span>
+                                                       {Array.from(Array(ratingMax), (e: Event, index: number) => {
+                                                            return (
+                                                                 <span className="favoriteIcon" key={index}>
+                                                                      {getRatingIcon(index)}
+                                                                 </span>
+                                                            );
+                                                       })}
+                                                  </span>
+                                             }
+
+                                             {isEditing &&
+                                                  <span className="customTopMargin clickable">
+                                                       {Array.from(Array(ratingMax), (e, index) => {
+                                                            return (
+                                                                 <span className="favoriteIcon" key={index} onClick={() => ratingClickHandler(index)}>
+                                                                      {getRatingIcon(index)}
+                                                                 </span>
+                                                            );
+                                                       })}
+                                                  </span>
+                                             }
+
+                                             {isAdding &&
+                                                  <span className="customTopMargin clickable">
+                                                       {Array.from(Array(ratingMax), (e, index) => {
+                                                            return (
+                                                                 <span className="favoriteIcon" key={index} onClick={() => ratingClickHandler(index)}>
+                                                                      {getRatingIcon(index)}
+                                                                 </span>
+                                                            );
+                                                       })}
+                                                  </span>
+                                             }
+                                        </div>
 
                                         {isEditing &&
-                                             <span className="customTopMargin clickable">
-                                                  {Array.from(Array(ratingMax), (e, index) => {
-                                                       return (
-                                                            <span className="favoriteIcon" key={index} onClick={() => ratingClickHandler(index)}>
-                                                                 {getRatingIcon(index)}
-                                                            </span>
-                                                       );
-                                                  })}
-                                             </span>
-                                        }
+                                             <>
+                                                  <div className="narrow card"></div>
 
-                                        {isAdding &&
-                                             <span className="customTopMargin clickable">
-                                                  {Array.from(Array(ratingMax), (e, index) => {
-                                                       return (
-                                                            <span className="favoriteIcon" key={index} onClick={() => ratingClickHandler(index)}>
-                                                                 {getRatingIcon(index)}
-                                                            </span>
-                                                       );
-                                                  })}
-                                             </span>
+                                                  <div className="narrow card">
+                                                       <div className="textLabel">Archive:</div>
+                                                  </div>
+
+                                                  <div className="narrow card">
+                                                       <input type="checkbox" checked={watchListDtl.Archived} onChange={(event: React.ChangeEvent<HTMLInputElement>) => watchListDetailChangeHandler("Archived", event.target.checked)} />
+                                                  </div>
+                                             </>
                                         }
                                    </div>
-
-                                   {isEditing &&
-                                        <>
-                                             <div className="narrow card"></div>
-
-                                             <div className="narrow card">
-                                                  <div className="textLabel">Archive:</div>
-                                             </div>
-
-                                             <div className="narrow card">
-                                                  <input type="checkbox" checked={watchListDtl.Archived} onChange={(event: React.ChangeEvent<HTMLInputElement>) => watchListDetailChangeHandler("Archived", event.target.checked)} />
-                                             </div>
-                                        </>
-                                   }
                               </div>
-                         </div>
+                         }
+
+                         {recommendationsVisible && (
+                              <Recommendations backendURL={backendURL} BrokenImageIcon={BrokenImageIcon} queryTerm={recommendationName} type={recommendationType} setRecommendationName={setRecommendationName} setRecommendationType={setRecommendationName} setRecommendationsVisible={setRecommendationsVisible} />
+                         )}
                     </div>
                </div>
           </>
@@ -803,6 +827,7 @@ WatchListDetail.propTypes = exact({
   watchListItems: PropTypes.array.isRequired,
   watchListSortDirection: PropTypes.string.isRequired,
   watchListSources: PropTypes.array.isRequired,
+  watchListTypes: PropTypes.array.isRequired,
 });
 
 export default WatchListDetail;

@@ -1,4 +1,5 @@
 "use strict";
+const axios = require("axios");
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 const config = require("config");
@@ -1375,6 +1376,34 @@ app.get("/Login", async (req, res) => {
       return res.status(403).send("Unauthorized 4: " + err.message);
     }
   }
+});
+
+/**
+ * @swagger
+ * /Recommendations:
+ *    get:
+ *        tags:
+ *          - Recommendations
+ *        summary: Get recommendations based on existing tv show or movie
+ *        description: Get recommendations based on existing tv show or movie
+ *        responses:
+ *          200:
+ *            description: "Returns ['OK']"
+ *
+ */
+app.get("/Recommendations", (req, res) => {
+     const queryTerm = typeof req.query.QueryTerm !== "undefined" ? req.query.QueryTerm : null;
+     const typeName = typeof req.query.Type !== "undefined" ? req.query.Type : null;
+
+     const recommendationsURL = `https://nodejs-shovav.replit.app/Recommendations?QueryTerm=${encodeURIComponent(queryTerm)}&Type=${typeName}`;
+
+     axios.get(recommendationsURL)
+     .then((response) => {
+          res.send(["OK",response.data]);
+     })
+     .catch((err) => {
+          res.send(["ERROR",err.message]);
+     });
 });
 
 /**

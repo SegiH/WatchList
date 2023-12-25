@@ -205,8 +205,39 @@ input:checked + .slider:before {
   margin-left: 25px;
 }
 
+.loader-container {
+  width: 200px;
+  height: 1vh;
+  position: fixed;
+  margin-top: 50px;
+  /*background: rgba(0,0,0,0.5) url("https://media.giphy.com/media/8agqybiK5LW8qrG3vJ/giphy.gif") center no-repeat;*/
+  z-index: 1;
+}
+
+.spinner {
+  width: 64px;
+  height: 64px;
+  border: 8px solid;
+  border-color: #3d5af1 transparent #3d5af1 transparent;
+  border-radius: 50%;
+  animation: spin-anim 1.2s linear infinite;
+}
+
+@keyframes spin-anim {
+  0% {
+      transform: rotate(0deg);
+  }
+  100% {
+      transform: rotate(360deg);
+  }
+}
+
 .margin-bottom {
   margin-bottom: -15px;
+}
+
+.margin-top {
+  margin-top: 25px;
 }
 
 .menuBar {
@@ -290,6 +321,7 @@ input:checked + .slider:before {
   padding: 20px;
   width: fit-content;
   min-height: 225px;
+  min-width: 150px;
 }
 
 .narrow {
@@ -298,6 +330,15 @@ input:checked + .slider:before {
 
 .narrowWidth {
   width: 60px;
+}
+
+.no-border {
+  border: none !important;
+  width: unset !important;
+}
+
+.no-font {
+  font-family: none !important;
 }
 
 .no-width {

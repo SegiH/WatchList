@@ -40,6 +40,7 @@ const Settings = ({ activeRoute, archivedVisible, autoAdd, backendURL, isLoggedI
           watchListSources: typeof IWatchListSource,
           watchListTypes: typeof IWatchListType
      }) => {
+          const buildDate ="12-29-23";
           const closeDetail = async () => {
                setSettingsVisible(false);
           };
@@ -240,7 +241,7 @@ const Settings = ({ activeRoute, archivedVisible, autoAdd, backendURL, isLoggedI
 
                          {typeof backendURL !== "undefined" &&
                               <span>
-                                   <span className="rightAligned small-text">Connected to {backendURL}<br />Build Date: 12-21-23</span>
+                                   <span className="rightAligned small-text">Connected to {backendURL}<br />Build Date: {buildDate}</span>
                               </span>
                          }
                     </div>

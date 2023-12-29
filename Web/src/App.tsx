@@ -1,12 +1,5 @@
 // NOTE: If you run this script in VS Code in Docker, you HAVE to run the web app on port 8080 or websocket will stop working which breaks hot reloading
 //
-// FIX
-//
-// Before deploying:
-//
-// In backend, clear config\default.json
-// publish backend and frontend packages to releases for web, backend, windows and linux
-//
 // Known Issues/Future features
 //
 // Bundle is ~ 27MB. Sluggish overall in dev and console locks up when you open it for 20 - 30 seconds

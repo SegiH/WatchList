@@ -460,7 +460,7 @@ const WatchListDetail = ({ backendURL, BrokenImageIcon, CancelIcon, isAdding, Ed
                <>
                     <div className="modal">
                          <div className={`modal-content ${watchListDtlID != null ? "fade-in" : "fade-out"}`}>
-                         {!recommendationsVisible &&
+                              {!recommendationsVisible &&
                                    <div className="container">
                                         <div className="cards">
                                              <div className="narrow card">
@@ -533,7 +533,7 @@ const WatchListDetail = ({ backendURL, BrokenImageIcon, CancelIcon, isAdding, Ed
                                                   <>
                                                        <div className="narrow card"></div>
                                                        <div className="narrow card"></div>
-                                                       </>
+                                                  </>
                                              }
 
                                              {isAdding &&
@@ -660,7 +660,31 @@ const WatchListDetail = ({ backendURL, BrokenImageIcon, CancelIcon, isAdding, Ed
                                                   }
                                              </div>
 
-                                             {isEditing && watchListDtl?.WatchListItem.WatchListType.WatchListTypeID === 2 &&
+                                             {((isAdding && addWatchListDtl?.WatchListItemID !== "-1" && getWatchListTypeID(addWatchListDtl?.WatchListItemID) === 2) || (!isAdding && watchListDtl?.WatchListItem.WatchListType.WatchListTypeID === 2)) &&
+                                                  <>
+                                                       <div className="narrow card"></div>
+
+                                                       <div className="narrow card">
+                                                            <div className="textLabel">Season:</div>
+                                                       </div>
+
+                                                       <div className="narrow card">
+                                                            {!isAdding && !isEditing &&                                                            
+                                                                 <div>{watchListDtl?.Season}</div>
+                                                            }
+
+                                                            {isEditing &&
+                                                                 <input className="inputStyle narrowWidth" type="number" value={watchListDtl.Season !== null ? watchListDtl.Season : ""} onChange={(event) => watchListDetailChangeHandler("Season", event.target.value)} /> 
+                                                            }
+
+                                                            {isAdding &&
+                                                                 <input className="inputStyle narrowWidth" type="number" value={addWatchListDtl?.Season} onChange={(event) => addWatchListDetailChangeHandler("Season", event.target.value)} />
+                                                            }
+                                                       </div>
+                                                  </>
+                                             }
+
+                                             {/*{isEditing && watchListDtl?.WatchListItem.WatchListType.WatchListTypeID === 2 &&
                                                   <>
                                                        <div className="narrow card"></div>
 
@@ -706,7 +730,7 @@ const WatchListDetail = ({ backendURL, BrokenImageIcon, CancelIcon, isAdding, Ed
                                                             }
                                                        </div>
                                                   </>
-                                             }
+                                             }*/}
 
                                              <div className="narrow card"></div>
 
@@ -729,7 +753,9 @@ const WatchListDetail = ({ backendURL, BrokenImageIcon, CancelIcon, isAdding, Ed
                                              </div>
 
                                              <div className="narrow card">
-                                                  <Link className="rightAligned text-label" onClick={recommendationsClickHandler}>Recommendations</Link>
+                                                  {!isAdding && !isEditing &&
+                                                       <Link className="rightAligned text-label" onClick={recommendationsClickHandler}>Recommendations</Link>
+                                                  }
                                              </div>
 
                                              {(isAdding || isEditing) &&

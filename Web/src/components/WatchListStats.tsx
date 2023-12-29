@@ -67,7 +67,7 @@ const WatchListStats = ({ backendURL, isLoggedIn, isLoggedInCheckComplete, ratin
                                                        {currentWatchListSourceStat.WatchListSourceName} watched {
                                                             currentWatchListSourceStat.SourceCount
                                                             -
-                                                            parseInt(watchListSourceDtlStats.filter((currentWatchListSourceDtlStat: IWatchListSourceDtlStat, index: number) => {return String(currentWatchListSourceDtlStat.WatchListSourceID) === String(currentWatchListSourceStat.WatchListSourceID) && (currentWatchListSourceDtlStat.StartDate === null)}).length)
+                                                            parseInt(watchListSourceDtlStats.filter((currentWatchListSourceDtlStat: typeof IWatchListSourceDtlStat, index: number) => {return String(currentWatchListSourceDtlStat.WatchListSourceID) === String(currentWatchListSourceStat.WatchListSourceID) && (currentWatchListSourceDtlStat.StartDate === null)}).length)
                                                        } time(s)
                                              
                                                        <TreeView aria-label="file system navigator" defaultCollapseIcon={<ExpandMoreIcon />} defaultExpandIcon={<ChevronRightIcon />} sx={{ flexGrow: 1, overflowY: "auto" }}>
@@ -189,7 +189,7 @@ const WatchListStats = ({ backendURL, isLoggedIn, isLoggedInCheckComplete, ratin
 
                const tvStats = (
                     <>
-                         {watchListTVStats.map((currentWatchListTVStat: IWatchListTVStat, index: number) => {
+                         {watchListTVStats.map((currentWatchListTVStat: typeof IWatchListTVStat, index: number) => {
                               return (
                                    <table key={index} className="datagrid">
                                         <tbody className="data">

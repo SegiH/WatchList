@@ -161,10 +161,10 @@ const WatchListDetail = ({ backendURL, BrokenImageIcon, CancelIcon, isAdding, Ed
                const dateSpl = currentDate.split("/");
 
                if (navigator.languages.includes("en-US")) { // Date is in format mm/dd/yyyy
-                    return `${dateSpl[2]}-${dateSpl[0]}-${dateSpl[1]}`;
+                    return `${dateSpl[2]}-${dateSpl[0].padStart(2,'0')}-${dateSpl[1].padStart(2,'0')}`;
                } else { // Date is in format dd/mm/yyyy
                     try {
-                         return `${dateSpl[2]}-${dateSpl[1]}-${dateSpl[0]}`;
+                         return `${dateSpl[2]}-${dateSpl[1].padStart(2,'0')}-${dateSpl[0].padStart(2,'0')}`;
                     } catch(e) {}
                }
           }
@@ -451,6 +451,19 @@ const WatchListDetail = ({ backendURL, BrokenImageIcon, CancelIcon, isAdding, Ed
           }, [backendURL, isAdding, newWatchListItemDtlID, watchListDtl, watchListDtlID, watchListDtlLoadingStarted, watchListDtlLoadingComplete]);
 
           useEffect(() => {
+               if (watchListItems.length > 0) {
+                    // Generate names for auto complete
+                    const namesOnlyItems = watchListItems.map((watchListItem: typeof IWatchListItem) => {
+                         return watchListItem.WatchListItemName;
+                    });
+
+                    const namesOnly = namesOnlyItems.sort();
+
+                    setAutoCompleteNames(namesOnly);
+               }
+          }, [watchListItems]);
+
+          useEffect(() => {
                if (recommendationName !== "" && recommendationType !== "") {
                     setRecommendationsVisible(true);
                }
@@ -582,6 +595,10 @@ const WatchListDetail = ({ backendURL, BrokenImageIcon, CancelIcon, isAdding, Ed
                                                   }
                                              </div>
 
+                                             {(isAdding || isEditing) &&
+                                                  <div className="narrow card"></div>
+                                             }
+
                                              <div className="narrow card">
                                                   <span className="textLabel">Start Date:&nbsp;</span>
                                              </div>
@@ -684,7 +701,7 @@ const WatchListDetail = ({ backendURL, BrokenImageIcon, CancelIcon, isAdding, Ed
                                                   </>
                                              }
 
-                                             {/*{isEditing && watchListDtl?.WatchListItem.WatchListType.WatchListTypeID === 2 &&
+                                             {isEditing && watchListDtl?.WatchListItem.WatchListType.WatchListTypeID === 2 &&
                                                   <>
                                                        <div className="narrow card"></div>
 
@@ -730,7 +747,7 @@ const WatchListDetail = ({ backendURL, BrokenImageIcon, CancelIcon, isAdding, Ed
                                                             }
                                                        </div>
                                                   </>
-                                             }*/}
+                                             }
 
                                              <div className="narrow card"></div>
 
@@ -757,10 +774,6 @@ const WatchListDetail = ({ backendURL, BrokenImageIcon, CancelIcon, isAdding, Ed
                                                        <Link className="rightAligned text-label" onClick={recommendationsClickHandler}>Recommendations</Link>
                                                   }
                                              </div>
-
-                                             {(isAdding || isEditing) &&
-                                                  <div className="narrow card"></div>
-                                             }
 
                                              <div className="narrow card">
                                                   <div className="textLabel">Rating:</div>

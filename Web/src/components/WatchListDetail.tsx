@@ -701,54 +701,6 @@ const WatchListDetail = ({ backendURL, BrokenImageIcon, CancelIcon, isAdding, Ed
                                                   </>
                                              }
 
-                                             {isEditing && watchListDtl?.WatchListItem.WatchListType.WatchListTypeID === 2 &&
-                                                  <>
-                                                       <div className="narrow card"></div>
-
-                                                       <div className="narrow card">
-                                                            <div className="textLabel">Season:</div>
-                                                       </div>
-
-                                                       <div className="narrow card">
-                                                            {!isAdding && !isEditing &&
-                                                                 <div>{watchListDtl?.Season}</div>
-                                                            }
-
-                                                            {isEditing &&
-                                                                 <input className="inputStyle narrowWidth" type="number" value={watchListDtl.Season !== null ? watchListDtl.Season : ""} onChange={(event) => watchListDetailChangeHandler("Season", event.target.value)} /> 
-                                                            }
-
-                                                            {isAdding &&
-                                                                 <input className="inputStyle narrowWidth" type="number" value={addWatchListDtl?.Season} onChange={(event) => addWatchListDetailChangeHandler("Season", event.target.value)} />
-                                                            }
-                                                       </div>
-                                                  </>
-                                             }
-
-                                             {isAdding && addWatchListDtl?.WatchListItemID !== "-1" && getWatchListTypeID(addWatchListDtl?.WatchListItemID) === 2 &&
-                                                  <>
-                                                       <div className="narrow card"></div>
-
-                                                       <div className="narrow card">
-                                                            <div className="textLabel">Season:</div>
-                                                       </div>
-
-                                                       <div className="narrow card">
-                                                            {!isAdding && !isEditing &&
-                                                                 <div>{addWatchListDtl?.Season}</div>
-                                                            }
-
-                                                            {isEditing &&
-                                                                 <input className="inputStyle narrowWidth" type="number" value={watchListDtl.Season !== null ? watchListDtl.Season : ""} onChange={(event) => watchListDetailChangeHandler("Season", event.target.value)} /> 
-                                                            }
-
-                                                            {isAdding &&
-                                                                 <input className="inputStyle narrowWidth" type="number" value={addWatchListDtl?.Season} onChange={(event) => addWatchListDetailChangeHandler("Season", event.target.value)} />
-                                                            }
-                                                       </div>
-                                                  </>
-                                             }
-
                                              <div className="narrow card"></div>
 
                                              <div className="narrow card">

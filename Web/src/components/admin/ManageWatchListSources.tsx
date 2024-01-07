@@ -108,13 +108,13 @@ const ManageWatchListSources = ({backendURL, CancelIcon, EditIcon, SaveIcon, set
                {
                     field: "WatchListSourceID",
                     headerName: "ID",
-                    width: 70
+                    width: 100
                },
                {
                     field: "WatchListSourceName",
                     headerName: "Source name",
                     editable: true,
-                    width: 150,
+                    width: 225,
                },
                {
                     field: "actions",

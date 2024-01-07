@@ -238,7 +238,7 @@ const ManageUserAccounts = ({backendURL, CancelIcon, EditIcon, generateRandomPas
                {
                     field: "UserID",
                     headerName: "ID",
-                    width: 70
+                    width: 100
                },
                {
                     field: "Username",

@@ -109,7 +109,7 @@ const ManageWatchListTypes = ({backendURL, CancelIcon, EditIcon, SaveIcon, setIs
                {
                     field: "WatchListTypeID",
                     headerName: "ID",
-                    width: 70
+                    width: 100
                },
                {
                     field: "WatchListTypeName",

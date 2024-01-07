@@ -1,5 +1,6 @@
 const axios = require("axios");
-const exact = require ("prop-types-exact");
+const exact = require("prop-types-exact");
+const IRecommendation = require("../interfaces/IRecommendation");
 const MuiIcon = require("@mui/icons-material").MuiIcon;
 const PropTypes = require("prop-types");
 const React = require("react");
@@ -30,7 +31,7 @@ const Recommendations = ({ backendURL, BrokenImageIcon, queryTerm, setRecommenda
           const showDefaultSrc = (id: number) => () : void => {
                const newRecommendations = Object.assign([], recommendations);
           
-               newRecommendations.filter((currentRecommendation: any) => {
+               newRecommendations.filter((currentRecommendation: typeof IRecommendation) => {
                     return String(currentRecommendation.id) === String(id);
                });
 
@@ -50,7 +51,7 @@ const Recommendations = ({ backendURL, BrokenImageIcon, queryTerm, setRecommenda
 
                     const url = `${backendURL}/Recommendations?QueryTerm=${encodeURIComponent(queryTerm)}&Type=${type}`;
 
-                    axios.get(url).then((res: any) => {
+                    axios.get(url).then((res: typeof IRecommendation) => {
                          setRecommendationsLoadingComplete(true);
 
                          if (res.data[0] === "OK") {
@@ -85,7 +86,7 @@ const Recommendations = ({ backendURL, BrokenImageIcon, queryTerm, setRecommenda
                               </>
                          }
 
-                         {recommendationsLoadingComplete && recommendations && recommendations.length > 0 && recommendations.map((recommendation: any, index: number) => {
+                         {recommendationsLoadingComplete && recommendations && recommendations.length > 0 && recommendations.map((recommendation: typeof IRecommendation, index: number) => {
                               return (
                                    <li className="show-item" key={index}>
                                         <span>

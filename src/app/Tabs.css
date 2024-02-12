@@ -1,0 +1,75 @@
+.active {
+     /*border-color: cornflowerblue !important;
+    font-weight: bold !important;
+    border-width: 2px;*/
+     background-color: deepskyblue;
+     color: white;
+}
+
+.active span {
+     color: white;
+}
+
+.tab {
+     font-family: "Roboto", "Helvetica Neue", sans-serif;
+     font-size: 12px;
+     letter-spacing: 0.03em;
+     max-width: 168px;
+}
+
+:tab:last-child {
+     margin-right: 125px;
+}
+
+.tabBar {
+     border: 1px solid lightgray;
+     /*background-color: lightgray;*/
+     /*background-color: #F1EBE4;*/
+     background-color: white;
+     bottom: 0;
+     /* Critical */
+     box-sizing: border-box;
+     height: 56px;
+     position: fixed;
+     /* Critical */
+     text-align: center;
+     width: 100%;
+     display: flex;
+     justify-content: space-between;
+}
+
+.tabIcon {
+     height: 36px;
+     margin-left: 10px;
+     margin-right: 10px;
+     text-align: center;
+     width: 36px;
+}
+
+.tabitem {
+     display: inline-grid;
+     height: 56px;
+     margin-left: auto;
+     margin-right: auto;
+     transform: scale(0.8);
+     /*width: 80px;*/
+}
+
+.tab:last-child {
+     margin-right: 25px;
+}
+
+.tab button {
+     box-shadow: rgba(50, 50, 93, .1) 0 0 0 1px inset, rgba(50, 50, 93, .1) 0 2px 5px 0, rgba(0, 0, 0, .07) 0 2px 2px 0;
+     height: 56px;
+}
+
+.tabLabel {
+     align-items: center;
+     border: none;
+     border-radius: 10px;
+     color: black;
+     cursor: pointer;
+     font-weight: normal;
+     height: 100%;
+}

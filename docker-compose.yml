@@ -1,0 +1,21 @@
+version: '3.7'
+
+networks:
+   default:
+      name: YourNetwork # Change me
+      external: true
+
+services:
+   watchlist:
+     container_name: WatchList_unsecured
+     image: watchlist:latest
+     volumes:
+       - ./watchlistdb.sqlite:/app/watchlistdb.sqlite
+     ports:
+       - 3000:3000
+     environment:
+       - NODE_ENV=production
+     command: "npm run start"
+     networks:
+       - default
+     restart: always

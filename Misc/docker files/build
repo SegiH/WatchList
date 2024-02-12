@@ -1,0 +1,9 @@
+#!/bin/bash
+
+docker build docker/ -t watchlistbackend:latest
+
+docker stop WatchListBackend && docker rm WatchListBackend
+
+docker-compose -f watchlistbackend-compose.yml up -d
+
+#docker logs WatchListBackend

@@ -1,0 +1,64 @@
+/*.data .watchList {
+    border-collapse: collapse;
+    font-family: Arial, Helvetica, sans-serif !important;
+    border: 0.025em solid #333 outset #999;    
+    -webkit-box-shadow: 2px 2px 5px rgba(0,0,0,0.4);
+    -moz-box-shadow: 2px 2px 5px rgba(0,0,0,0.4);
+    line-height: 1.5;
+    padding: 0.75em;
+    text-align: left;
+
+    padding-bottom: 50px;
+}*/
+
+/*.data.watchList tr {
+     background-color: #F1EBE4;
+}*/
+
+.datagrid {
+    box-shadow: rgba(50, 50, 93, .1) 0 0 0 1px inset,rgba(50, 50, 93, .1) 0 2px 5px 0,rgba(0, 0, 0, .07) 0 2px 2px 0;
+    position: relative;
+    left: -20px;
+    padding-left: 20px;
+    width: 101%;
+}
+
+.data ul {
+    background-color: white;
+    border-radius: 15px !important;
+    display: inline;
+}
+
+.data li {
+    background-color: #FCFBF4;
+    border-radius: 15px;
+    display: flex;
+    list-style-type: none;
+    margin-bottom: 25px;
+    margin-left: 1%;
+    margin-right: 60%;
+    width: fit-content;
+}
+
+.data li  div {
+    margin-left: 25px;
+}
+
+.data li img {
+    border-radius: 15px;
+    margin-left: 25px;
+}
+
+.data li span {
+    width: 400px;
+}
+.data li .detailColumn * {
+    margin-bottom: 25px;
+}
+/*.datagrid tr:nth-child(even) td:not(.header){
+    background-color: #eee;
+}
+
+.datagrid tr:nth-child(even) td:not(.header){
+    background-color: #eee;
+}*/

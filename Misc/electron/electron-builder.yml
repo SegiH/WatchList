@@ -1,0 +1,12 @@
+appId: "io.github.rbfraphael.electron-next"
+productName: "Electron Next.JS"
+copyright: "Copyright (c) 2023 RBFraphael"
+win:
+  target: ["dir", "portable", "zip"]
+  icon: "resources/icon.ico"
+linux:
+  target: ["dir", "appimage", "zip"]
+  icon: "resources/icon.png"
+mac:
+  target: ["dir", "dmg", "zip"]
+  icon: "resources/icon.icns"

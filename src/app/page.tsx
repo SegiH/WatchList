@@ -299,7 +299,7 @@ export default function Home() {
                if (previousDemoMode === "true") {
                     setDemoMode(true);
 
-                    const newUserData = require("./demo/index").demoUser;
+                    const newUserData = require("./demo/index").demoUser[0];
 
                     setUserData(newUserData);
 

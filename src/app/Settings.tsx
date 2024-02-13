@@ -41,7 +41,7 @@ const Settings = ({ activeRoute, archivedVisible, autoAdd, isLoggedIn, LogOutIco
           watchListSources: typeof IWatchListSource,
           watchListTypes: typeof IWatchListType
      }) => {
-     const buildDate = "02-11-24";
+     const buildDate = "02-12-24";
 
      const searchCountOptions: any = {
           "10 results": 10,

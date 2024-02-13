@@ -44,7 +44,7 @@ const Login = ({ demoUsername, demoPassword, defaultRoute, setActiveRoute, setDe
           if (username === demoUsername && password === demoPassword) {
                setDemoMode(true);
 
-               const newUserData: typeof IUser = require("./demo/index").demoUser;
+               const newUserData: typeof IUser = require("./demo/index").demoUser[0];
 
                setActiveRoute("WatchList");
                setUserData(newUserData);

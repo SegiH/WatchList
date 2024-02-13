@@ -83,17 +83,6 @@ const WatchListItemDetail = ({ BrokenImageIcon, CancelIcon, demoMode, isAdding, 
           }
      };
 
-     const initAddWatchListItemDtl = () => {
-          const newAddWatchListItemDtl: typeof IWatchListItem = {};
-          newAddWatchListItemDtl.WatchListItemName = "";
-          newAddWatchListItemDtl.WatchListTypeID = "-1";
-          newAddWatchListItemDtl.IMDB_URL = "";
-          newAddWatchListItemDtl.IMDB_Poster = "";
-          newAddWatchListItemDtl.ItemNotes = "";
-
-          setAddWatchListItemDtl(newAddWatchListItemDtl);
-     }
-
      const onIMDBPosterChangeHandler = async (URL: string) => {
           const result = await checkURL(URL);
 
@@ -282,8 +271,10 @@ const WatchListItemDetail = ({ BrokenImageIcon, CancelIcon, demoMode, isAdding, 
      };
 
      useEffect(() => {
-          if (demoMode) {
-               if (!isAdding) {
+          if (!watchListItemDtlLoadingStarted && !watchListItemDtlLoadingComplete && watchListItemDtlID !== null && watchListItemDtlID !== -1 && watchListItemDtl == null) {
+               setWatchListItemDtlLoadingStarted(true);
+
+               if (demoMode) {
                     const demoWatchListItemPayload = require("./demo/index").demoWatchListItemsPayload;
 
                     const detailWatchListItem = demoWatchListItemPayload.filter((currentWatchList: typeof IWatchListItem) => {
@@ -299,37 +290,37 @@ const WatchListItemDetail = ({ BrokenImageIcon, CancelIcon, demoMode, isAdding, 
                     setWatchListItemDtl(detailWatchListItem[0]);
                     setWatchListItemDtlLoadingStarted(true);
                     setWatchListItemDtlLoadingComplete(true);
-               } else {
-                    initAddWatchListItemDtl();
                }
 
-               return;
-          }
+               axios.get(`/api/GetWatchListItemDtl?WatchListItemID=${watchListItemDtlID}`)
+                    .then((res: typeof IWatchListItem) => {
+                         setWatchListItemDtlLoadingComplete(true);
 
-          if (!watchListItemDtlLoadingStarted && !watchListItemDtlLoadingComplete && watchListItemDtlID !== null && watchListItemDtlID !== -1 && watchListItemDtl == null) {
-               setWatchListItemDtlLoadingStarted(true);
+                         if (res.data[0] === "ERROR") {
+                              alert(`The error ${res.data[1]} occurred while  getting the item detail`);
+                         } else {
+                              // Sanitize object by replacing all null fields with "". There are issues with binding to input fields when the value is null
+                              Object.keys(res.data[0]).map((keyName) => {
+                                   if (res.data[0][keyName] === null) {
+                                        res.data[0][keyName] = "";
+                                   }
+                              });
 
-               axios.get(`/api/GetWatchListItemDtl?WatchListItemID=${watchListItemDtlID}`).then((res: typeof IWatchListItem) => {
-                    setWatchListItemDtlLoadingComplete(true);
-
-                    if (res.data[0] === "ERROR") {
-                         alert(`The error ${res.data[1]} occurred while  getting the item detail`);
-                    } else {
-                         // Sanitize object by replacing all null fields with "". There are issues with binding to input fields when the value is null
-                         Object.keys(res.data[0]).map((keyName) => {
-                              if (res.data[0][keyName] === null) {
-                                   res.data[0][keyName] = "";
-                              }
-                         });
-
-                         setWatchListItemDtl(res.data[0]);
-                    }
-               })
+                              setWatchListItemDtl(res.data[0]);
+                         }
+                    })
                     .catch((err: Error) => {
                          alert(`The fatal error ${err.message} occurred while getting the item detail`);
                     });
           } else if (isAdding && watchListItemDtlID === -1) {
-               initAddWatchListItemDtl();
+               const newAddWatchListItemDtl: typeof IWatchListItem = {};
+               newAddWatchListItemDtl.WatchListItemName = "";
+               newAddWatchListItemDtl.WatchListTypeID = "-1";
+               newAddWatchListItemDtl.IMDB_URL = "";
+               newAddWatchListItemDtl.IMDB_Poster = "";
+               newAddWatchListItemDtl.ItemNotes = "";
+
+               setAddWatchListItemDtl(newAddWatchListItemDtl);
           }
      }, [isAdding, watchListItemDtlLoadingStarted, watchListItemDtlLoadingComplete, watchListItemDtl, watchListItemDtlID]);
 

@@ -190,19 +190,6 @@ const WatchListDetail = ({ BrokenImageIcon, CancelIcon, demoMode, isAdding, Edit
           }
      };
 
-     const initAddWatchListDtl = () => {
-          const newAddWatchListDtl: typeof IWatchList = {};
-          newAddWatchListDtl.WatchListItemID = newWatchListItemDtlID !== null ? newWatchListItemDtlID : "-1";
-          newAddWatchListDtl.StartDate = getLocaleDate();
-          newAddWatchListDtl.EndDate = "";
-          newAddWatchListDtl.WatchListSourceID = "-1";
-          newAddWatchListDtl.Season = "";
-          newAddWatchListDtl.Rating = "0";
-          newAddWatchListDtl.Notes = "";
-
-          setAddWatchListDtl(newAddWatchListDtl);
-     }
-
      const ratingClickHandler = (index: number) => {
           if (!isAdding && !isEditing) return true;
 
@@ -254,6 +241,11 @@ const WatchListDetail = ({ BrokenImageIcon, CancelIcon, demoMode, isAdding, Edit
      };
 
      const saveClickHandler = async () => {
+          if (demoMode) {
+               alert("Saving is disabled in demo mode");
+               return;
+          }
+
           updateWatchList(false);
      };
 
@@ -419,12 +411,24 @@ const WatchListDetail = ({ BrokenImageIcon, CancelIcon, demoMode, isAdding, Edit
           newWatchListDtl[`${fieldName}IsModified`] = true;
 
           if (fieldName === "WatchListItemID") {
-               const watchListItem = watchListItems.filter((watchListItem: typeof IWatchListItem) => {
-                    return String(watchListItem.WatchListItemID) === String(fieldValue);
-               });
+               if (demoMode) {
+                    const demoWatchListItemsPayload = require("./demo/index").demoWatchListItemsPayload;
 
-               if (watchListItem.length === 1) {
-                    newWatchListDtl["WatchListItem"] = watchListItem[0];
+                    const demoWatchListItem = demoWatchListItemsPayload.filter((watchListItem: typeof IWatchListItem) => {
+                         return String(watchListItem.WatchListItemID) === String(fieldValue);
+                    });
+
+                    if (demoWatchListItem.length === 1) {
+                         newWatchListDtl["WatchListItem"] = demoWatchListItem[0];
+                    }
+               } else {
+                    const watchListItem = watchListItems.filter((watchListItem: typeof IWatchListItem) => {
+                         return String(watchListItem.WatchListItemID) === String(fieldValue);
+                    });
+
+                    if (watchListItem.length === 1) {
+                         newWatchListDtl["WatchListItem"] = watchListItem[0];
+                    }
                }
           }
 
@@ -434,8 +438,10 @@ const WatchListDetail = ({ BrokenImageIcon, CancelIcon, demoMode, isAdding, Edit
      };
 
      useEffect(() => {
-          if (demoMode) {
-               if (!isAdding) {
+          if (!watchListDtlLoadingStarted && !watchListDtlLoadingComplete && watchListDtlID !== null && watchListDtlID !== -1 && !isNaN(watchListDtlID)) {
+               setWatchListDtlLoadingStarted(true);
+
+               if (demoMode) {
                     const demoWatchListPayload = require("./demo/index").demoWatchListPayload;
 
                     const detailWatchList = demoWatchListPayload.filter((currentWatchList: typeof IWatchList) => {
@@ -451,15 +457,9 @@ const WatchListDetail = ({ BrokenImageIcon, CancelIcon, demoMode, isAdding, Edit
                     setWatchListDtl(detailWatchList[0]);
                     setWatchListDtlLoadingStarted(true);
                     setWatchListDtlLoadingComplete(true);
-               } else {
-                    initAddWatchListDtl();
+
+                    return;
                }
-
-               return;
-          }
-
-          if (!watchListDtlLoadingStarted && !watchListDtlLoadingComplete && watchListDtlID !== null && watchListDtlID !== -1 && !isNaN(watchListDtlID)) {
-               setWatchListDtlLoadingStarted(true);
 
                axios.get(`/api/GetWatchListDtl?WatchListID=${watchListDtlID}`)
                     .then((res: typeof IWatchList) => {
@@ -481,7 +481,16 @@ const WatchListDetail = ({ BrokenImageIcon, CancelIcon, demoMode, isAdding, Edit
                          alert(`The fatal error ${err.message} occurred while  getting the detail`);
                     });
           } else if (isAdding) {
-               initAddWatchListDtl();
+               const newAddWatchListDtl: typeof IWatchList = {};
+               newAddWatchListDtl.WatchListItemID = newWatchListItemDtlID !== null ? newWatchListItemDtlID : "-1";
+               newAddWatchListDtl.StartDate = getLocaleDate();
+               newAddWatchListDtl.EndDate = "";
+               newAddWatchListDtl.WatchListSourceID = "-1";
+               newAddWatchListDtl.Season = "";
+               newAddWatchListDtl.Rating = "0";
+               newAddWatchListDtl.Notes = "";
+
+               setAddWatchListDtl(newAddWatchListDtl);
           }
      }, [getLocaleDate, isAdding, newWatchListItemDtlID, watchListDtl, watchListDtlID, watchListDtlLoadingStarted, watchListDtlLoadingComplete]);
 

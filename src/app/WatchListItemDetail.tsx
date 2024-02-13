@@ -290,6 +290,8 @@ const WatchListItemDetail = ({ BrokenImageIcon, CancelIcon, demoMode, isAdding, 
                     setWatchListItemDtl(detailWatchListItem[0]);
                     setWatchListItemDtlLoadingStarted(true);
                     setWatchListItemDtlLoadingComplete(true);
+
+                    return;
                }
 
                axios.get(`/api/GetWatchListItemDtl?WatchListItemID=${watchListItemDtlID}`)
@@ -420,7 +422,7 @@ const WatchListItemDetail = ({ BrokenImageIcon, CancelIcon, demoMode, isAdding, 
 
                                    <div className="narrow card">
                                         {!isAdding && !isEditing &&
-                                             <span>{watchListItemDtl?.WatchListType.WatchListTypeName}</span>
+                                             <span>{watchListItemDtl?.WatchListType?.WatchListTypeName}</span>
                                         }
 
                                         {isEditing &&
@@ -429,8 +431,8 @@ const WatchListItemDetail = ({ BrokenImageIcon, CancelIcon, demoMode, isAdding, 
 
                                                   {watchListTypes?.map((watchListType: typeof IWatchListType, index: number) => {
                                                        return (
-                                                            <option key={index} value={watchListType.WatchListTypeID}>
-                                                                 {watchListType.WatchListTypeName}
+                                                            <option key={index} value={watchListType?.WatchListTypeID}>
+                                                                 {watchListType?.WatchListTypeName}
                                                             </option>
                                                        );
                                                   })}
@@ -443,8 +445,8 @@ const WatchListItemDetail = ({ BrokenImageIcon, CancelIcon, demoMode, isAdding, 
 
                                                   {watchListTypes?.map((watchListType: typeof IWatchListType, index: number) => {
                                                        return (
-                                                            <option key={index} value={watchListType.WatchListTypeID}>
-                                                                 {watchListType.WatchListTypeName}
+                                                            <option key={index} value={watchListType?.WatchListTypeID}>
+                                                                 {watchListType?.WatchListTypeName}
                                                             </option>
                                                        );
                                                   })}
@@ -466,7 +468,7 @@ const WatchListItemDetail = ({ BrokenImageIcon, CancelIcon, demoMode, isAdding, 
                                         }
 
                                         {isEditing &&
-                                             <input className="inputStyle" value={watchListItemDtl.IMDB_URL} onChange={(event) => watchListItemDetailChangeHandler("IMDB_URL", event.target.value)} />
+                                             <input className="inputStyle" value={watchListItemDtl?.IMDB_URL} onChange={(event) => watchListItemDetailChangeHandler("IMDB_URL", event.target.value)} />
                                         }
 
                                         {isAdding &&
@@ -484,7 +486,7 @@ const WatchListItemDetail = ({ BrokenImageIcon, CancelIcon, demoMode, isAdding, 
 
                                              <div className="narrow card">
                                                   {isEditing &&
-                                                       <input className="inputStyle" value={watchListItemDtl.IMDB_Poster} onBlur={(event: React.ChangeEvent<HTMLInputElement>) => onIMDBPosterChangeHandler(event.target.value)} onChange={(event) => watchListItemDetailChangeHandler("IMDB_Poster", event.target.value)} />
+                                                       <input className="inputStyle" value={watchListItemDtl?.IMDB_Poster} onBlur={(event: React.ChangeEvent<HTMLInputElement>) => onIMDBPosterChangeHandler(event.target.value)} onChange={(event) => watchListItemDetailChangeHandler("IMDB_Poster", event.target.value)} />
                                                   }
 
                                                   {isAdding &&
@@ -506,7 +508,7 @@ const WatchListItemDetail = ({ BrokenImageIcon, CancelIcon, demoMode, isAdding, 
                                         }
 
                                         {isEditing &&
-                                             <input className="inputStyle" value={watchListItemDtl.ItemNotes} onChange={(event: React.ChangeEvent<HTMLInputElement>) => watchListItemDetailChangeHandler("ItemNotes", event.target.value)} />
+                                             <input className="inputStyle" value={watchListItemDtl?.ItemNotes} onChange={(event: React.ChangeEvent<HTMLInputElement>) => watchListItemDetailChangeHandler("ItemNotes", event.target.value)} />
                                         }
 
                                         {isAdding &&
@@ -535,7 +537,7 @@ const WatchListItemDetail = ({ BrokenImageIcon, CancelIcon, demoMode, isAdding, 
                                              </div>
 
                                              <div className="narrow card">
-                                                  <input type="checkbox" checked={watchListItemDtl.Archived} onChange={(event: React.ChangeEvent<HTMLInputElement>) => watchListItemDetailChangeHandler("Archived", event.target.checked)} />
+                                                  <input type="checkbox" checked={watchListItemDtl?.Archived} onChange={(event: React.ChangeEvent<HTMLInputElement>) => watchListItemDetailChangeHandler("Archived", event.target.checked)} />
                                              </div>
                                         </>
                                    }

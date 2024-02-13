@@ -141,34 +141,34 @@ const WatchListItems = ({ AddIcon, archivedVisible, BrokenImageIcon, CancelIcon,
                                    <React.Fragment key={index}>
                                         {watchListItemsSortingComplete && (
                                              <li className="show-item">
-                                                  <span className="item-id" onClick={() => openDetailClickHandler(currentWatchListItem.WatchListItemID)}>
-                                                       <div>{currentWatchListItem.WatchListItemID}</div>
+                                                  <span className="item-id" onClick={() => openDetailClickHandler(currentWatchListItem?.WatchListItemID)}>
+                                                       <div>{currentWatchListItem?.WatchListItemID}</div>
                                                   </span>
 
-                                                  <a className="show-link" onClick={() => openDetailClickHandler(currentWatchListItem.WatchListItemID)}>
+                                                  <a className="show-link" onClick={() => openDetailClickHandler(currentWatchListItem?.WatchListItemID)}>
                                                        <div className="image-crop">
-                                                            {currentWatchListItem.IMDB_Poster !== null && currentWatchListItem.IMDB_Poster_Error !== true && <img alt={currentWatchListItem.WatchListItemName} src={currentWatchListItem.IMDB_Poster} onLoad={() => setImageLoaded(currentWatchListItem.WatchListItemID)} onError={() => showDefaultSrc(currentWatchListItem.WatchListItemID)} />}
+                                                            {currentWatchListItem?.IMDB_Poster !== null && currentWatchListItem?.IMDB_Poster_Error !== true && <img alt={currentWatchListItem?.WatchListItemName} src={currentWatchListItem?.IMDB_Poster} onLoad={() => setImageLoaded(currentWatchListItem?.WatchListItemID)} onError={() => showDefaultSrc(currentWatchListItem?.WatchListItemID)} />}
 
-                                                            {(currentWatchListItem.IMDB_Poster === null || currentWatchListItem.IMDB_Poster_Error === true) && <>{BrokenImageIcon}</>}
+                                                            {(currentWatchListItem?.IMDB_Poster === null || currentWatchListItem?.IMDB_Poster_Error === true) && <>{BrokenImageIcon}</>}
                                                        </div>
                                                   </a>
 
                                                   <div>
-                                                       {typeof currentWatchListItem.IMDB_URL !== "undefined" &&
-                                                            <a href={currentWatchListItem.IMDB_URL} target='_blank'>{currentWatchListItem.WatchListItemName}</a>
+                                                       {typeof currentWatchListItem?.IMDB_URL !== "undefined" &&
+                                                            <a href={currentWatchListItem?.IMDB_URL} target='_blank'>{currentWatchListItem?.WatchListItemName}</a>
                                                        }
 
-                                                       {typeof currentWatchListItem.IMDB_URL === "undefined" &&
+                                                       {typeof currentWatchListItem?.IMDB_URL === "undefined" &&
                                                             <div>
-                                                                 {currentWatchListItem.WatchListItemName}
+                                                                 {currentWatchListItem?.WatchListItemName}
                                                             </div>
                                                        }
 
-                                                       {currentWatchListItem.Archived === true ? <span>&nbsp;(A)</span> : <></>}
+                                                       {currentWatchListItem?.Archived === true ? <span>&nbsp;(A)</span> : <></>}
                                                   </div>
 
                                                   <span>
-                                                       <div>{currentWatchListItem.WatchListType.WatchListTypeName}</div>
+                                                       <div>{currentWatchListItem?.WatchListType?.WatchListTypeName}</div>
                                                   </span>
                                              </li>
                                         )}

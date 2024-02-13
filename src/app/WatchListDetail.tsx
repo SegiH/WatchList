@@ -618,14 +618,14 @@ const WatchListDetail = ({ BrokenImageIcon, CancelIcon, demoMode, isAdding, Edit
                                         <div className="narrow card">
                                              {!isAdding &&
                                                   <>
-                                                       {watchListDtl?.WatchListItem.IMDB_Poster !== null && watchListDtl?.IMDB_Poster_Error !== true && <img className="poster-detail" alt="Image Not Available" src={watchListDtl?.WatchListItem.IMDB_Poster} onError={() => showDefaultSrc()} />}
+                                                       {watchListDtl?.WatchListItem?.IMDB_Poster !== null && watchListDtl?.IMDB_Poster_Error !== true && <img className="poster-detail" alt="Image Not Available" src={watchListDtl?.WatchListItem.IMDB_Poster} onError={() => showDefaultSrc()} />}
 
-                                                       {(watchListDtl?.WatchListItem.IMDB_Poster === null || watchListDtl?.IMDB_Poster_Error === true) && <>{BrokenImageIcon}</>}
+                                                       {(watchListDtl?.WatchListItem?.IMDB_Poster === null || watchListDtl?.IMDB_Poster_Error === true) && <>{BrokenImageIcon}</>}
                                                   </>
                                              }
 
                                              {isAdding && addWatchListDtl &&
-                                                  <span className="column">{watchListItems?.filter((currentWatchListItem: typeof IWatchListItem) => String(currentWatchListItem.WatchListItemID) === String(addWatchListDtl?.WatchListItemID)).length === 1 && <img className="poster-detail" alt="Image Not Available" src={watchListItems?.filter((currentWatchListItem: typeof IWatchListItem) => String(currentWatchListItem.WatchListItemID) === String(addWatchListDtl?.WatchListItemID))[0].IMDB_Poster} />}</span>
+                                                  <span className="column">{watchListItems?.filter((currentWatchListItem: typeof IWatchListItem) => String(currentWatchListItem?.WatchListItemID) === String(addWatchListDtl?.WatchListItemID)).length === 1 && <img className="poster-detail" alt="Image Not Available" src={watchListItems?.filter((currentWatchListItem: typeof IWatchListItem) => String(currentWatchListItem?.WatchListItemID) === String(addWatchListDtl?.WatchListItemID))[0].IMDB_Poster} />}</span>
                                              }
                                         </div>
 
@@ -642,8 +642,8 @@ const WatchListDetail = ({ BrokenImageIcon, CancelIcon, demoMode, isAdding, Edit
 
                                                   {formattedNamesWithId && formattedNamesWithId.map((watchListItem: typeof IWatchListItem, index: number) => {
                                                        return (
-                                                            <option key={index} value={watchListItem.WatchListItemID}>
-                                                                 {watchListItem.WatchListItemName}
+                                                            <option key={index} value={watchListItem?.WatchListItemID}>
+                                                                 {watchListItem?.WatchListItemName}
                                                             </option>
                                                        )
                                                   })}
@@ -727,7 +727,7 @@ const WatchListDetail = ({ BrokenImageIcon, CancelIcon, demoMode, isAdding, Edit
 
                                         <div className="narrow card">
                                              {!isAdding && !isEditing &&
-                                                  <div>{watchListDtl?.WatchListSource.WatchListSourceName}</div>
+                                                  <div>{watchListDtl?.WatchListSource?.WatchListSourceName}</div>
                                              }
 
                                              {isEditing &&
@@ -736,8 +736,8 @@ const WatchListDetail = ({ BrokenImageIcon, CancelIcon, demoMode, isAdding, Edit
 
                                                        {watchListSources?.map((watchListSource: typeof IWatchListSource, index: number) => {
                                                             return (
-                                                                 <option key={index} value={watchListSource.WatchListSourceID}>
-                                                                      {watchListSource.WatchListSourceName}
+                                                                 <option key={index} value={watchListSource?.WatchListSourceID}>
+                                                                      {watchListSource?.WatchListSourceName}
                                                                  </option>
                                                             );
                                                        })}
@@ -750,8 +750,8 @@ const WatchListDetail = ({ BrokenImageIcon, CancelIcon, demoMode, isAdding, Edit
 
                                                        {watchListSources?.map((watchListSource: typeof IWatchListSource, index: number) => {
                                                             return (
-                                                                 <option key={index} value={watchListSource.WatchListSourceID}>
-                                                                      {watchListSource.WatchListSourceName}
+                                                                 <option key={index} value={watchListSource?.WatchListSourceID}>
+                                                                      {watchListSource?.WatchListSourceName}
                                                                  </option>
                                                             );
                                                        })}
@@ -759,7 +759,7 @@ const WatchListDetail = ({ BrokenImageIcon, CancelIcon, demoMode, isAdding, Edit
                                              }
                                         </div>
 
-                                        {((isAdding && addWatchListDtl?.WatchListItemID !== "-1" && getWatchListTypeID(addWatchListDtl?.WatchListItemID) === 2) || (!isAdding && watchListDtl?.WatchListItem.WatchListType.WatchListTypeID === 2)) &&
+                                        {((isAdding && addWatchListDtl?.WatchListItemID !== "-1" && getWatchListTypeID(addWatchListDtl?.WatchListItemID) === 2) || (!isAdding && watchListDtl?.WatchListItem?.WatchListType?.WatchListTypeID === 2)) &&
                                              <>
                                                   <div className="narrow card"></div>
 

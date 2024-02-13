@@ -173,27 +173,27 @@ const WatchList = ({
 
                                                   <a className="show-link" onClick={() => openDetailClickHandler(currentWatchList?.WatchListID)}>
                                                        <div className="image-crop">
-                                                            {currentWatchList?.WatchListItem.IMDB_Poster !== null && currentWatchList?.IMDB_Poster_Error !== true && <img alt={currentWatchList?.WatchListItem.WatchListItemName} src={currentWatchList?.WatchListItem.IMDB_Poster} onError={() => showDefaultSrc(currentWatchList?.WatchListID)} />}
+                                                            {currentWatchList?.WatchListItem?.IMDB_Poster !== null && currentWatchList?.IMDB_Poster_Error !== true && <img alt={currentWatchList?.WatchListItem?.WatchListItemName} src={currentWatchList?.WatchListItem?.IMDB_Poster} onError={() => showDefaultSrc(currentWatchList?.WatchListID)} />}
 
-                                                            {(currentWatchList?.WatchListItem.IMDB_Poster === null || currentWatchList?.IMDB_Poster_Error === true) && <>{BrokenImageIcon}</>}
+                                                            {(currentWatchList?.WatchListItem?.IMDB_Poster === null || currentWatchList?.IMDB_Poster_Error === true) && <>{BrokenImageIcon}</>}
                                                        </div>
                                                   </a>
 
                                                   <div className="show-title">
                                                        {typeof currentWatchList?.WatchListItem.IMDB_URL !== "undefined" &&
-                                                            <a href={currentWatchList?.WatchListItem.IMDB_URL} target='_blank'>{currentWatchList?.WatchListItem.WatchListItemName}</a>
+                                                            <a href={currentWatchList?.WatchListItem.IMDB_URL} target='_blank'>{currentWatchList?.WatchListItem?.WatchListItemName}</a>
                                                        }
 
-                                                       {typeof currentWatchList?.WatchListItem.IMDB_URL === "undefined" &&
+                                                       {typeof currentWatchList?.WatchListItem?.IMDB_URL === "undefined" &&
                                                             <span>
-                                                                 {currentWatchList?.WatchListItem.WatchListItemName}
+                                                                 {currentWatchList?.WatchListItem?.WatchListItemName}
                                                             </span>
                                                        }
 
                                                        {currentWatchList?.Archived === true ? <span>&nbsp;(A)</span> : <></>}
                                                   </div>
 
-                                                  {currentWatchList?.WatchListItem.WatchListType.WatchListTypeID === 2 && <div>Season {currentWatchList?.Season}</div>}
+                                                  {currentWatchList?.WatchListItem?.WatchListType?.WatchListTypeID === 2 && <div>Season {currentWatchList?.Season}</div>}
 
                                                   <div>
                                                        {currentWatchList?.StartDate}
@@ -201,11 +201,11 @@ const WatchList = ({
                                                   </div>
 
                                                   <div>
-                                                       {currentWatchList?.WatchListItem.WatchListType.WatchListTypeName}
+                                                       {currentWatchList?.WatchListItem?.WatchListType?.WatchListTypeName}
                                                   </div>
 
                                                   <div>
-                                                       {currentWatchList?.WatchListSource.WatchListSourceName}
+                                                       {currentWatchList?.WatchListSource?.WatchListSourceName}
                                                   </div>
 
                                                   {currentWatchList?.Rating !== null && (

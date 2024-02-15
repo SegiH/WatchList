@@ -776,6 +776,13 @@ export default function Home() {
     },
   };
 
+
+      // State to control the opening of the dialog
+      const [isSearchDialogOpen, setIsSearchDialogOpen] = useState(false);
+
+      // Function to toggle the dialog's open state
+      const toggleSearchDialog = () => setIsSearchDialogOpen(!isSearchDialogOpen);
+
   return (
     <>
       <div className="flex justify-between items-center px-4 py-2 w-full border-b border-border">
@@ -784,16 +791,30 @@ export default function Home() {
                   Watch<span className="text-muted-foreground">List</span>
                 </div>
         <div className="flex items-center gap-4">
-          <span className="clickable searchIcon" onClick={showSearch}>
-            <Button variant="outline" size="icon">
-              <Search/>
-              </Button>
-          </span>
+        <SearchIMDB
+              isDialogOpen={isSearchDialogOpen}
+              setIsDialogOpen={setIsSearchDialogOpen}
+                              AddIcon={AddIconComponent}
+                autoAdd={autoAdd}
+                BrokenImageIcon={BrokenImageIconComponent}
+                searchCount={searchCount}
+                searchVisible={searchVisible}
+                setNewWatchListItemDtlID={setNewWatchListItemDtlID}
+                setSearchVisible={setSearchVisible}
+                setWatchListItemsLoadingStarted={
+                  setWatchListItemsLoadingStarted
+                }
+                setWatchListItemsLoadingComplete={
+                  setWatchListItemsLoadingComplete
+                }/>
 
-          <span className="clickable" onClick={showSettings}>
-          <Button variant="outline" size="icon">
+          <span className="clickable" >
+          <Button variant="outline" size="icon" onClick={toggleSearchDialog}>
               <Settings2/>
               </Button>
+
+              
+
             
           </span>
           <ModeToggle/>

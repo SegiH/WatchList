@@ -15,7 +15,6 @@ const useState = require("react").useState;
 const WatchListDetail = require("./WatchListDetail").default;
 
 const WatchList = ({
-  AddIcon,
   archivedVisible,
   autoAdd,
   BrokenImageIcon,
@@ -49,7 +48,6 @@ const WatchList = ({
   watchListSources,
   watchListTypes,
 }: {
-  AddIcon: typeof MuiIcon;
   archivedVisible: boolean;
   autoAdd: boolean;
   BrokenImageIcon: typeof MuiIcon;
@@ -361,7 +359,6 @@ const WatchList = ({
 };
 
 WatchList.propTypes = exact({
-  AddIcon: PropTypes.object.isRequired,
   archivedVisible: PropTypes.bool.isRequired,
   autoAdd: PropTypes.bool.isRequired,
   BrokenImageIcon: PropTypes.object.isRequired,

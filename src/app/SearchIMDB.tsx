@@ -22,21 +22,17 @@ import { Label } from "@/components/ui/label";
 import { Plus, Search } from "lucide-react";
 
 const SearchIMDB = ({
-  AddIcon,
   autoAdd,
   BrokenImageIcon,
   searchCount,
-  searchVisible,
   setNewWatchListItemDtlID,
   setSearchVisible,
   setWatchListItemsLoadingStarted,
   setWatchListItemsLoadingComplete,
 }: {
-  AddIcon: typeof MuiIcon;
   autoAdd: boolean;
   BrokenImageIcon: typeof MuiIcon;
   searchCount: number;
-  searchVisible: boolean;
   setSearchVisible: (arg0: boolean) => void;
   setNewWatchListItemDtlID: (arg0: number) => void;
   setWatchListItemsLoadingStarted: (arg0: boolean) => void;
@@ -228,11 +224,9 @@ const SearchIMDB = ({
 };
 
 SearchIMDB.propTypes = exact({
-  AddIcon: PropTypes.object.isRequired,
   autoAdd: PropTypes.bool.isRequired,
   BrokenImageIcon: PropTypes.object.isRequired,
   searchCount: PropTypes.number.isRequired,
-  searchVisible: PropTypes.bool.isRequired,
   setNewWatchListItemDtlID: PropTypes.func.isRequired,
   setSearchVisible: PropTypes.func.isRequired,
   setWatchListItemsLoadingStarted: PropTypes.func.isRequired,

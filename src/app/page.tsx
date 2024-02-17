@@ -77,6 +77,7 @@ export default function Home() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isLoggedInCheckComplete, setIsLoggedInCheckComplete] = useState(false);
   const [isLoggedInCheckStarted, setIsLoggedInCheckStarted] = useState(false);
+  const [isSearchDialogOpen, setIsSearchDialogOpen] = useState(false);  // State to control the opening of the dialog
   const [loginVisible, setLoginVisible] = useState(false);
   const [searchCount, setSearchCount] = useState(5);
   const [searchTerm, setSearchTerm] = useState("");
@@ -249,6 +250,9 @@ export default function Home() {
 
     setActiveRoute("Login");
   };
+
+  // Function to toggle the dialog's open state
+  const toggleSearchDialog = () => setIsSearchDialogOpen(!isSearchDialogOpen);
 
   const validatePassword = (value: string) => {
     // 1 lowercase alphabetical character, 1 uppercase alphabetical character, 1 numeric, 1 special char, 8 chars long minimum
@@ -620,7 +624,6 @@ export default function Home() {
       RequiresAuth: true,
       Component: (
         <WatchList
-          AddIcon={AddIconComponent}
           archivedVisible={archivedVisible}
           autoAdd={autoAdd}
           BrokenImageIcon={BrokenImageIconComponent}
@@ -656,7 +659,7 @@ export default function Home() {
         />
       ),
     },
-    WatchListItems: {
+    /*WatchListItems: {
       Name: "WatchListItems",
       DisplayName: "My List",
       Path: "/WatchListItems",
@@ -694,7 +697,7 @@ export default function Home() {
           watchListTypes={watchListTypes}
         />
       ),
-    },
+    },*/
     /*SearchIMDB: {
                Name: "SearchIMDB",
                DisplayName: "Search",
@@ -776,13 +779,6 @@ export default function Home() {
     },
   };
 
-
-      // State to control the opening of the dialog
-      const [isSearchDialogOpen, setIsSearchDialogOpen] = useState(false);
-
-      // Function to toggle the dialog's open state
-      const toggleSearchDialog = () => setIsSearchDialogOpen(!isSearchDialogOpen);
-
   return (
     <>
       <div className="flex justify-between items-center px-4 py-2 w-full border-b border-border">
@@ -792,21 +788,15 @@ export default function Home() {
                 </div>
         <div className="flex items-center gap-4">
         <SearchIMDB
-              isDialogOpen={isSearchDialogOpen}
-              setIsDialogOpen={setIsSearchDialogOpen}
-                              AddIcon={AddIconComponent}
+              // DOESNT APPEAR TO BE USED IN SEARCHIMDB isDialogOpen={isSearchDialogOpen}
+              // DOESNT APPEAR TO BE USED IN SEARCHIMDB setIsDialogOpen={setIsSearchDialogOpen}
                 autoAdd={autoAdd}
                 BrokenImageIcon={BrokenImageIconComponent}
                 searchCount={searchCount}
-                searchVisible={searchVisible}
                 setNewWatchListItemDtlID={setNewWatchListItemDtlID}
                 setSearchVisible={setSearchVisible}
-                setWatchListItemsLoadingStarted={
-                  setWatchListItemsLoadingStarted
-                }
-                setWatchListItemsLoadingComplete={
-                  setWatchListItemsLoadingComplete
-                }/>
+                setWatchListItemsLoadingStarted={setWatchListItemsLoadingStarted}
+                setWatchListItemsLoadingComplete={setWatchListItemsLoadingComplete}/>
 
           <span className="clickable" >
           <Button variant="outline" size="icon" onClick={toggleSearchDialog}>
@@ -840,13 +830,11 @@ export default function Home() {
               />
             </>
 
-            {searchVisible && (
+            {/*{searchVisible && (
               <SearchIMDB
-                AddIcon={AddIconComponent}
                 autoAdd={autoAdd}
                 BrokenImageIcon={BrokenImageIconComponent}
                 searchCount={searchCount}
-                searchVisible={searchVisible}
                 setNewWatchListItemDtlID={setNewWatchListItemDtlID}
                 setSearchVisible={setSearchVisible}
                 setWatchListItemsLoadingStarted={
@@ -856,7 +844,7 @@ export default function Home() {
                   setWatchListItemsLoadingComplete
                 }
               />
-            )}
+              )}*/}
 
             {settingsVisible && (
               <Settings

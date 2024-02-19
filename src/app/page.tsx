@@ -783,7 +783,7 @@ export default function Home() {
                               searchCount={searchCount}
                               setActiveRoute={setActiveRoute}
                               setNewWatchListItemDtlID={setNewWatchListItemDtlID}
-                              setSearchVisible={setSearchVisible}
+                              //setSearchVisible={setSearchVisible}
                               setWatchListItemsLoadingStarted={setWatchListItemsLoadingStarted}
                               setWatchListItemsLoadingComplete={setWatchListItemsLoadingComplete}
                               watchListItems={watchListItems}

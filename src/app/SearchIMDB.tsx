@@ -27,7 +27,6 @@ const SearchIMDB = ({
      searchCount,
      setActiveRoute,
      setNewWatchListItemDtlID,
-     setSearchVisible,
      setWatchListItemsLoadingStarted,
      setWatchListItemsLoadingComplete,
      watchListItems,
@@ -35,17 +34,16 @@ const SearchIMDB = ({
      BrokenImageIcon: typeof MuiIcon;
      searchCount: number;
      setActiveRoute: (arg0: string) => void;
-     setSearchVisible: (arg0: boolean) => void;
      setNewWatchListItemDtlID: (arg0: number) => void;
      setWatchListItemsLoadingStarted: (arg0: boolean) => void;
      setWatchListItemsLoadingComplete: (arg0: boolean) => void;
      watchListItems: typeof IWatchListItem,
 }) => {
+     const [includeIMDB, setIncludeIMDB] = useState(false);
      const [searchResults, setSearchResults] = useState({});
      const [searchSubmitted, setSearchSubmitted] = useState(false);
      const [searchTerm, setSearchTerm] = useState("");
      const [watchlistSearchResults, setWatchlistSearchResults] = useState({});
-     const [watchlistSearchSubmitted, setWatchlistSearchSubmitted] = useState(false);
 
      const addExistingResultClickHandler = (watchListItemID: number) => {
           setNewWatchListItemDtlID(watchListItemID);
@@ -67,11 +65,11 @@ const SearchIMDB = ({
                itemType = 3;
           }
 
-          const confirmAdd = confirm("Add IMDB search result ?");
+          /*const confirmAdd = confirm("Add IMDB search result ?");
 
           if (!confirmAdd) {
                return;
-          }
+          }*/
 
           let paramStr = `/api/AddWatchListItem?WatchListItemName=${searchResults[index].Title}&WatchListTypeID=${itemType}`;
 
@@ -86,8 +84,8 @@ const SearchIMDB = ({
                          alert(
                               `The error ${res.data[1]} occurred while adding the search result`
                          );
-                    } else if (res.data[0] === "ERROR-ALREADY-EXISTS") {
-                         alert(res.data[1]);
+                    //} else if (res.data[0] === "ERROR-ALREADY-EXISTS") {
+                    //     alert(res.data[1]);
                     } else {
                          setWatchListItemsLoadingStarted(false);
                          setWatchListItemsLoadingComplete(false);
@@ -107,21 +105,39 @@ const SearchIMDB = ({
                });
      };
 
-     const closeSearch = async () => {
-          setSearchVisible(false);
-     };
+     const includeIMDBSearchChangeHandler = async (event: any) => {
+          setIncludeIMDB(event.target.checked);
+
+          axios
+               .get(
+                 `/api/SearchIMDB?SearchTerm=${searchTerm}&SearchCount=${searchCount}`
+               )
+               .then((res: typeof ISearchImdb) => {
+                 if (res.data[0] === "ERROR") {
+                   alert(`The error ${res.data[1]} occurred while  searching IMDB`);
+                 } else {
+                   setSearchResults(res.data[1]);
+                   setSearchSubmitted(true);
+                 }
+               })
+               .catch((err: Error) => {
+                 alert(`The error ${err.message} occurred while searching IMDB`);
+               });
+     }
 
      const onKeyUpHandler = (event: typeof GridEventListener) => {
-          //if (event.key === "Enter") {
           setTimeout(() => {
                searchTermHandler();
+
+               if (includeIMDB) {
+                    includeIMDBSearchChangeHandler(event);
+               }
           }, 1000); // Delay of 1000 milliseconds (1 second)
-          //}
      };
 
      const searchTermHandler = () => {
           if (searchTerm === "") {
-               //alert("Please enter a search term");
+               alert("Please enter a search term");
                return;
           }
 
@@ -135,40 +151,31 @@ const SearchIMDB = ({
           if (currentWatchListItemsResult.length > 0) {
                setWatchlistSearchResults(currentWatchListItemsResult);
           }
-
-          //setWatchlistSearchSubmitted(true);
-
-          /*axios
-            .get(
-              `/api/SearchIMDB?SearchTerm=${searchTerm}&SearchCount=${searchCount}`
-            )
-            .then((res: typeof ISearchImdb) => {
-              if (res.data[0] === "ERROR") {
-                alert(`The error ${res.data[1]} occurred while  searching IMDB`);
-              } else {
-                setSearchResults(res.data[1]);
-                setSearchSubmitted(true);
-              }
-            })
-            .catch((err: Error) => {
-              alert(`The error ${err.message} occurred while searching IMDB`);
-            });*/
      };
 
      // State to control the opening of the dialog
      const [isSearchDialogOpen, setIsSearchDialogOpen] = useState(false);
 
      // Function to toggle the dialog's open state
-     const toggleSearchDialog = () => setIsSearchDialogOpen(!isSearchDialogOpen);
+     const toggleSearchDialog = () => {
+          if (isSearchDialogOpen === false) {
+               setSearchResults({});
+               setWatchlistSearchResults({});
+               setSearchTerm("");
+          }
 
-     useEffect(() => {
-         setWatchlistSearchResults([]);
-     }, []);
+          setIsSearchDialogOpen(!isSearchDialogOpen);
+     }
+
+     /*useEffect(() => {
+         setWatchlistSearchResults({});
+         setSearchTerm("");
+     }, []);*/
 
      return (
           <>
 
-               <Dialog open={isSearchDialogOpen} onOpenChange={setIsSearchDialogOpen}>
+               <Dialog open={isSearchDialogOpen} onOpenChange={toggleSearchDialog}>
                     <DialogTrigger asChild>
                          <Button variant="outline" size="icon">
                               <Search />
@@ -176,21 +183,22 @@ const SearchIMDB = ({
                     </DialogTrigger>
                     <DialogContent className="transition-all w-full sm:max-w-[425px] md:min-w-[768px] max-h-[80vh] overflow-y-hidden">
                          <DialogHeader>
-                              <DialogTitle>Search for a Movie or Show</DialogTitle>
+                              <DialogTitle>Search for a Movie or Show
+                              &nbsp;&nbsp;(include IMDB&nbsp;&nbsp;<input type="checkbox" checked={includeIMDB} onChange={(event) => includeIMDBSearchChangeHandler(event)} />)
+                              </DialogTitle>
                          </DialogHeader>
-
                          <div className="search-box mt-6 bg-background w-full">
-                              <div className={` ${searchSubmitted === true ? "" : ""}`}>
+                              <div className={`${searchSubmitted === true ? "" : ""}`}>
                                    <div className="flex w-full items-center space-x-2">
                                         <div className="flex-1">
                                              <Input
                                                   type="search"
                                                   placeholder="e.g. Anchorman or The Office"
+                                                  value={searchTerm}
                                                   onChange={(event) => setSearchTerm(event.target.value)}
                                                   onKeyUp={(event) => onKeyUpHandler(event)}
                                              />
                                         </div>
-                                        {/* <Button>Search</Button> */}
                                    </div>
                               </div>
                          </div>
@@ -295,7 +303,7 @@ SearchIMDB.propTypes = exact({
      searchCount: PropTypes.number.isRequired,
      setActiveRoute: PropTypes.func.isRequired,
      setNewWatchListItemDtlID: PropTypes.func.isRequired,
-     setSearchVisible: PropTypes.func.isRequired,
+     //setSearchVisible: PropTypes.func.isRequired,
      setWatchListItemsLoadingStarted: PropTypes.func.isRequired,
      setWatchListItemsLoadingComplete: PropTypes.func.isRequired,
      watchListItems: PropTypes.array.isRequired,

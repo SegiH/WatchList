@@ -2,6 +2,15 @@
   "name": "watchlist",
   "version": "0.1.0",
   "private": true,
+  "pkg": {
+    "scripts": [
+      "node_modules/tedious/lib/tedious.js",
+      "models/*.js"
+    ],
+    "assets": [
+      "config/log.json"
+    ]
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -42,7 +51,8 @@
     "request": "^2.88.2",
     "sequelize": "^6.35.2",
     "sqlite3": "^5.1.7",
-    "tedious": "^16.6.1"
+    "tedious": "^16.6.1",
+    "ts-node": "^10.9.2"
   },
   "devDependencies": {
     "@types/node": "^20",
@@ -53,5 +63,6 @@
     "eslint": "^8",
     "eslint-config-next": "14.0.4",
     "typescript": "^5"
-  }
+  },
+  "packageManager": "pnpm@8.15.4"
 }

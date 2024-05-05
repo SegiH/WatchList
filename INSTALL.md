@@ -64,6 +64,6 @@ If you cannot log into WatchList, you can reset the password directly in the dat
 1. Install ![SQLite](https://www.sqlite.org/) for your operating system
 1. Go to the directory where the watchlist database file is located
 1. `sqlite3 watchlistdb.sqlite`
-1. Run `UPDATE Users SET Password='U2FsdGVkX18kOsqQBr1pTD01Xl7T+aPG7EQCl14pzLc=' SET WHERE UserID=1;`
+1. Run `UPDATE Users SET Password='U2FsdGVkX18kOsqQBr1pTD01Xl7T+aPG7EQCl14pzLc=' WHERE UserID=1;`
 1. Log into WatchList with the password "watchlist" without quotes.
 1. Go to the admin section and change your password

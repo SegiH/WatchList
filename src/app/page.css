@@ -235,6 +235,10 @@ input:checked+.slider:before {
      z-index: 1;
 }
 
+.no-cursor {
+     cursor: default !important;
+}
+
 .spinner {
      width: 64px;
      height: 64px;
@@ -272,7 +276,7 @@ input:checked+.slider:before {
      color: #424242;
      display: inline-flex;
      min-height: 56px;
-     vertical-align: middle;
+    
      width: 100%;
      margin-bottom: 15px;
 }
@@ -379,7 +383,8 @@ input:checked+.slider:before {
 }
 
 .poster-detail {
-     max-height: 215px;
+     max-height: 225px;
+     max-width: 175px;
      position: relative;
      top: 70px;
      margin-top: 20px;

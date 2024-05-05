@@ -1,4 +1,11 @@
 import type { Metadata } from 'next';
+import { Inter } from 'next/font/google';
+
+import SharedLayout from "./shared-layout";
+import { DataProvider } from "./data-context";
+import Tabs from './components/Tabs';
+
+const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
      title: 'WatchList',
@@ -11,7 +18,7 @@ export default function RootLayout({
      children: React.ReactNode
 }) {
      return (
-          <html lang="en">
+          <html lang="en" suppressHydrationWarning>
                <head>
                     <meta name="theme-color" content="#317EFB" />
 
@@ -19,7 +26,13 @@ export default function RootLayout({
 
                     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossOrigin="anonymous"></link>
                </head>
-               <body>{children}</body>
+               <body>
+                    <DataProvider>
+                         <SharedLayout />
+                         {children}
+                         <Tabs />
+                    </DataProvider>
+               </body>
           </html>
      )
 }

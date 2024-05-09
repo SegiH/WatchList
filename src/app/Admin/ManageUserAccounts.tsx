@@ -12,6 +12,7 @@ const EditToolbar = require("./EditToolbar").default;
 const GridEventListener = require("@mui/x-data-grid").GridEventListener;
 const GridParams = require("@mui/x-data-grid-pro").GridParams;
 const GridActionsCellItem = require("@mui/x-data-grid-pro").GridActionsCellItem;
+const GridRenderEditCellParams = require("@mui/x-data-grid-pro").GridRenderEditCellParams;
 const GridRowModes = require("@mui/x-data-grid-pro").GridRowModes;
 const IUser = require("../interfaces/IUser");
 const React = require("react");
@@ -22,6 +23,8 @@ const useRouter = require("next/navigation").useRouter;
 const useState = require("react").useState;
 
 import { DataContext, DataContextType } from "../data-context";
+
+import "../page.css";
 
 const ManageUserAccounts = () => {
      const {
@@ -40,6 +43,7 @@ const ManageUserAccounts = () => {
      const [dialogVisible, setDialogVisible] = useState(false);
      const [dialogVisibleParamID, setDialogVisibleParamID] = useState(-1);
      const [dialogVisibleParamIsNew, setDialogVisibleParamIsNew] = useState(false);
+     const [editingId, setEditingId] = useState(null);
      const [isPasswordGenerated, setIsPasswordGenerated] = useState(false);
      const [newPassword, setNewPassword] = useState("");
      const [newConfirmPassword, setNewConfirmPassword] = useState("");
@@ -66,6 +70,8 @@ const ManageUserAccounts = () => {
 
           setIsAdding(false);
           setIsEditing(false);
+
+          setEditingId(null);
      };
 
      const closeDialogClickHandler = () => {
@@ -78,6 +84,7 @@ const ManageUserAccounts = () => {
      };
 
      const enterEditModeClickHandler = (id: number) => () => {
+          setEditingId(id);
           setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } });
 
           setIsEditing(true);
@@ -159,6 +166,10 @@ const ManageUserAccounts = () => {
                          setUsersLoadingComplete(false);
 
                          setIsEditing(false);
+
+                         setRowModesModel(null);
+
+                         setEditingId(null);
                     } else {
                          alert(response.data[1]);
                     }
@@ -171,18 +182,6 @@ const ManageUserAccounts = () => {
      };
 
      const processRowUpdateErrorHandler = React.useCallback(() => { }, []);
-
-     const startRowEditingClickHandler = (params: typeof IUser, event: typeof GridEventListener) => {
-          event.defaultMuiPrevented = true;
-     };
-
-     const stopRowEditingClickHandler = (params: typeof IUser, event: typeof GridEventListener) => {
-          event.defaultMuiPrevented = true;
-     };
-
-     const saveRowEditClickHandler = (id: number) => async () => {
-          setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
-     };
 
      const saveNewPassword = () => {
           if (demoMode) {
@@ -251,11 +250,31 @@ const ManageUserAccounts = () => {
           setDialogVisible(false);
      };
 
+     const saveRowEditClickHandler = (id: number) => async () => {
+          setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
+     };
+
+     const startRowEditingClickHandler = (params: typeof IUser, event: typeof GridEventListener) => {
+          event.defaultMuiPrevented = true;
+     };
+
+     const stopRowEditingClickHandler = (params: typeof IUser, event: typeof GridEventListener) => {
+          event.defaultMuiPrevented = true;
+
+          setRowModesModel(null);
+     };
+
      const columns = [
           {
                field: "UserID",
                headerName: "ID",
-               width: 100
+               width: 100,
+               editable: false,
+               type: "number",
+               renderCell: (params: typeof GridRenderEditCellParams) => {
+                    return (
+                    <div style={{color: editingId === null ? "white" : "black"}}>{params.value}</div>
+               )},
           },
           {
                field: "Username",
@@ -300,6 +319,9 @@ const ManageUserAccounts = () => {
                enabled: false,
                width: 130,
                type: "boolean",
+               renderCell: (params: typeof GridRenderEditCellParams) => (
+                    <div className="foregroundColor">{params.value == true ? "Y" : "N"}</div>
+               ),
           },
           {
                field: "Enabled",
@@ -307,6 +329,9 @@ const ManageUserAccounts = () => {
                editable: true,
                width: 130,
                type: "boolean",
+               renderCell: (params: typeof GridRenderEditCellParams) => (
+                    <div className="foregroundColor">{params.value == true ? "Y" : "N"}</div>
+               ),
           },
           {
                field: "actions",
@@ -315,12 +340,12 @@ const ManageUserAccounts = () => {
                width: 100,
                cellClassName: "actions",
                getActions: ({ id }: { id: number }) => {
-                    const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
-
-                    if (isInEditMode) {
-                         return [<GridActionsCellItem key={id} icon={SaveIconComponent} className="icon" label="Save" onClick={saveRowEditClickHandler(id)} />, <GridActionsCellItem key={id} icon={CancelIconComponent} label="Cancel" className="icon textPrimary" onClick={cancelRowEditClickHandler(id)} color="inherit" />];
-                    } else {
+                    if (editingId === null) {
                          return [<GridActionsCellItem key={id} icon={EditIconComponent} label="Edit" className="icon textPrimary" onClick={enterEditModeClickHandler(id)} color="inherit" />];
+                    } else if (editingId === id) {
+                         return [<GridActionsCellItem key={id} icon={SaveIconComponent} className="icon" label="Save" onClick={saveRowEditClickHandler(id)} color="primary" />, <GridActionsCellItem key={id} icon={CancelIconComponent} label="Cancel" className="icon textPrimary" onClick={cancelRowEditClickHandler(id)} color="error" />];
+                    } else {
+                         return [<></>]
                     }
                },
           },
@@ -364,6 +389,9 @@ const ManageUserAccounts = () => {
                     <DataGrid
                          rows={users}
                          columns={columns}
+                         sx={{
+                              color: "white",
+                         }}
                          editMode="row"
                          getRowId={(row: typeof IUser) => row.UserID}
                          rowModesModel={rowModesModel}

@@ -6,6 +6,18 @@ import { cookies } from 'next/headers';
 
 import { DBFile, getUserSession, validateSettings } from "../lib";
 
+/**
+ * @swagger
+ * /api/IsLoggedIn:
+ *    get:
+ *        tags: 
+ *          - Users
+ *        summary: Return the status as to whether a user is logged in
+ *        description: Return the status as to whether a user is logged in
+ *        responses:
+ *          200:
+ *            description: '["OK",""] on success, ["ERROR","error message"] on error'
+ */
 export async function GET(request: NextRequest) {
      const validationResult = await validateSettings();
 

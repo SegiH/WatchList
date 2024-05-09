@@ -71,6 +71,7 @@ export interface DataContextType {
     admin: boolean;
     archivedVisible: boolean;
     autoAdd: boolean;
+    buildDate: string;
     BrokenImageIconComponent: React.ReactNode;
     CancelIconComponent: React.ReactNode;
     defaultRoute: string;
@@ -81,6 +82,7 @@ export interface DataContextType {
     generateRandomPassword: () => void;
     isAdding: boolean;
     isAdmin: () => boolean;
+    isClient: boolean;
     isEditing: boolean;
     isLoggedIn: boolean;
     isLoggedInCheckComplete: boolean;
@@ -157,6 +159,8 @@ export interface DataContextType {
     watchListTypesLoadingComplete: boolean;
 }
 
+const buildDate = "05-09-24";
+
 const DataProvider = ({ children }) => {
     const [activeRoute, setActiveRoute] = useState("");
     const [activeRouteDisplayName, setActiveRouteDisplayName] = useState("");
@@ -164,6 +168,8 @@ const DataProvider = ({ children }) => {
     const [autoAdd, setAutoAdd] = useState(false);
     const [demoMode, setDemoMode] = useState(false);
     const [isAdding, setIsAdding] = useState(false);
+    const [isClient, setIsClient] = useState(false);
+    const [isClientCheckComplete, setIsClientCheckComplete] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [isLoggedInCheckComplete, setIsLoggedInCheckComplete] = useState(false);
@@ -337,6 +343,14 @@ const DataProvider = ({ children }) => {
 
     // Check if user is logged in already
     useEffect(() => {
+        if (!isClientCheckComplete) {
+            return;
+        }
+
+        if (!isClient) {
+            return;
+        }
+
         setIsLoggedInCheckStarted(true);
 
         if (!isLoggedIn && !isLoggedInCheckStarted) {
@@ -453,7 +467,7 @@ const DataProvider = ({ children }) => {
         } else {
             setIsLoggedInCheckComplete(true);
         }
-    }, [isLoggedIn, isLoggedInCheckStarted, userData]);
+    }, [isClient, isClientCheckComplete, isLoggedIn, isLoggedInCheckStarted, userData]);
 
     // Get WatchList
     useEffect(() => {
@@ -599,6 +613,14 @@ const DataProvider = ({ children }) => {
         setWatchListItemsSortingComplete(false);
     }, [archivedVisible, autoAdd, isLoggedIn, searchCount, showMissingArtwork, stillWatching, sourceFilter, typeFilter, watchListSortColumn, watchListSortDirection]);
 
+    useEffect(() => {
+        const newIsClient = !window.location.href.endsWith("api-doc") && !window.location.href.endsWith("api-doc/") ? true : false;
+
+        setIsClient(newIsClient);
+
+        setIsClientCheckComplete(true);
+    }, []);
+
     const routeList = {
         WatchList: {
             Name: "WatchList",
@@ -644,6 +666,7 @@ const DataProvider = ({ children }) => {
         archivedVisible: archivedVisible,
         autoAdd: autoAdd,
         BrokenImageIconComponent: BrokenImageIconComponent,
+        buildDate: buildDate,
         CancelIconComponent: CancelIconComponent,
         defaultRoute: defaultRoute,
         demoMode: demoMode,
@@ -653,6 +676,7 @@ const DataProvider = ({ children }) => {
         generateRandomPassword: generateRandomPassword,
         isAdding: isAdding,
         isAdmin: isAdmin,
+	    isClient: isClient,
         isEditing: isEditing,
         isLoggedIn: isLoggedIn,
         isLoggedInCheckComplete: isLoggedInCheckComplete,

@@ -1,6 +1,18 @@
 import { NextRequest } from 'next/server';
 import { getUserID, sequelize } from "../lib";
 
+/**
+ * @swagger
+ * /api/GetWatchListSourceStats:
+ *    get:
+ *        tags:
+ *          - WatchListSources
+ *        summary: Get the WatchList source stats for the current user
+ *        description: Get the WatchList source stats that indicate how many times a movie/show was watched at a source (I.E Netflix) for the current user
+ *        responses:
+ *          200:
+ *            description: '["OK",""] on success, ["ERROR","error message"] on error'
+ */
 export async function GET(request: NextRequest) {
      const userID = await getUserID(request);
 

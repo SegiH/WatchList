@@ -25,11 +25,6 @@ module.exports = function (sequelize, DataTypes) {
           Enabled: {
                type: DataTypes.BOOLEAN,
                allowNull: false
-          },
-          IsEncrypted: {
-               type: DataTypes.BOOLEAN,
-               allowNull: false,
-               defaultValue: 0
           }
      }, {
           sequelize,

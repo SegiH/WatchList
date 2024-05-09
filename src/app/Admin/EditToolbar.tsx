@@ -20,6 +20,7 @@ const EditToolbar = ({ section, setRowModesModel, setIsAdding, setUsers, setWatc
           users: typeof IUser, watchListSources: typeof IWatchListSource,
           watchListTypes: typeof IWatchListSource
      }) => {
+
      const handleClick = () => {
           let focusField = '';
           let nextID = -1;

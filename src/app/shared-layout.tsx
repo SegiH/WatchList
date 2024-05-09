@@ -42,11 +42,11 @@ const SharedLayout = () => {
                               <span className="leftMargin menuBarActiveRoute">{activeRouteDisplayName}</span>
 
                               <span className="options">
-                                   <span className="clickable searchIcon" onClick={showSearch}>
+                                   <span className="clickable searchIcon" style={{color: "white"}} onClick={showSearch}>
                                         {SearchIconComponent}
                                    </span>
 
-                                   <span className="clickable" onClick={showSettings}>
+                                   <span className="clickable" style={{color: "white"}} onClick={showSettings}>
                                         {SettingsIconComponent}
                                    </span>
                               </span>

@@ -1,49 +1,15 @@
-const exact = require("prop-types-exact");
-
 const IWatchListSource = require("../interfaces/IWatchListSource");
 const IWatchListType = require("../interfaces/IWatchListType");
 const React = require("react");
 const useContext = require("react").useContext;
 import { DataContext, DataContextType } from "../data-context";
-import { demoWatchListTypes } from "../demo";
 
-const Settings = ({ }
-     :
-     {
-          /*activeRoute: string,
-          archivedVisible: boolean,
-          autoAdd: boolean,
-          isLoggedIn: boolean,
-          LogOutIconComponent: typeof MuiIcon,
-          searchCount: number,
-          searchTerm: string,
-          setSearchCount: (arg0: number) => void,
-          setSearchTerm: (arg0: string) => void,
-          setArchivedVisible: (arg0: boolean) => void,
-          setAutoAdd: (arg0: boolean) => void,
-          setSettingsVisible: (arg0: boolean) => void,
-          setShowMissingArtwork: (arg0: boolean) => void,
-          setSourceFilter: (arg0: string) => void,
-          setStillWatching: (arg0: boolean) => void,
-          setTypeFilter: (arg0: string) => void,
-          setWatchListSortColumn: (arg0: string) => void,
-          setWatchListSortDirection: (arg0: string) => void,
-          showMissingArtwork: boolean,
-          signOut: typeof MuiIcon,
-          stillWatching: boolean,
-          sourceFilter: string,
-          typeFilter: string,
-          watchListItemsSortColumns: typeof IWatchListItemsSortColumn,
-          watchListSortColumn: string,
-          watchListSortColumns: typeof IWatchListSortColumn,
-          watchListSortDirection: string,
-          watchListSources: typeof IWatchListSource,
-          watchListTypes: typeof IWatchListType*/
-     }) => {
+const Settings = () => {
      const {
           activeRoute,
           archivedVisible,
           autoAdd,
+          buildDate,
           isLoggedIn,
           LogOutIconComponent,
           searchCount,
@@ -72,8 +38,6 @@ const Settings = ({ }
           watchListTypes
      } = useContext(DataContext) as DataContextType
 
-     const buildDate = "05-01-24";
-
      const searchCountOptions: any = {
           "10 results": 10,
           "20 results": 20,
@@ -88,7 +52,7 @@ const Settings = ({ }
 
      return (
           <div className="modal">
-               <div className={`modal-content`}>
+               <div className="modal-content textLabel">
                     Settings
                     <span className="clickable closeButton" onClick={closeDetail}>
                          X
@@ -199,7 +163,7 @@ const Settings = ({ }
                                    </span>
 
                                    <span title="Filter by source">
-                                        <select className="selectStyle" value={sourceFilter} onChange={(event) => setSourceFilter(event.target.value)}>
+                                        <select className="selectStyle" value={sourceFilter} onChange={(event) => setSourceFilter(parseInt(event.target.value, 10))}>
                                              <option value="-1">Please select</option>
 
                                              {watchListSources?.map((watchListSource: typeof IWatchListSource, index: number) => {
@@ -221,7 +185,7 @@ const Settings = ({ }
                                    </span>
 
                                    <span title="Filter by type">
-                                        <select className="selectStyle" value={typeFilter} onChange={(event) => setTypeFilter(event.target.value)}>
+                                        <select className="selectStyle" value={typeFilter} onChange={(event) => setTypeFilter(parseInt(event.target.value, 10))}>
                                              <option value="-1">Please select</option>
 
                                              {watchListTypes?.map((watchListType: typeof IWatchListType, index: number) => {
@@ -307,37 +271,5 @@ const Settings = ({ }
           </div>
      );
 };
-
-Settings.propTypes = exact({
-     /*activeRoute: PropTypes.string.isRequired,
-     archivedVisible: PropTypes.bool.isRequired,
-     autoAdd: PropTypes.bool.isRequired,
-     isLoggedIn: PropTypes.bool.isRequired,
-     LogOutIconComponent: PropTypes.object.isRequired,
-     searchCount: PropTypes.number.isRequired,
-     searchTerm: PropTypes.string.isRequired,
-     setSearchCount: PropTypes.func.isRequired,
-     setSearchTerm: PropTypes.func.isRequired,
-     setArchivedVisible: PropTypes.func.isRequired,
-     setAutoAdd: PropTypes.func.isRequired,
-     setSettingsVisible: PropTypes.func.isRequired,
-     setShowMissingArtwork: PropTypes.func.isRequired,
-     setSourceFilter: PropTypes.func.isRequired,
-     setStillWatching: PropTypes.func.isRequired,
-     setTypeFilter: PropTypes.func.isRequired,
-     setWatchListSortColumn: PropTypes.func.isRequired,
-     setWatchListSortDirection: PropTypes.func.isRequired,
-     showMissingArtwork: PropTypes.bool.isRequired,
-     signOut: PropTypes.func.isRequired,
-     stillWatching: PropTypes.bool.isRequired,
-     sourceFilter: PropTypes.string.isRequired,
-     typeFilter: PropTypes.string.isRequired,
-     watchListItemsSortColumns: PropTypes.object.isRequired,
-     watchListSortColumn: PropTypes.string.isRequired,
-     watchListSortColumns: PropTypes.object.isRequired,
-     watchListSortDirection: PropTypes.string.isRequired,
-     watchListSources: PropTypes.array.isRequired,
-     watchListTypes: PropTypes.array.isRequired,*/
-});
 
 export default Settings;

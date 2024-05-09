@@ -4,8 +4,9 @@ const axios = require("axios");
 const IWatchListItem = require("../../interfaces/IWatchListItem");
 const IWatchListType = require("../../interfaces/IWatchListType");
 const React = require("react");
-const Recommendations = require("../../Recommendations/page").default;
+const Recommendations = require("../../components/Recommendations").default;
 const useContext = require("react").useContext;
+const useRouter = require("next/navigation").useRouter;
 const useSearchParams = require("next/navigation").useSearchParams;
 const useState = require("react").useState;
 const useEffect = require("react").useEffect;
@@ -43,6 +44,8 @@ export default function WatchListItemsDtl() {
      const [watchListItemDtl, setWatchListItemDtl] = useState(null);
      const [watchListItemDtlLoadingStarted, setWatchListItemDtlLoadingStarted] = useState(false);
      const [watchListItemDtlLoadingComplete, setWatchListItemDtlLoadingComplete] = useState(false);
+
+     const router = useRouter();
 
      const addWatchListItemDetailChangeHandler = (fieldName: string, fieldValue: number | string) => {
           const newAddWatchListItemDtl = Object.assign({}, addWatchListItemDtl);
@@ -85,6 +88,8 @@ export default function WatchListItemsDtl() {
                setWatchListItemsLoadingStarted(false);
                setWatchListItemsLoadingComplete(false);
           }
+
+          router.push("/WatchListItems");
      };
 
      const onIMDBPosterChangeHandler = async (URL: string) => {
@@ -345,12 +350,12 @@ export default function WatchListItemsDtl() {
                                    <div className="narrow card">
                                         {!isAdding && !isEditing &&
                                              <span onClick={startEditing}>
-                                                  <span className="clickable editsaveCancelButton">{EditIconComponent}</span>
+                                                  <span className="clickable editsaveCancelButton foregroundColor">{EditIconComponent}</span>
                                              </span>
                                         }
 
                                         {(isAdding || isEditing) &&
-                                             <span className="clickable saveIcon" onClick={isAdding ? saveNewClickHandler : saveClickHandler}>
+                                             <span className="clickable foregroundColor saveIcon" onClick={isAdding ? saveNewClickHandler : saveClickHandler}>
                                                   {SaveIconComponent}
                                              </span>
                                         }
@@ -360,13 +365,13 @@ export default function WatchListItemsDtl() {
 
                                    <div className="narrow card rightAligned">
                                         {!isAdding && !isEditing &&
-                                             <span className="clickable closeButton" onClick={closeDetail}>
+                                             <span className="clickable closeButton foregroundColor" onClick={closeDetail}>
                                                   X
                                              </span>
                                         }
 
                                         {(isAdding || isEditing) &&
-                                             <span className="clickable cancelIcon" onClick={isAdding ? closeDetail : cancelClickHandler}>
+                                             <span className="clickable cancelIcon foregroundColor" onClick={isAdding ? closeDetail : cancelClickHandler}>
                                                   {CancelIconComponent}
                                              </span>
                                         }
@@ -426,7 +431,7 @@ export default function WatchListItemsDtl() {
 
                                    <div className="narrow card">
                                         {!isAdding && !isEditing &&
-                                             <span>{watchListItemDtl?.WatchListType?.WatchListTypeName}</span>
+                                             <span className="foregroundColor">{watchListItemDtl?.WatchListType?.WatchListTypeName}</span>
                                         }
 
                                         {isEditing &&
@@ -458,27 +463,30 @@ export default function WatchListItemsDtl() {
                                         }
                                    </div>
 
-                                   <div className="narrow card"></div>
+                                   {isEditing &&
+                                        <>
+                                             <div className="narrow card"></div>
 
-                                   <div className="narrow card">
-                                        <span className="textLabel">URL:&nbsp;</span>
-                                   </div>
+                                             <div className="narrow card">
+                                                  <span className="textLabel">URL:&nbsp;</span>
+                                             </div>
 
-                                   <div className="narrow card">
-                                        {!isAdding && !isEditing &&
-                                             <a href={watchListItemDtl?.IMDB_URL} target="_blank">
-                                                  Open in IMDB
-                                             </a>
-                                        }
+                                             <div className="narrow card">
+                                                  {!isAdding && !isEditing &&
+                                                       <a href={watchListItemDtl?.IMDB_URL} target="_blank">
+                                                            Open in IMDB
+                                                       </a>
+                                                  }
 
-                                        {isEditing &&
-                                             <input className="inputStyle" value={watchListItemDtl?.IMDB_URL} onChange={(event) => watchListItemDetailChangeHandler("IMDB_URL", event.target.value)} />
-                                        }
+                                                  {isEditing &&
+                                                       <input className="inputStyle" value={watchListItemDtl?.IMDB_URL} onChange={(event) => watchListItemDetailChangeHandler("IMDB_URL", event.target.value)} />
+                                                  }
 
-                                        {isAdding &&
-                                             <input className="inputStyle" value={addWatchListItemDtl?.IMDB_URL} onChange={(event: React.ChangeEvent<HTMLInputElement>) => addWatchListItemDetailChangeHandler("IMDB_URL", event.target.value)} />
-                                        }
-                                   </div>
+                                                  {isAdding &&
+                                                       <input className="inputStyle" value={addWatchListItemDtl?.IMDB_URL} onChange={(event: React.ChangeEvent<HTMLInputElement>) => addWatchListItemDetailChangeHandler("IMDB_URL", event.target.value)} />
+                                                  }
+                                             </div>
+                                        </>}
 
                                    {(isAdding || isEditing) &&
                                         <>
@@ -522,8 +530,6 @@ export default function WatchListItemsDtl() {
 
                                    {!isAdding && !isEditing &&
                                         <>
-                                             <div className="narrow card"></div>
-                                             <div className="narrow card"></div>
                                              <div className="narrow card"></div>
 
                                              <div className="narrow card">

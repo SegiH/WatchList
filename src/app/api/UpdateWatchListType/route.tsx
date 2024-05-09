@@ -1,6 +1,31 @@
 import { NextRequest } from 'next/server';
 import { getModels } from "../lib";
 
+/**
+ * @swagger
+ * /api/UpdateWatchListType:
+ *    put:
+ *        tags:
+ *          - WatchListTypes
+ *        summary: Update a WatchListItem Type
+ *        description: Update a WatchListItem Type
+ *        parameters:
+ *           - name: WatchListTypeID
+ *             in: query
+ *             description: New WatchListType ID
+ *             required: true
+ *             schema:
+ *                  type: string
+ *           - name: WatchListTypeName
+ *             in: query
+ *             description: New WatchListType Name
+ *             required: true
+ *             schema:
+ *                  type: string
+ *        responses:
+ *          200:
+ *            description: '["OK",""] on success, ["ERROR","error message"] on error'
+ */
 export async function PUT(request: NextRequest) {
      const models = getModels();
      const searchParams = request.nextUrl.searchParams;

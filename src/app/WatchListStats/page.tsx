@@ -1,7 +1,6 @@
 "use client"
 
 const axios = require("axios");
-const AccordionControl = require("./AccordionControl").default;
 const ChevronRightIcon = require("@mui/icons-material/ChevronRight").default;
 const ExpandMoreIcon = require("@mui/icons-material/ExpandMore").default;
 const IWatchListMovieStat = require("../interfaces/IWatchListMovieStat");
@@ -18,6 +17,8 @@ const useEffect = require("react").useEffect;
 const useState = require("react").useState;
 
 import { DataContext, DataContextType } from "../data-context";
+
+import "./watchliststats.css";
 
 export default function WatchListStats() {
      const {
@@ -351,6 +352,38 @@ export default function WatchListStats() {
      }, [watchListSourceDtlLoadingStarted, watchListSourceDtlLoadingComplete]);
 
      return (
-          <AccordionControl accordionData={accordionData} />
+          <>
+               <div className="flex-container foregroundColor">
+                    {sourceStats !== null &&
+                         <div className="col-1">
+                              <h1>Most Watched Sources</h1>
+                              <div>{sourceStats}</div>
+                         </div>
+                    }
+
+                    {topRated !== null &&
+                         <div className="col-2">
+                              <h1>Top Rated</h1>
+                              <div>{topRated}</div>
+                         </div>
+                    }
+
+                    {movieStats !== null &&
+                         <div className="col-3">
+                              <h1>Top 10 Movies</h1>
+                              <div>{movieStats}</div>
+                         </div>
+                    }
+
+                    {tvStats !== null &&
+                         <div className="col-4">
+                              <h1>Top 10 TV Shows</h1>
+                              <div>{tvStats}</div>
+                         </div>
+                    }
+               </div>
+
+
+          </>
      );
 }

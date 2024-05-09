@@ -63,7 +63,7 @@ export async function addUser(request: NextRequest, IsNewInstance = false) {
      const userName = searchParams.get("wl_username");
      const realName = searchParams.get("wl_realname");
      const password = searchParams.get("wl_password");
-     const isAdmin = searchParams.get("wl_isadmin") !== "undefined" && (searchParams.get("wl_isadmin") === "true" || IsNewInstance === true) ? 1 : 0;
+     const isAdmin = searchParams.get("wl_admin") !== "undefined" && (searchParams.get("wl_admin") === "true" || IsNewInstance === true) ? 1 : 0;
 
      if (userName === null) {
           return Response.json(["User Name was not provided"]);
@@ -88,17 +88,15 @@ export async function addUser(request: NextRequest, IsNewInstance = false) {
 
                // Initialize the default watchlist types so this table is not empty by default
                defaultTypes.forEach(async (element) => {
-                    await models.WatchListTypes.create({
+                    return await models.WatchListTypes.create({
                          WatchListTypeName: element
-                    })
-                         .catch(function (e: Error) {
-                              const errorMsg = `addUser(): The error ${e.message} occurred while initializing the default WatchList Types`;
-                              console.error(errorMsg);
-                         });
+                    }).catch(function (e: Error) {
+                         const errorMsg = `addUser(): The error ${e.message} occurred while initializing the default WatchList Types`;
+                         console.error(errorMsg);
+                    });
                });
           } else {
                // This action should only be performed by logged in users who are an admin when not setting up new instance
-               // TODO: Delete this TODO after making sure that adding a user works!
                const userSession = await getUserSession(request);
 
                if (typeof userSession === "undefined" || (typeof userSession !== "undefined" && userSession.Admin === false)) {
@@ -106,7 +104,7 @@ export async function addUser(request: NextRequest, IsNewInstance = false) {
                }
           }
 
-          await models.Users.create({
+          return await models.Users.create({
                Username: encrypt(String(userName)),
                Realname: encrypt(String(realName)),
                Password: encrypt(String(password)),
@@ -183,27 +181,27 @@ export async function validateSettings() {
      if (DBType === "MSSQL" && (!config.has(`SQLServer.username`) || (config.has(`SQLServer.username`) && config.get(`SQLServer.username`) === ""))) {
           return `Config file error: SQLServer.username property is missing or not set`;
      }
-     
+
      if (DBType === "MSSQL" && (!config.has(`SQLServer.password`) || (config.has(`SQLServer.password`) && config.get(`SQLServer.password`) === ""))) {
           return `Config file error: SQLServer.password property is missing or not set`;
      }
-     
+
      if (DBType === "MSSQL" && (!config.has(`SQLServer.host`) || (config.has(`SQLServer.host`) && config.get(`SQLServer.host`) === ""))) {
           return `Config file error: SQLServer.host property is missing or not set`;
      }
-     
+
      if (DBType === "MSSQL" && (!config.has(`SQLServer.database`) || (config.has(`SQLServer.database`) && config.get(`SQLServer.database`) === ""))) {
           return `Config file error: SQLServer.database property is missing or not set`;
      }
-     
+
      if (DBType === "SQLite" && (!config.has(`SQLite.username`) || (config.has(`SQLite.username`) && config.get(`SQLite.username`) === ""))) {
           return `Config file error: SQLite.username property is missing or not set`;
      }
-     
+
      if (DBType === "SQLite" && (!config.has(`SQLite.password`) || (config.has(`SQLite.password`) && config.get(`SQLite.password`) === ""))) {
           return `Config file error: SQLite.password property is missing or not set`;
      }
-     
+
      if (DBType === "SQLite" && (!config.has(`SQLite.database`) || (config.has(`SQLite.database`) && config.get(`SQLite.database`) === ""))) {
           return `Config file error: SQLite.database property is missing or not set`;
      }
@@ -212,7 +210,7 @@ export async function validateSettings() {
           (async () => {
                try {
                     await sequelize.authenticate();
-     
+
                } catch (e: any) {
                     return `Sequelize encountered the error ${e.message} while connecting to the DB`;
                }

@@ -44,7 +44,7 @@ export default function SearchIMDB() {
 
           let paramStr = `/api/AddWatchListItem?WatchListItemName=${searchResults[index].Title}&WatchListTypeID=${itemType}`;
 
-          paramStr += `&IMDB_URL=https://www.imdb.com/title/${searchResults[index].imdbID}/`;
+          paramStr += `&IMDB_URL=https://www.imdb.com/title/${searchResults[index].ImdbID}/`;
 
           paramStr += `&IMDB_Poster=${searchResults[index].Poster}`;
 
@@ -107,20 +107,19 @@ export default function SearchIMDB() {
 
      return (
           <div className="modal">
-               <div className={`modal-content ${searchSubmitted === true ? "" : "customModalHeight"}`}>
+               <div className={`customBackgroundColor modal-content ${searchSubmitted === true ? "" : "customModalHeight"}`}>
                     <div className="container searchHeader sticky">
                          <div className="cards searchHeader">
-                              <div className="card leftMargin searchLabel">Search</div>
+                              <div className="card leftMargin searchLabel textLabel">Search</div>
                               <div className="card leftMargin searchMarginTop unsetcardwidth">
                                    {/* Credit to https://codepen.io/menelaosly/pen/rZddyb */}
                                    <div className="searchContainer">
                                         <input type="search" autoFocus className="searchInput" onChange={(event) => setSearchTerm(event.target.value)} onKeyUp={(event) => onKeyUpHandler(event)}/>
                                         <i className="fa fa-search"></i>
                                    </div>
-                                   {/*<input className="customBorderRadius customWidth" autoFocus={true} value={searchTerm} onChange={(event) => setSearchTerm(event.target.value)} onKeyUp={(event) => onKeyUpHandler(event)} />*/}
                               </div>
 
-                              <div className="card rightAligned customCloseButton searchMarginTop">
+                              <div className="card foregroundColor rightAligned customCloseButton searchMarginTop">
                                    <span className="clickable closeButton" onClick={closeSearch}>
                                         X
                                    </span>
@@ -136,7 +135,7 @@ export default function SearchIMDB() {
                                              <tr key={index}>
                                                   <td className="row">
                                                        <span className="searchResult">
-                                                            <span className="addSearchResultIcon" onClick={() => addSearchResultClickHandler(index)}>{AddIconComponent}</span>
+                                                            <span className="addSearchResultIcon foregroundColor" onClick={() => addSearchResultClickHandler(index)}>{AddIconComponent}</span>
 
                                                             {currentResult.Poster !== "N/A" && (
                                                                  <>

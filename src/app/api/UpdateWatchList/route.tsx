@@ -1,6 +1,73 @@
 import { NextRequest } from 'next/server';
 import { getModels } from "../lib";
 
+/**
+ * @swagger
+ * /api/UpdateWatchList:
+ *    put:
+ *        tags:
+ *          - WatchList
+ *        summary: Update a WatchList record
+ *        description: Update a WatchList record
+ *        parameters:
+ *           - name: WatchListID
+ *             in: query
+ *             description: WatchList ID to update
+ *             required: true
+ *             schema:
+ *                  type: number
+ *           - name: WatchListItemID
+ *             in: query
+ *             description: WatchList Item ID to update
+ *             required: false
+ *             schema:
+ *                  type: number
+ *           - name: StartDate
+ *             in: query
+ *             description: Start date that the movie/show was watched
+ *             required: false
+ *             schema:
+ *                  type: string
+ *           - name: EndDate
+ *             in: query
+ *             description: End date that the movie/show was watched
+ *             required: false
+ *             schema:
+ *                  type: string
+ *           - name: WatchListSourceID
+ *             in: query
+ *             description: Source ID of the movie/show where it was watched
+ *             required: false
+ *             schema:
+ *                  type: number
+ *           - name: Season
+ *             in: query
+ *             description: Season of the show
+ *             required: false
+ *             schema:
+ *                  type: number
+ *           - name: Rating
+ *             in: query
+ *             description: Rating of the movie/show
+ *             required: false
+ *             schema:
+ *                  type: number
+ *           - name: Notes
+ *             in: query
+ *             description: Notes for the movie/show
+ *             required: false
+ *             schema:
+ *                  type: string
+ *           - name: Archived
+ *             in: query
+ *             description: Archived status
+ *             required: false
+ *             schema:
+ *                  type: number
+ *        responses:
+ *          200:
+ *            description: '["OK",""] on success, ["ERROR","error message"] on error'
+ */
 export async function PUT(request: NextRequest) {
      const models = getModels();
      const searchParams = request.nextUrl.searchParams;

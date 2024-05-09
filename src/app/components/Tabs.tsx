@@ -14,6 +14,7 @@ const Tabs = () => {
           activeRoute,
           admin,
           defaultRoute,
+          isClient,
           isLoggedIn,
           isLoggedInCheckComplete,
           routeList,
@@ -48,6 +49,7 @@ const Tabs = () => {
 
           const path = getPath(tabClicked.replace("/", ""));
 
+          console.log(`Pushing path ${path} in tabClickHandler()`)
           router.push(path);
 
           const displayName = getDisplayName(tabClicked.replace("/", ""));
@@ -58,12 +60,22 @@ const Tabs = () => {
      };
 
      useEffect(() => {
-          const newRoute = !isLoggedInCheckComplete || (isLoggedInCheckComplete && !isLoggedIn)
-               ? "Login"
-               : activeRoute !== "" && (activeRoute !== "Setup" || (activeRoute === "Setup" && !isLoggedIn))
-                    ? activeRoute
-                    : location.pathname !== "" && Object.keys(routeList).filter((routeName) => routeList[routeName].Path === location.pathname).length === 1
+          if (!isClient) {
+               return;
+          }
+
+          if (!isLoggedInCheckComplete) { // Tabs should never be rendered if the logged in check is not complete
+               return;
+          }
+
+          if (!isLoggedIn) { // Tabs should never be rendered if the user is not logged in
+               return;
+          }
+
+          const newRoute = location.pathname !== "" && Object.keys(routeList).filter((routeName) => routeList[routeName].Path === location.pathname).length === 1
                          ? location.pathname
+                         : activeRoute !== "" && (activeRoute !== "Setup" || (activeRoute === "Setup" && !isLoggedIn))
+                         ? activeRoute
                          : defaultRoute;
 
           const newRouteCleaned = newRoute.replace("/", "").replace("\\", "");
@@ -79,11 +91,11 @@ const Tabs = () => {
           if (displayName !== "") {
                setActiveRouteDisplayName(displayName);
           }
-     }, [activeRoute, defaultRoute, getDisplayName, isLoggedIn, isLoggedInCheckComplete, routeList, setActiveRoute, setActiveRouteDisplayName]);
+     }, [defaultRoute, isLoggedIn, isLoggedInCheckComplete]); // Do not add activeRoute, getDisplayName, routeList, setActiveRoute, setActiveRouteDisplayName to dependencies. Causes dtl to close when you click on edit
 
      return (
           <>
-               {isLoggedInCheckComplete && isLoggedIn && (
+               {isClient && isLoggedInCheckComplete && isLoggedIn && (
                     <div className="tabBar">
                          {Object.keys(routeList)
                               .filter((routeName) => routeList[routeName].RequiresAuth === true && routeName !== "Setup" && routeName !== "SearchIMDB" && (routeName !== "AdminConsole" || (routeName === "AdminConsole" && admin === true)))

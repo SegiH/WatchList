@@ -1,10 +1,6 @@
---when logging out, doesnt go back to login screen until you refresh
---create context
---set up routes
---eliminate states loginvisible and setup visible and use routes instead
---make sure login and setup cannot be accessed if you are logged in
---hovering over WL or WLI doesnt show mouse cursor icon
---add PWA support
+BEFORE COMMITTING:
+  make sure to remove db and config data before committing
+  update build date
 
-clean up misc and public folders
-make sure to remove db and config data before committing
+there are 2 searches, 1 for imdb and one in settings to search WL. consolidate this (maybe)
+handle no response and no results when searching recommendations

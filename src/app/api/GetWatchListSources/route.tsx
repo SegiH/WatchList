@@ -1,12 +1,21 @@
-import { NextRequest } from 'next/server';
 import { getModels } from "../lib";
 import WatchListSource from "../../../app/interfaces/IWatchListSource";
 
-export async function GET(request: NextRequest) {
+/**
+ * @swagger
+ * /api/GetWatchListSources:
+ *    get:
+ *        tags:
+ *          - WatchListSources
+ *        summary: Get the WatchList sources
+ *        description: Get the WatchList sources that indicate where a movie/show was watched (I.E Netflix)
+ *        responses:
+ *          200:
+ *            description: '["OK",""] on success, ["ERROR","error message"] on error'
+ */
+export async function GET() {
      const models = getModels();
      
-     const searchParams = request.nextUrl.searchParams;
-
      return models.WatchListSources.findAll({
           order: [["WatchListSourceName", "DESC"]],
      }).then((results: WatchListSource) => {

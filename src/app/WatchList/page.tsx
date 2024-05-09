@@ -89,7 +89,7 @@ export default function WatchList() {
      return (
           <>
                {isLoggedIn && (
-                    <span className="clickable customTopMargin" onClick={() => openDetailClickHandler(-1)}>
+                    <span className="clickable customTopMargin foregroundColor" onClick={() => openDetailClickHandler(-1)}>
                          {AddIconComponent}
                     </span>
                )}
@@ -106,63 +106,62 @@ export default function WatchList() {
                               (sourceFilter === -1 || sourceFilter === null || (sourceFilter !== -1 && sourceFilter !== null && String(currentWatchList?.WatchListSourceID) === String(sourceFilter)))
                               &&
                               (typeFilter === -1 || (typeFilter !== -1 && String(currentWatchList?.WatchListTypeID) === String(typeFilter)))
-                    )
-                         .map((currentWatchList: typeof IWatchList, index: number) => {
-                              return (
-                                   <div key={index}>
-                                        {watchListSortingComplete && (
-                                             <li className="show-item" key={index}>
-                                                  <span className="item-id">
-                                                       <div>{currentWatchList?.WatchListID}</div>
-                                                  </span>
+                    ).map((currentWatchList: typeof IWatchList, index: number) => {
+                         return (
+                              <div key={index} className="foregroundColor">
+                                   {watchListSortingComplete && (
+                                        <li className="show-item" key={index}>
+                                             <span className="item-id">
+                                                  <div>{currentWatchList?.WatchListID}</div>
+                                             </span>
 
-                                                  <a className="clickable image-crop show-link" onClick={() => openDetailClickHandler(currentWatchList?.WatchListID)}>
-                                                       <div className="">
-                                                            {currentWatchList?.WatchListItem?.IMDB_Poster !== null && currentWatchList?.IMDB_Poster_Error !== true && <img alt={currentWatchList?.WatchListItem?.WatchListItemName} src={currentWatchList?.WatchListItem?.IMDB_Poster} onError={() => showDefaultSrc(currentWatchList?.WatchListID)} />}
-
-                                                            {(currentWatchList?.WatchListItem?.IMDB_Poster === null || currentWatchList?.IMDB_Poster_Error === true) && <>{BrokenImageIconComponent}</>}
-                                                       </div>
-                                                  </a>
-
-                                                  <div className="show-title">
-                                                       {typeof currentWatchList?.WatchListItem.IMDB_URL !== "undefined" &&
-                                                            <a href={currentWatchList?.WatchListItem.IMDB_URL} target='_blank'>{currentWatchList?.WatchListItem?.WatchListItemName}</a>
-                                                       }
-
-                                                       {typeof currentWatchList?.WatchListItem?.IMDB_URL === "undefined" &&
-                                                            <span>
-                                                                 {currentWatchList?.WatchListItem?.WatchListItemName}
-                                                            </span>
-                                                       }
-
-                                                       {currentWatchList?.Archived === true ? <span>&nbsp;(A)</span> : <></>}
-                                                  </div>
-
-                                                  {currentWatchList?.WatchListItem?.WatchListType?.WatchListTypeID === 2 && <div>Season {currentWatchList?.Season}</div>}
-
+                                             <a className="clickable foregroundColor image-crop show-link" onClick={() => openDetailClickHandler(currentWatchList?.WatchListID)}>
                                                   <div>
-                                                       {currentWatchList?.StartDate}
-                                                       {currentWatchList?.EndDate !== null && currentWatchList?.EndDate !== currentWatchList?.StartDate ? ` - ${currentWatchList?.EndDate}` : ""}
-                                                  </div>
+                                                       {currentWatchList?.WatchListItem?.IMDB_Poster !== null && currentWatchList?.IMDB_Poster_Error !== true && <img alt={currentWatchList?.WatchListItem?.WatchListItemName} src={currentWatchList?.WatchListItem?.IMDB_Poster} onError={() => showDefaultSrc(currentWatchList?.WatchListID)} />}
 
+                                                       {(currentWatchList?.WatchListItem?.IMDB_Poster === null || currentWatchList?.IMDB_Poster_Error === true) && <>{BrokenImageIconComponent}</>}
+                                                  </div>
+                                             </a>
+
+                                             <div className="show-title">
+                                                  {typeof currentWatchList?.WatchListItem.IMDB_URL !== "undefined" &&
+                                                       <a className="foregroundColor linkStyle" href={currentWatchList?.WatchListItem.IMDB_URL} target='_blank'>{currentWatchList?.WatchListItem?.WatchListItemName}</a>
+                                                  }
+
+                                                  {typeof currentWatchList?.WatchListItem?.IMDB_URL === "undefined" &&
+                                                       <span>
+                                                            {currentWatchList?.WatchListItem?.WatchListItemName}
+                                                       </span>
+                                                  }
+
+                                                  {currentWatchList?.Archived === true ? <span>&nbsp;(A)</span> : <></>}
+                                             </div>
+
+                                             {currentWatchList?.WatchListItem?.WatchListType?.WatchListTypeID === 2 && <div>Season {currentWatchList?.Season}</div>}
+
+                                             <div>
+                                                  {currentWatchList?.StartDate}
+                                                  {currentWatchList?.EndDate !== null && currentWatchList?.EndDate !== currentWatchList?.StartDate ? ` - ${currentWatchList?.EndDate}` : ""}
+                                             </div>
+
+                                             <div>
+                                                  {currentWatchList?.WatchListItem?.WatchListType?.WatchListTypeName}
+                                             </div>
+
+                                             <div>
+                                                  {currentWatchList?.WatchListSource?.WatchListSourceName}
+                                             </div>
+
+                                             {currentWatchList?.Rating !== null && (
                                                   <div>
-                                                       {currentWatchList?.WatchListItem?.WatchListType?.WatchListTypeName}
+                                                       {currentWatchList?.Rating}/{ratingMax}
                                                   </div>
-
-                                                  <div>
-                                                       {currentWatchList?.WatchListSource?.WatchListSourceName}
-                                                  </div>
-
-                                                  {currentWatchList?.Rating !== null && (
-                                                       <div>
-                                                            {currentWatchList?.Rating}/{ratingMax}
-                                                       </div>
-                                                  )}
-                                             </li>
-                                        )}
-                                   </div>
-                              );
-                         })}
+                                             )}
+                                        </li>
+                                   )}
+                              </div>
+                         );
+                    })}
                </ul>
           </>
      )

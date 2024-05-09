@@ -116,7 +116,7 @@ export default function WatchListItems() {
 
      return (
           <>
-               <span className="clickable customTopMargin" onClick={() => openDetailClickHandler(-1)}>
+               <span className="clickable customTopMargin foregroundColor" onClick={() => openDetailClickHandler(-1)}>
                     {AddIconComponent}
                </span>
 
@@ -147,7 +147,7 @@ export default function WatchListItems() {
 
                                                   <div>
                                                        {typeof currentWatchListItem?.IMDB_URL !== "undefined" &&
-                                                            <a href={currentWatchListItem?.IMDB_URL} target='_blank'>{currentWatchListItem?.WatchListItemName}</a>
+                                                            <a className="foregroundColor linkStyle" href={currentWatchListItem?.IMDB_URL} target='_blank'>{currentWatchListItem?.WatchListItemName}</a>
                                                        }
 
                                                        {typeof currentWatchListItem?.IMDB_URL === "undefined" &&
@@ -168,26 +168,6 @@ export default function WatchListItems() {
                               );
                          })}
                </ul>
-
-               {/*{watchListItemDtlID !== null && (
-                    <WatchListItemDetail
-                         BrokenImageIcon={BrokenImageIcon}
-                         CancelIcon={CancelIcon}
-                         demoMode={demoMode}
-                         EditIcon={EditIcon}
-                         isAdding={isAdding}
-                         isEditing={isEditing}
-                         SaveIcon={SaveIcon}
-                         setIsAdding={setIsAdding}
-                         setIsEditing={setIsEditing}
-                         setNewWatchListItemDtlID={setNewWatchListItemDtlID}
-                         setWatchListItemDtlID={setWatchListItemDtlID}
-                         setWatchListItemsLoadingComplete={setWatchListItemsLoadingComplete}
-                         setWatchListItemsLoadingStarted={setWatchListItemsLoadingStarted}
-                         watchListItemDtlID={watchListItemDtlID}
-                         watchListTypes={watchListTypes}
-                    />
-               )}*/}
           </>
      )
 }

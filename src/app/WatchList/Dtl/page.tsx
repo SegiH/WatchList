@@ -565,7 +565,7 @@ export default function WatchListDetail() {
      }, [recommendationName, recommendationType]);
 
      return (
-          <div className="modal">
+          <div className="modal foregroundColor">
                <div className={`modal-content ${watchListDtlID != null ? "fade-in" : "fade-out"}`}>
                     {!recommendationsVisible &&
                          <div className="container">
@@ -573,7 +573,7 @@ export default function WatchListDetail() {
                                    <div className="narrow card">
                                         {!isAdding && !isEditing &&
                                              <span onClick={startEditing}>
-                                                  <span className="clickable editsaveCancelButton">{EditIconComponent}</span>
+                                                  <span className="clickable editsaveCancelButton foregroundColor">{EditIconComponent}</span>
                                              </span>
                                         }
 
@@ -588,7 +588,7 @@ export default function WatchListDetail() {
                                         {!isAdding && !isEditing &&
                                              <>
                                                   {typeof watchListDtl?.WatchListItem.IMDB_URL !== "undefined" &&
-                                                       <a className="text-label" href={watchListDtl?.WatchListItem.IMDB_URL} target='_blank'>{watchListDtl?.WatchListItem.WatchListItemName}</a>
+                                                       <a className="linkStyle text-label" href={watchListDtl?.WatchListItem.IMDB_URL} target='_blank'>{watchListDtl?.WatchListItem.WatchListItemName}</a>
                                                   }
 
                                                   {typeof watchListDtl?.WatchListItem.IMDB_URL === "undefined" &&
@@ -798,7 +798,7 @@ export default function WatchListDetail() {
 
                                    <div className="narrow card no-width">
                                         {!isAdding && !isEditing &&
-                                             <div className="no-cursor textLabel">{watchListDtl?.Notes}</div>
+                                             <div className="textLabel">{watchListDtl?.Notes}</div>
                                         }
 
                                         {isEditing &&

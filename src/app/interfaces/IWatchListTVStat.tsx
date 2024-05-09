@@ -1,4 +1,3 @@
-
 export default interface IWatchListTVStat {
      UserID: number,
      WatchListItemName: string

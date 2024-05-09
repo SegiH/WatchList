@@ -3,6 +3,49 @@ import { getModels } from "../lib";
 import { getUserID } from '../lib';
 import WatchListItem from "../../../app/interfaces/IWatchListItem";
 
+/**
+ * @swagger
+ * /api/AddWatchListItem:
+ *    put:
+ *        tags:
+ *          - WatchListItems
+ *        summary: Add a WatchListItem record
+ *        description: Add a WatchListItem record to add a movie/TV show
+ *        parameters:
+ *           - name: WatchListItemName
+ *             in: query
+ *             description: New WatchListItem Name (name of the movie or TV Show)
+ *             required: true
+ *             schema:
+ *                  type: string
+ *           - name: WatchListTypeID
+ *             in: query
+ *             description: Type ID of the movie/show
+ *             required: true
+ *             schema:
+ *                  type: number
+ *           - name: IMDB_URL
+ *             in: query
+ *             description: IMDB URL of the movie/show
+ *             required: false
+ *             schema:
+ *                  type: number
+ *           - name: IMDB_Poster
+ *             in: query
+ *             description: IMDB Poster of the movie/show
+ *             required: false
+ *             schema:
+ *                  type: string
+ *           - name: Notes
+ *             in: query
+ *             description: Notes for the movie/show
+ *             required: false
+ *             schema:
+ *                  type: string
+ *        responses:
+ *          200:
+ *            description: '["OK",""] on success, ["ERROR","error message"] on error'
+ */
 export async function PUT(request: NextRequest) {
      const models = getModels();
 

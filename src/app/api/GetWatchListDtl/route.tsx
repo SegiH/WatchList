@@ -2,6 +2,25 @@ import { NextRequest } from 'next/server';
 import { getModels, getUserID } from "../lib";
 import WatchList from "../../interfaces/IWatchList";
 
+/**
+ * @swagger
+ * /api/GetWatchListDtl:
+ *    get:
+ *        tags:
+ *          - WatchList
+ *        summary: Get WatchList record based on the provided WatchListID
+ *        description: Get WatchList record based on the provided WatchListID
+ *        parameters:
+ *           - name: WatchListID
+ *             in: query
+ *             description: WatchList ID of the record to return
+ *             required: true
+ *             schema:
+ *                  type: number
+ *        responses:
+ *          200:
+ *            description: '["OK",""] on success, ["ERROR","error message"] on error'
+ */
 export async function GET(request: NextRequest) {
      const models = getModels();
      

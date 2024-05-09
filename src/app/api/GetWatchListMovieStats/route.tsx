@@ -1,11 +1,19 @@
 import { NextRequest } from 'next/server';
-import { DBType, getModels, getUserID, sequelize } from "../lib";
+import { DBType, getUserID, sequelize } from "../lib";
 
+/**
+ * @swagger
+ * /api/GetWatchListMovieStats:
+ *    get:
+ *        tags:
+ *          - WatchList
+ *        summary: Get stats for most watched Movies for the current user
+ *        description: Get stats for most watched Movies for the current user
+ *        responses:
+ *          200:
+ *            description: '["OK",""] on success, ["ERROR","error message"] on error'
+ */
 export async function GET(request: NextRequest) {
-     const models = getModels();
-     
-     const searchParams = request.nextUrl.searchParams;
-
      const userID = await getUserID(request);
 
      if (userID === null) {

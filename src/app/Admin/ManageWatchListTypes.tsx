@@ -16,6 +16,7 @@ const ManageWatchListTypes = () => {
           CancelIconComponent, demoMode, EditIconComponent, SaveIconComponent, setIsAdding, setIsEditing, setWatchListTypes, setWatchListTypesLoadingComplete, setWatchListTypesLoadingStarted, watchListTypes
      } = useContext(DataContext) as DataContextType;
 
+     const [editingId, setEditingId] = useState(null);
      const [rowModesModel, setRowModesModel] = useState({});
      const section = "Type";
 
@@ -33,9 +34,13 @@ const ManageWatchListTypes = () => {
 
           setIsAdding(false);
           setIsEditing(false);
+
+          setEditingId(null);
      };
 
      const enterEditModeClickHandler = (id: number) => () => {
+          setEditingId(id);
+
           setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } });
 
           setIsEditing(true);
@@ -75,6 +80,10 @@ const ManageWatchListTypes = () => {
                          setWatchListTypesLoadingComplete(false);
 
                          setIsEditing(false);
+
+                         setRowModesModel(null);
+
+                         setEditingId(null);
                     } else {
                          alert(response.data[1]);
                     }
@@ -88,16 +97,18 @@ const ManageWatchListTypes = () => {
 
      const processRowUpdateErrorHandler = React.useCallback(() => { }, []);
 
+     const saveRowEditClickHandler = (id: number) => async () => {
+          setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
+     };
+
      const startRowEditingClickHandler = (params: typeof IWatchListType, event: typeof GridEventListener) => {
           event.defaultMuiPrevented = true;
      };
 
      const stopRowEditingClickHandler = (params: typeof IWatchListType, event: typeof GridEventListener) => {
           event.defaultMuiPrevented = true;
-     };
 
-     const saveRowEditClickHandler = (id: number) => async () => {
-          setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
+          setRowModesModel(null);
      };
 
      const columns = [
@@ -119,13 +130,13 @@ const ManageWatchListTypes = () => {
                width: 100,
                cellClassName: "actions",
                getActions: ({ id }: { id: number }) => {
-                    const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
-
-                    if (isInEditMode) {
-                         return [<GridActionsCellItem key={id} icon={SaveIconComponent} className="icon" label="Save" onClick={saveRowEditClickHandler(id)} />, <GridActionsCellItem key={id} icon={CancelIconComponent} label="Cancel" className="icon textPrimary" onClick={cancelRowEditClickHandler(id)} color="inherit" />];
+                    if (editingId === null) {
+                         return [<GridActionsCellItem key={id} icon={EditIconComponent} label="Edit" className="icon textPrimary" onClick={enterEditModeClickHandler(id)} color="inherit" />];
+                    } else if (editingId === id) {
+                         return [<GridActionsCellItem key={id} icon={SaveIconComponent} className="icon" label="Save" onClick={saveRowEditClickHandler(id)} color="primary" />, <GridActionsCellItem key={id} icon={CancelIconComponent} label="Cancel" className="icon textPrimary" onClick={cancelRowEditClickHandler(id)} color="error" />];
+                    } else {
+                         return [<></>]
                     }
-
-                    return [<GridActionsCellItem key={id} icon={EditIconComponent} label="Edit" className="icon textPrimary" onClick={enterEditModeClickHandler(id)} color="inherit" />];
                },
           },
      ];
@@ -134,6 +145,9 @@ const ManageWatchListTypes = () => {
           <DataGrid
                rows={watchListTypes}
                columns={columns}
+               sx={{
+                    color: "white",
+               }}
                editMode="row"
                getRowId={(row: typeof IWatchListType) => row.WatchListTypeID}
                rowModesModel={rowModesModel}

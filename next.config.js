@@ -22,17 +22,22 @@ const nextConfig = {
           return [
                {
                     source: '/api',
-                    destination: '/api/DefaultRoute',
+                    destination: '/',
                     permanent: true,
                },
           ]
      },
      distDir: 'build',
+     transpilePackages: [
+          "react-syntax-highlighter",
+          "swagger-client",
+          "swagger-ui-react",
+     ],
 }
 
 module.exports = withPWA({
      disable: process.env.NODE_ENV === 'development',
      dest: "public",
      register: true,
-     skipWaiting: true,
+     skipWaiting: true
 })(nextConfig);

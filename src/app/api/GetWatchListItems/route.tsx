@@ -2,6 +2,37 @@ import { NextRequest } from 'next/server';
 import { getModels } from "../lib";
 import WatchListItem from "../../interfaces/IWatchListItem";
 
+/**
+ * @swagger
+ * /api/GetWatchListItems:
+ *    get:
+ *        tags:
+ *          - WatchListItems
+ *        summary: Get all WatchList Items
+ *        description: Get all WatchList Items
+ *        parameters:
+ *           - name: SortColumn
+ *             in: query
+ *             description: Sort by specified column
+ *             required: false
+ *             schema:
+ *                  type: string
+ *           - name: SortDirection
+ *             in: query
+ *             description: Sort by specified direction
+ *             required: false
+ *             schema:
+ *                  type: string
+ *           - name: RecordLimit
+ *             in: query
+ *             description: Limit numbr of records selected
+ *             required: false
+ *             schema:
+ *                  type: string
+ *        responses:
+ *          200:
+ *            description: '["OK",""] on success, ["ERROR","error message"] on error'
+ */
 export async function GET(request: NextRequest) {
      const models = getModels();
      

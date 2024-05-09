@@ -1,7 +1,7 @@
 export default interface IRecommendation {
      Title: string,
      Year: string,
-     imdbID: string,
+     ImdbID: string,
      Type: string,
      Poster: string
 }

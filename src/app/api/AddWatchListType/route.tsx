@@ -3,6 +3,25 @@ import { getModels } from "../lib";
 import WatchListType from "../../../app/interfaces/IWatchListType";
 import { error } from 'console';
 
+/**
+ * @swagger
+ * /api/AddWatchListType:
+ *    put:
+ *        tags:
+ *          - WatchListTypes
+ *        summary: Add a WatchListItem Type
+ *        description: Add a WatchListItem Type to indicate where a movie/show was watched at
+ *        parameters:
+ *           - name: WatchListTypeName
+ *             in: query
+ *             description: New WatchListType Name
+ *             required: true
+ *             schema:
+ *                  type: string
+ *        responses:
+ *          200:
+ *            description: '["OK",""] on success, ["ERROR","error message"] on error'
+ */
 export async function PUT(request: NextRequest) {
      const models = getModels();
 

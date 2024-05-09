@@ -63,7 +63,7 @@ export default function Setup() {
                return;
           }
 
-          axios.put(`/api/Setup?wl_username=${username}&wl_realname=${realname}&wl_password=${password}&wl_isadmin=true`, null)
+          axios.put(`/api/Setup?wl_username=${username}&wl_realname=${realname}&wl_password=${password}&wl_admin=true`, null)
                .then((res: typeof IUser) => {
                     if (res.data[0] === "OK") {
                          alert("User account was successfully created");
@@ -73,7 +73,7 @@ export default function Setup() {
                          alert("User account was NOT created. " + res.data[1]);
                     }
                })
-               .catch(() => { });
+               .catch((err: Error) => { });
      };
 
      useEffect(() => {

@@ -1,9 +1,20 @@
 'use server'
 
-import { NextRequest } from 'next/server';
 import { cookies } from 'next/headers';
 
-export async function GET(request: NextRequest) {
+/**
+ * @swagger
+ * /api/SignOut:
+ *    get:
+ *        tags:
+ *          - Users
+ *        summary: Sign the current user out
+ *        description: Sign the current user out
+ *        responses:
+ *          200:
+ *            description: '["OK",""] on success'
+ */
+export async function GET() {
      cookies().delete('userData');
 
      return Response.json(["OK"]);

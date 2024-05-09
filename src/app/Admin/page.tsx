@@ -14,6 +14,7 @@ const useState = require("react").useState;
 import { DataContext, DataContextType } from "../data-context";
 
 import "./AdminConsole.css";
+import "../page.css";
 
 const CustomTabPanel = require("./CustomTabPanel").default;
 
@@ -58,8 +59,8 @@ export default function Admin() {
      }, []);
 
      return (
-          <>
-               <Tabs value={selectedTab} onChange={tabClickHandler}>
+          <div>
+               <Tabs style={{backgroundColor: "white"}} value={selectedTab} onChange={tabClickHandler}>
                     <Tab label="Users" {...tabProps(0)} />
                     <Tab label="Sources" {...tabProps(1)} />
                     <Tab label="Types" {...tabProps(2)} />
@@ -76,6 +77,6 @@ export default function Admin() {
                <CustomTabPanel value={selectedTab} index={2}>
                     <ManageWatchListTypes />
                </CustomTabPanel>
-          </>
+          </div>
      )
 }

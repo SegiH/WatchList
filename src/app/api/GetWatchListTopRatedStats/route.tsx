@@ -1,6 +1,18 @@
 import { NextRequest } from 'next/server';
 import { DBType, getUserID, sequelize } from "../lib";
 
+/**
+ * @swagger
+ * /api/GetWatchListTopRatedStats:
+ *    get:
+ *        tags:
+ *          - WatchList
+ *        summary: Get the WatchList top rated stats for the current user
+ *        description: Get the WatchList top rated stats for the highest rated movie/shows for the current user
+ *        responses:
+ *          200:
+ *            description: '["OK",""] on success, ["ERROR","error message"] on error'
+ */
 export async function GET(request: NextRequest) {
      const userID = await getUserID(request);
 

@@ -1,6 +1,55 @@
 import { NextRequest } from 'next/server';
 import { encrypt, getModels, getUserSession} from "../lib";
 
+/**
+ * @swagger
+ * /api/UpdateUser:
+ *    put:
+ *        tags:
+ *          - Users
+ *        summary: Add a user
+ *        description: Add a user
+ *        parameters:
+ *           - name: wl_userid
+ *             in: query
+ *             description: New user id
+ *             required: true
+ *             schema:
+ *                  type: number
+ *           - name: wl_username
+ *             in: query
+ *             description: Updated username
+ *             required: false
+ *             schema:
+ *                  type: string
+ *           - name: wl_realname
+ *             in: query
+ *             description: Updated name of the user
+ *             required: false
+ *             schema:
+ *                  type: string
+ *           - name: wl_password
+ *             in: query
+ *             description: Updated password
+ *             required: false
+ *             schema:
+ *                  type: string
+ *           - name: wl_admin
+ *             in: query
+ *             description: Update whether the user is an admin
+ *             required: false
+ *             schema:
+ *                  type: string
+ *           - name: wl_enabled
+ *             in: query
+ *             description: Update whether the user account is enabled
+ *             required: false
+ *             schema:
+ *                  type: string
+ *        responses:
+ *          200:
+ *            description: '["OK",""] on success, ["ERROR","error message"] on error'
+ */
 export async function PUT(request: NextRequest) {
      const models = getModels();
      const userSession = await getUserSession(request);

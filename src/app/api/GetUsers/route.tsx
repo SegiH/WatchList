@@ -2,6 +2,31 @@ import { NextRequest } from 'next/server';
 import { decrypt, getModels, getUserID } from "../lib";
 import User from "../../interfaces/IUser";
 
+/**
+ * @swagger
+ * /api/GetUsers:
+ *    get:
+ *        tags:
+ *          - Users
+ *        summary: Get all users
+ *        description: Get all users
+ *        parameters:
+ *           - name: Admin
+ *             in: query
+ *             description: Filter on admin status
+ *             required: false
+ *             schema:
+ *                  type: string
+ *           - name: Enabled
+ *             in: query
+ *             description: Filter on Enabled status
+ *             required: false
+ *             schema:
+ *                  type: string
+ *        responses:
+ *          200:
+ *            description: '["OK",""] on success, ["ERROR","error message"] on error'
+ */
 export async function GET(request: NextRequest) {
      const models = getModels();
 

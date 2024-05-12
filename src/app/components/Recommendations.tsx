@@ -60,10 +60,10 @@ const Recommendations = ({ BrokenImageIcon, queryTerm, setRecommendationName, se
 
                          setRecommendationsError(true);
                     }
-               })
-                    .catch((err: Error) => {
-                         console.log(err.message);
-                    });
+               }).catch((err: Error) => {
+                    console.log(err.message);
+                    setRecommendationsError(true);
+               });
           }
      }, [queryTerm, recommendationsLoadingStarted, type]);
 

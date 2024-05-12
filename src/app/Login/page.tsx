@@ -19,6 +19,7 @@ export default function Login() {
           defaultRoute,
           demoPassword,
           demoUsername,
+          isLoggedIn,
           setActiveRoute,
           setActiveRouteDisplayName,
           setDemoMode,
@@ -116,7 +117,7 @@ export default function Login() {
      }, [defaultRoute, setActiveRoute, setIsLoggedIn, setIsLoggedInCheckComplete, setUserData]);
 
      useEffect(() => {
-          if (activeRoute !== "Login") {
+          if (isLoggedIn && activeRoute === "Login") {
                router.push(defaultRoute);
           }
      }, []);

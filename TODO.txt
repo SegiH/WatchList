@@ -1,30 +1,3 @@
 BEFORE COMMITTING:
   make sure to remove db and config data before committing
   update build date
-
-there are 2 searches, 1 for imdb and one in settings to search WL. consolidate this (maybe)
-handle no response and no results when searching recommendations
-
-Updates
-Update TODO
-Move AdminConsole.tsx to Misc
-Reskin UI to display in dark mode
-In Admin console, only allow editing one row at a time
-Remove unneeded $ in ManageWatchListSources in API call when saving source
-Rename wl_isadmin to wl_admin in call to /Setup API route
-Redesign stats screen and move accordion control to Misc
-/AddUser API: Add return call to return API result
-Fixed: When refreshing at a client route, you're redirected back to /WatchList
-/GetWatchList API: Validate record limit param if provided
-/Recomendations API: Add return call to return API result
-/SearchIMDB API: Add return call to return API result
-/Setup API: Add return call to return API result
-addUser() in lib.tsx: Rename wl_isadmin to wl_admin
-addUser() in lib.tsx: Return result of addUser()
-Users model: Remove unused field IsEncrypted
-Move build date to data context
-Don't render tabs if not at client route
-Improve routing logic in tabs component
-Data Context: Add isClient so we can control when to render or not render data
-Rename imdbID to ImdbID
-Remove component property from route list - not needed since client routes are used

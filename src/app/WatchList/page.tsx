@@ -86,6 +86,7 @@ export default function WatchList() {
           }
      }, [setWatchList, setWatchListSortingComplete, watchList, watchListLoadingComplete, watchListSortColumn, watchListSortDirection, watchListSortingComplete]);
 
+     //alert(watchList.length)
      return (
           <>
                {isLoggedIn && (
@@ -94,75 +95,77 @@ export default function WatchList() {
                     </span>
                )}
 
-               <ul className="clickable show-list">
-                    {watchList?.filter(
-                         (currentWatchList: typeof IWatchList) =>
-                              currentWatchList?.Archived === archivedVisible
-                              &&
-                              (searchTerm === "" || (searchTerm !== "" && currentWatchList?.WatchListItem.WatchListItemName.toLowerCase().includes(searchTerm)))
-                              &&
-                              ((stillWatching === false && (currentWatchList?.EndDate !== null || (currentWatchList?.EndDate === null && currentWatchList?.Archived === true))) || (stillWatching == true && currentWatchList?.EndDate === null && currentWatchList?.Archived === archivedVisible))
-                              &&
-                              (sourceFilter === -1 || sourceFilter === null || (sourceFilter !== -1 && sourceFilter !== null && String(currentWatchList?.WatchListSourceID) === String(sourceFilter)))
-                              &&
-                              (typeFilter === -1 || (typeFilter !== -1 && String(currentWatchList?.WatchListTypeID) === String(typeFilter)))
-                    ).map((currentWatchList: typeof IWatchList, index: number) => {
-                         return (
-                              <div key={index} className="foregroundColor">
-                                   {watchListSortingComplete && (
-                                        <li className="show-item" key={index}>
-                                             <span className="item-id">
-                                                  <div>{currentWatchList?.WatchListID}</div>
-                                             </span>
+               {watchList.length > 0 &&
+                    <ul className="clickable show-list">
+                         {watchList?.filter(
+                              (currentWatchList: typeof IWatchList) =>
+                                   currentWatchList?.Archived === archivedVisible
+                                   &&
+                                   (searchTerm === "" || (searchTerm !== "" && currentWatchList?.WatchListItem.WatchListItemName.toLowerCase().includes(searchTerm)))
+                                   &&
+                                   ((stillWatching === false && (currentWatchList?.EndDate !== null || (currentWatchList?.EndDate === null && currentWatchList?.Archived === true))) || (stillWatching == true && currentWatchList?.EndDate === null && currentWatchList?.Archived === archivedVisible))
+                                   &&
+                                   (sourceFilter === -1 || sourceFilter === null || (sourceFilter !== -1 && sourceFilter !== null && String(currentWatchList?.WatchListSourceID) === String(sourceFilter)))
+                                   &&
+                                   (typeFilter === -1 || (typeFilter !== -1 && String(currentWatchList?.WatchListTypeID) === String(typeFilter)))
+                         ).map((currentWatchList: typeof IWatchList, index: number) => {
+                              return (
+                                   <div key={index} className="foregroundColor">
+                                        {watchListSortingComplete && (
+                                             <li className="show-item" key={index}>
+                                                  <span className="item-id">
+                                                       <div>{currentWatchList?.WatchListID}</div>
+                                                  </span>
 
-                                             <a className="clickable foregroundColor image-crop show-link" onClick={() => openDetailClickHandler(currentWatchList?.WatchListID)}>
-                                                  <div>
-                                                       {currentWatchList?.WatchListItem?.IMDB_Poster !== null && currentWatchList?.IMDB_Poster_Error !== true && <img alt={currentWatchList?.WatchListItem?.WatchListItemName} src={currentWatchList?.WatchListItem?.IMDB_Poster} onError={() => showDefaultSrc(currentWatchList?.WatchListID)} />}
+                                                  <a className="clickable foregroundColor image-crop show-link" onClick={() => openDetailClickHandler(currentWatchList?.WatchListID)}>
+                                                       <div>
+                                                            {currentWatchList?.WatchListItem?.IMDB_Poster !== null && currentWatchList?.IMDB_Poster_Error !== true && <img alt={currentWatchList?.WatchListItem?.WatchListItemName} src={currentWatchList?.WatchListItem?.IMDB_Poster} onError={() => showDefaultSrc(currentWatchList?.WatchListID)} />}
 
-                                                       {(currentWatchList?.WatchListItem?.IMDB_Poster === null || currentWatchList?.IMDB_Poster_Error === true) && <>{BrokenImageIconComponent}</>}
+                                                            {(currentWatchList?.WatchListItem?.IMDB_Poster === null || currentWatchList?.IMDB_Poster_Error === true) && <>{BrokenImageIconComponent}</>}
+                                                       </div>
+                                                  </a>
+
+                                                  <div className="show-title">
+                                                       {typeof currentWatchList?.WatchListItem.IMDB_URL !== "undefined" &&
+                                                            <a className="foregroundColor linkStyle" href={currentWatchList?.WatchListItem.IMDB_URL} target='_blank'>{currentWatchList?.WatchListItem?.WatchListItemName}</a>
+                                                       }
+
+                                                       {typeof currentWatchList?.WatchListItem?.IMDB_URL === "undefined" &&
+                                                            <span>
+                                                                 {currentWatchList?.WatchListItem?.WatchListItemName}
+                                                            </span>
+                                                       }
+
+                                                       {currentWatchList?.Archived === true ? <span>&nbsp;(A)</span> : <></>}
                                                   </div>
-                                             </a>
 
-                                             <div className="show-title">
-                                                  {typeof currentWatchList?.WatchListItem.IMDB_URL !== "undefined" &&
-                                                       <a className="foregroundColor linkStyle" href={currentWatchList?.WatchListItem.IMDB_URL} target='_blank'>{currentWatchList?.WatchListItem?.WatchListItemName}</a>
-                                                  }
+                                                  {currentWatchList?.WatchListItem?.WatchListType?.WatchListTypeID === 2 && <div>Season {currentWatchList?.Season}</div>}
 
-                                                  {typeof currentWatchList?.WatchListItem?.IMDB_URL === "undefined" &&
-                                                       <span>
-                                                            {currentWatchList?.WatchListItem?.WatchListItemName}
-                                                       </span>
-                                                  }
-
-                                                  {currentWatchList?.Archived === true ? <span>&nbsp;(A)</span> : <></>}
-                                             </div>
-
-                                             {currentWatchList?.WatchListItem?.WatchListType?.WatchListTypeID === 2 && <div>Season {currentWatchList?.Season}</div>}
-
-                                             <div>
-                                                  {currentWatchList?.StartDate}
-                                                  {currentWatchList?.EndDate !== null && currentWatchList?.EndDate !== currentWatchList?.StartDate ? ` - ${currentWatchList?.EndDate}` : ""}
-                                             </div>
-
-                                             <div>
-                                                  {currentWatchList?.WatchListItem?.WatchListType?.WatchListTypeName}
-                                             </div>
-
-                                             <div>
-                                                  {currentWatchList?.WatchListSource?.WatchListSourceName}
-                                             </div>
-
-                                             {currentWatchList?.Rating !== null && (
                                                   <div>
-                                                       {currentWatchList?.Rating}/{ratingMax}
+                                                       {currentWatchList?.StartDate}
+                                                       {currentWatchList?.EndDate !== null && currentWatchList?.EndDate !== currentWatchList?.StartDate ? ` - ${currentWatchList?.EndDate}` : ""}
                                                   </div>
-                                             )}
-                                        </li>
-                                   )}
-                              </div>
-                         );
-                    })}
-               </ul>
+
+                                                  <div>
+                                                       {currentWatchList?.WatchListItem?.WatchListType?.WatchListTypeName}
+                                                  </div>
+
+                                                  <div>
+                                                       {currentWatchList?.WatchListSource?.WatchListSourceName}
+                                                  </div>
+
+                                                  {currentWatchList?.Rating !== null && (
+                                                       <div>
+                                                            {currentWatchList?.Rating}/{ratingMax}
+                                                       </div>
+                                                  )}
+                                             </li>
+                                        )}
+                                   </div>
+                              );
+                         })}
+                    </ul>
+               }
           </>
      )
 }

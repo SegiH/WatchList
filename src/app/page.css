@@ -265,6 +265,10 @@ input:checked+.slider:before {
      margin-bottom: -15px;
 }
 
+.margin-left {
+     margin-left: 15px;
+}
+
 .margin-top {
      margin-top: 25px;
 }
@@ -431,7 +435,8 @@ input:checked+.slider:before {
 }
 
 .searchResult {
-     display: grid;
+     display: flex;
+     margin-bottom: 15px;
 }
 
 .searchResultPoster {
@@ -484,6 +489,7 @@ input:checked+.slider:before {
      margin-bottom: 45px;
      margin-right: 55px;
      /*max-width: 175px;*/
+     max-height: 350px;
      overflow: hidden;
      text-align: center;
      vertical-align: top;
@@ -634,6 +640,7 @@ input:checked+.slider:before {
      }
 }
 
+/* Move these perms to the right place above */
 
 .searchPanel {
      display: flex;
@@ -676,7 +683,7 @@ input:checked+.slider:before {
  }
  
  .searchInput {
-     position: absolute;
+     position: relative;
      top: 0;
      left: 0;
      width: 100%;

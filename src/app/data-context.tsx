@@ -159,7 +159,7 @@ export interface DataContextType {
     watchListTypesLoadingComplete: boolean;
 }
 
-const buildDate = "05-09-24";
+const buildDate = "05-12-24";
 
 const DataProvider = ({ children }) => {
     const [activeRoute, setActiveRoute] = useState("");
@@ -629,13 +629,13 @@ const DataProvider = ({ children }) => {
             Icon: WatchListIconComponent,
             RequiresAuth: true
         },
-        WatchListItems: {
+        /*WatchListItems: {
             Name: "WatchListItems",
             DisplayName: "Items",
             Path: "/WatchListItems",
             Icon: WatchListItemsIconComponent,
             RequiresAuth: true
-        },
+        },*/
         WatchListStats: {
             Name: "WatchListStats",
             DisplayName: "Stats",

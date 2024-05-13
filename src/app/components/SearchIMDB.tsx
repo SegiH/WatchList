@@ -16,6 +16,7 @@ export default function SearchIMDB() {
           AddIconComponent,
           autoAdd,
           BrokenImageIconComponent,
+          EditIconComponent,
           searchCount,
           setNewWatchListItemDtlID,
           setSearchVisible,
@@ -201,7 +202,9 @@ export default function SearchIMDB() {
                                                                            {currentResult.Title} ({currentResult.Year})
                                                                       </span>
 
-                                                                      <img className="searchResultPoster" alt={currentResult.Title}><>{BrokenImageIconComponent}</></img>
+                                                                      <div className="searchResultPoster">{BrokenImageIconComponent}</div>
+
+                                                                      {/*<img className="searchResultPoster" alt={currentResult.Title}>{BrokenImageIconComponent}</img>*/}
                                                                  </>
                                                             )}
                                                        </span>
@@ -216,7 +219,7 @@ export default function SearchIMDB() {
                                         (currentResult: typeof IWatchListItem, index: number) => {
                                              return (
                                                   <tr key={index}>
-                                                       <td className="row">
+                                                       {/*<td className="row">
                                                             <span className="searchResult">
                                                                  <span
                                                                       className="addSearchResultIcon"
@@ -225,14 +228,14 @@ export default function SearchIMDB() {
                                                                       }
                                                                  >
                                                                       <button>
-                                                                           {AddIconComponent}
+                                                                           {EditIconComponent}
                                                                       </button>
                                                                  </span>
                                                             </span>
-                                                       </td>
+                                                       </td>*/}
 
                                                        <td className="row">
-                                                            <span className="searchResult">
+                                                            <span className="clickable searchResult" onClick={(event) => addExistingResultClickHandler(currentResult.WatchListItemID) }>
                                                                  {currentResult.IMDB_Poster && (
                                                                       // The poster column
                                                                       <div>

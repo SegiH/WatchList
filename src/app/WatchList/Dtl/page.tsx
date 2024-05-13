@@ -588,7 +588,7 @@ export default function WatchListDetail() {
                                         {!isAdding && !isEditing &&
                                              <>
                                                   {typeof watchListDtl?.WatchListItem.IMDB_URL !== "undefined" &&
-                                                       <a className="linkStyle text-label" href={watchListDtl?.WatchListItem.IMDB_URL} target='_blank'>{watchListDtl?.WatchListItem.WatchListItemName}</a>
+                                                       <a className="foregroundColor linkStyle text-label" href={watchListDtl?.WatchListItem.IMDB_URL} target='_blank'>{watchListDtl?.WatchListItem.WatchListItemName}</a>
                                                   }
 
                                                   {typeof watchListDtl?.WatchListItem.IMDB_URL === "undefined" &&

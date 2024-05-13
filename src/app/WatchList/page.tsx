@@ -131,7 +131,7 @@ export default function WatchList() {
                                                        }
 
                                                        {typeof currentWatchList?.WatchListItem?.IMDB_URL === "undefined" &&
-                                                            <span>
+                                                            <span className="foregroundColor">
                                                                  {currentWatchList?.WatchListItem?.WatchListItemName}
                                                             </span>
                                                        }

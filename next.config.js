@@ -4,7 +4,8 @@ const withPWA = require("next-pwa");
 
 const nextConfig = {
      experimental: {
-          serverComponentsExternalPackages: ['config', 'sequelize', 'swagger-ui-react'],
+          serverComponentsExternalPackages: ['config', 'sequelize'],
+          missingSuspenseWithCSRBailout: false,
      },
      images: {
           remotePatterns: [

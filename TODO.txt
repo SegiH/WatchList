@@ -3,3 +3,5 @@ BEFORE COMMITTING:
   update build date
 
  Searching is wonky when toggling imdb 
+ make sure all uses of <img have onError={() => showDefaultSrc(currentWatchList?.WatchListID)} error handling
+ check that thing to check broken images works

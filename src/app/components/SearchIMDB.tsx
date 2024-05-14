@@ -2,6 +2,7 @@
 
 const axios = require("axios");
 const GridEventListener = require("@mui/x-data-grid").GridEventListener;
+import Image from 'next/image';
 const React = require("react");
 const useContext = require("react").useContext;
 const useRouter = require("next/navigation").useRouter;
@@ -16,7 +17,7 @@ export default function SearchIMDB() {
           AddIconComponent,
           autoAdd,
           BrokenImageIconComponent,
-          EditIconComponent,
+          //EditIconComponent,
           searchCount,
           setNewWatchListItemDtlID,
           setSearchVisible,
@@ -141,6 +142,25 @@ export default function SearchIMDB() {
           }
      };
 
+     const showDefaultSrc = (watchListItemID: number) => (): void => {
+          const newSearchResults = Object.assign([], watchListItems);
+
+          const currentSearchResultsResult = newSearchResults?.filter((currentWatchListItem: typeof IWatchListItem) => {
+               return String(currentWatchListItem.WatchListItemID) === String(watchListItemID);
+          });
+
+          if (currentSearchResultsResult === 0) {
+               // this shouldn't ever happen!
+               return;
+          }
+
+          const currentSearchResult = currentSearchResultsResult[0];
+
+          currentSearchResult["IMDB_Poster_Error"] = true;
+
+          setSearchResults(newSearchResults);
+     };
+
      return (
           <div className="modal">
                <div className={`customBackgroundColor modal-content ${searchSubmitted === true ? "" : "customModalHeight"}`}>
@@ -178,7 +198,7 @@ export default function SearchIMDB() {
 
                     <table className="datagrid">
                          <tbody className="data watchList">
-                              {searchResults.length > 0 &&
+                              {includeIMDB && searchResults && searchResults.length > 0 &&
                                    searchResults.map((currentResult: typeof ISearchImdb, index: number) => {
                                         return (
                                              <tr key={index}>
@@ -202,7 +222,7 @@ export default function SearchIMDB() {
                                                                            {currentResult.Title} ({currentResult.Year})
                                                                       </span>
 
-                                                                      <div className="searchResultPoster">{BrokenImageIconComponent}</div>
+                                                                      <span className="searchResultPoster">broken{BrokenImageIconComponent}</span>
 
                                                                       {/*<img className="searchResultPoster" alt={currentResult.Title}>{BrokenImageIconComponent}</img>*/}
                                                                  </>
@@ -235,15 +255,26 @@ export default function SearchIMDB() {
                                                        </td>*/}
 
                                                        <td className="row">
-                                                            <span className="clickable searchResult" onClick={(event) => addExistingResultClickHandler(currentResult.WatchListItemID) }>
-                                                                 {currentResult.IMDB_Poster && (
+                                                            <span className="clickable searchResult" onClick={(event) => addExistingResultClickHandler(currentResult.WatchListItemID)}>
+                                                                 {!currentResult.IMDB_Poster_Error && (
                                                                       // The poster column
-                                                                      <div>
-                                                                           <img
+                                                                      <div className="foregroundColor">
+                                                                           <Image
                                                                                 className="searchResultPoster"
                                                                                 src={currentResult.IMDB_Poster}
-                                                                                alt={currentResult.WatchListItemName}
+                                                                                alt={currentResult.IMDB_Poster}
+                                                                                width="40"
+                                                                                height="40"
+                                                                                onError={() => showDefaultSrc(currentResult?.WatchListItemID)}
                                                                            />
+                                                                      </div>
+                                                                 )}
+
+                                                                 {currentResult.IMDB_Poster_Error && (
+                                                                      // The poster column
+                                                                      <div className="brokenImage foregroundColor">
+                                                                           broken
+                                                                           {BrokenImageIconComponent}
                                                                       </div>
                                                                  )}
 

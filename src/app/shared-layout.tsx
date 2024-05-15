@@ -11,6 +11,7 @@ import { DataContext, DataContextType } from "./data-context";
 const SharedLayout = () => {
      const {
           activeRouteDisplayName,
+          isError,
           isLoggedIn,
           SearchIconComponent,
           searchVisible,
@@ -36,30 +37,38 @@ const SharedLayout = () => {
 
      return (
           <>
-               {isLoggedIn && watchListSourcesLoadingComplete && watchListTypesLoadingComplete &&
+               {!isError &&
                     <>
-                         <span className="menuBar">
-                              <span className="leftMargin menuBarActiveRoute">{activeRouteDisplayName}</span>
+                         {isLoggedIn && watchListSourcesLoadingComplete && watchListTypesLoadingComplete &&
+                              <>
+                                   <span className="menuBar">
+                                        <span className="leftMargin menuBarActiveRoute">{activeRouteDisplayName}</span>
 
-                              <span className="options">
-                                   <span className="clickable searchIcon" style={{color: "white"}} onClick={showSearch}>
-                                        {SearchIconComponent}
-                                   </span>
+                                        <span className="options">
+                                             <span className="clickable searchIcon" style={{ color: "white" }} onClick={showSearch}>
+                                                  {SearchIconComponent}
+                                             </span>
 
-                                   <span className="clickable" style={{color: "white"}} onClick={showSettings}>
-                                        {SettingsIconComponent}
+                                             <span className="clickable" style={{ color: "white" }} onClick={showSettings}>
+                                                  {SettingsIconComponent}
+                                             </span>
+                                        </span>
                                    </span>
-                              </span>
-                         </span>
+                              </>
+                         }
+
+                         {searchVisible &&
+                              <SearchIMDB />
+                         }
+
+                         {settingsVisible &&
+                              <Settings />
+                         }
                     </>
                }
 
-               {searchVisible &&
-                    <SearchIMDB />
-               }
-
-               {settingsVisible &&
-                    <Settings />
+               {isError &&
+                    <div className="foregroundColor"><img src="/404.jpg" alt="Uh oh. Something went wrong" /></div>
                }
           </>
      )

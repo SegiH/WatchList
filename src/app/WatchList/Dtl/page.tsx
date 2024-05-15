@@ -4,6 +4,7 @@ import { useCallback } from "react";
 
 const Autocomplete = require("@mui/material/Autocomplete").default;
 const axios = require("axios");
+import Image from 'next/image';
 const IWatchList = require("../../interfaces/IWatchList");
 const IWatchListItem = require("../../interfaces/IWatchListItem");
 const IWatchListSource = require("../../interfaces/IWatchListSource");
@@ -47,6 +48,7 @@ export default function WatchListDetail() {
           setActiveRoute,
           setIsAdding,
           setIsEditing,
+          setIsError,
           setNewWatchListItemDtlID,
           setWatchListLoadingStarted,
           setWatchListLoadingComplete,
@@ -473,20 +475,27 @@ export default function WatchListDetail() {
                     .then((res: typeof IWatchList) => {
                          if (res.data[0] === "ERROR") {
                               alert(`The error ${res.data[1]} occurred while  getting the detail`);
+                              setIsError(true);
+                              return;
                          } else {
                               // Sanitize object by replacing all fields with null
-                              Object.keys(res.data[0]).map((keyName) => {
-                                   if (res.data[0][keyName] === null) {
-                                        res.data[0][keyName] = "";
+                              const wld = res.data[1];
+
+                              Object.keys(wld).map((keyName) => {
+                                   if (wld[keyName] === null) {
+                                        wld[keyName] = "";
                                    }
                               });
 
-                              setWatchListDtl(res.data[0]);
+                              console.log(res.data)
+
+                              setWatchListDtl(wld);
                               setWatchListDtlLoadingComplete(true);
                          }
                     })
                     .catch((err: Error) => {
                          alert(`The fatal error ${err.message} occurred while  getting the detail`);
+                         setIsError(true);
                     });
           } else if (isAdding) {
                const newAddWatchListDtl: typeof IWatchList = {};
@@ -625,14 +634,14 @@ export default function WatchListDetail() {
                                    <div className="narrow card">
                                         {!isAdding &&
                                              <>
-                                                  {watchListDtl?.WatchListItem?.IMDB_Poster !== null && watchListDtl?.IMDB_Poster_Error !== true && <img className="poster-detail" alt="Image Not Available" src={watchListDtl?.WatchListItem.IMDB_Poster} onError={() => showDefaultSrc()} />}
+                                                  {watchListDtl?.WatchListItem?.IMDB_Poster !== null && watchListDtl?.IMDB_Poster_Error !== true && <Image className="poster-detail" width="175" height="200" alt="Image Not Available" src={watchListDtl?.WatchListItem.IMDB_Poster} onError={() => showDefaultSrc()} />}
 
                                                   {(watchListDtl?.WatchListItem?.IMDB_Poster === null || watchListDtl?.IMDB_Poster_Error === true) && <>{BrokenImageIconComponent}</>}
                                              </>
                                         }
 
                                         {isAdding && addWatchListDtl &&
-                                             <span className="column">{watchListItems?.filter((currentWatchListItem: typeof IWatchListItem) => String(currentWatchListItem?.WatchListItemID) === String(addWatchListDtl?.WatchListItemID)).length === 1 && <img className="poster-detail" alt="Image Not Available" src={watchListItems?.filter((currentWatchListItem: typeof IWatchListItem) => String(currentWatchListItem?.WatchListItemID) === String(addWatchListDtl?.WatchListItemID))[0].IMDB_Poster} />}</span>
+                                             <span className="column">{watchListItems?.filter((currentWatchListItem: typeof IWatchListItem) => String(currentWatchListItem?.WatchListItemID) === String(addWatchListDtl?.WatchListItemID)).length === 1 && <Image className="poster-detail" width="175" height="200" alt="Image Not Available" src={watchListItems?.filter((currentWatchListItem: typeof IWatchListItem) => String(currentWatchListItem?.WatchListItemID) === String(addWatchListDtl?.WatchListItemID))[0].IMDB_Poster} />}</span>
                                         }
                                    </div>
 

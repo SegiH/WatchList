@@ -15,6 +15,7 @@ const Tabs = () => {
           admin,
           defaultRoute,
           isClient,
+          isError,
           isLoggedIn,
           isLoggedInCheckComplete,
           routeList,
@@ -49,7 +50,6 @@ const Tabs = () => {
 
           const path = getPath(tabClicked.replace("/", ""));
 
-          console.log(`Pushing path ${path} in tabClickHandler()`)
           router.push(path);
 
           const displayName = getDisplayName(tabClicked.replace("/", ""));
@@ -95,7 +95,7 @@ const Tabs = () => {
 
      return (
           <>
-               {isClient && isLoggedInCheckComplete && isLoggedIn && (
+               {isClient && isLoggedInCheckComplete && isLoggedIn && !isError && (
                     <div className="tabBar">
                          {Object.keys(routeList)
                               .filter((routeName) => routeList[routeName].RequiresAuth === true && routeName !== "Setup" && routeName !== "SearchIMDB" && (routeName !== "AdminConsole" || (routeName === "AdminConsole" && admin === true)))

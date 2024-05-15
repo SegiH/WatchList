@@ -25,7 +25,8 @@ export default function WatchListStats() {
           demoMode,
           isLoggedIn,
           isLoggedInCheckComplete,
-          ratingMax
+          ratingMax,
+          setIsError
      } = useContext(DataContext) as DataContextType
 
      const [watchListMovieStats, setWatchListMovieStats] = useState([]);
@@ -221,12 +222,12 @@ export default function WatchListStats() {
           </>
      );
 
-     const accordionData = {
+     /*const accordionData = {
           "Most Frequently Watched Sources": sourceStats,
           "Top Rated": topRated,
           "Top 10 Movies": movieStats,
           "Top 10 Shows": tvStats,
-     };
+     };*/
 
      // Get WatchListMovieStats
      useEffect(() => {
@@ -243,11 +244,17 @@ export default function WatchListStats() {
 
                axios.get(`/api/GetWatchListMovieStats`, { withCredentials: true })
                     .then((res: typeof IWatchListMovieStat) => {
-                         setWatchListMovieStats(res.data);
-                         setWatchListMovieStatsLoadingComplete(true);
+                         if (res.data[0] === "OK") {
+                              setWatchListMovieStats(res.data[1]);
+                              setWatchListMovieStatsLoadingComplete(true);
+                         } else {
+                              alert(`The following error occurred getting the WatchList Movie Stats: ${res.data[1]}`);
+                              setIsError(true);
+                         }
                     })
                     .catch((err: Error) => {
                          alert("Failed to get WatchList Movie Stats with the error " + err.message);
+                         setIsError(true);
                     });
           }
      }, [isLoggedInCheckComplete, isLoggedIn, watchListMovieStatsLoadingStarted, watchListMovieStatsLoadingComplete]);
@@ -267,11 +274,17 @@ export default function WatchListStats() {
 
                axios.get(`/api/GetWatchListSourceStats`, { withCredentials: true })
                     .then((res: typeof IWatchListSourceStat) => {
-                         setWatchListSourceStats(res.data);
-                         setWatchListSourceStatsLoadingComplete(true);
+                         if (res.data[0] === "OK") {
+                              setWatchListSourceStats(res.data[1]);
+                              setWatchListSourceStatsLoadingComplete(true);
+                         } else {
+                              alert(`The following error occurred getting the WatchList Source Stats: ${res.data[1]}`);
+                              setIsError(true);
+                         }
                     })
                     .catch((err: Error) => {
                          alert("Failed to get WatchList Source Stats with the error " + err.message);
+                         setIsError(true);
                     });
           }
      }, [isLoggedInCheckComplete, isLoggedIn, watchListMovieStatsLoadingComplete, watchListSourceStatsLoadingStarted, watchListSourceStatsLoadingComplete]);
@@ -291,11 +304,17 @@ export default function WatchListStats() {
 
                axios.get(`/api/GetWatchListTopRatedStats`, { withCredentials: true })
                     .then((res: typeof IWatchListTopRatedStat) => {
-                         setWatchListTopRatedStats(res.data);
-                         setWatchListTopRatedStatsLoadingComplete(true);
+                         if (res.data[0] === "OK") {
+                              setWatchListTopRatedStats(res.data[1]);
+                              setWatchListTopRatedStatsLoadingComplete(true);
+                         } else {
+                              alert(`The following error occurred getting the WatchList Top Rated Stats: ${res.data[1]}`);
+                              setIsError(true);
+                         }
                     })
                     .catch((err: Error) => {
                          alert("Failed to get WatchList Top Rated Stats with the error " + err.message);
+                         setIsError(true);
                     });
           }
      }, [isLoggedInCheckComplete, isLoggedIn, watchListSourceStatsLoadingComplete, watchListTopRatedStatsLoadingStarted, watchListTopRatedStatsLoadingComplete]);
@@ -315,11 +334,17 @@ export default function WatchListStats() {
 
                axios.get(`/api/GetWatchListTVStats`, { withCredentials: true })
                     .then((res: typeof IWatchListTVStat) => {
-                         setWatchListTVStats(res.data);
-                         setWatchListTVStatsLoadingComplete(true);
+                         if (res.data[0] === "OK") {
+                              setWatchListTVStats(res.data[1]);
+                              setWatchListTVStatsLoadingComplete(true);
+                         } else {
+                              alert(`The following error occurred getting the WatchList TV Rated Stats: ${res.data[1]}`);
+                              setIsError(true);
+                         }
                     })
                     .catch((err: Error) => {
                          alert("Failed to get WatchList TV Stats with the error " + err.message);
+                         setIsError(true);
                     });
           }
      }, [isLoggedInCheckComplete, isLoggedIn, watchListTopRatedStatsLoadingComplete, watchListTVStatsLoadingStarted, watchListTVStatsLoadingComplete]);
@@ -338,15 +363,17 @@ export default function WatchListStats() {
 
                axios.get(`/api/GetWatchListSourceStats?GetDetail=true`)
                     .then((res: typeof IWatchListSourceDtlStat) => {
-                         if (res.data[0] === "ERROR") {
-                              alert(`The error ${res.data[1]} occurred while  getting the detail`);
-                         } else {
-                              setWatchListSourceDtlStats(res.data);
+                         if (res.data[0] === "OK") {
+                              setWatchListSourceDtlStats(res.data[1]);
                               setWatchListSourceDtlLoadingComplete(true);
+                         } else {
+                              alert(`The following error occurred getting the WatchList Source Stats: ${res.data[1]}`);
+                              setIsError(true);
                          }
                     })
                     .catch((err: Error) => {
                          alert(`The fatal error ${err.message} occurred while  getting the detail`);
+                         setIsError(true);
                     });
           }
      }, [watchListSourceDtlLoadingStarted, watchListSourceDtlLoadingComplete]);

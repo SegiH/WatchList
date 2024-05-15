@@ -37,6 +37,7 @@ const ManageUserAccounts = () => {
           SaveIconComponent,
           setIsAdding,
           setIsEditing,
+          setIsError,
           validatePassword
      } = useContext(DataContext) as DataContextType;
 
@@ -371,14 +372,18 @@ const ManageUserAccounts = () => {
 
                axios.get(`/api/GetUsers`, { withCredentials: true })
                     .then((res: typeof IUser) => {
-                         if (res.data.length > 0) {
-                              setUsers(res.data);
+                         if (res.data[0] === "OK") {
+                              setUsers(res.data[1]);
+                         } else {
+                              alert(res.data[1]);
+                              setIsError(true);
                          }
 
                          setUsersLoadingComplete(true);
                     })
                     .catch((err: Error) => {
                          alert("Failed to get users with the error " + err.message);
+                         setIsError(true);
                     });
           }
      }, [usersLoadingStarted, usersLoadingComplete]);

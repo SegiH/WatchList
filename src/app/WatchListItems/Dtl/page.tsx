@@ -1,6 +1,7 @@
 "use client"
 
 const axios = require("axios");
+import Image from 'next/image';
 const IWatchListItem = require("../../interfaces/IWatchListItem");
 const IWatchListType = require("../../interfaces/IWatchListType");
 const React = require("react");
@@ -28,6 +29,7 @@ export default function WatchListItemsDtl() {
           SaveIconComponent,
           setIsAdding,
           setIsEditing,
+          setIsError,
           setNewWatchListItemDtlID,
           setWatchListItemsLoadingStarted,
           setWatchListItemsLoadingComplete,
@@ -89,7 +91,7 @@ export default function WatchListItemsDtl() {
                setWatchListItemsLoadingComplete(false);
           }
 
-          router.push("/WatchListItems");
+          router.push("/WatchList");
      };
 
      const onIMDBPosterChangeHandler = async (URL: string) => {
@@ -309,19 +311,24 @@ export default function WatchListItemsDtl() {
 
                          if (res.data[0] === "ERROR") {
                               alert(`The error ${res.data[1]} occurred while  getting the item detail`);
+                              setIsError(true);
+                              return;
                          } else {
                               // Sanitize object by replacing all null fields with "". There are issues with binding to input fields when the value is null
-                              Object.keys(res.data[0]).map((keyName) => {
-                                   if (res.data[0][keyName] === null) {
-                                        res.data[0][keyName] = "";
+                              const wlid = res.data[1];
+
+                              Object.keys(wlid).map((keyName) => {
+                                   if (wlid[keyName] === null) {
+                                        wlid[keyName] = "";
                                    }
                               });
 
-                              setWatchListItemDtl(res.data[0]);
+                              setWatchListItemDtl(wlid);
                          }
                     })
                     .catch((err: Error) => {
                          alert(`The fatal error ${err.message} occurred while getting the item detail`);
+                         setIsError(true);
                     });
           } else if (isAdding && watchListItemDtlID === -1) {
                const newAddWatchListItemDtl: typeof IWatchListItem = {};
@@ -380,14 +387,14 @@ export default function WatchListItemsDtl() {
                                    <div className="narrow card">
                                         {!isAdding &&
                                              <>
-                                                  {watchListItemDtl?.IMDB_Poster !== null && watchListItemDtl?.IMDB_Poster_Error !== true && <img alt={addWatchListItemDtl?.WatchListItemName} className="poster-detail" src={watchListItemDtl?.IMDB_Poster} onError={() => showDefaultSrc()} />}
+                                                  {watchListItemDtl?.IMDB_Poster !== null && watchListItemDtl?.IMDB_Poster_Error !== true && <Image alt={addWatchListItemDtl?.WatchListItemName} className="poster-detail" width="175" height="200" src={watchListItemDtl?.IMDB_Poster} onError={() => showDefaultSrc()} />}
 
                                                   {(watchListItemDtl?.IMDB_Poster === null || watchListItemDtl?.IMDB_Poster_Error === true) && <>{BrokenImageIconComponent}</>}
                                              </>
                                         }
 
                                         {isAdding && addWatchListItemDtl !== null &&
-                                             <span className="column">{addWatchListItemDtl?.IMDB_Poster !== null && addWatchListItemDtl?.IMDB_Poster_Error !== true && <img className="poster-detail" alt="Image Not Available" src={addWatchListItemDtl?.IMDB_Poster} />}</span>
+                                             <span className="column">{addWatchListItemDtl?.IMDB_Poster !== null && addWatchListItemDtl?.IMDB_Poster_Error !== true && <Image className="poster-detail" width="175" height="200" alt="Image Not Available" src={addWatchListItemDtl?.IMDB_Poster} />}</span>
                                         }
                                    </div>
 

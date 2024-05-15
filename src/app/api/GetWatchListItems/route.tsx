@@ -62,7 +62,7 @@ export async function GET(request: NextRequest) {
           limit: recordLimit !== null ? recordLimit : 999999999,
           include: [{ model: models.WatchListTypes, required: true }],
      }).then((results: WatchListItem) => {
-          return Response.json(results);
+          return Response.json(["OK", results]);
      }).catch(function (err: Error) {
           return Response.json(["ERROR", `/GetWatchList: The error ${JSON.stringify(err)} occurred getting the WatchList Items`]);
      });

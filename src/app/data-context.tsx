@@ -84,6 +84,7 @@ export interface DataContextType {
     isAdmin: () => boolean;
     isClient: boolean;
     isEditing: boolean;
+    isError: boolean;
     isLoggedIn: boolean;
     isLoggedInCheckComplete: boolean;
     LogOutIconComponent: React.ReactNode;
@@ -102,6 +103,7 @@ export interface DataContextType {
     setDemoMode: (value: boolean) => void;
     setIsAdding: (value: boolean) => void;
     setIsEditing: (value: boolean) => void;
+    setIsError: (value: boolean) => void;
     setIsLoggedIn: (value: boolean) => void;
     setIsLoggedInCheckComplete: (value: boolean) => void;
     setShowMissingArtwork: (value: boolean) => void;
@@ -159,7 +161,7 @@ export interface DataContextType {
     watchListTypesLoadingComplete: boolean;
 }
 
-const buildDate = "05-12-24";
+const buildDate = "05-13-24";
 
 const DataProvider = ({ children }) => {
     const [activeRoute, setActiveRoute] = useState("");
@@ -171,6 +173,7 @@ const DataProvider = ({ children }) => {
     const [isClient, setIsClient] = useState(false);
     const [isClientCheckComplete, setIsClientCheckComplete] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
+    const [isError, setIsError] = useState(false);
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [isLoggedInCheckComplete, setIsLoggedInCheckComplete] = useState(false);
     const [isLoggedInCheckStarted, setIsLoggedInCheckStarted] = useState(false);
@@ -488,11 +491,18 @@ const DataProvider = ({ children }) => {
 
             axios.get(`/api/GetWatchList?SortColumn=${watchListSortColumn}&SortDirection=${watchListSortDirection}`, { withCredentials: true })
                 .then((res: typeof IWatchList) => {
-                    setWatchList(res.data);
+                    if (res.data[0] !== "OK") {
+                        alert("Failed to get WatchList with the error " + res.data[1]);
+                        setIsError(true);
+                        return;
+                    }
+
+                    setWatchList(res.data[1]);
                     setWatchListLoadingComplete(true);
                 })
                 .catch((err: Error) => {
                     alert("Failed to get WatchList with the error " + err.message);
+                    setIsError(true);
                 });
         }
     }, [isLoggedInCheck, isLoggedIn, userData, watchListLoadingStarted, watchListLoadingComplete, watchListSortColumn, watchListSortDirection]);
@@ -516,7 +526,13 @@ const DataProvider = ({ children }) => {
 
             axios.get(`/api/GetWatchListItems${Object.keys(watchListItemsSortColumns).includes(watchListSortColumn) ? `?SortColumn=${watchListSortColumn}&SortDirection=${watchListSortDirection}` : ``}`, { withCredentials: true })
                 .then((res: typeof IWatchListItem) => {
-                    setWatchListItems(res.data);
+                    if (res.data[0] !== "OK") {
+                        alert("Failed to get WatchList Items with the error " + res.data[1]);
+                        setIsError(true);
+                        return;
+                    }
+
+                    setWatchListItems(res.data[1]);
                     setWatchListItemsLoadingComplete(true);
                     setWatchListItemsSortingComplete(false);
 
@@ -526,6 +542,8 @@ const DataProvider = ({ children }) => {
                 })
                 .catch((err: Error) => {
                     alert("Failed to get WatchList Items with the error " + err.message);
+
+                    setIsError(true);
                 });
         }
     }, [autoAdd, isLoggedInCheck, isLoggedInCheckComplete, isLoggedIn, newWatchListItemDtlID, watchListLoadingComplete, watchListItemsLoadingStarted, watchListItemsLoadingComplete, watchListItemsSortColumns, watchListSortColumn, watchListSortDirection]);
@@ -549,18 +567,27 @@ const DataProvider = ({ children }) => {
 
             axios.get(`/api/GetWatchListSources`, { withCredentials: true })
                 .then((res: typeof IWatchListSource) => {
-                    res.data.sort((a: typeof IWatchListSource, b: typeof IWatchListSource) => {
+                    if (res.data[0] !== "OK") {
+                        alert("Failed to get WatchList Sources with the error " + res.data[1]);
+                        setIsError(true);
+                        return;
+                    }
+
+                    const wls = res.data[1];
+
+                    wls.sort((a: typeof IWatchListSource, b: typeof IWatchListSource) => {
                         const aName = a.WatchListSourceName;
                         const bName = b.WatchListSourceName;
 
                         return String(aName) > String(bName) ? 1 : -1;
                     });
 
-                    setWatchListSources(res.data);
+                    setWatchListSources(wls);
                     setWatchListSourcesLoadingComplete(true);
                 })
                 .catch((err: Error) => {
                     alert("Failed to get WatchList Sources with the error " + err.message);
+                    setIsError(true);
                 });
         }
     }, [isLoggedInCheck, isLoggedInCheckComplete, isLoggedIn, watchListItemsLoadingComplete, watchListSourcesLoadingStarted, watchListSourcesLoadingComplete]);
@@ -584,11 +611,18 @@ const DataProvider = ({ children }) => {
 
             axios.get(`/api/GetWatchListTypes`, { withCredentials: true })
                 .then((res: typeof IWatchListType) => {
-                    setWatchListTypes(res.data);
+                    if (res.data[0] !== "OK") {
+                        alert("Failed to get WatchList Types with the error " + res.data[1]);
+                        setIsError(true);
+                        return;
+                    }
+
+                    setWatchListTypes(res.data[1]);
                     setWatchListTypesLoadingComplete(true);
                 })
                 .catch((err: Error) => {
                     alert("Failed to get WatchList Types with the error " + err.message);
+                    setIsError(true);
                 });
         }
     }, [isLoggedInCheck, isLoggedInCheckComplete, isLoggedIn, watchListSourcesLoadingComplete, watchListTypesLoadingStarted, watchListTypesLoadingComplete]);
@@ -678,6 +712,7 @@ const DataProvider = ({ children }) => {
         isAdmin: isAdmin,
 	    isClient: isClient,
         isEditing: isEditing,
+        isError: isError,
         isLoggedIn: isLoggedIn,
         isLoggedInCheckComplete: isLoggedInCheckComplete,
         LogOutIconComponent: LogOutIconComponent,
@@ -696,6 +731,7 @@ const DataProvider = ({ children }) => {
         setDemoMode: setDemoMode,
         setIsAdding: setIsAdding,
         setIsEditing: setIsEditing,
+        setIsError: setIsError,
         setIsLoggedIn: setIsLoggedIn,
         setIsLoggedInCheckComplete: setIsLoggedInCheckComplete,
         setNewWatchListItemDtlID: setNewWatchListItemDtlID,

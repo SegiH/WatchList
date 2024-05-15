@@ -58,7 +58,7 @@ export async function GET(request: NextRequest) {
                return currentUser;
           });
 
-          return Response.json(decryptedUsers);
+          return Response.json(["OK", decryptedUsers]);
      }).catch(function (err: Error) {
           return Response.json(["ERROR", `/GetUsers: The error ${err} occurred getting the users`]);
      });

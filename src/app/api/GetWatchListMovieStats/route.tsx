@@ -24,7 +24,7 @@ export async function GET(request: NextRequest) {
 
      return sequelize
           .query(SQL, { replacements: { UserID: userID } }).then((results: any) => {
-               return Response.json(results[0]);
+               return Response.json(["OK", results[0]]);
           }).catch(function (err: Error) {
                return Response.json(["ERROR", `/GetWatchListMovieStats: The error ${err.message} occurred getting the WatchList Movie Stats`]);
           });

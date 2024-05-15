@@ -45,7 +45,7 @@ export async function GET(request: NextRequest) {
                WatchListItemID: watchListItemID,
           },
      }).then((results: WatchListItem) => {
-          return Response.json(results);
+          return Response.json(["OK", results[0]]);
      }).catch(function (err: Error) {
           return Response.json(["ERROR", `/GetWatchListItems: The error ${err.message} occurred getting the WatchList Item Detail`]);
      });

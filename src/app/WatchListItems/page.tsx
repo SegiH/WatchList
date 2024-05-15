@@ -1,5 +1,6 @@
 "use client"
 
+import Image from 'next/image';
 const IWatchListItem = require("../interfaces/IWatchListItem");
 const IWatchListSortColumn = require("../interfaces/IWatchListSortColumn");
 const React = require("react");
@@ -14,6 +15,7 @@ export default function WatchListItems() {
           AddIconComponent,
           archivedVisible,
           BrokenImageIconComponent,
+          isError,
           searchTerm,
           setIsAdding,
           setWatchListItems,
@@ -116,9 +118,11 @@ export default function WatchListItems() {
 
      return (
           <>
-               <span className="clickable customTopMargin foregroundColor" onClick={() => openDetailClickHandler(-1)}>
-                    {AddIconComponent}
-               </span>
+               {isError &&
+                    <span className="clickable customTopMargin foregroundColor" onClick={() => openDetailClickHandler(-1)}>
+                         {AddIconComponent}
+                    </span>
+               }
 
                <ul className="clickable show-list">
                     {watchListItems?.filter(
@@ -139,7 +143,7 @@ export default function WatchListItems() {
 
                                                   <a className="show-link" onClick={() => openDetailClickHandler(currentWatchListItem?.WatchListItemID)}>
                                                        <div className="clickable image-crop">
-                                                            {currentWatchListItem?.IMDB_Poster !== null && currentWatchListItem?.IMDB_Poster_Error !== true && <img alt={currentWatchListItem?.WatchListItemName} src={currentWatchListItem?.IMDB_Poster} onLoad={() => setImageLoaded(currentWatchListItem?.WatchListItemID)} onError={() => showDefaultSrc(currentWatchListItem?.WatchListItemID)} />}
+                                                            {currentWatchListItem?.IMDB_Poster !== null && currentWatchListItem?.IMDB_Poster_Error !== true && <Image width="128" height="187" alt={currentWatchListItem?.WatchListItemName} src={currentWatchListItem?.IMDB_Poster} onLoad={() => setImageLoaded(currentWatchListItem?.WatchListItemID)} onError={() => showDefaultSrc(currentWatchListItem?.WatchListItemID)} />}
 
                                                             {(currentWatchListItem?.IMDB_Poster === null || currentWatchListItem?.IMDB_Poster_Error === true) && <>{BrokenImageIconComponent}</>}
                                                        </div>

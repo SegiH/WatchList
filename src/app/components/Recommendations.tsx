@@ -1,5 +1,6 @@
 const axios = require("axios");
 const exact = require("prop-types-exact");
+import Image from 'next/image';
 const IRecommendation = require("../interfaces/IRecommendation");
 const MuiIcon = require("@mui/icons-material").MuiIcon;
 const PropTypes = require("prop-types");
@@ -101,7 +102,7 @@ const Recommendations = ({ BrokenImageIcon, queryTerm, setRecommendationName, se
 
                                    <span className="image-crop">
                                         {!recommendation.Image_Error && recommendation.poster_path !== null &&
-                                             <img alt="image not available" src={`https://image.tmdb.org/t/p/w500${recommendation.poster_path}`} onError={() => showDefaultSrc(recommendation.id)} />
+                                             <Image width="128" height="187" alt="image not available" src={`https://image.tmdb.org/t/p/w500${recommendation.poster_path}`} onError={() => showDefaultSrc(recommendation.id)} />
                                         }
 
                                         {(recommendation.Image_Error || recommendation.poster_path === null) &&

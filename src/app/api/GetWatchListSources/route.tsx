@@ -19,7 +19,7 @@ export async function GET() {
      return models.WatchListSources.findAll({
           order: [["WatchListSourceName", "DESC"]],
      }).then((results: WatchListSource) => {
-          return Response.json(results);
+          return Response.json(["OK", results]);
      }).catch(function (err: Error) {
           return Response.json(["ERROR", `/GetWatchListSources: The error ${err.message} occurred getting the WatchList Sources`]);
      });

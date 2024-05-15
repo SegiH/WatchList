@@ -30,7 +30,7 @@ export async function GET(request: NextRequest) {
 
      return sequelize.query(!getDetail ? SQL : detailSQL, { replacements: { UserID: userID } })
           .then((results: any) => {
-               return Response.json(results[0]);
+               return Response.json(["OK", results[0]]);
           })
           .catch(function (err) {
                return Response.json(["ERROR", `/GetWatchListSourceStats: The error ${err.message} occurred getting the WatchList Source Stats`]);

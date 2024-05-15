@@ -1,6 +1,7 @@
 "use client"
 
 const React = require("react");
+import Image from 'next/image';
 const useCallback = require("react").useCallback;
 const useContext = require("react").useContext;
 const useEffect = require("react").useEffect;
@@ -14,6 +15,7 @@ export default function WatchList() {
           AddIconComponent,
           archivedVisible,
           BrokenImageIconComponent,
+          isError,
           isLoggedIn,
           ratingMax,
           searchTerm,
@@ -62,7 +64,7 @@ export default function WatchList() {
      };
 
      useEffect(() => {
-          if (!watchListSortingComplete && watchListLoadingComplete) {
+          if (!watchListSortingComplete && watchListLoadingComplete && watchList !== null) {
                const newWatchList = Object.assign([], watchList);
 
                newWatchList.sort((a: typeof IWatchList, b: typeof IWatchList) => {
@@ -86,10 +88,9 @@ export default function WatchList() {
           }
      }, [setWatchList, setWatchListSortingComplete, watchList, watchListLoadingComplete, watchListSortColumn, watchListSortDirection, watchListSortingComplete]);
 
-     //alert(watchList.length)
      return (
           <>
-               {isLoggedIn && (
+               {isLoggedIn && !isError && (
                     <span className="clickable customTopMargin foregroundColor" onClick={() => openDetailClickHandler(-1)}>
                          {AddIconComponent}
                     </span>
@@ -119,7 +120,7 @@ export default function WatchList() {
 
                                                   <a className="clickable foregroundColor image-crop show-link" onClick={() => openDetailClickHandler(currentWatchList?.WatchListID)}>
                                                        <div>
-                                                            {currentWatchList?.WatchListItem?.IMDB_Poster !== null && currentWatchList?.IMDB_Poster_Error !== true && <img alt={currentWatchList?.WatchListItem?.WatchListItemName} src={currentWatchList?.WatchListItem?.IMDB_Poster} onError={() => showDefaultSrc(currentWatchList?.WatchListID)} />}
+                                                            {currentWatchList?.WatchListItem?.IMDB_Poster !== null && currentWatchList?.IMDB_Poster_Error !== true && <Image width="128" height="187" alt={currentWatchList?.WatchListItem?.WatchListItemName} src={currentWatchList?.WatchListItem?.IMDB_Poster} onError={() => showDefaultSrc(currentWatchList?.WatchListID)} />}
 
                                                             {(currentWatchList?.WatchListItem?.IMDB_Poster === null || currentWatchList?.IMDB_Poster_Error === true) && <>{BrokenImageIconComponent}</>}
                                                        </div>

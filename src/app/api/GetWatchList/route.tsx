@@ -110,7 +110,7 @@ export async function GET(request: NextRequest) {
                { model: models.WatchListSources, required: true },
           ],
      }).then((results: WatchList) => {
-          return Response.json(results);
+          return Response.json(["OK", results]);
      }).catch(function (err: Error) {
           return Response.json(["ERROR", `/GetWatchList: The error ${err} occurred getting the WatchList`]);
      });

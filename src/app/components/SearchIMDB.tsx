@@ -208,7 +208,7 @@ export default function SearchIMDB() {
 
                                                             {currentResult.Poster !== "N/A" && (
                                                                  <>
-                                                                      <img className="searchResultPoster" src={currentResult.Poster} alt={currentResult.Title} />
+                                                                      <Image width="100" height="125" className="searchResultPoster" src={currentResult.Poster} alt={currentResult.Title} />
 
                                                                       <span className="textLabel">
                                                                            {currentResult.Title} ({currentResult.Year})
@@ -223,8 +223,6 @@ export default function SearchIMDB() {
                                                                       </span>
 
                                                                       <span className="searchResultPoster">broken{BrokenImageIconComponent}</span>
-
-                                                                      {/*<img className="searchResultPoster" alt={currentResult.Title}>{BrokenImageIconComponent}</img>*/}
                                                                  </>
                                                             )}
                                                        </span>
@@ -256,7 +254,7 @@ export default function SearchIMDB() {
 
                                                        <td className="row">
                                                             <span className="clickable searchResult" onClick={(event) => addExistingResultClickHandler(currentResult.WatchListItemID)}>
-                                                                 {!currentResult.IMDB_Poster_Error && (
+                                                                 {currentResult.IMDB_Poster !== null && !currentResult.IMDB_Poster_Error && (
                                                                       // The poster column
                                                                       <div className="foregroundColor">
                                                                            <Image
@@ -270,7 +268,7 @@ export default function SearchIMDB() {
                                                                       </div>
                                                                  )}
 
-                                                                 {currentResult.IMDB_Poster_Error && (
+                                                                 {(currentResult.IMDB_Poster_Error || currentResult.IMDB_Poster === null) && (
                                                                       // The poster column
                                                                       <div className="brokenImage foregroundColor">
                                                                            broken

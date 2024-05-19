@@ -63,6 +63,11 @@ export default function Login() {
                setIsLoggedInCheckComplete(true);
 
                localStorage.setItem("watchlist_demomode", "true");
+
+               setTimeout(() => {
+                    router.push("/WatchList");
+               }, 1000);
+
                return;
           }
 
@@ -108,11 +113,17 @@ export default function Login() {
 
                newUserData.Admin = response.Admin === 1 ? true : false;
 
+               setUsername("");
+               setPassword("");
                setActiveRoute(defaultRoute);
                setActiveRouteDisplayName(defaultRoute);
                setUserData(newUserData);
                setIsLoggedIn(true);
                setIsLoggedInCheckComplete(true);
+
+               setTimeout(() => {
+                    router.push("/WatchList");
+               }, 1000);
           } catch (err) { }
      }, [defaultRoute, setActiveRoute, setIsLoggedIn, setIsLoggedInCheckComplete, setUserData]);
 

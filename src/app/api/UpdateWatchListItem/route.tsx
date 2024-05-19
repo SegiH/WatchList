@@ -67,6 +67,7 @@ export async function PUT(request: NextRequest) {
      const imdb_poster = searchParams.get("IMDB_Poster");
      const notes = searchParams.get("ItemNotes");
      const archived = searchParams.get("Archived");
+     const imdb_json = searchParams.get("IMDB_JSON");
 
      if (watchListItemID === null) {
           return Response.json(["ERROR", "ID was not provided"]);
@@ -95,6 +96,10 @@ export async function PUT(request: NextRequest) {
 
           if (archived !== null) {
                updateColumns['Archived'] = archived;
+          }
+
+          if (imdb_json !== null) {
+               updateColumns['IMDB_JSON'] = imdb_json;
           }
 
           if (Object.keys(updateColumns).length == 0) { // No params were passed except for the mandatory column

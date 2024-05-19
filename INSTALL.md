@@ -23,14 +23,6 @@ WatchList can be set up to run as a regular web application or a Progressive Web
 1. Edit docker-compose.yml and update the network name to match your Docker network. You can create a docker network if you haven't done so already with the command `docker network create YourNetworkName`.
 1. Build the Docker container: `docker-compose up -d`.
 
-## Setting up WatchList database for SQL Server (Optional: Skip this step if you want to use the default SQLite3 database)
-1. Create database with the name WatchList in SQL Server.
-1. Edit setup\SQL\Setup.sql and set the master key encryption password (write down this password in case you forget it!!)
-1. Run the SQL script SQL\Setup.sql on the database WatchList as a user with db_creator permission. All of the commands should complete without any errors.
-1. Create user account: Edit setup\SQL\CreateUser.sql and set the username, realname and password 
-1. Run the SQL script setup\SQL\CreateUser.sql
-1. If you ever want to change a users' password, use the SQL at setup\SQL\SetPassword.sql
-
 ## PWA Files
 1. If you want use WatchList as a PWA, make sure you should have the following files/folders in the build folder. If any of these files or folders are missing copy them from the public folder:
    - assets

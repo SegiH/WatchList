@@ -44,6 +44,9 @@ const EditIconComponent = <EditIcon />;
 const LogOutIcon = require("@mui/icons-material/Logout").default;
 const LogOutIconComponent = <LogOutIcon className="icon" />;
 
+const RemoveIcon = require("@mui/icons-material/Remove").default;
+const RemoveIconComponent = <RemoveIcon className="icon" />;
+
 const SaveIcon = require("@mui/icons-material/Save").default;
 const SaveIconComponent = <SaveIcon />;
 
@@ -65,736 +68,760 @@ const WatchListItemsIconComponent = <WatchListItemsIcon className="icon" />;
 const DataContext = createContext({});
 
 export interface DataContextType {
-    activeRoute: string;
-    activeRouteDisplayName: string;
-    AddIconComponent: React.ReactNode;
-    admin: boolean;
-    archivedVisible: boolean;
-    autoAdd: boolean;
-    buildDate: string;
-    BrokenImageIconComponent: React.ReactNode;
-    CancelIconComponent: React.ReactNode;
-    defaultRoute: string;
-    demoMode: boolean;
-    demoPassword: string;
-    demoUsername: string;
-    EditIconComponent: React.ReactNode;
-    generateRandomPassword: () => void;
-    isAdding: boolean;
-    isAdmin: () => boolean;
-    isClient: boolean;
-    isEditing: boolean;
-    isError: boolean;
-    isLoggedIn: boolean;
-    isLoggedInCheckComplete: boolean;
-    LogOutIconComponent: React.ReactNode;
-    newWatchListItemDtlID: number;
-    ratingMax: number;
-    routeList: typeof IRoute;
-    SaveIconComponent: React.ReactNode;
-    searchCount: number;
-    SearchIconComponent: React.ReactNode;
-    searchTerm: string;
-    searchVisible: boolean;
-    setActiveRoute: (value: string) => void;
-    setActiveRouteDisplayName: (value: string) => void;
-    setArchivedVisible: (value: boolean) => void;
-    setAutoAdd: (value: boolean) => void;
-    setDemoMode: (value: boolean) => void;
-    setIsAdding: (value: boolean) => void;
-    setIsEditing: (value: boolean) => void;
-    setIsError: (value: boolean) => void;
-    setIsLoggedIn: (value: boolean) => void;
-    setIsLoggedInCheckComplete: (value: boolean) => void;
-    setShowMissingArtwork: (value: boolean) => void;
-    setNewWatchListItemDtlID: (value: number | null) => void;
-    setSearchCount: (value: number) => void;
-    setSearchTerm: (value: string) => void;
-    setSearchVisible: (value: boolean) => void;
-    setSettingsVisible: (value: boolean) => void;
-    setSourceFilter: (value: number) => void;
-    setStillWatching: (value: boolean) => void;
-    setTypeFilter: (value: number) => void;
-    SettingsIconComponent: React.ReactNode;
-    settingsVisible: boolean;
-    setupVisible: boolean;
-    setUserData: (value: typeof IUser) => void;
-    setWatchList: (value: typeof IWatchList) => void;
-    setWatchListItems: (value: typeof IWatchListItem) => void;
-    setWatchListItemsLoadingStarted: (value: boolean) => void;
-    setWatchListItemsLoadingComplete: (value: boolean) => void;
-    setWatchListItemsSortingComplete: (value: boolean) => void;
-    setWatchListLoadingComplete: (value: boolean) => void;
-    setWatchListLoadingStarted: (value: boolean) => void;
-    setWatchListSortColumn: (value: string) => void;
-    setWatchListSortDirection: (value: string) => void;
-    setWatchListSortingComplete: (value: boolean) => void;
-    setWatchListSources: (value: typeof IWatchListSource) => void;
-    setWatchListSourcesLoadingStarted: (value: boolean) => void;
-    setWatchListSourcesLoadingComplete: (value: boolean) => void;
-    setWatchListTypes: (value: typeof IWatchListType) => void;
-    setWatchListTypesLoadingStarted: (value: boolean) => void;
-    setWatchListTypesLoadingComplete: (value: boolean) => void;
-    showMissingArtwork: boolean;
-    showSearch: () => void;
-    showSettings: () => void;
-    signOut: () => void;
-    sourceFilter: number;
-    stillWatching: boolean;
-    typeFilter: number;
-    userData: typeof IUser;
-    validatePassword: (value: string) => boolean;
-    watchList: typeof IWatchList;
-    watchListItems: typeof IWatchListItem;
-    watchListItemsLoadingStarted: boolean;
-    watchListItemsLoadingComplete: boolean;
-    watchListItemsSortColumns: string;
-    watchListItemsSortingComplete: boolean;
-    watchListLoadingComplete: boolean;
-    watchListSortColumn: string;
-    watchListSortColumns: string;
-    watchListSortDirection: string;
-    watchListSortingComplete: boolean;
-    watchListSources: typeof IWatchListSource;
-    watchListTypes: typeof IWatchListType;
-    watchListSourcesLoadingComplete: boolean;
-    watchListTypesLoadingComplete: boolean;
+     activeRoute: string;
+     activeRouteDisplayName: string;
+     AddIconComponent: React.ReactNode;
+     admin: boolean;
+     archivedVisible: boolean;
+     autoAdd: boolean;
+     buildDate: string;
+     BrokenImageIconComponent: React.ReactNode;
+     CancelIconComponent: React.ReactNode;
+     defaultRoute: string;
+     demoMode: boolean;
+     demoPassword: string;
+     demoUsername: string;
+     EditIconComponent: React.ReactNode;
+     generateRandomPassword: () => void;
+     isAdding: boolean;
+     isAdmin: () => boolean;
+     isClient: boolean;
+     isEditing: boolean;
+     isError: boolean;
+     isLoggedIn: boolean;
+     isLoggedInCheckComplete: boolean;
+     LogOutIconComponent: React.ReactNode;
+     newWatchListItemDtlID: number;
+     ratingMax: number;
+     RemoveIconComponent: React.ReactNode;
+     routeList: typeof IRoute;
+     SaveIconComponent: React.ReactNode;
+     searchCount: number;
+     SearchIconComponent: React.ReactNode;
+     searchTerm: string;
+     searchVisible: boolean;
+     setActiveRoute: (value: string) => void;
+     setActiveRouteDisplayName: (value: string) => void;
+     setArchivedVisible: (value: boolean) => void;
+     setAutoAdd: (value: boolean) => void;
+     setDemoMode: (value: boolean) => void;
+     setIsAdding: (value: boolean) => void;
+     setIsEditing: (value: boolean) => void;
+     setIsError: (value: boolean) => void;
+     setIsLoggedIn: (value: boolean) => void;
+     setIsLoggedInCheckComplete: (value: boolean) => void;
+     setShowMissingArtwork: (value: boolean) => void;
+     setNewWatchListItemDtlID: (value: number | null) => void;
+     setSearchCount: (value: number) => void;
+     setSearchTerm: (value: string) => void;
+     setSearchVisible: (value: boolean) => void;
+     setSettingsVisible: (value: boolean) => void;
+     setSourceFilter: (value: number) => void;
+     setStillWatching: (value: boolean) => void;
+     setTypeFilter: (value: number) => void;
+     SettingsIconComponent: React.ReactNode;
+     settingsVisible: boolean;
+     setupVisible: boolean;
+     setUserData: (value: typeof IUser) => void;
+     setWatchList: (value: typeof IWatchList) => void;
+     setWatchListItems: (value: typeof IWatchListItem) => void;
+     setWatchListItemsLoadingStarted: (value: boolean) => void;
+     setWatchListItemsLoadingComplete: (value: boolean) => void;
+     setWatchListItemsSortingComplete: (value: boolean) => void;
+     setWatchListLoadingComplete: (value: boolean) => void;
+     setWatchListLoadingStarted: (value: boolean) => void;
+     setWatchListSortColumn: (value: string) => void;
+     setWatchListSortDirection: (value: string) => void;
+     setWatchListSortingComplete: (value: boolean) => void;
+     setWatchListSources: (value: typeof IWatchListSource) => void;
+     setWatchListSourcesLoadingStarted: (value: boolean) => void;
+     setWatchListSourcesLoadingComplete: (value: boolean) => void;
+     setWatchListTypes: (value: typeof IWatchListType) => void;
+     setWatchListTypesLoadingStarted: (value: boolean) => void;
+     setWatchListTypesLoadingComplete: (value: boolean) => void;
+     setShowWatchListItems: (value: boolean) => void;
+     showMissingArtwork: boolean;
+     showSearch: () => void;
+     showSettings: () => void;
+     showWatchListItems: boolean;
+     signOut: () => void;
+     sourceFilter: number;
+     stillWatching: boolean;
+     typeFilter: number;
+     userData: typeof IUser;
+     validatePassword: (value: string) => boolean;
+     watchList: typeof IWatchList;
+     watchListItems: typeof IWatchListItem;
+     watchListItemsLoadingStarted: boolean;
+     watchListItemsLoadingComplete: boolean;
+     watchListItemsSortColumns: string;
+     watchListItemsSortingComplete: boolean;
+     watchListLoadingComplete: boolean;
+     watchListSortColumn: string;
+     watchListSortColumns: string;
+     watchListSortDirection: string;
+     watchListSortingComplete: boolean;
+     watchListSources: typeof IWatchListSource;
+     watchListTypes: typeof IWatchListType;
+     watchListSourcesLoadingComplete: boolean;
+     watchListTypesLoadingComplete: boolean;
 }
 
-const buildDate = "05-13-24";
+const buildDate = "05-19-24";
 
 const DataProvider = ({ children }) => {
-    const [activeRoute, setActiveRoute] = useState("");
-    const [activeRouteDisplayName, setActiveRouteDisplayName] = useState("");
-    const [archivedVisible, setArchivedVisible] = useState(false);
-    const [autoAdd, setAutoAdd] = useState(false);
-    const [demoMode, setDemoMode] = useState(false);
-    const [isAdding, setIsAdding] = useState(false);
-    const [isClient, setIsClient] = useState(false);
-    const [isClientCheckComplete, setIsClientCheckComplete] = useState(false);
-    const [isEditing, setIsEditing] = useState(false);
-    const [isError, setIsError] = useState(false);
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
-    const [isLoggedInCheckComplete, setIsLoggedInCheckComplete] = useState(false);
-    const [isLoggedInCheckStarted, setIsLoggedInCheckStarted] = useState(false);
-    const [searchCount, setSearchCount] = useState(5);
-    const [searchTerm, setSearchTerm] = useState("");
-    const [searchVisible, setSearchVisible] = useState(false);
-    const [settingsVisible, setSettingsVisible] = useState(false);
-    const [showMissingArtwork, setShowMissingArtwork] = useState(false);
-    const [sourceFilter, setSourceFilter] = useState(-1);
-    const [typeFilter, setTypeFilter] = useState(-1);
-    const [stillWatching, setStillWatching] = useState(true);
-    const [userData, setUserData] = useState({ UserID: 0, Username: "", RealName: "", Admin: false }); // cannot use iUserEmpty() here
+     const [activeRoute, setActiveRoute] = useState("");
+     const [activeRouteDisplayName, setActiveRouteDisplayName] = useState("");
+     const [archivedVisible, setArchivedVisible] = useState(false);
+     const [autoAdd, setAutoAdd] = useState(false);
+     const [demoMode, setDemoMode] = useState(false);
+     const [isAdding, setIsAdding] = useState(false);
+     const [isClient, setIsClient] = useState(false);
+     const [isClientCheckComplete, setIsClientCheckComplete] = useState(false);
+     const [isEditing, setIsEditing] = useState(false);
+     const [isError, setIsError] = useState(false);
+     const [isLoggedIn, setIsLoggedIn] = useState(false);
+     const [isLoggedInCheckComplete, setIsLoggedInCheckComplete] = useState(false);
+     const [isLoggedInCheckStarted, setIsLoggedInCheckStarted] = useState(false);
+     const [searchCount, setSearchCount] = useState(5);
+     const [searchTerm, setSearchTerm] = useState("");
+     const [searchVisible, setSearchVisible] = useState(false);
+     const [settingsVisible, setSettingsVisible] = useState(false);
+     const [showMissingArtwork, setShowMissingArtwork] = useState(false);
+     const [showWatchListItems, setShowWatchListItems] = useState(false);
+     const [sourceFilter, setSourceFilter] = useState(-1);
+     const [typeFilter, setTypeFilter] = useState(-1);
+     const [stillWatching, setStillWatching] = useState(true);
+     const [userData, setUserData] = useState({ UserID: 0, Username: "", RealName: "", Admin: false }); // cannot use iUserEmpty() here
 
-    const [watchList, setWatchList] = useState([]);
-    const [watchListLoadingStarted, setWatchListLoadingStarted] = useState(false);
-    const [watchListLoadingComplete, setWatchListLoadingComplete] = useState(false);
-    const [watchListSortingComplete, setWatchListSortingComplete] = useState(false);
+     const [watchList, setWatchList] = useState([]);
+     const [watchListLoadingStarted, setWatchListLoadingStarted] = useState(false);
+     const [watchListLoadingComplete, setWatchListLoadingComplete] = useState(false);
+     const [watchListSortingComplete, setWatchListSortingComplete] = useState(false);
 
-    const [watchListItems, setWatchListItems] = useState([]);
-    const [watchListItemsLoadingStarted, setWatchListItemsLoadingStarted] = useState(false);
-    const [watchListItemsLoadingComplete, setWatchListItemsLoadingComplete] = useState(false);
-    const [watchListItemsSortingComplete, setWatchListItemsSortingComplete] = useState(false);
+     const [watchListItems, setWatchListItems] = useState([]);
+     const [watchListItemsLoadingStarted, setWatchListItemsLoadingStarted] = useState(false);
+     const [watchListItemsLoadingComplete, setWatchListItemsLoadingComplete] = useState(false);
+     const [watchListItemsSortingComplete, setWatchListItemsSortingComplete] = useState(false);
 
-    const [newWatchListItemDtlID, setNewWatchListItemDtlID] = useState(null); // After adding a new WLI, This will hold the new ID so it can be passed to WatchList and add a new record based on this WLI ID
+     const [newWatchListItemDtlID, setNewWatchListItemDtlID] = useState(null); // After adding a new WLI, This will hold the new ID so it can be passed to WatchList and add a new record based on this WLI ID
 
-    const [watchListSources, setWatchListSources] = useState([]);
-    const [watchListSourcesLoadingStarted, setWatchListSourcesLoadingStarted] = useState(false);
-    const [watchListSourcesLoadingComplete, setWatchListSourcesLoadingComplete] = useState(false);
+     const [watchListSources, setWatchListSources] = useState([]);
+     const [watchListSourcesLoadingStarted, setWatchListSourcesLoadingStarted] = useState(false);
+     const [watchListSourcesLoadingComplete, setWatchListSourcesLoadingComplete] = useState(false);
 
-    const [watchListTypes, setWatchListTypes] = useState([]);
-    const [watchListTypesLoadingStarted, setWatchListTypesLoadingStarted] = useState(false);
-    const [watchListTypesLoadingComplete, setWatchListTypesLoadingComplete] = useState(false);
+     const [watchListTypes, setWatchListTypes] = useState([]);
+     const [watchListTypesLoadingStarted, setWatchListTypesLoadingStarted] = useState(false);
+     const [watchListTypesLoadingComplete, setWatchListTypesLoadingComplete] = useState(false);
 
-    const [watchListSortColumn, setWatchListSortColumn] = useState("Name");
-    const [watchListSortDirection, setWatchListSortDirection] = useState("ASC");
+     const [watchListSortColumn, setWatchListSortColumn] = useState("Name");
+     const [watchListSortDirection, setWatchListSortDirection] = useState("ASC");
 
-    const defaultRoute = "WatchList";
-    const demoUsername = "demo";
-    const demoPassword = "demo";
+     const defaultRoute = "WatchList";
+     const demoUsername = "demo";
+     const demoPassword = "demo";
 
-    const router = useRouter();
+     const router = useRouter();
 
-    const watchListSortColumns = {
-        ID: "ID",
-        Name: "Name",
-        StartDate: "Start Date",
-        EndDate: "End Date",
-    };
+     const watchListSortColumns = {
+          ID: "ID",
+          Name: "Name",
+          StartDate: "Start Date",
+          EndDate: "End Date",
+     };
 
-    const watchListItemsSortColumns = useMemo(() => {
-        return {
-            ID: "ID",
-            Name: "Name"
-        }
-    }, []);
+     const watchListItemsSortColumns = useMemo(() => {
+          return {
+               ID: "ID",
+               Name: "Name"
+          }
+     }, []);
 
-    const generateRandomPassword = () => {
-        const lowercaseChars = "abcdefghijklmnopqrstuvwxyz";
-        const uppercaseChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-        const digitChars = "0123456789";
-        const specialChars = "!@#$%^&*";
-        const allChars = lowercaseChars + uppercaseChars + digitChars + specialChars;
+     const generateRandomPassword = () => {
+          const lowercaseChars = "abcdefghijklmnopqrstuvwxyz";
+          const uppercaseChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+          const digitChars = "0123456789";
+          const specialChars = "!@#$%^&*";
+          const allChars = lowercaseChars + uppercaseChars + digitChars + specialChars;
 
-        let randomString = "";
+          let randomString = "";
 
-        // Add one character from each character set to satisfy the regex
-        randomString += lowercaseChars[Math.floor(Math.random() * lowercaseChars.length)];
-        randomString += uppercaseChars[Math.floor(Math.random() * uppercaseChars.length)];
-        randomString += digitChars[Math.floor(Math.random() * digitChars.length)];
-        randomString += specialChars[Math.floor(Math.random() * specialChars.length)];
+          // Add one character from each character set to satisfy the regex
+          randomString += lowercaseChars[Math.floor(Math.random() * lowercaseChars.length)];
+          randomString += uppercaseChars[Math.floor(Math.random() * uppercaseChars.length)];
+          randomString += digitChars[Math.floor(Math.random() * digitChars.length)];
+          randomString += specialChars[Math.floor(Math.random() * specialChars.length)];
 
-        // Fill the rest of the string with random characters
-        while (randomString.length < 8) {
-            randomString += allChars[Math.floor(Math.random() * allChars.length)];
-        }
+          // Fill the rest of the string with random characters
+          while (randomString.length < 8) {
+               randomString += allChars[Math.floor(Math.random() * allChars.length)];
+          }
 
-        return randomString;
-    };
+          return randomString;
+     };
 
-    const isAdmin = () => {
-        return userData.Admin;
-    }
+     const isAdmin = () => {
+          return userData.Admin;
+     }
 
-    const isLoggedInCheck = useCallback(() => {
-        if (isLoggedInCheckComplete == false) return false;
+     const isLoggedInCheck = useCallback(() => {
+          if (isLoggedInCheckComplete == false) return false;
 
-        if (isLoggedInCheckComplete && !isLoggedIn) return false;
+          if (isLoggedInCheckComplete && !isLoggedIn) return false;
 
-        return true;
-    }, [isLoggedIn, isLoggedInCheckComplete]);
+          return true;
+     }, [isLoggedIn, isLoggedInCheckComplete]);
 
-    const showSearch = () => {
-        setSearchVisible(true);
-    };
+     const showSearch = () => {
+          setSearchVisible(true);
+     };
 
-    const showSettings = () => {
-        setSettingsVisible(true);
-    };
+     const showSettings = () => {
+          setSettingsVisible(true);
+     };
 
-    const signOut = () => {
-        if (demoMode) {
-            signOutActions();
-            return;
-        }
+     const signOut = () => {
+          if (demoMode) {
+               signOutActions();
+               return;
+          }
 
-        axios.get(`/api/SignOut`)
-            .then((res: typeof IUser) => {
-                if (res.data[0] === "OK") {
-                    signOutActions();
-                } else {
-                    alert(res.data[1]);
-                }
-            })
-            .catch((err: Error) => {
-                alert(err.message);
-            });
-    };
-
-    const signOutActions = () => {
-        const newUserData = Object.assign({}, userData);
-        newUserData.UserID = "";
-        newUserData.Username = "";
-        newUserData.RealName = "";
-
-        setUserData(newUserData);
-
-        setIsLoggedIn(false);
-
-        setActiveRoute("");
-        setActiveRouteDisplayName("");
-        setIsAdding(false);
-        setIsEditing(false);
-        setIsLoggedIn(false);
-        setIsLoggedInCheckComplete(false);
-        setSearchTerm("");
-        setSourceFilter(-1);
-        setTypeFilter(-1);
-
-        setWatchList([]);
-        setWatchListLoadingStarted(false);
-        setWatchListLoadingComplete(false);
-
-        setWatchListItems([]);
-        setWatchListItemsLoadingStarted(false);
-        setWatchListLoadingComplete(false);
-
-        setWatchListSources([]);
-        setWatchListSourcesLoadingStarted(false);
-        setWatchListSourcesLoadingComplete(false);
-
-        setWatchListTypes([]);
-        setWatchListTypesLoadingStarted(false);
-        setWatchListTypesLoadingComplete(false);
-
-        setSettingsVisible(false);
-
-        localStorage.removeItem("watchlist_demomode")
-
-        setActiveRoute("Login");
-
-        router.push("/Login");
-    }
-
-    const validatePassword = (value: string) => {
-        // 1 lowercase alphabetical character, 1 uppercase alphabetical character, 1 numeric, 1 special char, 8 chars long minimum
-        const strongRegex = new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,})");
-
-        return strongRegex.test(value);
-    };
-
-    // Check if user is logged in already
-    useEffect(() => {
-        if (!isClientCheckComplete) {
-            return;
-        }
-
-        if (!isClient) {
-            return;
-        }
-
-        setIsLoggedInCheckStarted(true);
-
-        if (!isLoggedIn && !isLoggedInCheckStarted) {
-            const newArchivedVisible = localStorage.getItem("WatchList.ArchivedVisible");
-            const newAutoAdd = localStorage.getItem("WatchList.AutoAdd");
-            const newSearchCount = localStorage.getItem("WatchList.SearchCount");
-            const newStillWatching = localStorage.getItem("WatchList.StillWatching");
-            const newShowMissingArtwork = localStorage.getItem("WatchList.ShowMissingArtwork");
-            const newSourceFilter = localStorage.getItem("WatchList.SourceFilter");
-            const newTypeFilter = localStorage.getItem("WatchList.TypeFilter");
-            const newSortColumn = localStorage.getItem("WatchList.WatchListSortColumn");
-            const newSortDirection = localStorage.getItem("WatchList.WatchListSortDirection");
-
-            if (newArchivedVisible !== null) {
-                setArchivedVisible(newArchivedVisible === "true" ? true : false);
-            }
-
-            if (newAutoAdd !== null) {
-                setAutoAdd(newAutoAdd === "true" ? true : false);
-            }
-
-            if (newSearchCount !== null) {
-                setSearchCount(parseInt(newSearchCount, 10));
-            }
-
-            if (newShowMissingArtwork !== null) {
-                setShowMissingArtwork(newShowMissingArtwork === "true" ? true : false);
-            }
-
-            if (newStillWatching !== null) {
-                setStillWatching(newStillWatching === "true" ? true : false);
-            }
-
-            if (newSourceFilter !== null) {
-                setSourceFilter(parseInt(newSourceFilter, 10));
-            }
-
-            if (newTypeFilter !== null) {
-                setTypeFilter(parseInt(newTypeFilter, 10));
-            }
-
-            if (newSortColumn !== null) {
-                setWatchListSortColumn(newSortColumn);
-            }
-
-            if (newSortDirection !== null) {
-                setWatchListSortDirection(newSortDirection);
-            }
-
-            if (isLoggedInCheckStarted) {
-                return;
-            }
-
-            const previousDemoMode = localStorage.getItem("watchlist_demomode");
-
-            if (previousDemoMode === "true") {
-                setDemoMode(true);
-
-                const newUserData = require("./demo/index").demoUser[0];
-
-                setUserData(newUserData);
-
-                setIsLoggedIn(true);
-
-                setActiveRoute("WatchList");
-
-                router.push("/WatchList");
-
-                setIsLoggedInCheckComplete(true);
-
-                return;
-            }
-
-            axios.get(`/api/IsLoggedIn`)
-                .then((res: typeof IUser) => {
+          axios.get(`/api/SignOut`)
+               .then((res: typeof IUser) => {
                     if (res.data[0] === "OK") {
-                        const newUserData = Object.assign({}, userData);
-                        newUserData.UserID = res.data[1].UserID;
-                        newUserData.Username = res.data[1].Username;
-                        newUserData.RealName = res.data[1].RealName;
-                        newUserData.Admin = res.data[1].Admin === 1 ? true : false;
-
-                        setUserData(newUserData);
-
-                        setIsLoggedIn(true);
-
-                        setActiveRoute("WatchList");
-
-                        setActiveRouteDisplayName("WatchList");
-
-                        router.push("/WatchList");
+                         signOutActions();
                     } else {
-                        if (res.data[1] === false) {
-                            router.push("/Setup");
-                        } else {
-                            router.push("/Login");
-                        }
-
-                        setIsLoggedIn(false);
-
-                        router.push("Login");
+                         alert(res.data[1]);
                     }
+               })
+               .catch((err: Error) => {
+                    alert(err.message);
+               });
+     };
+
+     const signOutActions = () => {
+          const newUserData = Object.assign({}, userData);
+          newUserData.UserID = "";
+          newUserData.Username = "";
+          newUserData.RealName = "";
+
+          setUserData(newUserData);
+
+          setIsLoggedIn(false);
+
+          setActiveRoute("");
+          setActiveRouteDisplayName("");
+          setIsAdding(false);
+          setIsEditing(false);
+          setIsLoggedIn(false);
+          setIsLoggedInCheckComplete(false);
+          setSearchTerm("");
+          setSourceFilter(-1);
+          setTypeFilter(-1);
+
+          setWatchList([]);
+          setWatchListLoadingStarted(false);
+          setWatchListLoadingComplete(false);
+
+          setWatchListItems([]);
+          setWatchListItemsLoadingStarted(false);
+          setWatchListLoadingComplete(false);
+
+          setWatchListSources([]);
+          setWatchListSourcesLoadingStarted(false);
+          setWatchListSourcesLoadingComplete(false);
+
+          setWatchListTypes([]);
+          setWatchListTypesLoadingStarted(false);
+          setWatchListTypesLoadingComplete(false);
+
+          setSettingsVisible(false);
+
+          localStorage.removeItem("watchlist_demomode")
+
+          setActiveRoute("Login");
+
+          router.push("/Login");
+     }
+
+     const validatePassword = (value: string) => {
+          // 1 lowercase alphabetical character, 1 uppercase alphabetical character, 1 numeric, 1 special char, 8 chars long minimum
+          const strongRegex = new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,})");
+
+          return strongRegex.test(value);
+     };
+
+     // Check if user is logged in already
+     useEffect(() => {
+          if (!isClientCheckComplete) {
+               return;
+          }
+
+          if (!isClient) {
+               return;
+          }
+
+          setIsLoggedInCheckStarted(true);
+
+          if (!isLoggedIn && !isLoggedInCheckStarted) {
+               const newArchivedVisible = localStorage.getItem("WatchList.ArchivedVisible");
+               const newAutoAdd = localStorage.getItem("WatchList.AutoAdd");
+               const newSearchCount = localStorage.getItem("WatchList.SearchCount");
+               const newStillWatching = localStorage.getItem("WatchList.StillWatching");
+               const newShowMissingArtwork = localStorage.getItem("WatchList.ShowMissingArtwork");
+               const newSourceFilter = localStorage.getItem("WatchList.SourceFilter");
+               const newTypeFilter = localStorage.getItem("WatchList.TypeFilter");
+               const newSortColumn = localStorage.getItem("WatchList.WatchListSortColumn");
+               const newSortDirection = localStorage.getItem("WatchList.WatchListSortDirection");
+               const newShowWatchListItems = localStorage.getItem("WatchList.ShowWatchListItems");
+
+               if (newArchivedVisible !== null) {
+                    setArchivedVisible(newArchivedVisible === "true" ? true : false);
+               }
+
+               if (newAutoAdd !== null) {
+                    setAutoAdd(newAutoAdd === "true" ? true : false);
+               }
+
+               if (newSearchCount !== null) {
+                    setSearchCount(parseInt(newSearchCount, 10));
+               }
+
+               if (newShowMissingArtwork !== null) {
+                    setShowMissingArtwork(newShowMissingArtwork === "true" ? true : false);
+               }
+
+               if (newStillWatching !== null) {
+                    setStillWatching(newStillWatching === "true" ? true : false);
+               }
+
+               if (newSourceFilter !== null) {
+                    setSourceFilter(parseInt(newSourceFilter, 10));
+               }
+
+               if (newTypeFilter !== null) {
+                    setTypeFilter(parseInt(newTypeFilter, 10));
+               }
+
+               if (newSortColumn !== null) {
+                    setWatchListSortColumn(newSortColumn);
+               }
+
+               if (newSortDirection !== null) {
+                    setWatchListSortDirection(newSortDirection);
+               }
+
+               if (newShowWatchListItems !== null) {
+                    setShowWatchListItems(newShowWatchListItems === "true" ? true : false);
+               }
+
+               if (isLoggedInCheckStarted) {
+                    return;
+               }
+
+               const previousDemoMode = localStorage.getItem("watchlist_demomode");
+
+               if (previousDemoMode === "true") {
+                    setDemoMode(true);
+
+                    const newUserData = require("./demo/index").demoUser[0];
+
+                    setUserData(newUserData);
+
+                    setIsLoggedIn(true);
+
+                    setActiveRoute("WatchList");
+
+                    router.push("/WatchList");
 
                     setIsLoggedInCheckComplete(true);
-                })
-                .catch((err: Error) => {
-                    alert(new Date().toTimeString() + ": Error when calling /IsLoggedIn with the error " + err.message);
-                    setIsLoggedInCheckComplete(true);
 
-                    router.push("/Login");
-                });
-        } else if (isLoggedIn) {
-            setIsLoggedInCheckComplete(true);
-        } else {
-            setIsLoggedInCheckComplete(true);
-        }
-    }, [isClient, isClientCheckComplete, isLoggedIn, isLoggedInCheckStarted, userData]);
+                    return;
+               }
 
-    // Get WatchList
-    useEffect(() => {
-        if (!isLoggedInCheck()) return;
+               axios.get(`/api/IsLoggedIn`)
+                    .then((res: typeof IUser) => {
+                         if (res.data[0] === "OK") {
+                              const newUserData = Object.assign({}, userData);
+                              newUserData.UserID = res.data[1].UserID;
+                              newUserData.Username = res.data[1].Username;
+                              newUserData.RealName = res.data[1].RealName;
+                              newUserData.Admin = res.data[1].Admin === 1 ? true : false;
 
-        if (demoMode) {
-            const demoWatchListPayload = require("./demo/index").demoWatchListPayload;
+                              setUserData(newUserData);
 
-            setWatchList(demoWatchListPayload);
-            setWatchListLoadingStarted(true);
-            setWatchListLoadingComplete(true);
+                              setIsLoggedIn(true);
 
-            return;
-        }
+                              setActiveRoute("WatchList");
 
-        if (!watchListLoadingStarted && !watchListLoadingComplete) {
-            setWatchListLoadingStarted(true);
+                              setActiveRouteDisplayName("WatchList");
 
-            axios.get(`/api/GetWatchList?SortColumn=${watchListSortColumn}&SortDirection=${watchListSortDirection}`, { withCredentials: true })
-                .then((res: typeof IWatchList) => {
-                    if (res.data[0] !== "OK") {
-                        alert("Failed to get WatchList with the error " + res.data[1]);
-                        setIsError(true);
-                        return;
-                    }
+                              router.push("/WatchList");
+                         } else {
+                              if (res.data[1] === false) {
+                                   router.push("/Setup");
+                              } else {
+                                   router.push("/Login");
+                              }
 
-                    setWatchList(res.data[1]);
-                    setWatchListLoadingComplete(true);
-                })
-                .catch((err: Error) => {
-                    alert("Failed to get WatchList with the error " + err.message);
-                    setIsError(true);
-                });
-        }
-    }, [isLoggedInCheck, isLoggedIn, userData, watchListLoadingStarted, watchListLoadingComplete, watchListSortColumn, watchListSortDirection]);
+                              setIsLoggedIn(false);
 
-    // Get WatchListItems
-    useEffect(() => {
-        if (!isLoggedInCheck()) return;
+                              router.push("Login");
+                         }
 
-        if (demoMode) {
-            const demoWatchListItemsPayload = require("./demo/index").demoWatchListItemsPayload;
+                         setIsLoggedInCheckComplete(true);
+                    })
+                    .catch((err: Error) => {
+                         alert(new Date().toTimeString() + ": Error when calling /IsLoggedIn with the error " + err.message);
+                         setIsLoggedInCheckComplete(true);
 
-            setWatchListItems(demoWatchListItemsPayload);
-            setWatchListItemsLoadingStarted(true);
-            setWatchListItemsLoadingComplete(true);
-
-            return;
-        }
-
-        if (watchListLoadingComplete && !watchListItemsLoadingStarted && !watchListItemsLoadingComplete) {
-            setWatchListItemsLoadingStarted(true);
-
-            axios.get(`/api/GetWatchListItems${Object.keys(watchListItemsSortColumns).includes(watchListSortColumn) ? `?SortColumn=${watchListSortColumn}&SortDirection=${watchListSortDirection}` : ``}`, { withCredentials: true })
-                .then((res: typeof IWatchListItem) => {
-                    if (res.data[0] !== "OK") {
-                        alert("Failed to get WatchList Items with the error " + res.data[1]);
-                        setIsError(true);
-                        return;
-                    }
-
-                    setWatchListItems(res.data[1]);
-                    setWatchListItemsLoadingComplete(true);
-                    setWatchListItemsSortingComplete(false);
-
-                    if (autoAdd && newWatchListItemDtlID !== null) {
-                        setActiveRoute(defaultRoute);
-                    }
-                })
-                .catch((err: Error) => {
-                    alert("Failed to get WatchList Items with the error " + err.message);
-
-                    setIsError(true);
-                });
-        }
-    }, [autoAdd, isLoggedInCheck, isLoggedInCheckComplete, isLoggedIn, newWatchListItemDtlID, watchListLoadingComplete, watchListItemsLoadingStarted, watchListItemsLoadingComplete, watchListItemsSortColumns, watchListSortColumn, watchListSortDirection]);
-
-    // Get WatchListSources
-    useEffect(() => {
-        if (!isLoggedInCheck()) return;
-
-        if (demoMode) {
-            const demoWatchListSourcesPayload = require("./demo/index").demoWatchListSources;
-
-            setWatchListSources(demoWatchListSourcesPayload);
-            setWatchListSourcesLoadingStarted(true);
-            setWatchListSourcesLoadingComplete(true);
-
-            return;
-        }
-
-        if (watchListItemsLoadingComplete && !watchListSourcesLoadingStarted && !watchListSourcesLoadingComplete) {
-            setWatchListSourcesLoadingStarted(true);
-
-            axios.get(`/api/GetWatchListSources`, { withCredentials: true })
-                .then((res: typeof IWatchListSource) => {
-                    if (res.data[0] !== "OK") {
-                        alert("Failed to get WatchList Sources with the error " + res.data[1]);
-                        setIsError(true);
-                        return;
-                    }
-
-                    const wls = res.data[1];
-
-                    wls.sort((a: typeof IWatchListSource, b: typeof IWatchListSource) => {
-                        const aName = a.WatchListSourceName;
-                        const bName = b.WatchListSourceName;
-
-                        return String(aName) > String(bName) ? 1 : -1;
+                         router.push("/Login");
                     });
+          } else if (isLoggedIn) {
+               setIsLoggedInCheckComplete(true);
+          } else {
+               setIsLoggedInCheckComplete(true);
+          }
+     }, [isClient, isClientCheckComplete, isLoggedIn, isLoggedInCheckStarted, userData]);
 
-                    setWatchListSources(wls);
-                    setWatchListSourcesLoadingComplete(true);
-                })
-                .catch((err: Error) => {
-                    alert("Failed to get WatchList Sources with the error " + err.message);
-                    setIsError(true);
-                });
-        }
-    }, [isLoggedInCheck, isLoggedInCheckComplete, isLoggedIn, watchListItemsLoadingComplete, watchListSourcesLoadingStarted, watchListSourcesLoadingComplete]);
+     // Get WatchList
+     useEffect(() => {
+          if (!isLoggedInCheck()) return;
 
-    // Get WatchListTypes
-    useEffect(() => {
-        if (!isLoggedInCheck()) return;
+          if (demoMode) {
+               const demoWatchListPayload = require("./demo/index").demoWatchListPayload;
 
-        if (demoMode) {
-            const demoWatchListTypesPayload = require("./demo/index").demoWatchListTypes;
+               setWatchList(demoWatchListPayload);
+               setWatchListLoadingStarted(true);
+               setWatchListLoadingComplete(true);
 
-            setWatchListTypes(demoWatchListTypesPayload);
-            setWatchListTypesLoadingStarted(true);
-            setWatchListTypesLoadingComplete(true);
+               return;
+          }
 
-            return;
-        }
+          if (!watchListLoadingStarted && !watchListLoadingComplete) {
+               setWatchListLoadingStarted(true);
 
-        if (watchListSourcesLoadingComplete && !watchListTypesLoadingStarted && !watchListTypesLoadingComplete) {
-            setWatchListTypesLoadingStarted(true);
+               axios.get(`/api/GetWatchList?SortColumn=${watchListSortColumn}&SortDirection=${watchListSortDirection}`, { withCredentials: true })
+                    .then((res: typeof IWatchList) => {
+                         if (res.data[0] !== "OK") {
+                              alert("Failed to get WatchList with the error " + res.data[1]);
+                              setIsError(true);
+                              return;
+                         }
 
-            axios.get(`/api/GetWatchListTypes`, { withCredentials: true })
-                .then((res: typeof IWatchListType) => {
-                    if (res.data[0] !== "OK") {
-                        alert("Failed to get WatchList Types with the error " + res.data[1]);
-                        setIsError(true);
-                        return;
-                    }
+                         setWatchList(res.data[1]);
+                         setWatchListLoadingComplete(true);
+                    })
+                    .catch((err: Error) => {
+                         alert("Failed to get WatchList with the error " + err.message);
+                         setIsError(true);
+                    });
+          }
+     }, [isLoggedInCheck, isLoggedIn, userData, watchListLoadingStarted, watchListLoadingComplete, watchListSortColumn, watchListSortDirection]);
 
-                    setWatchListTypes(res.data[1]);
-                    setWatchListTypesLoadingComplete(true);
-                })
-                .catch((err: Error) => {
-                    alert("Failed to get WatchList Types with the error " + err.message);
-                    setIsError(true);
-                });
-        }
-    }, [isLoggedInCheck, isLoggedInCheckComplete, isLoggedIn, watchListSourcesLoadingComplete, watchListTypesLoadingStarted, watchListTypesLoadingComplete]);
+     // Get WatchListItems
+     useEffect(() => {
+          if (!isLoggedInCheck()) return;
 
-    // Save preferences
-    useEffect(() => {
-        if (!isLoggedIn) {
-            return;
-        }
+          if (demoMode) {
+               const demoWatchListItemsPayload = require("./demo/index").demoWatchListItemsPayload;
 
-        localStorage.setItem("WatchList.ArchivedVisible", archivedVisible);
-        localStorage.setItem("WatchList.AutoAdd", autoAdd);
-        localStorage.setItem("WatchList.SearchCount", searchCount);
-        localStorage.setItem("WatchList.ShowMissingArtwork", showMissingArtwork);
-        localStorage.setItem("WatchList.SourceFilter", sourceFilter);
-        localStorage.setItem("WatchList.StillWatching", stillWatching);
-        localStorage.setItem("WatchList.TypeFilter", typeFilter);
-        localStorage.setItem("WatchList.WatchListSortColumn", watchListSortColumn);
-        localStorage.setItem("WatchList.WatchListSortDirection", watchListSortDirection);
+               setWatchListItems(demoWatchListItemsPayload);
+               setWatchListItemsLoadingStarted(true);
+               setWatchListItemsLoadingComplete(true);
 
-        setWatchListSortingComplete(false);
-        setWatchListItemsSortingComplete(false);
-    }, [archivedVisible, autoAdd, isLoggedIn, searchCount, showMissingArtwork, stillWatching, sourceFilter, typeFilter, watchListSortColumn, watchListSortDirection]);
+               return;
+          }
 
-    useEffect(() => {
-        const newIsClient = !window.location.href.endsWith("api-doc") && !window.location.href.endsWith("api-doc/") ? true : false;
+          if (watchListLoadingComplete && !watchListItemsLoadingStarted && !watchListItemsLoadingComplete) {
+               setWatchListItemsLoadingStarted(true);
 
-        setIsClient(newIsClient);
+               axios.get(`/api/GetWatchListItems${Object.keys(watchListItemsSortColumns).includes(watchListSortColumn) ? `?SortColumn=${watchListSortColumn}&SortDirection=${watchListSortDirection}` : ``}`, { withCredentials: true })
+                    .then((res: typeof IWatchListItem) => {
+                         if (res.data[0] !== "OK") {
+                              alert("Failed to get WatchList Items with the error " + res.data[1]);
+                              setIsError(true);
+                              return;
+                         }
 
-        setIsClientCheckComplete(true);
-    }, []);
+                         setWatchListItems(res.data[1]);
+                         setWatchListItemsLoadingComplete(true);
+                         setWatchListItemsSortingComplete(false);
 
-    const routeList = {
-        WatchList: {
-            Name: "WatchList",
-            DisplayName: "WatchList",
-            Path: "/WatchList",
-            Icon: WatchListIconComponent,
-            RequiresAuth: true
-        },
-        /*WatchListItems: {
-            Name: "WatchListItems",
-            DisplayName: "Items",
-            Path: "/WatchListItems",
-            Icon: WatchListItemsIconComponent,
-            RequiresAuth: true
-        },*/
-        WatchListStats: {
-            Name: "WatchListStats",
-            DisplayName: "Stats",
-            Path: "/WatchListStats",
-            Icon: StatsIconComponent,
-            RequiresAuth: true
-        },
-        AdminConsole: {
-            Name: "AdminConsole",
-            DisplayName: "Admin",
-            Path: "/Admin",
-            Icon: AdminConsoleIconComponent,
-            RequiresAuth: true
-        },
-        Login: {
-            Name: "Login",
-            DisplayName: "Login",
-            Path: "/Login",
-            RequiresAuth: false
-        }
-    };
+                         if (autoAdd && newWatchListItemDtlID !== null) {
+                              setActiveRoute(defaultRoute);
+                         }
+                    })
+                    .catch((err: Error) => {
+                         alert("Failed to get WatchList Items with the error " + err.message);
 
-    const dataContextProps = {
-        activeRoute: activeRoute,
-        activeRouteDisplayName: activeRouteDisplayName,
-        AddIconComponent: AddIconComponent,
-        admin: userData?.Admin,
-        archivedVisible: archivedVisible,
-        autoAdd: autoAdd,
-        BrokenImageIconComponent: BrokenImageIconComponent,
-        buildDate: buildDate,
-        CancelIconComponent: CancelIconComponent,
-        defaultRoute: defaultRoute,
-        demoMode: demoMode,
-        demoPassword: demoPassword,
-        demoUsername: demoUsername,
-        EditIconComponent: EditIconComponent,
-        generateRandomPassword: generateRandomPassword,
-        isAdding: isAdding,
-        isAdmin: isAdmin,
-	    isClient: isClient,
-        isEditing: isEditing,
-        isError: isError,
-        isLoggedIn: isLoggedIn,
-        isLoggedInCheckComplete: isLoggedInCheckComplete,
-        LogOutIconComponent: LogOutIconComponent,
-        newWatchListItemDtlID: newWatchListItemDtlID,
-        ratingMax: ratingMax,
-        routeList: routeList,
-        SaveIconComponent: SaveIconComponent,
-        searchCount: searchCount,
-        SearchIconComponent: SearchIconComponent,
-        searchTerm: searchTerm,
-        searchVisible: searchVisible,
-        setActiveRoute: setActiveRoute,
-        setActiveRouteDisplayName: setActiveRouteDisplayName,
-        setArchivedVisible: setArchivedVisible,
-        setAutoAdd: setAutoAdd,
-        setDemoMode: setDemoMode,
-        setIsAdding: setIsAdding,
-        setIsEditing: setIsEditing,
-        setIsError: setIsError,
-        setIsLoggedIn: setIsLoggedIn,
-        setIsLoggedInCheckComplete: setIsLoggedInCheckComplete,
-        setNewWatchListItemDtlID: setNewWatchListItemDtlID,
-        setSearchCount: setSearchCount,
-        setSearchTerm: setSearchTerm,
-        setSearchVisible: setSearchVisible,
-        setSettingsVisible: setSettingsVisible,
-        setShowMissingArtwork: setShowMissingArtwork,
-        setStillWatching: setStillWatching,
-        setSourceFilter: setSourceFilter,
-        SettingsIconComponent: SettingsIconComponent,
-        settingsVisible: settingsVisible,
-        setTypeFilter: setTypeFilter,
-        setUserData: setUserData,
-        setWatchList: setWatchList,
-        setWatchListItems: setWatchListItems,
-        setWatchListItemsLoadingStarted: setWatchListItemsLoadingStarted,
-        setWatchListItemsLoadingComplete: setWatchListItemsLoadingComplete,
-        setWatchListLoadingComplete: setWatchListLoadingComplete,
-        setWatchListLoadingStarted: setWatchListLoadingStarted,
-        setWatchListSortColumn: setWatchListSortColumn,
-        setWatchListSortDirection: setWatchListSortDirection,
-        setWatchListSortingComplete: setWatchListSortingComplete,
-        setWatchListItemsSortingComplete: setWatchListItemsSortingComplete,
-        setWatchListSources: setWatchListSources,
-        setWatchListSourcesLoadingStarted: setWatchListSourcesLoadingStarted,
-        setWatchListSourcesLoadingComplete: setWatchListSourcesLoadingComplete,
-        setWatchListTypes: setWatchListTypes,
-        setWatchListTypesLoadingStarted: setWatchListTypesLoadingStarted,
-        setWatchListTypesLoadingComplete: setWatchListTypesLoadingComplete,
-        showMissingArtwork: showMissingArtwork,
-        showSearch: showSearch,
-        showSettings: showSettings,
-        signOut: signOut,
-        sourceFilter: sourceFilter,
-        stillWatching: stillWatching,
-        typeFilter: typeFilter,
-        userData: userData,
-        validatePassword: validatePassword,
-        watchList: watchList,
-        watchListItems: watchListItems,
-        watchListItemsLoadingStarted: watchListItemsLoadingStarted,
-        watchListItemsLoadingComplete: watchListItemsLoadingComplete,
-        watchListItemsSortColumns: watchListItemsSortColumns,
-        watchListItemsSortingComplete: watchListItemsSortingComplete,
-        watchListLoadingComplete: watchListLoadingComplete,
-        watchListSortColumn: watchListSortColumn,
-        watchListSortColumns: watchListSortColumns,
-        watchListSortDirection: watchListSortDirection,
-        watchListSortingComplete: watchListSortingComplete,
-        watchListSources: watchListSources,
-        watchListSourcesLoadingComplete: watchListSourcesLoadingComplete,
-        watchListTypes: watchListTypes,
-        watchListTypesLoadingComplete: watchListTypesLoadingComplete,
-    };
+                         setIsError(true);
+                    });
+          }
+     }, [autoAdd, isLoggedInCheck, isLoggedInCheckComplete, isLoggedIn, newWatchListItemDtlID, watchListLoadingComplete, watchListItemsLoadingStarted, watchListItemsLoadingComplete, watchListItemsSortColumns, watchListSortColumn, watchListSortDirection]);
 
-    return (
-        <DataContext.Provider value={dataContextProps}>{children}</DataContext.Provider>
-    )
+     // Get WatchListSources
+     useEffect(() => {
+          if (!isLoggedInCheck()) return;
+
+          if (demoMode) {
+               const demoWatchListSourcesPayload = require("./demo/index").demoWatchListSources;
+
+               setWatchListSources(demoWatchListSourcesPayload);
+               setWatchListSourcesLoadingStarted(true);
+               setWatchListSourcesLoadingComplete(true);
+
+               return;
+          }
+
+          if (watchListItemsLoadingComplete && !watchListSourcesLoadingStarted && !watchListSourcesLoadingComplete) {
+               setWatchListSourcesLoadingStarted(true);
+
+               axios.get(`/api/GetWatchListSources`, { withCredentials: true })
+                    .then((res: typeof IWatchListSource) => {
+                         if (res.data[0] !== "OK") {
+                              alert("Failed to get WatchList Sources with the error " + res.data[1]);
+                              setIsError(true);
+                              return;
+                         }
+
+                         const wls = res.data[1];
+
+                         wls.sort((a: typeof IWatchListSource, b: typeof IWatchListSource) => {
+                              const aName = a.WatchListSourceName;
+                              const bName = b.WatchListSourceName;
+
+                              return String(aName) > String(bName) ? 1 : -1;
+                         });
+
+                         setWatchListSources(wls);
+                         setWatchListSourcesLoadingComplete(true);
+                    })
+                    .catch((err: Error) => {
+                         alert("Failed to get WatchList Sources with the error " + err.message);
+                         setIsError(true);
+                    });
+          }
+     }, [isLoggedInCheck, isLoggedInCheckComplete, isLoggedIn, watchListItemsLoadingComplete, watchListSourcesLoadingStarted, watchListSourcesLoadingComplete]);
+
+     // Get WatchListTypes
+     useEffect(() => {
+          if (!isLoggedInCheck()) return;
+
+          if (demoMode) {
+               const demoWatchListTypesPayload = require("./demo/index").demoWatchListTypes;
+
+               setWatchListTypes(demoWatchListTypesPayload);
+               setWatchListTypesLoadingStarted(true);
+               setWatchListTypesLoadingComplete(true);
+
+               return;
+          }
+
+          if (watchListSourcesLoadingComplete && !watchListTypesLoadingStarted && !watchListTypesLoadingComplete) {
+               setWatchListTypesLoadingStarted(true);
+
+               axios.get(`/api/GetWatchListTypes`, { withCredentials: true })
+                    .then((res: typeof IWatchListType) => {
+                         if (res.data[0] !== "OK") {
+                              alert("Failed to get WatchList Types with the error " + res.data[1]);
+                              setIsError(true);
+                              return;
+                         }
+
+                         setWatchListTypes(res.data[1]);
+                         setWatchListTypesLoadingComplete(true);
+                    })
+                    .catch((err: Error) => {
+                         alert("Failed to get WatchList Types with the error " + err.message);
+                         setIsError(true);
+                    });
+          }
+     }, [isLoggedInCheck, isLoggedInCheckComplete, isLoggedIn, watchListSourcesLoadingComplete, watchListTypesLoadingStarted, watchListTypesLoadingComplete]);
+
+     // Save preferences
+     useEffect(() => {
+          if (!isLoggedIn) {
+               return;
+          }
+
+          localStorage.setItem("WatchList.ArchivedVisible", archivedVisible);
+          localStorage.setItem("WatchList.AutoAdd", autoAdd);
+          localStorage.setItem("WatchList.SearchCount", searchCount);
+          localStorage.setItem("WatchList.ShowMissingArtwork", showMissingArtwork);
+          localStorage.setItem("WatchList.SourceFilter", sourceFilter);
+          localStorage.setItem("WatchList.StillWatching", stillWatching);
+          localStorage.setItem("WatchList.TypeFilter", typeFilter);
+          localStorage.setItem("WatchList.WatchListSortColumn", watchListSortColumn);
+          localStorage.setItem("WatchList.WatchListSortDirection", watchListSortDirection);
+          localStorage.setItem("WatchList.ShowWatchListItems", showWatchListItems);
+
+          setWatchListSortingComplete(false);
+          setWatchListItemsSortingComplete(false);
+     }, [archivedVisible, autoAdd, isLoggedIn, searchCount, showWatchListItems, showMissingArtwork, stillWatching, sourceFilter, typeFilter, watchListSortColumn, watchListSortDirection]);
+
+     useEffect(() => {
+          const newIsClient = !window.location.href.endsWith("api-doc") && !window.location.href.endsWith("api-doc/") ? true : false;
+
+          setIsClient(newIsClient);
+
+          setIsClientCheckComplete(true);
+     }, []);
+
+     const routeList = {
+          WatchList: {
+               Name: "WatchList",
+               DisplayName: "WatchList",
+               Path: "/WatchList",
+               Icon: WatchListIconComponent,
+               RequiresAuth: true
+          },
+          WatchListItems: {
+               Name: "WatchListItems",
+               DisplayName: "Items",
+               Path: "/WatchListItems",
+               Icon: WatchListItemsIconComponent,
+               RequiresAuth: true
+          },
+          WatchListStats: {
+               Name: "WatchListStats",
+               DisplayName: "Stats",
+               Path: "/WatchListStats",
+               Icon: StatsIconComponent,
+               RequiresAuth: true
+          },
+          AdminConsole: {
+               Name: "AdminConsole",
+               DisplayName: "Admin",
+               Path: "/Admin",
+               Icon: AdminConsoleIconComponent,
+               RequiresAuth: true
+          },
+          Login: {
+               Name: "Login",
+               DisplayName: "Login",
+               Path: "/Login",
+               RequiresAuth: false
+          }
+     };
+
+     const dataContextProps = {
+          activeRoute: activeRoute,
+          activeRouteDisplayName: activeRouteDisplayName,
+          AddIconComponent: AddIconComponent,
+          admin: userData?.Admin,
+          archivedVisible: archivedVisible,
+          autoAdd: autoAdd,
+          BrokenImageIconComponent: BrokenImageIconComponent,
+          buildDate: buildDate,
+          CancelIconComponent: CancelIconComponent,
+          defaultRoute: defaultRoute,
+          demoMode: demoMode,
+          demoPassword: demoPassword,
+          demoUsername: demoUsername,
+          EditIconComponent: EditIconComponent,
+          generateRandomPassword: generateRandomPassword,
+          isAdding: isAdding,
+          isAdmin: isAdmin,
+          isClient: isClient,
+          isEditing: isEditing,
+          isError: isError,
+          isLoggedIn: isLoggedIn,
+          isLoggedInCheckComplete: isLoggedInCheckComplete,
+          LogOutIconComponent: LogOutIconComponent,
+          newWatchListItemDtlID: newWatchListItemDtlID,
+          ratingMax: ratingMax,
+          RemoveIconComponent: RemoveIconComponent,
+          routeList: routeList,
+          SaveIconComponent: SaveIconComponent,
+          searchCount: searchCount,
+          SearchIconComponent: SearchIconComponent,
+          searchTerm: searchTerm,
+          searchVisible: searchVisible,
+          setActiveRoute: setActiveRoute,
+          setActiveRouteDisplayName: setActiveRouteDisplayName,
+          setArchivedVisible: setArchivedVisible,
+          setAutoAdd: setAutoAdd,
+          setDemoMode: setDemoMode,
+          setIsAdding: setIsAdding,
+          setIsEditing: setIsEditing,
+          setIsError: setIsError,
+          setIsLoggedIn: setIsLoggedIn,
+          setIsLoggedInCheckComplete: setIsLoggedInCheckComplete,
+          setNewWatchListItemDtlID: setNewWatchListItemDtlID,
+          setSearchCount: setSearchCount,
+          setSearchTerm: setSearchTerm,
+          setSearchVisible: setSearchVisible,
+          setSettingsVisible: setSettingsVisible,
+          setShowMissingArtwork: setShowMissingArtwork,
+          setStillWatching: setStillWatching,
+          setSourceFilter: setSourceFilter,
+          SettingsIconComponent: SettingsIconComponent,
+          settingsVisible: settingsVisible,
+          setShowWatchListItems: setShowWatchListItems,
+          setTypeFilter: setTypeFilter,
+          setUserData: setUserData,
+          setWatchList: setWatchList,
+          setWatchListItems: setWatchListItems,
+          setWatchListItemsLoadingStarted: setWatchListItemsLoadingStarted,
+          setWatchListItemsLoadingComplete: setWatchListItemsLoadingComplete,
+          setWatchListLoadingComplete: setWatchListLoadingComplete,
+          setWatchListLoadingStarted: setWatchListLoadingStarted,
+          setWatchListSortColumn: setWatchListSortColumn,
+          setWatchListSortDirection: setWatchListSortDirection,
+          setWatchListSortingComplete: setWatchListSortingComplete,
+          setWatchListItemsSortingComplete: setWatchListItemsSortingComplete,
+          setWatchListSources: setWatchListSources,
+          setWatchListSourcesLoadingStarted: setWatchListSourcesLoadingStarted,
+          setWatchListSourcesLoadingComplete: setWatchListSourcesLoadingComplete,
+          setWatchListTypes: setWatchListTypes,
+          setWatchListTypesLoadingStarted: setWatchListTypesLoadingStarted,
+          setWatchListTypesLoadingComplete: setWatchListTypesLoadingComplete,
+          showMissingArtwork: showMissingArtwork,
+          showSearch: showSearch,
+          showSettings: showSettings,
+          showWatchListItems: showWatchListItems,
+          signOut: signOut,
+          sourceFilter: sourceFilter,
+          stillWatching: stillWatching,
+          typeFilter: typeFilter,
+          userData: userData,
+          validatePassword: validatePassword,
+          watchList: watchList,
+          watchListItems: watchListItems,
+          watchListItemsLoadingStarted: watchListItemsLoadingStarted,
+          watchListItemsLoadingComplete: watchListItemsLoadingComplete,
+          watchListItemsSortColumns: watchListItemsSortColumns,
+          watchListItemsSortingComplete: watchListItemsSortingComplete,
+          watchListLoadingComplete: watchListLoadingComplete,
+          watchListSortColumn: watchListSortColumn,
+          watchListSortColumns: watchListSortColumns,
+          watchListSortDirection: watchListSortDirection,
+          watchListSortingComplete: watchListSortingComplete,
+          watchListSources: watchListSources,
+          watchListSourcesLoadingComplete: watchListSourcesLoadingComplete,
+          watchListTypes: watchListTypes,
+          watchListTypesLoadingComplete: watchListTypesLoadingComplete,
+     };
+
+     return (
+          <DataContext.Provider value={dataContextProps}>{children}</DataContext.Provider>
+     )
 }
 
 DataProvider.propTypes = {
-    children: PropTypes.any
+     children: PropTypes.any
 }
 
 export { DataContext, DataProvider };
+
+// TODO: Delete me if not used!!!!!!
+/*const getYear = (IMDB_JSON: string) => {
+     const obj = JSON.parse(IMDB_JSON);
+
+     if (typeof obj?.IMDB_JSON.Year !== "undefined") {
+          return obj?.IMDB_JSON.Year;
+     } else {
+          return null;
+     }
+}*/

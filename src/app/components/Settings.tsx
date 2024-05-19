@@ -20,12 +20,14 @@ const Settings = () => {
           setSearchTerm,
           setSettingsVisible,
           setShowMissingArtwork,
+          setShowWatchListItems,
           setSourceFilter,
           setStillWatching,
           setTypeFilter,
           setWatchListSortColumn,
           setWatchListSortDirection,
           showMissingArtwork,
+          showWatchListItems,
           signOut,
           sourceFilter,
           stillWatching,
@@ -59,17 +61,18 @@ const Settings = () => {
                     </span>
 
                     <ul className="menuContent">
-                         {(activeRoute === "WatchList" || activeRoute === "WatchListItems") && (
-                              <li>
-                                   <span className="firstItem">
-                                        <span>Search</span>
-                                   </span>
+                         <li>
+                              <span className="firstItem">
+                                   <span>Show WLI</span>
+                              </span>
 
-                                   <span>
-                                        <input type="text" className="inputStyle smallInputField" value={searchTerm} onChange={(event) => setSearchTerm(event.target.value)}></input>
-                                   </span>
-                              </li>
-                         )}
+                              <span title="Show WatchList Items">
+                                   <label className="switch">
+                                        <input type="checkbox" checked={showWatchListItems} onChange={(event) => setShowWatchListItems(event.target.checked)} />
+                                        <span className="slider round"></span>
+                                   </label>
+                              </span>
+                         </li>
 
                          {activeRoute === "WatchList" && archivedVisible === false && (
                               <li className="topMargin">

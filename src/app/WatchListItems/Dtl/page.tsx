@@ -33,6 +33,7 @@ export default function WatchListItemsDtl() {
           setNewWatchListItemDtlID,
           setWatchListItemsLoadingStarted,
           setWatchListItemsLoadingComplete,
+          showWatchListItems,
           watchListTypes
      } = useContext(DataContext) as DataContextType
 
@@ -91,7 +92,11 @@ export default function WatchListItemsDtl() {
                setWatchListItemsLoadingComplete(false);
           }
 
-          router.push("/WatchList");
+          if (showWatchListItems) {
+               router.push("/WatchListItems");
+          } else {
+               router.push("/WatchList");
+          }
      };
 
      const onIMDBPosterChangeHandler = async (URL: string) => {
@@ -282,7 +287,7 @@ export default function WatchListItemsDtl() {
      };
 
      useEffect(() => {
-          if (!watchListItemDtlLoadingStarted && !watchListItemDtlLoadingComplete && watchListItemDtlID !== null && watchListItemDtlID !== -1 && watchListItemDtl == null) {
+          if (!isAdding && !watchListItemDtlLoadingStarted && !watchListItemDtlLoadingComplete && watchListItemDtlID !== null && watchListItemDtlID !== -1 && watchListItemDtl == null) {
                setWatchListItemDtlLoadingStarted(true);
 
                if (demoMode) {
@@ -348,6 +353,20 @@ export default function WatchListItemsDtl() {
           }
      }, [recommendationName, recommendationType]);
 
+     const IMDB_JSON =  watchListItemDtl?.IMDB_JSON !== null && typeof watchListItemDtl?.IMDB_JSON !== "undefined" && watchListItemDtl?.IMDB_JSON !== "" ? JSON.parse(watchListItemDtl?.IMDB_JSON) : null;
+
+     const tooltip=IMDB_JSON &&
+     `Rated: ${IMDB_JSON.Rated}
+Year: ${IMDB_JSON.Year}
+Rated: ${IMDB_JSON.imdbRating}
+Genre: ${IMDB_JSON.Genre}
+Runtime: ${IMDB_JSON.Runtime}
+Release Date: ${IMDB_JSON.Released}
+Director: ${IMDB_JSON.Director}
+Plot: ${IMDB_JSON.Plot}
+${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSeasons}` : ""}
+     `;
+
      return (
           <div className="modal">
                <div className={`modal-content ${watchListItemDtlID != null ? "fade-in" : "fade-out"}`}>
@@ -406,11 +425,11 @@ export default function WatchListItemsDtl() {
                                         {!isAdding && !isEditing &&
                                              <>
                                                   {typeof watchListItemDtl?.IMDB_URL !== "undefined" &&
-                                                       <a className="text-label" href={watchListItemDtl?.IMDB_URL} target='_blank'>{watchListItemDtl?.WatchListItemName}</a>
+                                                       <a className="text-label" href={watchListItemDtl?.IMDB_URL} target='_blank' title={tooltip}>{watchListItemDtl?.WatchListItemName}</a>
                                                   }
 
                                                   {typeof watchListItemDtl?.IMDB_URL === "undefined" &&
-                                                       <div>
+                                                       <div title={tooltip}>
                                                             {watchListItemDtl?.WatchListItemName}
                                                        </div>
                                                   }
@@ -442,7 +461,7 @@ export default function WatchListItemsDtl() {
                                         }
 
                                         {isEditing &&
-                                             <select className="selectStyle selectWidth" value={watchListItemDtl.WatchListTypeID} onChange={(event) => watchListItemDetailChangeHandler("WatchListTypeID", event.target.value)}>
+                                             <select className="selectStyle selectWidth" value={watchListItemDtl?.WatchListTypeID} onChange={(event) => watchListItemDetailChangeHandler("WatchListTypeID", event.target.value)}>
                                                   <option value="-1">Please select</option>
 
                                                   {watchListTypes?.map((watchListType: typeof IWatchListType, index: number) => {

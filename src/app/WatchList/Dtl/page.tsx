@@ -36,6 +36,8 @@ export default function WatchListDetail() {
      const watchListDtlID = searchParams.get("WatchListID");
 
      const {
+          AddIconComponent,
+          RemoveIconComponent,
           BrokenImageIconComponent,
           CancelIconComponent,
           demoMode,
@@ -299,18 +301,13 @@ export default function WatchListDetail() {
                if (res.data[0] === "ERROR") {
                     alert(`The error ${res.data[1]} occurred while  adding the detail`);
                } else {
-                    //Update data
-                    // TODO: Delete if not needed
-                    //setWatchListDtlID(res.data[1]);
-
                     setIsAdding(false);
 
                     router.push("/WatchList");
                }
-          })
-               .catch((err: Error) => {
-                    alert(`The error ${err.message} occurred while adding the detail`);
-               });
+          }).catch((err: Error) => {
+               alert(`The error ${err.message} occurred while adding the detail`);
+          });
      };
 
      const startEditing = () => {
@@ -403,12 +400,11 @@ export default function WatchListDetail() {
                     } else {
                          setIsEditing(false);
                     }
-               })
-                    .catch((err: Error) => {
-                         if (!silent) {
-                              alert(`The error ${err.message} occurred while updating the detail`);
-                         }
-                    });
+               }).catch((err: Error) => {
+                    if (!silent) {
+                         alert(`The error ${err.message} occurred while updating the detail`);
+                    }
+               });
           } else {
                setIsEditing(false);
           }
@@ -448,10 +444,10 @@ export default function WatchListDetail() {
      };
 
      useEffect(() => {
-          if (!watchListDtlLoadingStarted && !watchListDtlLoadingComplete && watchListDtlID !== null && watchListDtlID !== -1 && !isNaN(watchListDtlID)) {
+          if (!isAdding && !watchListDtlLoadingStarted && !watchListDtlLoadingComplete && watchListDtlID !== null && watchListDtlID !== -1 && !isNaN(watchListDtlID)) {
                setWatchListDtlLoadingStarted(true);
 
-               if (demoMode) {
+               if (demoMode && watchListDtlID !== null) {
                     const demoWatchListPayload = require("../../demo/index").demoWatchListPayload;
 
                     const detailWatchList = demoWatchListPayload.filter((currentWatchList: typeof IWatchList) => {
@@ -486,8 +482,6 @@ export default function WatchListDetail() {
                                         wld[keyName] = "";
                                    }
                               });
-
-                              console.log(res.data)
 
                               setWatchListDtl(wld);
                               setWatchListDtlLoadingComplete(true);
@@ -573,6 +567,20 @@ export default function WatchListDetail() {
           }
      }, [recommendationName, recommendationType]);
 
+     const IMDB_JSON = watchListDtl?.WatchListItem?.IMDB_JSON !== null && typeof watchListDtl?.WatchListItem?.IMDB_JSON !== "undefined" ? JSON.parse(watchListDtl?.WatchListItem?.IMDB_JSON) : null;
+
+     const tooltip = IMDB_JSON &&
+          `Rated: ${IMDB_JSON.Rated} 
+Year: ${IMDB_JSON.Year}
+Rated: ${IMDB_JSON.imdbRating}
+Genre: ${IMDB_JSON.Genre}
+Runtime: ${IMDB_JSON.Runtime}
+Release Date: ${IMDB_JSON.Released}
+Director: ${IMDB_JSON.Director}
+Plot: ${IMDB_JSON.Plot}
+${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSeasons}` : ""}
+     `;
+
      return (
           <div className="modal foregroundColor">
                <div className={`modal-content ${watchListDtlID != null ? "fade-in" : "fade-out"}`}>
@@ -596,13 +604,13 @@ export default function WatchListDetail() {
                                    <div className="labelWidth card">
                                         {!isAdding && !isEditing &&
                                              <>
-                                                  {typeof watchListDtl?.WatchListItem.IMDB_URL !== "undefined" &&
-                                                       <a className="foregroundColor linkStyle text-label" href={watchListDtl?.WatchListItem.IMDB_URL} target='_blank'>{watchListDtl?.WatchListItem.WatchListItemName}</a>
+                                                  {typeof watchListDtl?.WatchListItem?.IMDB_URL !== "undefined" &&
+                                                       <a className="foregroundColor linkStyle text-label" href={watchListDtl?.WatchListItem?.IMDB_URL} target='_blank' title={tooltip}>{watchListDtl?.WatchListItem?.WatchListItemName}</a>
                                                   }
 
-                                                  {typeof watchListDtl?.WatchListItem.IMDB_URL === "undefined" &&
-                                                       <div>
-                                                            {watchListDtl?.WatchListItem.WatchListItemName}
+                                                  {typeof watchListDtl?.WatchListItem?.IMDB_URL === "undefined" &&
+                                                       <div title={tooltip}>
+                                                            {watchListDtl?.WatchListItem?.WatchListItemName}
                                                        </div>
                                                   }
 
@@ -634,7 +642,7 @@ export default function WatchListDetail() {
                                    <div className="narrow card">
                                         {!isAdding &&
                                              <>
-                                                  {watchListDtl?.WatchListItem?.IMDB_Poster !== null && watchListDtl?.IMDB_Poster_Error !== true && <Image className="poster-detail" width="175" height="200" alt="Image Not Available" src={watchListDtl?.WatchListItem.IMDB_Poster} onError={() => showDefaultSrc()} />}
+                                                  {watchListDtl?.WatchListItem?.IMDB_Poster !== null && watchListDtl?.IMDB_Poster_Error !== true && <Image className="poster-detail" width="175" height="200" alt="Image Not Available" src={watchListDtl?.WatchListItem?.IMDB_Poster} onError={() => showDefaultSrc()} />}
 
                                                   {(watchListDtl?.WatchListItem?.IMDB_Poster === null || watchListDtl?.IMDB_Poster_Error === true) && <>{BrokenImageIconComponent}</>}
                                              </>

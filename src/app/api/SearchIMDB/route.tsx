@@ -30,7 +30,7 @@ const https = require('https');
 export async function GET(request: NextRequest) {
      const searchParams = request.nextUrl.searchParams;
 
-     const searchCount = searchParams.get("SearchCount");
+     const searchCount = searchParams.get("SearchCount") !== null ? searchParams.get("SearchCount") : 10;
      const searchTerm = searchParams.get("SearchTerm");
 
      if (searchTerm === null) {

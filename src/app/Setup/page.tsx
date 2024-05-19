@@ -73,7 +73,9 @@ export default function Setup() {
                          alert("User account was NOT created. " + res.data[1]);
                     }
                })
-               .catch((err: Error) => { });
+               .catch((err: Error) => {
+                    alert("User account was NOT created. The error " + err.message + " occurred");
+               });
      };
 
      useEffect(() => {

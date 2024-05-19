@@ -30,6 +30,10 @@ module.exports = function (sequelize, DataTypes) {
                type: DataTypes.BOOLEAN,
                allowNull: true
           },
+          IMDB_JSON: {
+               type: DataTypes.BOOLEAN,
+               allowNull: true
+          },
      }, {
           sequelize,
           tableName: 'WatchListItems',

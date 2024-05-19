@@ -20,7 +20,8 @@ const Tabs = () => {
           isLoggedInCheckComplete,
           routeList,
           setActiveRoute,
-          setActiveRouteDisplayName
+          setActiveRouteDisplayName,
+          showWatchListItems
      } = useContext(DataContext) as DataContextType
 
      const router = useRouter();
@@ -72,7 +73,7 @@ const Tabs = () => {
                return;
           }
 
-          const newRoute = location.pathname !== "" && Object.keys(routeList).filter((routeName) => routeList[routeName].Path === location.pathname).length === 1
+          const newRoute = location.pathname !== "" && Object.keys(routeList).filter((routeName) => routeList[routeName].Path === location.pathname).length === 1 && (location.pathname !== "/WatchListItems" || (location.pathname === "/WatchListItems" && showWatchListItems))
                          ? location.pathname
                          : activeRoute !== "" && (activeRoute !== "Setup" || (activeRoute === "Setup" && !isLoggedIn))
                          ? activeRoute
@@ -98,7 +99,14 @@ const Tabs = () => {
                {isClient && isLoggedInCheckComplete && isLoggedIn && !isError && (
                     <div className="tabBar">
                          {Object.keys(routeList)
-                              .filter((routeName) => routeList[routeName].RequiresAuth === true && routeName !== "Setup" && routeName !== "SearchIMDB" && (routeName !== "AdminConsole" || (routeName === "AdminConsole" && admin === true)))
+                              .filter((routeName) => {
+                                   return routeList[routeName].RequiresAuth === true
+                                   && routeName !== "Setup"
+                                   && routeName !== "SearchIMDB"
+                                   && (routeName !== "AdminConsole" || (routeName === "AdminConsole" && admin === true))
+                                   && (routeName !== "WatchListItems" || (routeName ==="WatchListItems" && showWatchListItems === true))
+                              }
+                              )
                               .map((routeName, index) => {
                                    return (
                                         <span key={index} className="tab">

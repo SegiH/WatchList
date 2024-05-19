@@ -1,8 +1,3 @@
 BEFORE COMMITTING:
   make sure to remove db and config data before committing
   update build date
-
- Feature to located broken images is not visible since WLI is hidden
- Have way to find & fix missing images.
- Maybe add new column imdb id
- maybe useiserror if calling other non /get api endpoints

@@ -1,6 +1,5 @@
 import { NextRequest } from 'next/server';
-import { getModels } from "../lib";
-import { getUserID } from '../lib';
+import { getIMDBDetails, getModels } from "../lib";
 import WatchListItem from "../../../app/interfaces/IWatchListItem";
 
 /**
@@ -75,6 +74,22 @@ export async function PUT(request: NextRequest) {
                return Response.json(["ERROR-ALREADY-EXISTS", `The URL ${imdb_url} already exists with the name ${existingWatchListItem[0].WatchListItemName} and the ID ${existingWatchListItem[0].WatchListItemID}. It was NOT added!`]);
           }
 
+          let imdb_json: string | null = null;
+
+          if (imdb_url !== null && imdb_url.toString().indexOf("imdb.com/title/") !== -1) {
+               const urlSplit = imdb_url?.split("/");
+
+               if (urlSplit[2].toString().indexOf("imdb.com") !== -1 && urlSplit[3].toString() === "title") {
+                    const id = urlSplit[4].toString();
+
+                    const result = await getIMDBDetails(id);
+
+                    if (result[0] === "OK" && result[1][0] === "OK") {
+                         imdb_json = JSON.stringify(result[1][1]);
+                    }
+               }
+          }
+
           return await models.WatchListItems.create({
                WatchListItemName: name,
                WatchListTypeID: type,
@@ -82,6 +97,7 @@ export async function PUT(request: NextRequest) {
                IMDB_Poster: imdb_poster,
                ItemNotes: notes,
                Archived: 0,
+               IMDB_JSON: imdb_json
           }).then((result: WatchListItem) => {
                // Return ID of newly inserted row
                return Response.json(["OK", result.WatchListItemID]);

@@ -1,3 +1,5 @@
+const axios = require("axios");
+const https = require('https');
 const JSON5 = require('json5');
 const config = require("config");
 const sqlite3 = require('sqlite3').verbose();
@@ -134,6 +136,22 @@ export const encrypt = (plainText: string) => {
 
 export async function getDBFile() {
      return DBFile;
+}
+
+export async function getIMDBDetails(imdb_id: string) {
+     const detailsURL = `https://nodejs-shovav.replit.app//GetIMDBDetails?id=${imdb_id}`;
+
+          const agent = new https.Agent({
+               rejectUnauthorized: false
+          });
+
+          return await axios.get(detailsURL, { httpsAgent: agent })
+               .then((response: any) => {
+                    return (["OK", response.data]);
+               })
+               .catch((err: Error) => {
+                    return Response.json(["ERROR", err.message]);
+               });
 }
 
 export function getModels() {

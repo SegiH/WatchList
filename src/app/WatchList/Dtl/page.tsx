@@ -119,7 +119,7 @@ export default function WatchListDetail() {
                return;
           }
 
-          const watchListItem = watchListItems.filter((watchListItem: typeof IWatchListItem) => {
+          const watchListItem = watchListItems?.filter((watchListItem: typeof IWatchListItem) => {
                return watchListItem.WatchListItemName === event.target.innerText;
           });
 
@@ -428,7 +428,7 @@ export default function WatchListDetail() {
                          newWatchListDtl["WatchListItem"] = demoWatchListItem[0];
                     }
                } else {
-                    const watchListItem = watchListItems.filter((watchListItem: typeof IWatchListItem) => {
+                    const watchListItem = watchListItems?.filter((watchListItem: typeof IWatchListItem) => {
                          return String(watchListItem.WatchListItemID) === String(fieldValue);
                     });
 
@@ -511,7 +511,7 @@ export default function WatchListDetail() {
                const namesOnlyItems = watchListItems.map((watchListItem: typeof IWatchListItem) => {
                     let itemName = watchListItem.WatchListItemName
 
-                    if (watchListItems.filter((watchListItemDupe: typeof IWatchListItem) => {
+                    if (watchListItems?.filter((watchListItemDupe: typeof IWatchListItem) => {
                          return String(watchListItemDupe.WatchListItemName) === String(watchListItem.WatchListItemName);
                     }).length > 1) {
                          itemName += " (" + watchListItem.WatchListType.WatchListTypeName + ")"
@@ -527,7 +527,7 @@ export default function WatchListDetail() {
                const namesWithIdItems = watchListItems.map((watchListItem: typeof IWatchListItem) => {
                     let itemName = watchListItem.WatchListItemName
 
-                    if (watchListItems.filter((watchListItemDupe: typeof IWatchListItem) => {
+                    if (watchListItems?.filter((watchListItemDupe: typeof IWatchListItem) => {
                          return String(watchListItemDupe.WatchListItemName) === String(watchListItem.WatchListItemName);
                     }).length > 1) {
                          itemName += " (" + watchListItem.WatchListType.WatchListTypeName + ")"

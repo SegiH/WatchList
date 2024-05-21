@@ -83,6 +83,8 @@ export interface DataContextType {
      demoUsername: string;
      EditIconComponent: React.ReactNode;
      generateRandomPassword: () => void;
+     getDisplayName: (value: string) => string;
+     getPath: (value: string) => string;
      isAdding: boolean;
      isAdmin: () => boolean;
      isClient: boolean;
@@ -167,7 +169,7 @@ export interface DataContextType {
      watchListTypesLoadingComplete: boolean;
 }
 
-const buildDate = "05-19-24";
+const buildDate = "05-20-24";
 
 const DataProvider = ({ children }) => {
      const [activeRoute, setActiveRoute] = useState("");
@@ -309,7 +311,6 @@ const DataProvider = ({ children }) => {
 
           setIsLoggedIn(false);
 
-          setActiveRoute("");
           setActiveRouteDisplayName("");
           setIsAdding(false);
           setIsEditing(false);
@@ -660,6 +661,7 @@ const DataProvider = ({ children }) => {
           setWatchListItemsSortingComplete(false);
      }, [archivedVisible, autoAdd, isLoggedIn, searchCount, showWatchListItems, showMissingArtwork, stillWatching, sourceFilter, typeFilter, watchListSortColumn, watchListSortDirection]);
 
+     /* useEffect that does isClient check */
      useEffect(() => {
           const newIsClient = !window.location.href.endsWith("api-doc") && !window.location.href.endsWith("api-doc/") ? true : false;
 
@@ -667,6 +669,56 @@ const DataProvider = ({ children }) => {
 
           setIsClientCheckComplete(true);
      }, []);
+
+     /* useEffect that routes the current user */
+     useEffect(() => {
+          if (!isClient) {
+               return;
+          }
+
+          if (!isLoggedInCheckComplete) { // Tabs should never be rendered if the logged in check is not complete
+               return;
+          }
+
+          if (!isLoggedIn) { // Tabs should never be rendered if the user is not logged in
+               return;
+          }
+
+          let newRoute="";
+
+          if (!isLoggedIn) {
+               if (activeRoute === "Setup" || activeRoute === "Login") {
+                    newRoute = activeRoute;
+               } else {
+                    newRoute = "Login"
+               }
+          } else {
+               const currentPath = location.pathname !== "" ? location.pathname : "";
+
+               if (currentPath === routeList["Login"].Path && isLoggedIn) {
+                    newRoute = defaultRoute;
+               } else if (currentPath !== "" &&  Object.keys(routeList).filter((routeName) => routeList[routeName].Path === currentPath).length === 1 && (currentPath !== "/WatchListItems" || (currentPath === "/WatchListItems" && showWatchListItems))) {
+                    newRoute = currentPath.replace("/", "").replace("\\", "");
+               } else if (activeRoute !== "" && Object.keys(routeList).filter((routeName) => routeList[routeName].Name === activeRoute).length === 1 && (activeRoute !== "/WatchListItems" || (activeRoute === "/WatchListItems" && showWatchListItems))) {
+                    newRoute = activeRoute;
+               } else {
+                    newRoute = defaultRoute;
+               }
+          }
+
+          setActiveRoute(newRoute);
+
+          const path = getPath(newRoute);
+
+          router.push(path);
+
+          const displayName = getDisplayName(newRoute);
+
+          if (displayName !== "") {
+               setActiveRouteDisplayName(displayName);
+          }
+     }, [defaultRoute, isLoggedIn, isLoggedInCheckComplete]); // Do not add activeRoute, getDisplayName, routeList, setActiveRoute, setActiveRouteDisplayName to dependencies. Causes dtl to close when you click on edit
+
 
      const routeList = {
           WatchList: {
@@ -705,6 +757,27 @@ const DataProvider = ({ children }) => {
           }
      };
 
+     // These 2 methods reference routeList and have to be defined after routeList is defined
+     const getDisplayName = useCallback((routeName: string) => {
+          const matchingRoute = Object.keys(routeList).filter((currentRouteList) => routeList[currentRouteList].Name === routeName)
+
+          if (matchingRoute.length === 1) {
+               return routeList[matchingRoute[0]].DisplayName;
+          } else {
+               return "";
+          }
+     }, [routeList]);
+
+     const getPath = useCallback((routeName: string) => {
+          const matchingRoute = Object.keys(routeList).filter((currentRouteList) => routeList[currentRouteList].Name === routeName)
+
+          if (matchingRoute.length === 1) {
+               return routeList[matchingRoute[0]].Path;
+          } else {
+               return "";
+          }
+     }, [routeList]);
+
      const dataContextProps = {
           activeRoute: activeRoute,
           activeRouteDisplayName: activeRouteDisplayName,
@@ -721,6 +794,8 @@ const DataProvider = ({ children }) => {
           demoUsername: demoUsername,
           EditIconComponent: EditIconComponent,
           generateRandomPassword: generateRandomPassword,
+          getDisplayName: getDisplayName,
+          getPath: getPath,
           isAdding: isAdding,
           isAdmin: isAdmin,
           isClient: isClient,

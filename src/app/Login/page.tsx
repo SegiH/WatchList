@@ -115,6 +115,7 @@ export default function Login() {
 
                setUsername("");
                setPassword("");
+
                setActiveRoute(defaultRoute);
                setActiveRouteDisplayName(defaultRoute);
                setUserData(newUserData);

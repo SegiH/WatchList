@@ -63,23 +63,29 @@ Admin: If you are an administrator, you will have access to the admin section wh
 
 
 # Screenshots
+### Main WatchList
+![WatchList](https://github.com/SegiH/WatchList-NextJS/blob/main/screenshots/Watchlist.png?raw=true)
 
-![Search](https://github.com/SegiH/WatchList/blob/main/Web/screenshots/Search.jpg?raw=true)
+### View a WatchList record
+![View a WatchList](https://github.com/SegiH/WatchList-NextJS/blob/main/screenshots/WatchList-ViewItem.png?raw=true)
 
-![WatchList](https://github.com/SegiH/WatchList/blob/main/Web/screenshots/WatchList.jpg?raw=true)
+### Edit a WatchList record
+![WatchList Edit](https://github.com/SegiH/WatchList-NextJS/blob/main/screenshots/WatchList-EditItem.png?raw=true)
 
-![View a WatchList](https://github.com/SegiH/WatchList/blob/main/Web/screenshots/WatchList-ViewItem.jpg?raw=true)
+### Add a WatchList record
+![WatchList Add](https://github.com/SegiH/WatchList-NextJS/blob/main/screenshots/WatchList-AddItem.png?raw=true)
 
-![WatchList Edit](https://github.com/SegiH/WatchList/blob/main/Web/screenshots/WatchListItems-EditItem.jpg?raw=true)
+### Search
+![Search](https://github.com/SegiH/WatchList-NextJS/blob/main/screenshots/Search.png?raw=true)
 
-![WatchList Add](https://github.com/SegiH/WatchList/blob/main/Web/screenshots/WatchList-AddItem.jpg?raw=true)
+### Settings
+![Settings - WatchList](https://github.com/SegiH/WatchList-NextJS/blob/main/screenshots/Settings-WatchList.png?raw=true)
 
-![WatchList Stats](https://github.com/SegiH/WatchList/blob/main/Web/screenshots/Stats.jpg?raw=true)
+### Admin Console - Manage Users
+![Admin - Manage Users](https://github.com/SegiH/WatchList-NextJS/blob/main/screenshots/Admin-ManageUsers.png?raw=true)
 
-![Settings - WatchList](https://github.com/SegiH/WatchList/blob/main/Web/screenshots/Settings-WatchList.jpg?raw=true)
+### Admin Console - Manage Sources
+![Admin - Manage Sources](https://github.com/SegiH/WatchList-NextJS/blob/main/screenshots/Admin-ManageSources.png?raw=true)
 
-![Admin - Manage Users](https://github.com/SegiH/WatchList/blob/main/Web/screenshots/Admin-ManageUsers.jpg?raw=true)
-
-![Admin - Manage Sources](https://github.com/SegiH/WatchList/blob/main/Web/screenshots/Admin-ManageSources.jpg?raw=true)
-
-![Admin - Manage Types](https://github.com/SegiH/WatchList/blob/main/Web/screenshots/Admin-ManageTypes.jpg?raw=true)
+### Admin Console - Manage Types
+![Admin - Manage Types](https://github.com/SegiH/WatchList-NextJS/blob/main/screenshots/Admin-ManageTypes.png?raw=true)

@@ -36,8 +36,6 @@ export default function WatchListDetail() {
      const watchListDtlID = searchParams.get("WatchListID");
 
      const {
-          AddIconComponent,
-          RemoveIconComponent,
           BrokenImageIconComponent,
           CancelIconComponent,
           demoMode,

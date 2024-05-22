@@ -169,7 +169,7 @@ export interface DataContextType {
      watchListTypesLoadingComplete: boolean;
 }
 
-const buildDate = "05-20-24";
+const buildDate = "05-21-24";
 
 const DataProvider = ({ children }) => {
      const [activeRoute, setActiveRoute] = useState("");
@@ -684,7 +684,12 @@ const DataProvider = ({ children }) => {
                return;
           }
 
-          let newRoute="";
+          if (isError) {
+               router.push("/404");
+               return;
+          }
+
+          let newRoute = "";
 
           if (!isLoggedIn) {
                if (activeRoute === "Setup" || activeRoute === "Login") {
@@ -697,7 +702,7 @@ const DataProvider = ({ children }) => {
 
                if (currentPath === routeList["Login"].Path && isLoggedIn) {
                     newRoute = defaultRoute;
-               } else if (currentPath !== "" &&  Object.keys(routeList).filter((routeName) => routeList[routeName].Path === currentPath).length === 1 && (currentPath !== "/WatchListItems" || (currentPath === "/WatchListItems" && showWatchListItems))) {
+               } else if (currentPath !== "" && Object.keys(routeList).filter((routeName) => routeList[routeName].Path === currentPath).length === 1 && (currentPath !== "/WatchListItems" || (currentPath === "/WatchListItems" && showWatchListItems))) {
                     newRoute = currentPath.replace("/", "").replace("\\", "");
                } else if (activeRoute !== "" && Object.keys(routeList).filter((routeName) => routeList[routeName].Name === activeRoute).length === 1 && (activeRoute !== "/WatchListItems" || (activeRoute === "/WatchListItems" && showWatchListItems))) {
                     newRoute = activeRoute;
@@ -717,7 +722,7 @@ const DataProvider = ({ children }) => {
           if (displayName !== "") {
                setActiveRouteDisplayName(displayName);
           }
-     }, [defaultRoute, isLoggedIn, isLoggedInCheckComplete]); // Do not add activeRoute, getDisplayName, routeList, setActiveRoute, setActiveRouteDisplayName to dependencies. Causes dtl to close when you click on edit
+     }, [defaultRoute, isError, isLoggedIn, isLoggedInCheckComplete]); // Do not add activeRoute, getDisplayName, routeList, setActiveRoute, setActiveRouteDisplayName to dependencies. Causes dtl to close when you click on edit
 
 
      const routeList = {
@@ -889,14 +894,3 @@ DataProvider.propTypes = {
 }
 
 export { DataContext, DataProvider };
-
-// TODO: Delete me if not used!!!!!!
-/*const getYear = (IMDB_JSON: string) => {
-     const obj = JSON.parse(IMDB_JSON);
-
-     if (typeof obj?.IMDB_JSON.Year !== "undefined") {
-          return obj?.IMDB_JSON.Year;
-     } else {
-          return null;
-     }
-}*/

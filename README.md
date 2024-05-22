@@ -3,13 +3,11 @@ WatchList is a multi-user app that lets you track the movies and TV that you wat
 
 You can track how many times you watched something, where you watched it and when you watched it. You can also rate movies or shows and get recommendations based on the movie or show you are looking at.
 
-WatchList can be run as a web app. You can also run WatchList as a desktop application (Windows, Mac and Linux). Running WatchList as a desktop app is not currently working but will be fixed in a future release. 
-
 It is possible to search IMDB for a movie or TV show.
 
 WatchList uses a SQLite3 database to store your logged movie and TV shows.
 
-If you use Google Chrome, Watchlist can be run as a [Progressive Web Application](https://developer.mozilla.org/en-US/docs/Web/Progressive_web_apps) (PWA) where it runs on a desktop or mobile device and looks like a native application. See INSTALL.MD for details.
+WatchList can be run as a web app. If you use Google Chrome, you can also install WatchList as a desktop application by installing it as a [Progressive Web Application](https://developer.mozilla.org/en-US/docs/Web/Progressive_web_apps) (PWA) where it runs on a desktop or mobile device and looks like a native desktop application. See INSTALL.MD for details.
 
 # WatchList explanation
 
@@ -31,9 +29,6 @@ Sorting options are also available in the Settings icon.
 If you add a WatchList Item record for a movie or TV show and the image does not display, enable "Show WLI" in the Settings gear, click on Items, then click on Settings gear again and enable "Missing Images".
 
 When you click on the search icon, WatchList Items will be searched by default. If you want to search IMDB instead, click the IMDB checkbox.
-
-
-
 
 # Demo Mode
 You can test out WatchList in demo mode without any setup. Adding and saving is currently disabled in demo mode.

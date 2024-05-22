@@ -66,10 +66,6 @@ const SharedLayout = () => {
                          }
                     </>
                }
-
-               {isError &&
-                    <div className="foregroundColor"><img src="/404.jpg" alt="Uh oh. Something went wrong" /></div>
-               }
           </>
      )
 }

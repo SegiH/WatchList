@@ -38,32 +38,3 @@ export default function RootLayout({
           </html>
      )
 }
-
-/*const getDarkMode = () => {          
-          // We cannot directly access the DataContext here so we need to parse DataProvider
-          const dp = JSON.stringify(DataProvider.toString());
-          const darkModeStr = "const [darkMode, setDarkMode] = useState(";
-
-          const dmStartIndex = dp.indexOf(darkModeStr);
-
-          // TODO: Check if dmStartIndex = -1
-          const dmEndIndex = dp.indexOf(";", dmStartIndex + 1);
-
-          const dmStr = dp.substring(dmStartIndex, dmEndIndex - 1);
-
-          const nextStr = "useState(";
-
-          const nextIndex = dmStr.indexOf(nextStr);
-
-          // TODO: Check if nextIndex = -1
-
-          const dmValue = dmStr.substring(nextIndex + nextStr.length)
-
-          if (dmValue === "true") {
-               return true;
-          } else {
-               return false;
-          }
-     }
-
-     getDarkMode();*/

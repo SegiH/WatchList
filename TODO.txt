@@ -1,3 +1,4 @@
 BEFORE COMMITTING:
   make sure to remove db and config data before committing
   update build date
+  Test by simulating a new user

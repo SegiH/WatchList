@@ -2,6 +2,9 @@ const IWatchListSource = require("../interfaces/IWatchListSource");
 const IWatchListType = require("../interfaces/IWatchListType");
 const React = require("react");
 const useContext = require("react").useContext;
+const useEffect = require("react").useEffect;
+const useState = require("react").useState;
+
 import { DataContext, DataContextType } from "../data-context";
 
 const Settings = () => {
@@ -13,11 +16,9 @@ const Settings = () => {
           isLoggedIn,
           LogOutIconComponent,
           searchCount,
-          searchTerm,
           setArchivedVisible,
           setAutoAdd,
           setSearchCount,
-          setSearchTerm,
           setSettingsVisible,
           setShowMissingArtwork,
           setShowWatchListItems,
@@ -40,6 +41,8 @@ const Settings = () => {
           watchListTypes
      } = useContext(DataContext) as DataContextType
 
+     const [formattedBuildDate, setFormattedBuildDate] = useState("");
+
      const searchCountOptions: any = {
           "10 results": 10,
           "20 results": 20,
@@ -51,6 +54,14 @@ const Settings = () => {
      const closeDetail = async () => {
           setSettingsVisible(false);
      };
+
+     useEffect(() => {
+          const language = typeof navigator.languages != undefined ? navigator.languages[0] : "en-us";
+
+          const dateObj=new Date(buildDate);
+
+          setFormattedBuildDate(dateObj.toLocaleDateString(language))
+     }, []);
 
      return (
           <div className="modal">
@@ -268,7 +279,7 @@ const Settings = () => {
                     </ul>
 
                     <span>
-                         <span className="rightAligned small-text">Build Date: {buildDate}</span>
+                         <span className="rightAligned small-text">Build Date: {formattedBuildDate}</span>
                     </span>
                </div>
           </div>

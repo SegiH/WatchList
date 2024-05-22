@@ -23,14 +23,12 @@ WatchList can be set up to run as a regular web application or a Progressive Web
 1. Edit docker-compose.yml and update the network name to match your Docker network. You can create a docker network if you haven't done so already with the command `docker network create YourNetworkName`.
 1. Build the Docker container: `docker-compose up -d`.
 
-## PWA Files
-1. If you want use WatchList as a PWA, make sure you should have the following files/folders in the build folder. If any of these files or folders are missing copy them from the public folder:
-   - assets
-   - favicon.ico
-   - manifest.json
-   - maskable.png
-   - service-worker.js
-1. After update WatchList, clear the browser cache in Google Chrome.
+## Progressive Web Application (PWA).
+WatchList can be used as a desktop application by installing it as a PWA.
+
+Google Chrome: Click on the icon that looks like a monitor with a down arrow in it in the right side of the address bar.
+Microsoft Edge: Click on the L shape with a plus in it in the right side of the address bar.
+Mozilla Firefox: Firefox does not support PWAs and you will need to use one of the 2 browsers mentioned above to install WatchList as a PWA.
 
 ## Build WatchList Desktop app using Electron
 1. Build the web app using the instructions above.

@@ -107,8 +107,17 @@ export default function WatchList() {
                                    &&
                                    (searchTerm === "" || (searchTerm !== "" && currentWatchList?.WatchListItemName.toLowerCase().includes(searchTerm)))
                                    &&
-                                   //((stillWatching === false && (currentWatchList?.EndDate !== null || (currentWatchList?.EndDate === null && currentWatchList?.Archived === 1))) || (stillWatching == true && currentWatchList?.EndDate === null && currentWatchList?.Archived === archivedVisible))
-                                   ((stillWatching === false && currentWatchList?.EndDate !== null) || (currentWatchList?.EndDate === null && (currentWatchList?.Archived === 1 && archivedVisible === true) || (currentWatchList?.Archived === 0 && archivedVisible === false)))
+                                   (
+                                        (stillWatching === false && currentWatchList?.EndDate !== null) 
+                                        || 
+                                             (currentWatchList?.EndDate === null 
+                                             && (
+                                                  (currentWatchList?.Archived === 1 && archivedVisible === true) 
+                                                  ||
+                                                  (currentWatchList?.Archived === 0 && archivedVisible === false)
+                                                )
+                                             )
+                                   )
                                    &&
                                    (sourceFilter === -1 || sourceFilter === null || (sourceFilter !== -1 && sourceFilter !== null && String(currentWatchList?.WatchListSourceID) === String(sourceFilter)))
                                    &&

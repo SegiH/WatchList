@@ -28,8 +28,8 @@ export default function Login() {
           setUserData
      } = useContext(DataContext) as DataContextType
 
-     const [password, setPassword] = useState("qweQWE123!@#"); // TODO: Delete me later!
-     const [username, setUsername] = useState("Joe");
+     const [password, setPassword] = useState(""); // TODO: Delete me later!
+     const [username, setUsername] = useState("");
      const [loginSubmitted, setLoginSubmitted] = useState(false);
 
      const router = useRouter();

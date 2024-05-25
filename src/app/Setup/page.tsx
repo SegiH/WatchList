@@ -22,10 +22,10 @@ export default function Setup() {
 
      const router = useRouter();
 
-     const [confirmPassword, setConfirmPassword] = useState("qweQWE123!@#");
-     const [password, setPassword] = useState("qweQWE123!@#");
-     const [realname, setRealname] = useState("Joe");
-     const [username, setUsername] = useState("Joe");
+     const [confirmPassword, setConfirmPassword] = useState("");
+     const [password, setPassword] = useState("");
+     const [realname, setRealname] = useState("");
+     const [username, setUsername] = useState("");
      const [submitClicked, setSubmitClicked] = useState(false);
 
      const handleKeyUp = (event: React.KeyboardEvent<HTMLDivElement>) => {

@@ -65,7 +65,7 @@ const Settings = () => {
 
           const dateObj = new Date(buildDate);
 
-          const options = {
+          const options: Intl.DateTimeFormatOptions = {
                year: '2-digit',
                month: '2-digit',
                day: '2-digit',

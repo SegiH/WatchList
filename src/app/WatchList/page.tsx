@@ -108,9 +108,9 @@ export default function WatchList() {
                                    (searchTerm === "" || (searchTerm !== "" && currentWatchList?.WatchListItemName.toLowerCase().includes(searchTerm)))
                                    &&
                                    (
-                                        (stillWatching === false && currentWatchList?.EndDate !== null) 
+                                        (stillWatching === false && currentWatchList?.EndDate !== null)
                                         || 
-                                             (currentWatchList?.EndDate === null 
+                                             (stillWatching === true && currentWatchList?.EndDate === null
                                              && (
                                                   (currentWatchList?.Archived === 1 && archivedVisible === true) 
                                                   ||

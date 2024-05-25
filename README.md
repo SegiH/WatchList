@@ -7,28 +7,36 @@ It is possible to search IMDB for a movie or TV show.
 
 WatchList uses a SQLite3 database to store your logged movie and TV shows.
 
-WatchList can be run as a web app. If you use Google Chrome, you can also install WatchList as a desktop application by installing it as a [Progressive Web Application](https://developer.mozilla.org/en-US/docs/Web/Progressive_web_apps) (PWA) where it runs on a desktop or mobile device and looks like a native desktop application. See INSTALL.MD for details.
+WatchList can be run as a web app. If you use Google Chrome or Edge, you can also install WatchList as a desktop application by installing it as a [Progressive Web Application](https://developer.mozilla.org/en-US/docs/Web/Progressive_web_apps) (PWA) where it runs on a desktop or mobile device and looks like a native desktop application. See INSTALL.MD for details.
+
+Docker is also supported. See INSTALL.MD for details.
 
 # WatchList explanation
 
 WatchList - WatchList is used to refer to the log that you add to record a movie or TV show that you have watched. You would usually add the date you started watching it, when you finished watching it, where you watched it and your rating of the movie/show.
 
-WatchList Item - The record of the movie or TV show. You would only add a WatchListItem once to add a movie/tv show or special. The WatchListItem includes information like the name of the movie/show, type (movie/TV show/special), link to IMDB and image from IMDB. By default WatchList Items are hidden and you only see WatchList which shows what you have watched. You can show WatchList items by clicking on the Settings gear and enabling "Show WLI"
+WatchList Item - The record of the movie or TV show. You would only add a WatchListItem once to add a specific movie/tv show or special. The WatchListItem includes information like the name of the movie/show, type (movie/TV show/special), link to IMDB and image from IMDB. By default WatchList Items are hidden and you only see WatchList which shows what you have watched. You can show WatchList items by clicking on the Settings gear and enabling "Show WLI"
 
 # Tips
-When you add a WatchList, if you do not enter an end date, WatchList will consider that record to be "still watching". Yoou can hide or show what you are still watching by clicking on the Settings Gear and turn on "Still Watching".
+There are different options available in Settings. Some of options are only available in certain tabs.
 
-If you add a WatchList record and decide not to continue watching the movie or TV show, you can archive that WatchList record. The WatchList record will not be visible any more in WatcHList. If you want to find it again, click on the Settings gear and enabling the "Archived" option to show archived WatchList records.
+Show WLI - When you add a movie or show, it will be added as a WatchList Item record. The WatchList Item is hidden by default but can be show by enabling this toggle.
 
-You can filter WatchList by the source where you watched the movie or show at (lke Netflix, Amazon etc) by clicking on the Settings and selecting from the Source dropdown.
+Still Watching - When you add a WatchList, if you do not enter an end date, WatchList will consider that record to be "still watching" whih means that you are still watching that movie/show. When "Still Watching" is enabled, you will only see movies or shows that do not have an end date. Turn this off to see everything that you have already watched. This is available in the WatchList tab
 
-You can also filter by Type by clicking on the Settings and selecting from the Type dropdown.
+Archived - If you add a WatchList record and decide not to continue watching the movie or TV show, you can archive that WatchList record. The WatchList record will not be visible any more in WatchList. If you want to find it again, enable the "Archived" toggle.
 
-Sorting options are also available in the Settings icon.
+Auto Add - After you add a WatchListItem, if you want to immediately add a WatchList record to record when you watched a movie or show, enable this feature. If it is off, you will need to click on the plus sign in WatchList to add a new record.
 
-If you add a WatchList Item record for a movie or TV show and the image does not display, enable "Show WLI" in the Settings gear, click on Items, then click on Settings gear again and enable "Missing Images".
+Missing Images - If you add a WatchList Item record for a movie or TV show and the image does not display, enable "Show WLI", click on Items, then enable "Missing Images" to see WatchListItems with missing images.
 
-When you click on the search icon, WatchList Items will be searched by default. If you want to search IMDB instead, click the IMDB checkbox.
+Source - You can filter WatchList by the source where you watched the movie or show at (lke Netflix, Amazon etc) by clicking on the Settings and selecting from the Source dropdown.
+
+Type - You can also filter by Type by clicking on the Settings and selecting from the Type dropdown.
+
+Sort By - Sort WatchList or WatchList items
+
+Sort Order - Sort direction which is ascending or descending
 
 # Demo Mode
 You can test out WatchList in demo mode without any setup. Adding and saving is currently disabled in demo mode.

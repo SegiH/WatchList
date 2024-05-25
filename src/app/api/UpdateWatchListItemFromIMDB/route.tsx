@@ -1,5 +1,5 @@
 import { NextRequest } from 'next/server';
-import { getIMDBDetails, getModels } from "../lib";
+import { execSelect, execUpdateDelete, getIMDBDetails } from "../lib";
 import WatchListItem from "../../interfaces/IWatchListItem";
 
 /**
@@ -19,7 +19,7 @@ import WatchListItem from "../../interfaces/IWatchListItem";
  *                  type: string
  *           - name: ConfirmUpdate
  *             in: query
- *             description: If WatchListItemID was not provided, all items are updated. ConfirmUpdate=true must be provided to confirm that you want to update all items because each WatcHListItems' IMDB ID is used to make an IP call
+ *             description: If WatchListItemID was not provided, all items are updated. ConfirmUpdate=true must be provided to confirm that you want to update all items because each WatchListItems' IMDB ID is used to make an IP call
  *             required: false
  *             schema:
  *                  type: string
@@ -49,15 +49,8 @@ export async function GET(request: NextRequest) {
           return Response.json(["ERROR", `/UpdateWatchListItemsFromIMDB: WatchListItemID is not a number`]);
      }
 
-     const models = getModels();
-
      // Get all WatchListItems
-     const wli = await models.WatchListItems.findAll({
-     }).then((results: WatchListItem) => {
-          return results;
-     }).catch(function (err: Error) {
-          return Response.json(["ERROR", `/UpdateWatchListItemsFromIMDB: The error ${JSON.stringify(err)} occurred getting the WatchList Items`]);
-     });
+     const wli = await execSelect("SELECT * FROM WatchListItems", []);
 
      if (watchListItemID !== null) {
           // Validate the WatchListItem ID
@@ -71,7 +64,7 @@ export async function GET(request: NextRequest) {
      }
      const errorResults: any = [];
 
-     for (let i = 0; i< wli.length; i++) {
+     for (let i = 0; i < wli.length; i++) {
           if (watchListItemID !== null && wli[i].WatchListItemID.toString() !== watchListItemID.toString()) {
                continue;
           }
@@ -98,24 +91,17 @@ export async function GET(request: NextRequest) {
           const result = await getIMDBDetails(id);
 
           if (result[0] === "OK" && result[1][0] === "OK") {
-               const updateColumns: any = {};
+               const values: any = [JSON.stringify(result[1][1]), watchListItemID];
 
-               updateColumns['IMDB_JSON'] = JSON.stringify(result[1][1]);
+               const SQL = "UPDATE WatchListItems SET IMDB_JSON=? WHERE WatchListItemID=?";
 
-               const updatedRowCount = await models.WatchListItems.update(
-                    updateColumns
-                    , {
-                         where: { WatchListItemID: wli[i].WatchListItemID }
-                    }).catch(function (e: Error) {
-                         const errorMsg = `/UpdateAllFromIMDB: The error ${e.message} occurred while updating WatchList Item with ID ${wli[i].WatchListItemID}`;
-                         return Response.json(["ERROR", errorMsg]);
-                    });
-
-               if (updatedRowCount !== 1) {
-                    errorResults.push([`An error occurred updating ${wli[i].WatchListItemID}. 0 rows were updated when updating it with the IMDB JSON`])
+               try {
+                    await execUpdateDelete(SQL, [values])
+               } catch (e) {
+                    return Response.json(["ERROR", `/UpdateWatchListItemFromIMDB: The error occurred updating the WatchList Item with ID ${watchListItemID} with the error ${e.message}`]);
                }
           } else {
-               errorResults.push([`An error occurred updating ${wli[i].WatchListItemID}. 0 rows were updated when updating it with the IMDB JSON`])
+               errorResults.push([`/UpdateWatchListItemFromIMDB: An error occurred updating ${watchListItemID}. Unable to get IMDB detail`])
           }
      }
 

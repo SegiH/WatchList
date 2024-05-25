@@ -93,7 +93,6 @@ export interface DataContextType {
      isLoggedIn: boolean;
      isLoggedInCheckComplete: boolean;
      LogOutIconComponent: React.ReactNode;
-     newWatchListItemDtlID: number;
      ratingMax: number;
      RemoveIconComponent: React.ReactNode;
      routeList: typeof IRoute;
@@ -113,7 +112,6 @@ export interface DataContextType {
      setIsLoggedIn: (value: boolean) => void;
      setIsLoggedInCheckComplete: (value: boolean) => void;
      setShowMissingArtwork: (value: boolean) => void;
-     setNewWatchListItemDtlID: (value: number | null) => void;
      setSearchCount: (value: number) => void;
      setSearchTerm: (value: string) => void;
      setSearchVisible: (value: boolean) => void;
@@ -169,13 +167,13 @@ export interface DataContextType {
      watchListTypesLoadingComplete: boolean;
 }
 
-const buildDate = "05-21-24";
+const buildDate = "05-24-24";
 
 const DataProvider = ({ children }) => {
      const [activeRoute, setActiveRoute] = useState("");
      const [activeRouteDisplayName, setActiveRouteDisplayName] = useState("");
      const [archivedVisible, setArchivedVisible] = useState(false);
-     const [autoAdd, setAutoAdd] = useState(false);
+     const [autoAdd, setAutoAdd] = useState(true);
      const [demoMode, setDemoMode] = useState(false);
      const [isAdding, setIsAdding] = useState(false);
      const [isClient, setIsClient] = useState(false);
@@ -205,8 +203,6 @@ const DataProvider = ({ children }) => {
      const [watchListItemsLoadingStarted, setWatchListItemsLoadingStarted] = useState(false);
      const [watchListItemsLoadingComplete, setWatchListItemsLoadingComplete] = useState(false);
      const [watchListItemsSortingComplete, setWatchListItemsSortingComplete] = useState(false);
-
-     const [newWatchListItemDtlID, setNewWatchListItemDtlID] = useState(null); // After adding a new WLI, This will hold the new ID so it can be passed to WatchList and add a new record based on this WLI ID
 
      const [watchListSources, setWatchListSources] = useState([]);
      const [watchListSourcesLoadingStarted, setWatchListSourcesLoadingStarted] = useState(false);
@@ -425,13 +421,14 @@ const DataProvider = ({ children }) => {
                if (previousDemoMode === "true") {
                     setDemoMode(true);
 
-                    const newUserData = require("./demo/index").demoUser[0];
+                    const newUserData = require("./demo/index").demoUsers[0];
 
                     setUserData(newUserData);
 
                     setIsLoggedIn(true);
 
                     setActiveRoute("WatchList");
+                    setActiveRouteDisplayName("WatchList");
 
                     router.push("/WatchList");
 
@@ -454,20 +451,27 @@ const DataProvider = ({ children }) => {
                               setIsLoggedIn(true);
 
                               setActiveRoute("WatchList");
-
                               setActiveRouteDisplayName("WatchList");
 
                               router.push("/WatchList");
                          } else {
                               if (res.data[1] === false) {
+                                   setActiveRoute("Setup");
+                                   setActiveRouteDisplayName("Setup");
                                    router.push("/Setup");
-                              } else {
-                                   router.push("/Login");
+                                   return;
+                              } else if (res.data[1] !== null && res.data[1] !== "") {
+                                   alert(res.data[1]);
+                                   router.push("/404");
+                                   return;
                               }
 
                               setIsLoggedIn(false);
 
-                              router.push("Login");
+                              setActiveRoute("Login");
+                              setActiveRouteDisplayName("Login");
+
+                              router.push("/Login");
                          }
 
                          setIsLoggedInCheckComplete(true);
@@ -548,10 +552,6 @@ const DataProvider = ({ children }) => {
                          setWatchListItems(res.data[1]);
                          setWatchListItemsLoadingComplete(true);
                          setWatchListItemsSortingComplete(false);
-
-                         if (autoAdd && newWatchListItemDtlID !== null) {
-                              setActiveRoute(defaultRoute);
-                         }
                     })
                     .catch((err: Error) => {
                          alert("Failed to get WatchList Items with the error " + err.message);
@@ -559,7 +559,7 @@ const DataProvider = ({ children }) => {
                          setIsError(true);
                     });
           }
-     }, [autoAdd, isLoggedInCheck, isLoggedInCheckComplete, isLoggedIn, newWatchListItemDtlID, watchListLoadingComplete, watchListItemsLoadingStarted, watchListItemsLoadingComplete, watchListItemsSortColumns, watchListSortColumn, watchListSortDirection]);
+     }, [autoAdd, isLoggedInCheck, isLoggedInCheckComplete, isLoggedIn, watchListLoadingComplete, watchListItemsLoadingStarted, watchListItemsLoadingComplete, watchListItemsSortColumns, watchListSortColumn, watchListSortDirection]);
 
      // Get WatchListSources
      useEffect(() => {
@@ -680,7 +680,7 @@ const DataProvider = ({ children }) => {
                return;
           }
 
-          if (!isLoggedIn) { // Tabs should never be rendered if the user is not logged in
+          if (!isLoggedIn && activeRoute !== "Login" && activeRoute !==" Setup") { // Tabs should never be rendered if the user is not logged in
                return;
           }
 
@@ -695,7 +695,7 @@ const DataProvider = ({ children }) => {
                if (activeRoute === "Setup" || activeRoute === "Login") {
                     newRoute = activeRoute;
                } else {
-                    newRoute = "Login"
+                    newRoute = "Login";
                }
           } else {
                const currentPath = location.pathname !== "" ? location.pathname : "";
@@ -809,7 +809,6 @@ const DataProvider = ({ children }) => {
           isLoggedIn: isLoggedIn,
           isLoggedInCheckComplete: isLoggedInCheckComplete,
           LogOutIconComponent: LogOutIconComponent,
-          newWatchListItemDtlID: newWatchListItemDtlID,
           ratingMax: ratingMax,
           RemoveIconComponent: RemoveIconComponent,
           routeList: routeList,
@@ -828,7 +827,6 @@ const DataProvider = ({ children }) => {
           setIsError: setIsError,
           setIsLoggedIn: setIsLoggedIn,
           setIsLoggedInCheckComplete: setIsLoggedInCheckComplete,
-          setNewWatchListItemDtlID: setNewWatchListItemDtlID,
           setSearchCount: setSearchCount,
           setSearchTerm: setSearchTerm,
           setSearchVisible: setSearchVisible,

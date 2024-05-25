@@ -3,6 +3,7 @@ const IWatchListType = require("../interfaces/IWatchListType");
 const React = require("react");
 const useContext = require("react").useContext;
 const useEffect = require("react").useEffect;
+const useRouter = require("next/navigation").useRouter;
 const useState = require("react").useState;
 
 import { DataContext, DataContextType } from "../data-context";
@@ -15,10 +16,10 @@ const Settings = () => {
           buildDate,
           isLoggedIn,
           LogOutIconComponent,
-          searchCount,
+          setActiveRoute,
+          setActiveRouteDisplayName,
           setArchivedVisible,
           setAutoAdd,
-          setSearchCount,
           setSettingsVisible,
           setShowMissingArtwork,
           setShowWatchListItems,
@@ -43,17 +44,21 @@ const Settings = () => {
 
      const [formattedBuildDate, setFormattedBuildDate] = useState("");
 
-     const searchCountOptions: any = {
-          "10 results": 10,
-          "20 results": 20,
-          "30 results": 30,
-          "40 results": 40,
-          "50 results": 50
-     };
+     const router = useRouter();
 
      const closeDetail = async () => {
           setSettingsVisible(false);
      };
+
+     const setShowWatchListItemsClickHandler = async (checked: boolean) => {
+          setShowWatchListItems(checked);
+
+          if (checked === false && activeRoute === "WatchListItems") {
+               setActiveRoute("WatchList");
+               setActiveRouteDisplayName("WatchList");
+               router.push("/WatchList");
+          }
+     }
 
      useEffect(() => {
           const language = typeof navigator.languages != undefined ? navigator.languages[0] : "en-us";
@@ -79,7 +84,7 @@ const Settings = () => {
 
                               <span title="Show WatchList Items">
                                    <label className="switch">
-                                        <input type="checkbox" checked={showWatchListItems} onChange={(event) => setShowWatchListItems(event.target.checked)} />
+                                        <input type="checkbox" checked={showWatchListItems} onChange={(event) => setShowWatchListItemsClickHandler(event.target.checked)} />
                                         <span className="slider round"></span>
                                    </label>
                               </span>
@@ -120,7 +125,7 @@ const Settings = () => {
                               </li>
                          )}
 
-                         {(activeRoute === "WatchListItems" || activeRoute === "SearchIMDB") && (
+                         {(activeRoute === "WatchList" || activeRoute === "WatchListItems" || activeRoute === "SearchIMDB") && (
                               <li className="topMargin">
                                    <span className="firstItem">
                                         <span>Auto Add</span>
@@ -131,26 +136,6 @@ const Settings = () => {
                                              <input type="checkbox" checked={autoAdd} onChange={(event) => setAutoAdd(event.target.checked)} />
                                              <span className="slider round"></span>
                                         </label>
-                                   </span>
-                              </li>
-                         )}
-
-                         {activeRoute === "SearchIMDB" && (
-                              <li className="topMargin">
-                                   <span className="firstItem">
-                                        <span>IMDB results</span>
-                                   </span>
-
-                                   <span>
-                                        <select className="leftMargin selectStyle selectWidth" value={searchCount} onChange={(event: React.ChangeEvent<HTMLSelectElement>) => setSearchCount(parseInt(event.target.value, 10))}>
-                                             {Object.keys(searchCountOptions)?.map(key => {
-                                                  return (
-                                                       <option key={key} value={searchCountOptions[key]}>
-                                                            {key}
-                                                       </option>
-                                                  );
-                                             })}
-                                        </select>
                                    </span>
                               </li>
                          )}

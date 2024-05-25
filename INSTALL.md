@@ -1,20 +1,19 @@
-WatchList can be set up to run as a regular web application or a Progressive Web Application (PWA). It can be run with or without Docker.
+WatchList can be set up to run as a regular web application or a Progressive Web Application (PWA). It can also be run as a Docker container.
 
-## Set up WatchList
-1. Check out the source and go to the root directory of the project.
+## Setup WatchList as a web app
+1. Check out the source from Github and go to the root directory of the project.
 1. Edit config\default.json and fill in the following values:
-   - If you plan on using SQLite database, fill in the "SQLite" section. Create a username and password and use "WatchList" as the database name.
-   - If you plan on using SQL Server as the database, fill in the "SQLServer" section
-   - Secret: Create a long and secure password to encrypt your database
+   - Fill in the "SQLite" section. Create a username and password and use "WatchList" as the database name.
+   - Secret: Create a long and secure password that will be used to encrypt your database
 1. Run `npm install`
 1. Run `npm run build`
 1. Run `npm run start`
-1. Visit http://localhost:3000 in your browser. You should see the page to set up a new account.
+1. Visit http://localhost:3000 in your browser. You should see the Setup page to set up a new account. This account will automatically be a WatchList admin account.
 1. Enter the following fields:
    - Name: Name of the new admin
    - Username: New user name
-   - Password: Password that is complex. The password requirements are:1 lowercase alphabetical character, 1 uppercase alphabetical character, 1 numeric, 1 special char, 8 chars long minimum.
-1. Create the new account. You should see a message that the account creation was successfull. You should now be redirected back to the Login page. If not go to `http://YOURIP:8080/Login`.
+   - Password: Password that is complex. The password requirements are: 1 lowercase alphabetical character, 1 uppercase alphabetical character, 1 numeric, 1 special char, 8 chars long minimum.
+1. Once you click on "Create the new account", you should see a message that says that the account creation was successfull. You should now be redirected back to the Login page at /Login.
 1. Login using the credentials that you created above.
 
 # Docker setup
@@ -28,32 +27,22 @@ WatchList can be used as a desktop application by installing it as a PWA.
 
 Google Chrome: Click on the icon that looks like a monitor with a down arrow in it in the right side of the address bar.
 Microsoft Edge: Click on the L shape with a plus in it in the right side of the address bar.
-Mozilla Firefox: Firefox does not support PWAs and you will need to use one of the 2 browsers mentioned above to install WatchList as a PWA.
-
-## Build WatchList Desktop app using Electron
-1. Build the web app using the instructions above.
-1. Build the Desktop app for your OS:
-   - Windows: Open a command prompt and run `build-desktop-app.bat`.
-   - Linux: Open Terminal and run `build-desktop-app-linux.sh`.
-   - Mac: Open Terminal and run `build-desktop-app-mac.sh`.
-1. When you run the app, you should see the WatchList login screen. If you see a blank screen, there is an easy way to fix this by editing index.html:
-   - Windows
-      1. Open to the folder where the WatchList app is located. You should see watchlist.exe
-      1. Index.html is located at resources\app\index.html
-   - Linux
-      1. Open Terminal and go to the directory where the WatchList app is located.  You should see watchlist.
-      1. Index.html is located at resources/app/index.html
-   - Mac:
-      1. Open Terminal and go to the directory where the WatchList app is located. You should see watchlist.app.
-      1. Index.html is located at watchlist.app/Contents/Resources/app/index.html
-1. Make sure that the line that loads `bundle.js` reads `<script src="./bundle.js">` not `<script src="/dist/bundle.js">` .
-1. Re-run watchlist after saving index.html
+Mozilla Firefox: Firefox does not support PWAs and you will need to use one of the 2 browsers above to install WatchList as a PWA.
 
 ## Resetting SQLite password for the admin account
-If you cannot log into WatchList, you can reset the password directly in the database for the admin account that was created when you first set up WatchList.
-1. Install ![SQLite](https://www.sqlite.org/) for your operating system
-1. Go to the directory where the watchlist database file is located
-1. `sqlite3 watchlistdb.sqlite`
-1. Run `UPDATE Users SET Password='U2FsdGVkX18kOsqQBr1pTD01Xl7T+aPG7EQCl14pzLc=' WHERE UserID=1;`
+If you cannot log into WatchList with the admin account, you can reset the password for the admin account directly in the database.
+1. Install ![SQLite](https://www.sqlite.org/) for your operating system.
+1. Go to your WatchList directory and located the watchlist database file watchlistdb.sqlite is located.
+1. Run the command `sqlite3 watchlistdb.sqlite` to open the database.
+1. Run `UPDATE Users SET Password='U2FsdGVkX18kOsqQBr1pTD01Xl7T+aPG7EQCl14pzLc=' WHERE UserID=1;` to reset the admin password.
 1. Log into WatchList with the password "watchlist" without quotes.
-1. Go to the admin section and change your password
+1. Go to the admin section and change your password.
+
+## Known Issues:
+
+After you set up WatchList and log in for the first time, if you get an error that says that the WatchListSources table does not exist:
+
+1. Stop the server
+1. Delete the build folder
+1. Run `npm run build`
+1. Run `npm run start`

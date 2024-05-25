@@ -1,5 +1,5 @@
 import { NextRequest } from 'next/server';
-import { decrypt, getModels, getUserID } from "../lib";
+import { decrypt, execSelect, getUserID } from "../lib";
 import User from "../../interfaces/IUser";
 
 /**
@@ -28,8 +28,6 @@ import User from "../../interfaces/IUser";
  *            description: '["OK",""] on success, ["ERROR","error message"] on error'
  */
 export async function GET(request: NextRequest) {
-     const models = getModels();
-
      const searchParams = request.nextUrl.searchParams;
 
      const admin = searchParams.get("Admin");
@@ -40,17 +38,24 @@ export async function GET(request: NextRequest) {
           return Response.json(["ERROR", "Access denied"]);
      }
 
-     return models.Users.findAll({
-          attributes: ['UserID', 'Username', 'Realname', 'Admin', 'Enabled'],
-          where: {
-               ...(enabled !== null && {
-                    Enabled: enabled,
-               }),
-               ...(admin !== null && {
-                    Admin: admin,
-               }),
-          },
-     }).then((results: User[]) => {
+     let whereClause = '';
+     const params: any = [];
+
+     if (enabled !== null) {
+          whereClause = "WHERE Enabled=?";
+          params.push(enabled);
+     }
+
+     if (admin !== null) {
+          whereClause = (whereClause === '' ? 'WHERE ' : ' AND ') + 'Admin=?';
+          params.push(admin);
+     }
+
+     const SQL = `SELECT UserID, Username, Realname, Admin, Enabled FROM Users ${whereClause}`;
+
+     try {
+          const results: User[] = await execSelect(SQL, params);
+
           // Decrypt the encrypt values
           const decryptedUsers = results.map((currentUser: any) => {
                currentUser.Username = decrypt(currentUser.Username);
@@ -59,7 +64,7 @@ export async function GET(request: NextRequest) {
           });
 
           return Response.json(["OK", decryptedUsers]);
-     }).catch(function (err: Error) {
-          return Response.json(["ERROR", `/GetUsers: The error ${err} occurred getting the users`]);
-     });
+     } catch (e) {
+          return Response.json(["ERROR", `An error occurred getting the users with the error ${e.message}`]);
+     }
 }

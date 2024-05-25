@@ -1,7 +1,5 @@
 import { NextRequest } from 'next/server';
-import { getModels } from "../lib";
-import WatchListType from "../../../app/interfaces/IWatchListType";
-import { error } from 'console';
+import { execInsert } from "../lib";
 
 /**
  * @swagger
@@ -23,8 +21,6 @@ import { error } from 'console';
  *            description: '["OK",""] on success, ["ERROR","error message"] on error'
  */
 export async function PUT(request: NextRequest) {
-     const models = getModels();
-
      const searchParams = request.nextUrl.searchParams;
 
      const watchListTypeName = searchParams.get("WatchListWatchListTypeName");
@@ -33,14 +29,12 @@ export async function PUT(request: NextRequest) {
           return Response.json(["ERROR", "WatchList WatchListType Name was not provided"]);
      }
 
-     return await models.WatchListTypes.create({
-          WatchListTypeName: watchListTypeName
-     }).then((result: WatchListType) => {
-          // Return ID of newly inserted row
-          return Response.json(["OK", result.WatchListTypeID]);
-     }).catch(function (e: Error) {
-          const errorMsg = `/AddWatchListType: The error ${e.message} occurred while adding the WatchList Type record`;
-          console.error(errorMsg);
-          return Response.json(errorMsg);
-     });
+     const SQL = "INSERT INTO WatchListTypes(WatchListTypeName) VALUES(?);";
+     const params = [watchListTypeName];
+
+     const result = await execInsert(SQL, params);
+
+     const newID = result.lastID;
+
+     return Response.json(["OK", newID]);
 }

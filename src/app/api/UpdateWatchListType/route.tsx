@@ -1,5 +1,5 @@
 import { NextRequest } from 'next/server';
-import { getModels } from "../lib";
+import { execUpdateDelete } from "../lib";
 
 /**
  * @swagger
@@ -27,7 +27,6 @@ import { getModels } from "../lib";
  *            description: '["OK",""] on success, ["ERROR","error message"] on error'
  */
 export async function PUT(request: NextRequest) {
-     const models = getModels();
      const searchParams = request.nextUrl.searchParams;
 
      const watchListTypeID = searchParams.get("WatchListTypeID");
@@ -39,15 +38,15 @@ export async function PUT(request: NextRequest) {
           return Response.json(["ERROR", "WatchList Type Name was not provided"]);
      }
 
-     const updatedRowCount = await models.WatchListTypes.update(
-          { WatchListTypeName: watchListTypeName }
-          , {
-               //logging: console.log,
-               where: { WatchListTypeID: watchListTypeID }
-          }).catch(function (e: Error) {
-               const errorMsg = `/UpdateWatchListType: The error ${e.message} occurred while updating WatchList Types with ID ${watchListTypeID}`;
-               return Response.json(["ERROR", errorMsg]);
-          });
+     const values: any = [watchListTypeName, watchListTypeID];
 
-     return Response.json(["OK", updatedRowCount]);
+     try {
+          const sql = `UPDATE WatchListTypes SET WatchListTypeName=? WHERE WatchListTypeID=?`;
+
+          await execUpdateDelete(sql, values);
+
+          return Response.json(["OK"]);
+     } catch (e) {
+          return Response.json(["ERROR", `/UpdateWatchListType: The error occurred updating the WatchList Type with ID ${watchListTypeID} with the error ${e.message}`]);
+     }
 }

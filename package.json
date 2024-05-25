@@ -14,17 +14,6 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "deleteme-dev": "concurrently -n \"NEXT,ELECTRON\" -c \"yellow,blue\" --kill-others \"next dev\" \"electron .\"",
-    "deleteme-build": "next build && electron-builder",
-    "deleteme-build-win": "next build && copy electron-package.json dist\\package.json",
-    "deleteme-build-linux": "next build && cp electron-package.json dist/package.json",
-    "deleteme-build-mac": "next build && cp electron-package.json dist/package.json",
-    "deleteme-dev:electron": "webpack --config webpack.electron.config.js --mode development && electron ./dist/electron-app.js --dev",
-    "deleteme-build:electron": "webpack --config webpack.electron.config.js",
-    "deleteme-deploy-win": "electron-packager ./dist watchlist --overwrite --platform=win32 --arch=x64 --prune=true --out=release-builds",
-    "deleteme-deploy-linux": "electron-packager ./dist watchlist --overwrite --platform=linux --arch=x64 --prune=true --out=release-builds",
-    "deleteme-deploy-mac": "electron-packager ./dist watchlist --overwrite --platform=darwin --arch=x64 --prune=true --out=release-builds",
-    "deleteme-electron": "npm run build && npm run build:electron && npm run deploy",
     "start": "next start"
   },
   "dependencies": {
@@ -50,7 +39,7 @@
     "react": "^18",
     "react-dom": "^18",
     "request": "^2.88.2",
-    "sequelize": "^6.35.2",
+    "sqlite": "^5.1.1",
     "sqlite3": "^5.1.7",
     "swagger-ui-react": "^5.17.4",
     "tedious": "^16.6.1",

@@ -1,71 +1,32 @@
 const axios = require("axios");
-const https = require('https');
-const JSON5 = require('json5');
 const config = require("config");
+const https = require('https');
 const sqlite3 = require('sqlite3').verbose();
-const tedious = require("tedious");
 
 import nextSession from "next-session";
 import { expressSession, promisifyStore } from "next-session/lib/compat";
-//import cookie from "next/headers";
 import { cookies } from 'next/headers';
 import * as CryptoJS from 'crypto-js';
-import { Sequelize } from "sequelize";
 import { NextRequest } from 'next/server';
-import User from "../../app/interfaces/IUser";
+
+import { open } from "sqlite";
+
+const Statement = require('sqlite3');
 
 var SQLiteStore = require("connect-sqlite3")(expressSession);
 
 // Constants
-export let DBType = config.has(`SQLite.username`) ? "SQLite" : config.has(`SQLServer.username`) ? "SQLServer" : "";
-
 export const DBFile = "watchlistdb.sqlite";
 
-const defaultSources = ['Amazon', 'Hulu', 'Movie Theatre', 'Netflix', 'Plex', 'Prime', 'Web'];
-const defaultTypes = ['Movie', 'Other', 'Special', 'TV'];
-
-// SQLite
-const SQLiteSequelize = new Sequelize(config.get(`SQLite.database`), config.get(`SQLite.username`), config.get(`SQLite.password`), {
-     dialectModule: sqlite3,
-     dialect: "sqlite",
-     storage: DBFile,
-     logging: false
-});
-
-const MSSQLSequelize = new Sequelize(config.get(`SQLServer.database`), config.get(`SQLServer.username`), config.get(`SQLServer.password`), {
-     host: config.get(`SQLServer.host`),
-     //encrypt: false,
-     dialectModule: tedious,
-     dialect: "mssql",
-     logging: false,
-     quoteIdentifiers: true,
-     define: {
-          freezeTableName: true,
-     },
-     pool: {
-          max: 5,
-          min: 0,
-          acquire: 30000,
-          idle: 10000,
-     },
-     dialectOptions: {
-          port: 1433,
-     },
-});
-
-export const sequelize = DBType === "SQLite" ? SQLiteSequelize : MSSQLSequelize;
-
-const initModels = require("./models/init-models");
-const models = initModels(sequelize);
 const secretKey = config.get(`Secret`);
 
-export async function addUser(request: NextRequest, IsNewInstance = false) {
+export async function addUser(request: NextRequest, isNewInstance = false) {
      const searchParams = request.nextUrl.searchParams;
 
      const userName = searchParams.get("wl_username");
      const realName = searchParams.get("wl_realname");
      const password = searchParams.get("wl_password");
-     const isAdmin = searchParams.get("wl_admin") !== "undefined" && (searchParams.get("wl_admin") === "true" || IsNewInstance === true) ? 1 : 0;
+     const isAdmin = searchParams.get("wl_admin") !== "undefined" && (searchParams.get("wl_admin") === "true" || isNewInstance === true) ? 1 : 0;
 
      if (userName === null) {
           return Response.json(["User Name was not provided"]);
@@ -73,54 +34,25 @@ export async function addUser(request: NextRequest, IsNewInstance = false) {
           return Response.json(["Real name was not provided"]);
      } else if (password === null) {
           return Response.json(["Password was not provided"]);
-     } else {
-          if (IsNewInstance === true) {
-               await sequelize.sync({ alter: true }); // Init the DB
-
-               // Initialize the default watchlist sources so this table is not empty by default
-               defaultSources.forEach(async (element) => {
-                    await models.WatchListSources.create({
-                         WatchListSourceName: element
-                    })
-                         .catch(function (e: Error) {
-                              const errorMsg = `addUser(): The error ${e.message} occurred while initializing the default WatchList Sources`;
-                              console.error(errorMsg);
-                         });
-               });
-
-               // Initialize the default watchlist types so this table is not empty by default
-               defaultTypes.forEach(async (element) => {
-                    return await models.WatchListTypes.create({
-                         WatchListTypeName: element
-                    }).catch(function (e: Error) {
-                         const errorMsg = `addUser(): The error ${e.message} occurred while initializing the default WatchList Types`;
-                         console.error(errorMsg);
-                    });
-               });
-          } else {
-               // This action should only be performed by logged in users who are an admin when not setting up new instance
-               const userSession = await getUserSession(request);
-
-               if (typeof userSession === "undefined" || (typeof userSession !== "undefined" && userSession.Admin === false)) {
-                    return Response.json(["ERROR", `addUser(): Access Denied`]);
-               }
-          }
-
-          return await models.Users.create({
-               Username: encrypt(String(userName)),
-               Realname: encrypt(String(realName)),
-               Password: encrypt(String(password)),
-               Admin: isAdmin,
-               Enabled: 1,
-          }).then((result: User) => {
-               // Return ID of newly inserted row
-               return Response.json(["OK", result.UserID]);
-          }).catch(function (e: Error) {
-               const errorMsg = `addUser(): The error ${e.message} occurred while adding the user`;
-               console.error(errorMsg);
-               return Response.json(["ERROR", errorMsg]);
-          });
      }
+     // This action should only be performed by logged in users who are an admin when not setting up new instance
+     if (!isNewInstance) {
+          const userSession = await getUserSession(request);
+
+          if (typeof userSession === "undefined" || (typeof userSession !== "undefined" && userSession.Admin === false)) {
+               return Response.json(["ERROR", `addUser(): Access Denied`]);
+          }
+     }
+
+     const SQL = "INSERT INTO Users(UserName, Realname, Password, Admin, Enabled) VALUES (?, ?, ?, ?, ?);";
+
+     const params = [encrypt(String(userName)), encrypt(String(realName)), encrypt(String(password)), isAdmin, 1];
+
+     const result = await execInsert(SQL, params);
+
+     const newID = result.lastID;
+
+     return Response.json(["OK", newID]);
 }
 
 export const decrypt = (cipherText: string) => {
@@ -134,28 +66,72 @@ export const encrypt = (plainText: string) => {
      return cipherText
 }
 
-export async function getDBFile() {
-     return DBFile;
+export const execInsert = async (sql: string, params: Array<string | number | null>) => {
+     const db = await openDB();
+
+     let stmt: typeof Statement;
+
+     try {
+          stmt = await db.prepare(sql);
+     } catch (e) {
+          return e;
+     }
+
+     return await stmt.run(params);
+}
+
+export const execSelect = async (sql: string, params: Array<string | number>) => {
+     const db = await openDB();
+
+     let stmt: typeof Statement;
+
+     try {
+          stmt = await db.prepare(sql);
+     } catch (e) {
+          return e;
+     }
+
+     const results: any = [];
+
+     await stmt.each(params, function (_err: unknown, row: any) {
+          results.push(row);
+     });
+
+     stmt.finalize();
+
+     db.close();
+
+     return results;
+}
+
+export const execUpdateDelete = async (sql: string, params: Array<string | number>) => {
+     const db = await openDB();
+
+     let stmt: typeof Statement;
+
+     try {
+          stmt = await db.prepare(sql);
+     } catch (e) {
+          return e;
+     }
+
+     await stmt.run(params);
 }
 
 export async function getIMDBDetails(imdb_id: string) {
      const detailsURL = `https://nodejs-shovav.replit.app//GetIMDBDetails?id=${imdb_id}`;
 
-          const agent = new https.Agent({
-               rejectUnauthorized: false
+     const agent = new https.Agent({
+          rejectUnauthorized: false
+     });
+
+     return await axios.get(detailsURL, { httpsAgent: agent })
+          .then((response: any) => {
+               return (["OK", response.data]);
+          })
+          .catch((err: Error) => {
+               return Response.json(["ERROR", err.message]);
           });
-
-          return await axios.get(detailsURL, { httpsAgent: agent })
-               .then((response: any) => {
-                    return (["OK", response.data]);
-               })
-               .catch((err: Error) => {
-                    return Response.json(["ERROR", err.message]);
-               });
-}
-
-export function getModels() {
-     return models;
 }
 
 export const getSession = nextSession({
@@ -186,53 +162,29 @@ export async function getUserSession(req: NextRequest) {
      }
 }
 
-export async function validateSettings() {
-     if (DBType === "") {
-          //console.log(`Config file error: Database is not configured`);
-          return false;
-     }
+const openDB = async () => {
+     return await open({
+          filename: DBFile,
+          driver: sqlite3.Database,
+     });
+}
 
+export async function validateSettings() {
      // Validate config file properties that are required
      if (!config.has(`Secret`)) {
           return `Config file error: Secret property is missing or not set`;
      }
-     if (DBType === "MSSQL" && (!config.has(`SQLServer.username`) || (config.has(`SQLServer.username`) && config.get(`SQLServer.username`) === ""))) {
-          return `Config file error: SQLServer.username property is missing or not set`;
-     }
 
-     if (DBType === "MSSQL" && (!config.has(`SQLServer.password`) || (config.has(`SQLServer.password`) && config.get(`SQLServer.password`) === ""))) {
-          return `Config file error: SQLServer.password property is missing or not set`;
-     }
-
-     if (DBType === "MSSQL" && (!config.has(`SQLServer.host`) || (config.has(`SQLServer.host`) && config.get(`SQLServer.host`) === ""))) {
-          return `Config file error: SQLServer.host property is missing or not set`;
-     }
-
-     if (DBType === "MSSQL" && (!config.has(`SQLServer.database`) || (config.has(`SQLServer.database`) && config.get(`SQLServer.database`) === ""))) {
-          return `Config file error: SQLServer.database property is missing or not set`;
-     }
-
-     if (DBType === "SQLite" && (!config.has(`SQLite.username`) || (config.has(`SQLite.username`) && config.get(`SQLite.username`) === ""))) {
+     if (!config.has(`SQLite.username`) || (config.has(`SQLite.username`) && config.get(`SQLite.username`) === "")) {
           return `Config file error: SQLite.username property is missing or not set`;
      }
 
-     if (DBType === "SQLite" && (!config.has(`SQLite.password`) || (config.has(`SQLite.password`) && config.get(`SQLite.password`) === ""))) {
+     if (!config.has(`SQLite.password`) || (config.has(`SQLite.password`) && config.get(`SQLite.password`) === "")) {
           return `Config file error: SQLite.password property is missing or not set`;
      }
 
-     if (DBType === "SQLite" && (!config.has(`SQLite.database`) || (config.has(`SQLite.database`) && config.get(`SQLite.database`) === ""))) {
+     if (!config.has(`SQLite.database`) || (config.has(`SQLite.database`) && config.get(`SQLite.database`) === "")) {
           return `Config file error: SQLite.database property is missing or not set`;
-     }
-
-     if (DBType === "MSSQL") {
-          (async () => {
-               try {
-                    await sequelize.authenticate();
-
-               } catch (e: any) {
-                    return `Sequelize encountered the error ${e.message} while connecting to the DB`;
-               }
-          })();
      }
 
      return "";

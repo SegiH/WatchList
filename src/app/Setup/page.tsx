@@ -10,6 +10,8 @@ const useState = require("react").useState;
 
 import { DataContext, DataContextType } from "../data-context";
 
+import "../Login/Login.css";
+
 export default function Setup() {
      const {
           activeRoute,
@@ -20,10 +22,18 @@ export default function Setup() {
 
      const router = useRouter();
 
-     const [confirmPassword, setConfirmPassword] = useState("");
-     const [password, setPassword] = useState("");
-     const [realname, setRealname] = useState("");
-     const [username, setUsername] = useState("");
+     const [confirmPassword, setConfirmPassword] = useState("qweQWE123!@#");
+     const [password, setPassword] = useState("qweQWE123!@#");
+     const [realname, setRealname] = useState("Joe");
+     const [username, setUsername] = useState("Joe");
+     const [submitClicked, setSubmitClicked] = useState(false);
+
+     const handleKeyUp = (event: React.KeyboardEvent<HTMLDivElement>) => {
+          if (event.key === 'Enter') {
+               // Submit when enter is pressed
+               setupClickHandler();
+          }
+     }
 
      const setupClickHandler = () => {
           if (typeof realname !== "string" || (typeof realname === "string" && (realname === null || realname === ""))) {
@@ -63,7 +73,10 @@ export default function Setup() {
                return;
           }
 
-          axios.put(`/api/Setup?wl_username=${username}&wl_realname=${realname}&wl_password=${password}&wl_admin=true`, null)
+          setSubmitClicked(true);
+
+          // First user account created in this WatchList instance is automatically made an admin
+          axios.put(`/api/Setup?wl_username=${encodeURIComponent(username)}&wl_realname=${encodeURIComponent(realname)}&wl_password=${encodeURIComponent(password)}&wl_admin=true`, null)
                .then((res: typeof IUser) => {
                     if (res.data[0] === "OK") {
                          alert("User account was successfully created");
@@ -71,10 +84,12 @@ export default function Setup() {
                          router.push("/Login");
                     } else {
                          alert("User account was NOT created. " + res.data[1]);
+                         setSubmitClicked(false);
                     }
                })
                .catch((err: Error) => {
                     alert("User account was NOT created. The error " + err.message + " occurred");
+                    setSubmitClicked(false);
                });
      };
 
@@ -86,21 +101,23 @@ export default function Setup() {
 
      return (
           <>
-               <div className="login-page">
+               <div className="foregroundColor login-page">
                     <div className="form">
                          <form className="login-form">
                               <span className="login-label">WatchList Setup</span>
 
-                              <input className="topMargin" type="text" autoFocus value={realname} placeholder="Name" required onChange={(event) => setRealname(event.target.value)} />
-                              <input className="topMargin" type="text" autoFocus value={username} placeholder="Username" required onChange={(event) => setUsername(event.target.value)} />
+                              <input type="text" autoFocus disabled={submitClicked} value={realname} placeholder="Name" required onChange={(event) => setRealname(event.target.value)} onKeyUp={handleKeyUp} />
+                              <input type="text" autoFocus disabled={submitClicked} value={username} placeholder="Username" required onChange={(event) => setUsername(event.target.value)} onKeyUp={handleKeyUp} />
 
-                              <input className="topMargin" type="password" autoFocus value={password} placeholder="Password" required onChange={(event) => setPassword(event.target.value)} />
+                              <input type="password" autoFocus disabled={submitClicked} value={password} placeholder="Password" required onChange={(event) => setPassword(event.target.value)} onKeyUp={handleKeyUp} />
 
-                              <input className="topMargin" type="password" autoFocus value={confirmPassword} placeholder="Confirm password" required onChange={(event) => setConfirmPassword(event.target.value)} />
+                              <input type="password" autoFocus disabled={submitClicked} value={confirmPassword} placeholder="Confirm password" required onChange={(event) => setConfirmPassword(event.target.value)} onKeyUp={handleKeyUp} />
 
-                              <button className="topMargin" type="button" onClick={setupClickHandler}>
-                                   Create new Account
-                              </button>
+                              {!submitClicked &&
+                                   <button type="button" onClick={setupClickHandler}>
+                                        Create new Account
+                                   </button>
+                              }
                          </form>
                     </div>
                </div>

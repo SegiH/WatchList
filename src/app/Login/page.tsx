@@ -28,8 +28,9 @@ export default function Login() {
           setUserData
      } = useContext(DataContext) as DataContextType
 
-     const [password, setPassword] = useState("");
-     const [username, setUsername] = useState("");
+     const [password, setPassword] = useState("qweQWE123!@#"); // TODO: Delete me later!
+     const [username, setUsername] = useState("Joe");
+     const [loginSubmitted, setLoginSubmitted] = useState(false);
 
      const router = useRouter();
 
@@ -51,10 +52,12 @@ export default function Login() {
                return;
           }
 
+          setLoginSubmitted(true);
+
           if (username === demoUsername && password === demoPassword) {
                setDemoMode(true);
 
-               const newUserData: typeof IUser = require("../demo/index").demoUser[0];
+               const newUserData: typeof IUser = require("../demo/index").demoUsers[0];
 
                setActiveRoute("WatchList");
                setActiveRouteDisplayName("WatchList");
@@ -84,6 +87,7 @@ export default function Login() {
                })
                .catch((err: Error) => {
                     setIsLoggedInCheckComplete(true);
+                    setLoginSubmitted(false);
 
                     if (String(err.message).startsWith("Unauthorized")) {
                          alert(`Invalid username or password`);
@@ -140,12 +144,14 @@ export default function Login() {
                     <div className="form">
                          <form className="login-form">
                               <span className="login-label">WatchList Login</span>
-                              <input type="text" autoFocus value={username} placeholder="username" required onChange={(event) => setUsername(event.target.value)} onKeyUp={handleKeyUp} />
-                              <input type="password" value={password} placeholder="password" required onChange={(event) => setPassword(event.target.value)} onKeyUp={handleKeyUp} />
+                              <input type="text" autoFocus disabled={loginSubmitted} value={username} placeholder="username" required onChange={(event) => setUsername(event.target.value)} onKeyUp={handleKeyUp} />
+                              <input type="password" disabled={loginSubmitted} value={password} placeholder="password" required onChange={(event) => setPassword(event.target.value)} onKeyUp={handleKeyUp} />
 
-                              <button type="button" onClick={login}>
-                                   Login
-                              </button>
+                              {!loginSubmitted &&
+                                   <button type="button" onClick={login}>
+                                        Login
+                                   </button>
+                              }
                          </form>
                     </div>
                </div>

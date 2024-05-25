@@ -31,7 +31,8 @@ export default function WatchListItems() {
           watchListItemsLoadingComplete,
           watchListItemsSortingComplete,
           watchListSortColumn,
-          watchListSortDirection
+          watchListSortDirection,
+          watchListTypes
      } = useContext(DataContext) as DataContextType;
 
      const router = useRouter();
@@ -127,12 +128,17 @@ export default function WatchListItems() {
                <ul className="clickable foregroundColor  show-list">
                     {watchListItems?.filter(
                          (currentWatchListItem: typeof IWatchListItem) =>
-                              currentWatchListItem.Archived === archivedVisible &&
+                              //currentWatchListItem.Archived === archivedVisible &&
+                              ((currentWatchListItem?.Archived === 1 && archivedVisible === true) || (currentWatchListItem?.Archived === 0 && archivedVisible === false)) &&
                               (searchTerm === "" || (searchTerm !== "" && (String(currentWatchListItem.WatchListItemName).toLowerCase().includes(searchTerm) || String(currentWatchListItem.IMDB_URL) == searchTerm || String(currentWatchListItem.IMDB_Poster) == searchTerm))) &&
                               (typeFilter === -1 || (typeFilter !== -1 && String(currentWatchListItem.WatchListTypeID) === String(typeFilter)))
                               && (showMissingArtwork === false || (showMissingArtwork === true && (currentWatchListItem.IMDB_Poster_Error === true || currentWatchListItem.IMDB_Poster === null)))
                     ).map((currentWatchListItem: typeof IWatchListItem, index: number) => {
                               const IMDB_JSON =  currentWatchListItem?.IMDB_JSON !== null && typeof currentWatchListItem?.IMDB_JSON !== "undefined" && currentWatchListItem?.IMDB_JSON !== "" ? JSON.parse(currentWatchListItem?.IMDB_JSON) : null;
+
+                              const type_name = watchListTypes?.filter((currentWatchList: typeof IWatchListItem) => {
+                                   return String(currentWatchList.WatchListTypeID) === String(currentWatchListItem?.WatchListTypeID);
+                              });
 
                               return (
                                    <React.Fragment key={index}>
@@ -165,7 +171,7 @@ export default function WatchListItems() {
                                                   </div>
 
                                                   <span>
-                                                       <div>{currentWatchListItem?.WatchListType?.WatchListTypeName}</div>
+                                                       <div>{type_name && type_name.length === 1 && type_name[0].WatchListTypeName}</div>
                                                   </span>
                                              </li>
                                         )}

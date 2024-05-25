@@ -1,5 +1,5 @@
 import { NextRequest } from 'next/server';
-import { getModels, getUserID } from "../lib";
+import { execSelect, getUserID } from "../lib";
 import WatchList from "../../interfaces/IWatchList";
 
 /**
@@ -34,8 +34,6 @@ import WatchList from "../../interfaces/IWatchList";
  *            description: '["OK",""] on success, ["ERROR","error message"] on error'
  */
 export async function GET(request: NextRequest) {
-     const models = getModels();
-     
      const userID = await getUserID(request);
 
      const searchParams = request.nextUrl.searchParams;
@@ -63,7 +61,7 @@ export async function GET(request: NextRequest) {
      if (sortDirection === null || typeof sortDirection == "undefined") {
           sortDirection = "ASC";
      } else {
-          if  (sortDirection !== "ASC" && sortDirection != "DESC") {
+          if (sortDirection !== "ASC" && sortDirection != "DESC") {
                sortDirection = "ASC"; // Fallback if unknown sort direction is passed
           }
      }
@@ -77,41 +75,19 @@ export async function GET(request: NextRequest) {
                return Response.json(["Record limit is not a number 2"]);
           }
      }
-     models.WatchListItems.hasMany(models.WatchList, {
-          foreignKey: "WatchListItemID",
-     });
-     models.WatchList.belongsTo(models.WatchListItems, {
-          foreignKey: "WatchListItemID",
-     });
 
-     models.WatchListSources.hasMany(models.WatchList, {
-          foreignKey: "WatchListSourceID",
-     });
-     models.WatchList.belongsTo(models.WatchListSources, {
-          foreignKey: "WatchListSourceID",
-     });
+     const SQL = `SELECT WatchList.*,WatchListItems.WatchListItemName,WatchListItems.WatchListTypeID,IMDB_URL, IMDB_Poster, IMDB_JSON, ItemNotes, WatchListSourceName, WatchListTypeName FROM WatchList
+                LEFT JOIN WatchListItems ON WatchListItems.WatchListItemID=WatchList.WatchListItemID
+                LEFT JOIN WatchListSources ON WatchListSources.WatchListSourceID=WatchList.WatchListSourceID
+                LEFT JOIN WatchListTypes ON WatchListTypes.WatchListTypeID=WatchListItems.WatchListTypeID
+                ${recordLimit !== null ? ` LIMIT ${recordLimit}` : ''}
+                `;
 
-     models.WatchListTypes.hasMany(models.WatchListItems, {
-          foreignKey: "WatchListTypeID",
-     });
-     models.WatchListItems.belongsTo(models.WatchListTypes, {
-          foreignKey: "WatchListTypeID",
-     });
+     try {
+          const results = await execSelect(SQL, []);
 
-     return models.WatchList.findAll({
-          //logging: console.log,
-          limit: recordLimit !== null ? recordLimit : 999999999,
-          include: [
-               {
-                    model: models.WatchListItems,
-                    required: true,
-                    include: [{ model: models.WatchListTypes, required: true }],
-               },
-               { model: models.WatchListSources, required: true },
-          ],
-     }).then((results: WatchList) => {
           return Response.json(["OK", results]);
-     }).catch(function (err: Error) {
-          return Response.json(["ERROR", `/GetWatchList: The error ${err} occurred getting the WatchList`]);
-     });
+     } catch (e) {
+          return Response.json(["ERROR", `/GetWatchList: The error ${e.message} occurred getting the WatchList`]);
+     }
 }

@@ -1,6 +1,5 @@
 import { NextRequest } from 'next/server';
-import { getModels } from "../lib";
-import WatchListItem from "../../interfaces/IWatchListItem";
+import { execSelect } from "../lib";
 
 /**
  * @swagger
@@ -34,8 +33,6 @@ import WatchListItem from "../../interfaces/IWatchListItem";
  *            description: '["OK",""] on success, ["ERROR","error message"] on error'
  */
 export async function GET(request: NextRequest) {
-     const models = getModels();
-     
      const searchParams = request.nextUrl.searchParams;
 
      // WatchListItems applies to all users so no need to provide user ID
@@ -51,19 +48,16 @@ export async function GET(request: NextRequest) {
 
      if (sortDirection === null || typeof sortDirection == "undefined" || (sortDirection !== "ASC" && sortDirection != "DESC")) sortDirection = "ASC";
 
-     models.WatchListTypes.hasMany(models.WatchListItems, {
-          foreignKey: "WatchListTypeID",
-     });
-     models.WatchListItems.belongsTo(models.WatchListTypes, {
-          foreignKey: "WatchListTypeID",
-     });
+     const SQL = `SELECT WatchListItems.*, WatchListTypeName FROM WatchListItems
+                LEFT JOIN WatchListTypes ON WatchListTypes.WatchListTypeID=WatchListItems.WatchListTypeID
+                ${recordLimit !== null ? ` LIMIT ${recordLimit}` : ''}
+                `;
 
-     return models.WatchListItems.findAll({
-          limit: recordLimit !== null ? recordLimit : 999999999,
-          include: [{ model: models.WatchListTypes, required: true }],
-     }).then((results: WatchListItem) => {
+     try {
+          const results = await execSelect(SQL, []);
+
           return Response.json(["OK", results]);
-     }).catch(function (err: Error) {
-          return Response.json(["ERROR", `/GetWatchList: The error ${JSON.stringify(err)} occurred getting the WatchList Items`]);
-     });
+     } catch (e) {
+          return Response.json(["ERROR", `/GetWatchListItems: The error ${e.message} occurred getting the WatchList Items`]);
+     }
 }

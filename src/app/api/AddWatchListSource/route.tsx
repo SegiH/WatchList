@@ -1,6 +1,5 @@
 import { NextRequest } from 'next/server';
-import { getModels } from "../lib";
-import WatchListSource from "../../../app/interfaces/IWatchListSource";
+import { execInsert } from "../lib";
 
 /**
  * @swagger
@@ -22,8 +21,6 @@ import WatchListSource from "../../../app/interfaces/IWatchListSource";
  *            description: '["OK",""] on success, ["ERROR","error message"] on error'
  */
 export async function PUT(request: NextRequest) {
-     const models = getModels();
-
      const searchParams = request.nextUrl.searchParams;
 
      const watchListSourceName = searchParams.get("WatchListSourceName");
@@ -32,14 +29,12 @@ export async function PUT(request: NextRequest) {
           return Response.json(["ERROR", "WatchList Source Name was not provided"]);
      }
 
-     return await models.WatchListSources.create({
-          WatchListSourceName: watchListSourceName
-     }).then((result: WatchListSource) => {
-          // Return ID of newly inserted row
-          return Response.json(["OK", result.WatchListSourceID]);
-     }).catch(function (e: Error) {
-          const errorMsg = `/AddWatchListSource: The error ${e.message} occurred while adding the WatchList Source record`;
-          console.error(errorMsg);
-          return Response.json(errorMsg);
-     });
+     const SQL = "INSERT INTO WatchListSources(WatchListSourceName) VALUES(?);";
+     const params = [watchListSourceName];
+
+     const result = await execInsert(SQL, params);
+
+     const newID = result.lastID;
+
+     return Response.json(["OK", newID]);
 }

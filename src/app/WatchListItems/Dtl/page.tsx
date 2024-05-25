@@ -30,7 +30,6 @@ export default function WatchListItemsDtl() {
           setIsAdding,
           setIsEditing,
           setIsError,
-          setNewWatchListItemDtlID,
           setWatchListItemsLoadingStarted,
           setWatchListItemsLoadingComplete,
           showWatchListItems,
@@ -80,7 +79,6 @@ export default function WatchListItemsDtl() {
      };
 
      const closeDetail = async () => {
-          setNewWatchListItemDtlID(-1);
           setIsAdding(false);
           setIsEditing(false);
           setAddWatchListItemDtl(null);
@@ -182,6 +180,24 @@ export default function WatchListItemsDtl() {
                          if (res.data[0] === "ERROR") {
                               alert(`The error ${res.data[1]} occurred while  updating the item detail`);
                          } else {
+                              // Update type name if needed
+                              if (watchListItemDtl["WatchListTypeIDIsModified"] === true) {
+                                   const result = watchListTypes?.filter((currentWatchList: typeof IWatchListItem) => {
+                                        return String(currentWatchList.WatchListTypeID) === String(watchListItemDtl["WatchListTypeID"]);
+                                   });
+
+                                   if (result.length !== 1) {
+                                        alert("Unable to update type name");
+                                        return;
+                                   }
+
+                                   const newWatchListItemDtl = Object.assign({}, watchListItemDtl);
+
+                                   newWatchListItemDtl["WatchListTypeName"] = result[0].WatchListTypeName;
+
+                                   setWatchListItemDtl(newWatchListItemDtl);
+                              }
+
                               setIsEditing(false);
 
                               setEditModified(true);
@@ -241,7 +257,8 @@ export default function WatchListItemsDtl() {
                     const addNewWatchListPrompt = confirm("Do you want to add a new WatchList record now ?");
 
                     if (addNewWatchListPrompt) {
-                         setNewWatchListItemDtlID(res.data[1]);
+                         setIsAdding(true);
+                         router.push(`/WatchList/Dtl?WatchListItemID=${res.data[1]}`);
                          setWatchListItemsLoadingStarted(false);
                          setWatchListItemsLoadingComplete(false);
                     }
@@ -321,14 +338,14 @@ export default function WatchListItemsDtl() {
                          } else {
                               // Sanitize object by replacing all null fields with "". There are issues with binding to input fields when the value is null
                               const wlid = res.data[1];
-
-                              Object.keys(wlid).map((keyName) => {
-                                   if (wlid[keyName] === null) {
-                                        wlid[keyName] = "";
+debugger
+                              Object.keys(wlid[0]).map((keyName) => {
+                                   if (wlid[0][keyName] === null) {
+                                        wlid[0][keyName] = "";
                                    }
                               });
 
-                              setWatchListItemDtl(wlid);
+                              setWatchListItemDtl(wlid[0]);
                          }
                     })
                     .catch((err: Error) => {
@@ -366,6 +383,10 @@ Director: ${IMDB_JSON.Director}
 Plot: ${IMDB_JSON.Plot}
 ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSeasons}` : ""}
      `;
+
+     const type_name = watchListTypes?.filter((currentWatchList: typeof IWatchListItem) => {
+          return String(currentWatchList.WatchListTypeID) === String(watchListItemDtl?.WatchListTypeID);
+     });
 
      return (
           <div className="modal">
@@ -457,7 +478,7 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
 
                                    <div className="narrow card">
                                         {!isAdding && !isEditing &&
-                                             <span className="foregroundColor">{watchListItemDtl?.WatchListType?.WatchListTypeName}</span>
+                                             <span className="foregroundColor">{type_name && type_name.length === 1 && type_name[0].WatchListTypeName}</span>
                                         }
 
                                         {isEditing &&

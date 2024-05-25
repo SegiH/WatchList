@@ -1,5 +1,5 @@
 import { NextRequest } from 'next/server';
-import { getModels } from "../lib";
+import { execUpdateDelete } from "../lib";
 
 /**
  * @swagger
@@ -57,7 +57,6 @@ import { getModels } from "../lib";
  *            description: '["OK",""] on success, ["ERROR","error message"] on error'
  */
 export async function PUT(request: NextRequest) {
-     const models = getModels();
      const searchParams = request.nextUrl.searchParams;
 
      const watchListItemID = searchParams.get("WatchListItemID");
@@ -71,50 +70,59 @@ export async function PUT(request: NextRequest) {
 
      if (watchListItemID === null) {
           return Response.json(["ERROR", "ID was not provided"]);
-     } else {
-          const updateColumns: any = {};
+     }
 
-          if (name !== null) {
-               updateColumns['WatchListItemName'] = name;
-          }
+     let columns = "";
+     const values: any = [];
 
-          if (typeID !== null) {
-               updateColumns['WatchListTypeID'] = typeID;
-          }
+     if (name !== null) {
+          columns += (columns !== "" ? "," : "") + "WatchListItemName=?";
+          values.push(name);
+     }
+     
+     if (typeID !== null) {
+          columns += (columns !== "" ? "," : "") + "WatchListTypeID=?";
+          values.push(typeID);
+     }
 
-          if (imdb_url !== null) {
-               updateColumns['IMDB_URL'] = imdb_url;
-          }
+     if (imdb_url !== null) {
+          columns += (columns !== "" ? "," : "") + "IMDB_URL=?";
+          values.push(imdb_url);
+     }
 
-          if (imdb_poster !== null) {
-               updateColumns['IMDB_Poster'] = imdb_poster;
-          }
+     if (imdb_poster !== null) {
+          columns += (columns !== "" ? "," : "") + "IMDB_Poster=?";
+          values.push(imdb_poster);
+     }
 
-          if (notes !== null) {
-               updateColumns['ItemNotes'] = notes;
-          }
+     if (imdb_json !== null) {
+          columns += (columns !== "" ? "," : "") + "IMDB_JSON=?";
+          values.push(imdb_json);
+     }
 
-          if (archived !== null) {
-               updateColumns['Archived'] = archived;
-          }
+     if (notes !== null) {
+          columns += (columns !== "" ? "," : "") + "ItemNotes=?";
+          values.push(notes);
+     }
 
-          if (imdb_json !== null) {
-               updateColumns['IMDB_JSON'] = imdb_json;
-          }
+     if (archived !== null) {
+          columns += (columns !== "" ? "," : "") + "Archived=?";
+          values.push(archived);
+     }
 
-          if (Object.keys(updateColumns).length == 0) { // No params were passed except for the mandatory column
-               return Response.json(["ERROR", "No params were passed"]);
-          }
+     if (values.length === 0) {
+          return Response.json(["ERROR", `No parameters were passed`]);
+     }
 
-          const updatedRowCount = await models.WatchListItems.update(
-               updateColumns
-               , {
-                    where: { WatchListItemID: watchListItemID }
-               }).catch(function (e: Error) {
-                    const errorMsg = `/UpdateWatchListItems: The error ${e.message} occurred while updating WatchList Item with ID ${watchListItemID}`;
-                    return Response.json(["ERROR", errorMsg]);
-               });
+     values.push(watchListItemID);
 
-          return Response.json(["OK", updatedRowCount]);
+     try {
+          const sql = `UPDATE WatchListItems SET ${columns} WHERE WatchListItemID=?`;
+
+          await execUpdateDelete(sql, values);
+
+          return Response.json(["OK"]);
+     } catch (e) {
+          return Response.json(["ERROR", `/UpdateWatchListItem: The error occurred updating the WatchList Item with ID ${watchListItemID} with the error ${e.message}`]);
      }
 }

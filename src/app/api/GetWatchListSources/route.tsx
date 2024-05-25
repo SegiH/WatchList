@@ -1,5 +1,4 @@
-import { getModels } from "../lib";
-import WatchListSource from "../../../app/interfaces/IWatchListSource";
+import { execSelect } from "../lib";
 
 /**
  * @swagger
@@ -14,13 +13,13 @@ import WatchListSource from "../../../app/interfaces/IWatchListSource";
  *            description: '["OK",""] on success, ["ERROR","error message"] on error'
  */
 export async function GET() {
-     const models = getModels();
-     
-     return models.WatchListSources.findAll({
-          order: [["WatchListSourceName", "DESC"]],
-     }).then((results: WatchListSource) => {
+     const SQL="SELECT * FROM WatchListSources ORDER BY WatchListSourceName DESC";
+
+     try {
+          const results = await execSelect(SQL, []);
+
           return Response.json(["OK", results]);
-     }).catch(function (err: Error) {
-          return Response.json(["ERROR", `/GetWatchListSources: The error ${err.message} occurred getting the WatchList Sources`]);
-     });
+     } catch (e) {
+          return Response.json(["ERROR", `/GetWatchListSources: The error ${e.message} occurred getting the WatchList Sources`]);
+     }
 }

@@ -1,9 +1,7 @@
 'use server'
-
 import { NextRequest } from 'next/server';
 import fs from 'fs';
 import { cookies } from 'next/headers';
-
 import { DBFile, getUserSession, validateSettings } from "../lib";
 
 /**
@@ -19,15 +17,15 @@ import { DBFile, getUserSession, validateSettings } from "../lib";
  *            description: '["OK",""] on success, ["ERROR","error message"] on error'
  */
 export async function GET(request: NextRequest) {
-     const validationResult = await validateSettings();
+     const validationResult: any = await validateSettings();
 
      if (validationResult === false) {
           return Response.json(["ERROR", false]);
      } else if (validationResult != "") {
-          return Response.json(["ERROR",validationResult]);
+          return Response.json(["ERROR", validationResult]);
      }
 
-     if (!fs.existsSync(DBFile)) {
+     if (!fs.existsSync(DBFile)) { // If DB file doesn't exist, this is a new WatchList instance
           // Clear session cookie if it existed previously but DB doesn't exist
           cookies().delete('userData');
 
@@ -47,6 +45,6 @@ export async function GET(request: NextRequest) {
                },
           ]);
      } else {
-          return Response.json(["ERROR",""]);
+          return Response.json(["ERROR", ""]);
      }
 }

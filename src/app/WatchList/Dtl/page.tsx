@@ -34,6 +34,7 @@ export default function WatchListDetail() {
      const searchParams = useSearchParams();
 
      const watchListDtlID = searchParams.get("WatchListID");
+     const watchListItemDtlID = searchParams.get("WatchListItemID");
 
      const {
           BrokenImageIconComponent,
@@ -42,14 +43,13 @@ export default function WatchListDetail() {
           EditIconComponent,
           isAdding,
           isEditing,
-          newWatchListItemDtlID,
           ratingMax,
           SaveIconComponent,
           setActiveRoute,
+          setActiveRouteDisplayName,
           setIsAdding,
           setIsEditing,
           setIsError,
-          setNewWatchListItemDtlID,
           setWatchListLoadingStarted,
           setWatchListLoadingComplete,
           setWatchListSortingComplete,
@@ -99,6 +99,7 @@ export default function WatchListDetail() {
 
           closeDetail();
           setActiveRoute("SearchIMDB");
+          setActiveRouteDisplayName("Search IMDB");
      };
 
      const addWatchListDetailChangeHandler = (fieldName: string, fieldValue: string) => {
@@ -155,7 +156,6 @@ export default function WatchListDetail() {
           setAddWatchListDtl(null);
           setWatchListDtl(null);
           setOriginalWatchListDtl(null);
-          setNewWatchListItemDtlID(null);
 
           if (addModified || editModified) {
                setWatchListLoadingStarted(false);
@@ -230,9 +230,9 @@ export default function WatchListDetail() {
      };
 
      const recommendationsClickHandler = () => {
-          const name = watchListDtl?.WatchListItem.WatchListItemName;
+          const name = watchListDtl?.WatchListItemName;
 
-          const typeID = watchListDtl?.WatchListItem.WatchListTypeID;
+          const typeID = watchListDtl?.WatchListTypeID;
 
           const typeNameResult = watchListTypes.filter((currentType: typeof IWatchListType) => currentType.WatchListTypeID === typeID);
 
@@ -300,6 +300,9 @@ export default function WatchListDetail() {
                     alert(`The error ${res.data[1]} occurred while  adding the detail`);
                } else {
                     setIsAdding(false);
+                    setWatchListLoadingStarted(false);
+                    setWatchListLoadingComplete(false);
+                    setWatchListSortingComplete(false);
 
                     router.push("/WatchList");
                }
@@ -475,13 +478,13 @@ export default function WatchListDetail() {
                               // Sanitize object by replacing all fields with null
                               const wld = res.data[1];
 
-                              Object.keys(wld).map((keyName) => {
-                                   if (wld[keyName] === null) {
-                                        wld[keyName] = "";
+                              Object.keys(wld[0]).map((keyName) => {
+                                   if (wld[0][keyName] === null) {
+                                        wld[0][keyName] = "";
                                    }
                               });
 
-                              setWatchListDtl(wld);
+                              setWatchListDtl(wld[0]);
                               setWatchListDtlLoadingComplete(true);
                          }
                     })
@@ -491,7 +494,7 @@ export default function WatchListDetail() {
                     });
           } else if (isAdding) {
                const newAddWatchListDtl: typeof IWatchList = {};
-               newAddWatchListDtl.WatchListItemID = newWatchListItemDtlID !== null ? newWatchListItemDtlID : "-1";
+               newAddWatchListDtl.WatchListItemID = watchListItemDtlID !== null ? watchListItemDtlID : "-1";
                newAddWatchListDtl.StartDate = getLocaleDate();
                newAddWatchListDtl.EndDate = "";
                newAddWatchListDtl.WatchListSourceID = "-1";
@@ -501,7 +504,7 @@ export default function WatchListDetail() {
 
                setAddWatchListDtl(newAddWatchListDtl);
           }
-     }, [getLocaleDate, isAdding, newWatchListItemDtlID, watchListDtl, watchListDtlID, watchListDtlLoadingStarted, watchListDtlLoadingComplete]);
+     }, [getLocaleDate, isAdding, watchListDtl, watchListDtlID, watchListDtlLoadingStarted, watchListDtlLoadingComplete]);
 
      useEffect(() => {
           if (watchListItems.length > 0) {
@@ -512,7 +515,7 @@ export default function WatchListDetail() {
                     if (watchListItems?.filter((watchListItemDupe: typeof IWatchListItem) => {
                          return String(watchListItemDupe.WatchListItemName) === String(watchListItem.WatchListItemName);
                     }).length > 1) {
-                         itemName += " (" + watchListItem.WatchListType.WatchListTypeName + ")"
+                         itemName += " (" + watchListItem.WatchListTypeName + ")"
                     }
 
                     return itemName;
@@ -528,7 +531,7 @@ export default function WatchListDetail() {
                     if (watchListItems?.filter((watchListItemDupe: typeof IWatchListItem) => {
                          return String(watchListItemDupe.WatchListItemName) === String(watchListItem.WatchListItemName);
                     }).length > 1) {
-                         itemName += " (" + watchListItem.WatchListType.WatchListTypeName + ")"
+                         itemName += " (" + watchListItem.WatchListTypeName + ")"
                     }
 
                     let newItem: any = [];
@@ -565,7 +568,7 @@ export default function WatchListDetail() {
           }
      }, [recommendationName, recommendationType]);
 
-     const IMDB_JSON = watchListDtl?.WatchListItem?.IMDB_JSON !== null && typeof watchListDtl?.WatchListItem?.IMDB_JSON !== "undefined" ? JSON.parse(watchListDtl?.WatchListItem?.IMDB_JSON) : null;
+     const IMDB_JSON = watchListDtl?.IMDB_JSON !== null && typeof watchListDtl?.IMDB_JSON !== "undefined" ? JSON.parse(watchListDtl?.IMDB_JSON) : null;
 
      const tooltip = IMDB_JSON &&
           `Rated: ${IMDB_JSON.Rated} 
@@ -578,6 +581,10 @@ Director: ${IMDB_JSON.Director}
 Plot: ${IMDB_JSON.Plot}
 ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSeasons}` : ""}
      `;
+
+     const source_name = watchListSources?.filter((currentWatchList: typeof IWatchListSource) => {
+          return String(currentWatchList.WatchListSourceID) === String(watchListDtl?.WatchListSourceID);
+     });
 
      return (
           <div className="modal foregroundColor">
@@ -602,13 +609,13 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
                                    <div className="labelWidth card">
                                         {!isAdding && !isEditing &&
                                              <>
-                                                  {typeof watchListDtl?.WatchListItem?.IMDB_URL !== "undefined" &&
-                                                       <a className="foregroundColor linkStyle text-label" href={watchListDtl?.WatchListItem?.IMDB_URL} target='_blank' title={tooltip}>{watchListDtl?.WatchListItem?.WatchListItemName}</a>
+                                                  {typeof watchListDtl?.IMDB_URL !== "undefined" &&
+                                                       <a className="foregroundColor linkStyle text-label" href={watchListDtl?.IMDB_URL} target='_blank' title={tooltip}>{watchListDtl?.WatchListItemName}</a>
                                                   }
 
-                                                  {typeof watchListDtl?.WatchListItem?.IMDB_URL === "undefined" &&
+                                                  {typeof watchListDtl?.IMDB_URL === "undefined" &&
                                                        <div title={tooltip}>
-                                                            {watchListDtl?.WatchListItem?.WatchListItemName}
+                                                            {watchListDtl?.WatchListItemName}
                                                        </div>
                                                   }
 
@@ -640,14 +647,14 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
                                    <div className="narrow card">
                                         {!isAdding &&
                                              <>
-                                                  {watchListDtl?.WatchListItem?.IMDB_Poster !== null && watchListDtl?.IMDB_Poster_Error !== true && <Image className="poster-detail" width="175" height="200" alt="Image Not Available" src={watchListDtl?.WatchListItem?.IMDB_Poster} onError={() => showDefaultSrc()} />}
+                                                  {watchListDtl?.IMDB_Poster !== null && watchListDtl?.IMDB_Poster_Error !== true && <Image className="poster-detail" width="175" height="200" alt="Image Not Available" src={watchListDtl?.IMDB_Poster} onError={() => showDefaultSrc()} />}
 
-                                                  {(watchListDtl?.WatchListItem?.IMDB_Poster === null || watchListDtl?.IMDB_Poster_Error === true) && <>{BrokenImageIconComponent}</>}
+                                                  {(watchListDtl?.IMDB_Poster === null || watchListDtl?.IMDB_Poster_Error === true) && <>{BrokenImageIconComponent}</>}
                                              </>
                                         }
 
-                                        {isAdding && addWatchListDtl &&
-                                             <span className="column">{watchListItems?.filter((currentWatchListItem: typeof IWatchListItem) => String(currentWatchListItem?.WatchListItemID) === String(addWatchListDtl?.WatchListItemID)).length === 1 && <Image className="poster-detail" width="175" height="200" alt="Image Not Available" src={watchListItems?.filter((currentWatchListItem: typeof IWatchListItem) => String(currentWatchListItem?.WatchListItemID) === String(addWatchListDtl?.WatchListItemID))[0].IMDB_Poster} />}</span>
+                                        {isAdding && addWatchListDtl && watchListItems?.filter((currentWatchListItem: typeof IWatchListItem) => String(currentWatchListItem?.WatchListItemID) === String(addWatchListDtl?.WatchListItemID)).length === 1 &&
+                                             <span className="column"><Image className="poster-detail" width="175" height="200" alt="Image Not Available" src={watchListItems?.filter((currentWatchListItem: typeof IWatchListItem) => String(currentWatchListItem?.WatchListItemID) === String(addWatchListDtl?.WatchListItemID))[0].IMDB_Poster} /></span>
                                         }
                                    </div>
 
@@ -749,7 +756,7 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
 
                                    <div className="narrow card">
                                         {!isAdding && !isEditing &&
-                                             <div>{watchListDtl?.WatchListSource?.WatchListSourceName}</div>
+                                             <div>{source_name && source_name.length === 1 && source_name[0].WatchListSourceName}</div>
                                         }
 
                                         {isEditing &&
@@ -781,7 +788,7 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
                                         }
                                    </div>
 
-                                   {((isAdding && addWatchListDtl?.WatchListItemID !== "-1" && getWatchListTypeID(addWatchListDtl?.WatchListItemID) === 2) || (!isAdding && watchListDtl?.WatchListItem?.WatchListType?.WatchListTypeID === 2)) &&
+                                   {((isAdding && addWatchListDtl?.WatchListItemID !== "-1" && getWatchListTypeID(addWatchListDtl?.WatchListItemID) === 2) || (!isAdding && watchListDtl?.WatchListTypeID === 2)) &&
                                         <>
                                              <div className="narrow card"></div>
 

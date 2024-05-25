@@ -1,5 +1,5 @@
 import { NextRequest } from 'next/server';
-import { encrypt, getModels, getUserSession} from "../lib";
+import { encrypt, execUpdateDelete, getUserSession } from "../lib";
 
 /**
  * @swagger
@@ -51,7 +51,6 @@ import { encrypt, getModels, getUserSession} from "../lib";
  *            description: '["OK",""] on success, ["ERROR","error message"] on error'
  */
 export async function PUT(request: NextRequest) {
-     const models = getModels();
      const userSession = await getUserSession(request);
 
      // Only admins can call this endpoint. this is to prevent a non-admin from making themselves an admin
@@ -65,47 +64,54 @@ export async function PUT(request: NextRequest) {
      const userName = searchParams.get("wl_username");
      const realName = searchParams.get("wl_realname");
      const password = searchParams.get("wl_password");
-     const admin = typeof searchParams.get("wl_admin") !== "undefined" && (searchParams.get("wl_admin") === "true" || searchParams.get("wl_admin") === "false") ? (searchParams.get("wl_admin")=== "true" ? 1 : 0) : null;
+     const admin = typeof searchParams.get("wl_admin") !== "undefined" && (searchParams.get("wl_admin") === "true" || searchParams.get("wl_admin") === "false") ? (searchParams.get("wl_admin") === "true" ? 1 : 0) : null;
      const enabled = typeof searchParams.get("wl_enabled") !== "undefined" && (searchParams.get("wl_enabled") === "true" || searchParams.get("wl_enabled") === "false") ? (searchParams.get("wl_enabled") === "true" ? 1 : 0) : null;
 
      if (userID === null) {
           return Response.json(["ERROR", "User ID was not provided"]);
      }
 
-     const updateColumns: any = {};
+     let columns = "";
+     const values: any = [];
 
      if (userName !== null) {
-          updateColumns["Username"] = encrypt(String(userName));
+          columns += (columns !== "" ? "," : "") + "Username=?";
+          values.push(encrypt(String(userName)));
      }
 
      if (realName !== null) {
-          updateColumns["Realname"] = encrypt(String(realName));
+          columns += (columns !== "" ? "," : "") + "Realname=?";
+          values.push(encrypt(String(realName)));
      }
 
      if (password !== null) {
-          updateColumns["Password"] = encrypt(String(password));
+          columns += (columns !== "" ? "," : "") + "Password=?";
+          values.push(encrypt(String(password)));
      }
 
      if (admin !== null) {
-          updateColumns["Admin"] = admin;
+          columns += (columns !== "" ? "," : "") + "Admin=?";
+          values.push(admin);
      }
 
      if (enabled !== null) {
-          updateColumns["Enabled"] = enabled;
+          columns += (columns !== "" ? "," : "") + "Enabled=?";
+          values.push(enabled);
      }
 
-     if (Object.keys(updateColumns).length == 0) {
-          return Response.json(["ERROR", "No params were passed"]);
+     if (values.length === 0) {
+          return Response.json(["ERROR", `No parameters were passed`]);
      }
 
-     const updatedRowCount = await models.Users.update(
-          updateColumns
-          , {
-               where: { UserID: userID }
-          }).catch(function (e: Error) {
-               const errorMsg = `/UpdateUser: The error ${e.message} occurred while updating User with ID ${userID}`;
-               return Response.json(["ERROR", errorMsg]);
-          });
+     values.push(userID);
 
-     return Response.json(["OK", updatedRowCount]);
+     try {
+          const sql = `UPDATE Users SET ${columns} WHERE UserID=?`;
+
+          await execUpdateDelete(sql, values);
+
+          return Response.json(["OK"]);
+     } catch (e) {
+          return Response.json(["ERROR", `An error occurred updating the User with ID ${userID} with the error ${e.message}`]);
+     }
 }

@@ -60,7 +60,7 @@ export default function WatchListStats() {
 
      const movieStats = (
           <>
-               {watchListMovieStats.map((currentWatchListMovieStat: typeof IWatchListMovieStat, index: number) => {
+               {watchListMovieStats && watchListMovieStats?.map((currentWatchListMovieStat: typeof IWatchListMovieStat, index: number) => {
                     return (
                          <table key={index} className="datagrid">
                               <tbody className="data">
@@ -93,7 +93,7 @@ export default function WatchListStats() {
 
      const sourceStats = (
           <>
-               {watchListSourceStats.map((currentWatchListSourceStat: typeof IWatchListSourceStat, index: number) => {
+               {watchListSourceStats && watchListSourceStats?.map((currentWatchListSourceStat: typeof IWatchListSourceStat, index: number) => {
                     return (
                          <table key={index} className="datagrid">
                               <tbody className="data">
@@ -166,7 +166,7 @@ export default function WatchListStats() {
 
      const topRated = (
           <>
-               {watchListTopRatedStats.map((currentWatchListTopRatedStat: typeof IWatchListTopRatedStat, index: number) => {
+               {watchListTopRatedStats && watchListTopRatedStats?.map((currentWatchListTopRatedStat: typeof IWatchListTopRatedStat, index: number) => {
                     return (
                          <table key={index} className="datagrid">
                               <tbody className="data">
@@ -193,7 +193,7 @@ export default function WatchListStats() {
 
      const tvStats = (
           <>
-               {watchListTVStats.map((currentWatchListTVStat: typeof IWatchListTVStat, index: number) => {
+               {watchListTVStats && watchListTVStats?.map((currentWatchListTVStat: typeof IWatchListTVStat, index: number) => {
                     return (
                          <table key={index} className="datagrid">
                               <tbody className="data">
@@ -380,37 +380,41 @@ export default function WatchListStats() {
 
      return (
           <>
+               {watchListSourceStats?.length === 0 && watchListTopRatedStats?.length === 0 && watchListMovieStats?.length === 0 && watchListTVStats?.length === 0 &&
+                    <div className="flex-container foregroundColor">
+                         No stats are available
+                    </div>
+               }
+
                <div className="flex-container foregroundColor">
-                    {sourceStats !== null &&
+                    {sourceStats !== null && watchListSourceStats?.length > 0 &&
                          <div className="col-1">
                               <h1>Most Watched Sources</h1>
                               <div>{sourceStats}</div>
                          </div>
                     }
 
-                    {topRated !== null &&
+                    {topRated !== null && watchListTopRatedStats?.length > 0 &&
                          <div className="col-2">
                               <h1>Top Rated</h1>
                               <div>{topRated}</div>
                          </div>
                     }
 
-                    {movieStats !== null &&
+                    {movieStats !== null && watchListMovieStats?.length > 0 &&
                          <div className="col-3">
                               <h1>Top 10 Movies</h1>
                               <div>{movieStats}</div>
                          </div>
                     }
 
-                    {tvStats !== null &&
+                    {tvStats !== null && watchListTVStats?.length > 0 &&
                          <div className="col-4">
                               <h1>Top 10 TV Shows</h1>
                               <div>{tvStats}</div>
                          </div>
                     }
                </div>
-
-
           </>
      );
 }

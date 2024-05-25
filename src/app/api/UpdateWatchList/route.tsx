@@ -1,5 +1,5 @@
 import { NextRequest } from 'next/server';
-import { getModels } from "../lib";
+import { execUpdateDelete } from "../lib";
 
 /**
  * @swagger
@@ -69,7 +69,6 @@ import { getModels } from "../lib";
  *            description: '["OK",""] on success, ["ERROR","error message"] on error'
  */
 export async function PUT(request: NextRequest) {
-     const models = getModels();
      const searchParams = request.nextUrl.searchParams;
 
      const watchListID = searchParams.get("WatchListID");
@@ -86,53 +85,62 @@ export async function PUT(request: NextRequest) {
           return Response.json(["ERROR", "WatchList ID was not provided"]);
      }
 
-     const updateColumns: any = {};
+     let columns = "";
+     const values: any = [];
 
      if (watchListItemID !== null) {
-          updateColumns['WatchListItemID'] = watchListItemID;
+          columns += (columns !== "" ? "," : "") + "WatchListItemID=?";
+          values.push(watchListItemID);
      }
 
      if (startDate !== null) {
-          updateColumns['StartDate'] = startDate;
+          columns += (columns !== "" ? "," : "") + "StartDate=?";
+          values.push(startDate);
      }
 
      if (endDate !== null) {
-          updateColumns['EndDate'] = endDate;
+          columns += (columns !== "" ? "," : "") + "EndDate=?";
+          values.push(endDate);
      }
 
      if (sourceID !== null) {
-          updateColumns['WatchListSourceID'] = sourceID;
+          columns += (columns !== "" ? "," : "") + "WatchListSourceID=?";
+          values.push(sourceID);
      }
 
      if (season !== null) {
-          updateColumns['Season'] = season;
+          columns += (columns !== "" ? "," : "") + "Season=?";
+          values.push(season);
      }
 
      if (archived !== null) {
-          updateColumns['Archived'] = (archived === "true" ? 1 : 0);
+          columns += (columns !== "" ? "," : "") + "Archived=?";
+          values.push((archived === "true" ? 1 : 0));
      }
 
      if (rating !== null) {
-          updateColumns['Rating'] = rating;
+          columns += (columns !== "" ? "," : "") + "Rating=?";
+          values.push(rating);
      }
 
      if (notes !== null) {
-          updateColumns['Notes'] = notes;
+          columns += (columns !== "" ? "," : "") + "Notes=?";
+          values.push(notes);
      }
 
-     if (Object.keys(updateColumns).length == 0) { // No params were passed except for the mandatory column
-          return Response.json(["ERROR", "No params were passed"]);
+     if (values.length === 0) {
+          return Response.json(["ERROR", `No parameters were passed`]);
      }
 
-     const updatedRowCount = await models.WatchList.update(
-          updateColumns
-          , {
-               //logging: console.log,
-               where: { WatchListID: watchListID }
-          }).catch(function (e: Error) {
-               const errorMsg = `/UpdateWatchList: The error ${e.message} occurred while updating WatchList with ID ${watchListID}`;
-               return Response.json(["ERROR", errorMsg]);
-          });
+     values.push(watchListID);
 
-     return Response.json(["OK", updatedRowCount]);
+     try {
+          const sql = `UPDATE WatchList SET ${columns} WHERE WatchListID=?`;
+
+          await execUpdateDelete(sql, values);
+
+          return Response.json(["OK"]);
+     } catch (e) {
+          return Response.json(["ERROR", `/UpdateWatchList: The error occurred updating the WatchList with ID ${watchListID} with the error ${e.message}`]);
+     }
 }

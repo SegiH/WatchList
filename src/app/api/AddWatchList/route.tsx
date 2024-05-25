@@ -1,7 +1,5 @@
 import { NextRequest } from 'next/server';
-import { getModels } from "../lib";
-import { getUserID } from '../lib';
-import WatchList from "../../../app/interfaces/IWatchList";
+import { execInsert, getUserID } from '../lib';
 
 /**
  * @swagger
@@ -65,8 +63,6 @@ import WatchList from "../../../app/interfaces/IWatchList";
  *            description: '["OK",""] on success, ["ERROR","error message"] on error'
  */
 export async function PUT(request: NextRequest) {
-     const models = getModels();
-
      const userID = await getUserID(request);
 
      const searchParams = request.nextUrl.searchParams;
@@ -86,23 +82,13 @@ export async function PUT(request: NextRequest) {
      } else if (startDate === null) {
           return Response.json(["Start Date was not provided"]);
      } else {
-          return await models.WatchList.create({
-               UserID: userID,
-               WatchListItemID: watchListItemID,
-               StartDate: startDate,
-               EndDate: endDate,
-               WatchListSourceID: sourceID,
-               Season: season,
-               Archived: 0,
-               Rating: rating,
-               Notes: notes,
-          }).then((result: WatchList) => {
-               // Return ID of newly inserted row
-               return Response.json(["OK", result.WatchListID]);
-          }).catch(function (e: Error) {
-               const errorMsg = `/AddWatchList: The error ${e.message} occurred while adding the WatchList record`;
-               console.error(errorMsg);
-               return Response.json(errorMsg);
-          });
+          const SQL = "INSERT INTO WatchList(UserID, WatchListItemID, StartDate, EndDate, WatchListSourceID, Season, Archived, Rating, Notes) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);"
+          const params = [userID, watchListItemID, startDate, endDate, sourceID, season, 0, rating, notes];
+
+          const result = await execInsert(SQL, params);
+
+          const newID = result.lastID;
+
+          return Response.json(["OK", newID]);
      }
 }

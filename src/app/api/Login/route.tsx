@@ -1,6 +1,6 @@
 import { cookies, headers } from 'next/headers'
 
-import { decrypt, DBType, sequelize, validateSettings } from '../lib';
+import { decrypt, execSelect, validateSettings } from '../lib';
 
 /**
  * @swagger
@@ -55,44 +55,35 @@ export async function PUT() {
           }
 
           try {
-               const SQL =
-                    DBType === "MSSQL"
-                         ? "OPEN SYMMETRIC KEY WatchListKey DECRYPTION BY CERTIFICATE WatchListCert;SELECT TOP(1) UserID,CONVERT(VARCHAR(50),DECRYPTBYKEY(Username)) AS Username,CONVERT(VARCHAR(50),DECRYPTBYKEY(Realname)) AS Realname,Admin FROM Users WHERE :Username = CONVERT(VARCHAR(50),DECRYPTBYKEY(Username))AND :Password = CONVERT(VARCHAR(50),DECRYPTBYKEY(Password)) AND Enabled=1;CLOSE SYMMETRIC KEY WatchListKey"
-                         : "SELECT UserID,Username,Password,Realname,Admin FROM Users WHERE Enabled=1 LIMIT 1";
+               const SQL = "SELECT UserID,Username,Password,Realname,Admin FROM Users WHERE Enabled=1 LIMIT 1";
 
-               return sequelize
-                    .query(SQL)
-                    .then((results: any) => {
-                         if (results[0].length === 0) {
-                              return Response.json(["ERROR", "Invalid username or password"]);
-                         }
+               const results = await execSelect(SQL, []);
 
-                         // Since the encryption is done in the API, we have to get the username and password and decrypt it in this endpoint
-                         const currentUser = results[0].filter((currentUser: any) => {
-                              return sanitizedUsername === decrypt(currentUser.Username) && sanitizedPassword === decrypt(currentUser.Password)
-                         });
+               if (results.length === 0) {
+                    return Response.json(["ERROR", "Invalid username or password"]);
+               }
 
-                         if (currentUser.length !== 1) {
-                              return Response.json(["ERROR", "Invalid username or password"]);
-                         }
+               // Since the encryption is done in the API, we have to get the username and password and decrypt it in this endpoint
+               const currentUser = results.filter((currentUser: any) => {
+                    return sanitizedUsername === decrypt(currentUser.Username) && sanitizedPassword === decrypt(currentUser.Password)
+               });
 
-                         const userData = {
-                              UserID: currentUser[0].UserID,
-                              Username: decrypt(currentUser[0].Username),
-                              Realname: decrypt(currentUser[0].Realname),
-                              Admin: results[0][0]["Admin"]
-                         }
+               if (currentUser.length !== 1) {
+                    return Response.json(["ERROR", "Invalid username or password"]);
+               }
 
-                         cookies().set('userData', JSON.stringify(userData));
+               const userData = {
+                    UserID: currentUser[0].UserID,
+                    Username: decrypt(currentUser[0].Username),
+                    Realname: decrypt(currentUser[0].Realname),
+                    Admin: results[0]["Admin"]
+               }
 
-                         return Response.json(["OK", userData]);
-                    })
-                    .catch(function (err: Error) {
-                         console.dir(err);
-                         return Response.json(["ERROR", `/Login: The error ${err} occurred logging in`]);
-                    });
+               cookies().set('userData', JSON.stringify(userData));
+
+               return Response.json(["OK", userData]);
           } catch (err: any) {
-               return Response.json("Unauthorized 4: " + err.message);
+               return Response.json(["ERROR", `/Login: The error ${err.message} occurred logging in`]);
           }
      }
 }

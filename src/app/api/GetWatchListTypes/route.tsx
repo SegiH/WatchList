@@ -1,5 +1,5 @@
 import { NextRequest } from 'next/server';
-import { getModels } from "../lib";
+import { execSelect } from "../lib";
 
 /**
  * @swagger
@@ -14,13 +14,13 @@ import { getModels } from "../lib";
  *            description: '["OK",""] on success, ["ERROR","error message"] on error'
  */
 export async function GET(request: NextRequest) {
-     const models = getModels();
-     
-     return models.WatchListTypes.findAll({
-          order: [["WatchListTypeName", "DESC"]],
-     }).then((results: any) => {
+     const SQL="SELECT * FROM WatchListTypes ORDER BY WatchListTypeName DESC";
+
+     try {
+          const results = await execSelect(SQL, []);
+
           return Response.json(["OK", results]);
-     }).catch(function (err: Error) {
-          return Response.json(["ERROR", `/GetWatchListTypes: The error ${err.message} occurred getting the WatchList Types`]);
-     });
+     } catch (e) {
+          return Response.json(["ERROR", `/GetWatchListTypes: The error ${e.message} occurred getting the WatchList Types`]);
+     }
 }

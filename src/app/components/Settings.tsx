@@ -63,9 +63,17 @@ const Settings = () => {
      useEffect(() => {
           const language = typeof navigator.languages != undefined ? navigator.languages[0] : "en-us";
 
-          const dateObj=new Date(buildDate);
+          const dateObj = new Date(buildDate);
 
-          setFormattedBuildDate(dateObj.toLocaleDateString(language))
+          const options = {
+               year: '2-digit',
+               month: '2-digit',
+               day: '2-digit',
+          };
+
+          const newFormattedBuildDate = dateObj.toLocaleDateString(language, options);
+
+          setFormattedBuildDate(newFormattedBuildDate);
      }, []);
 
      return (

@@ -4,7 +4,7 @@ WatchList can be set up to run as a regular web application or a Progressive Web
 1. Check out the source from Github and go to the root directory of the project.
 1. Edit config\default.json and fill in the following values:
    - Fill in the "SQLite" section. Create a username and password and use "WatchList" as the database name.
-   - Secret: Create a long and secure password that will be used to encrypt your database
+   - Secret: Create a long and secure password that will be used to encrypt your database. If you lose this password, you may not be able to use your WatchList database.
 1. Run `npm install`
 1. Run `npm run build`
 1. Run `npm run start`

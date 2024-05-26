@@ -40,9 +40,4 @@ If you cannot log into WatchList with the admin account, you can reset the passw
 
 ## Known Issues:
 
-After you set up WatchList and log in for the first time, if you get an error that says that the WatchListSources table does not exist:
-
-1. Stop the server
-1. Delete the build folder
-1. Run `npm run build`
-1. Run `npm run start`
+If you search for a movie or show that is pretty new, you may not be able to find it when searching and have to add a WatchList manually.

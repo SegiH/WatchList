@@ -119,7 +119,7 @@ export default function WatchListItems() {
 
      return (
           <>
-               {isError &&
+               {!isError &&
                     <span className="clickable customTopMargin foregroundColor" onClick={() => openDetailClickHandler(-1)}>
                          {AddIconComponent}
                     </span>

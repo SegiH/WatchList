@@ -515,8 +515,10 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
                                         }
                                    </div>
 
-                                   {isEditing &&
+                                   {(isAdding || isEditing) &&
                                         <>
+                                             <div className="narrow card"></div>
+
                                              <div className="narrow card">
                                                   <span className="textLabel">URL:&nbsp;</span>
                                              </div>

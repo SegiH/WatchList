@@ -343,7 +343,25 @@ export default function WatchListItemsDtl() {
                          } else {
                               // Sanitize object by replacing all null fields with "". There are issues with binding to input fields when the value is null
                               const wlid = res.data[1];
-                              debugger
+
+                              if (wlid[0]?.IMDB_JSON !== null && typeof wlid[0]?.IMDB_JSON !== "undefined") {
+                                   const IMDB_JSON = (JSON.parse(wlid[0]?.IMDB_JSON));
+
+                                   const tooltip = IMDB_JSON && IMDB_JSON !== null &&
+                                        `Rated: ${IMDB_JSON.Rated} 
+Year: ${IMDB_JSON.Year}
+Rated: ${IMDB_JSON.imdbRating}
+Genre: ${IMDB_JSON.Genre}
+Runtime: ${IMDB_JSON.Runtime}
+Release Date: ${IMDB_JSON.Released}
+Director: ${IMDB_JSON.Director}
+Plot: ${IMDB_JSON.Plot}
+${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSeasons}` : ""}
+     `;
+
+                                   wlid[0].Tooltip = tooltip;
+                              }
+
                               Object.keys(wlid[0]).map((keyName) => {
                                    if (wlid[0][keyName] === null) {
                                         wlid[0][keyName] = "";
@@ -375,7 +393,7 @@ export default function WatchListItemsDtl() {
           }
      }, [recommendationName, recommendationType]);
 
-     const IMDB_JSON = watchListItemDtl?.IMDB_JSON !== null && typeof watchListItemDtl?.IMDB_JSON !== "undefined" && watchListItemDtl?.IMDB_JSON !== "" ? JSON.parse(watchListItemDtl?.IMDB_JSON) : null;
+     /*const IMDB_JSON = watchListItemDtl?.IMDB_JSON !== null && typeof watchListItemDtl?.IMDB_JSON !== "undefined" && watchListItemDtl?.IMDB_JSON !== "" ? JSON.parse(watchListItemDtl?.IMDB_JSON) : null;
 
      const tooltip = IMDB_JSON &&
           `Rated: ${IMDB_JSON.Rated}
@@ -387,7 +405,7 @@ Release Date: ${IMDB_JSON.Released}
 Director: ${IMDB_JSON.Director}
 Plot: ${IMDB_JSON.Plot}
 ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSeasons}` : ""}
-     `;
+     `;*/
 
      const type_name = watchListTypes?.filter((currentWatchList: typeof IWatchListItem) => {
           return String(currentWatchList.WatchListTypeID) === String(watchListItemDtl?.WatchListTypeID);
@@ -451,11 +469,11 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
                                         {!isAdding && !isEditing &&
                                              <>
                                                   {typeof watchListItemDtl?.IMDB_URL !== "undefined" &&
-                                                       <a className="text-label" href={watchListItemDtl?.IMDB_URL} target='_blank' title={tooltip}>{watchListItemDtl?.WatchListItemName}</a>
+                                                       <a className="text-label" href={watchListItemDtl?.IMDB_URL} target='_blank' title={watchListItemDtl?.Tooltip}>{watchListItemDtl?.WatchListItemName}</a>
                                                   }
 
                                                   {typeof watchListItemDtl?.IMDB_URL === "undefined" &&
-                                                       <div title={tooltip}>
+                                                       <div title={watchListItemDtl?.Tooltip}>
                                                             {watchListItemDtl?.WatchListItemName}
                                                        </div>
                                                   }

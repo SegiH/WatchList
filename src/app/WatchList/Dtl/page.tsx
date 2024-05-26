@@ -478,6 +478,24 @@ export default function WatchListDetail() {
                               // Sanitize object by replacing all fields with null
                               const wld = res.data[1];
 
+                              if (wld[0]?.IMDB_JSON !== null && typeof wld[0]?.IMDB_JSON !== "undefined") {
+                                   const IMDB_JSON = (JSON.parse(wld[0]?.IMDB_JSON));
+
+                                   const tooltip = IMDB_JSON && IMDB_JSON !== null &&
+                                        `Rated: ${IMDB_JSON.Rated} 
+Year: ${IMDB_JSON.Year}
+Rated: ${IMDB_JSON.imdbRating}
+Genre: ${IMDB_JSON.Genre}
+Runtime: ${IMDB_JSON.Runtime}
+Release Date: ${IMDB_JSON.Released}
+Director: ${IMDB_JSON.Director}
+Plot: ${IMDB_JSON.Plot}
+${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSeasons}` : ""}
+     `;
+
+                                   wld[0].Tooltip = tooltip;
+                              }
+
                               Object.keys(wld[0]).map((keyName) => {
                                    if (wld[0][keyName] === null) {
                                         wld[0][keyName] = "";
@@ -568,20 +586,6 @@ export default function WatchListDetail() {
           }
      }, [recommendationName, recommendationType]);
 
-     const IMDB_JSON = watchListDtl?.IMDB_JSON !== null && typeof watchListDtl?.IMDB_JSON !== "undefined" ? JSON.parse(watchListDtl?.IMDB_JSON) : null;
-
-     const tooltip = IMDB_JSON &&
-          `Rated: ${IMDB_JSON.Rated} 
-Year: ${IMDB_JSON.Year}
-Rated: ${IMDB_JSON.imdbRating}
-Genre: ${IMDB_JSON.Genre}
-Runtime: ${IMDB_JSON.Runtime}
-Release Date: ${IMDB_JSON.Released}
-Director: ${IMDB_JSON.Director}
-Plot: ${IMDB_JSON.Plot}
-${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSeasons}` : ""}
-     `;
-
      const source_name = watchListSources?.filter((currentWatchList: typeof IWatchListSource) => {
           return String(currentWatchList.WatchListSourceID) === String(watchListDtl?.WatchListSourceID);
      });
@@ -610,11 +614,11 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
                                         {!isAdding && !isEditing &&
                                              <>
                                                   {typeof watchListDtl?.IMDB_URL !== "undefined" &&
-                                                       <a className="foregroundColor linkStyle text-label" href={watchListDtl?.IMDB_URL} target='_blank' title={tooltip}>{watchListDtl?.WatchListItemName}</a>
+                                                       <a className="foregroundColor linkStyle text-label" href={watchListDtl?.IMDB_URL} target='_blank' title={watchListDtl?.Tooltip}>{watchListDtl?.WatchListItemName}</a>
                                                   }
 
                                                   {typeof watchListDtl?.IMDB_URL === "undefined" &&
-                                                       <div title={tooltip}>
+                                                       <div title={watchListDtl?.Tooltip}>
                                                             {watchListDtl?.WatchListItemName}
                                                        </div>
                                                   }

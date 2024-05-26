@@ -92,7 +92,7 @@ export default function WatchListItemsDtl() {
                setWatchListItemsLoadingComplete(false);
           }
 
-          setIsAdding(false);
+          //setIsAdding(false);
           setIsEditing(false);
 
           if (showWatchListItems) {
@@ -517,8 +517,6 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
 
                                    {isEditing &&
                                         <>
-                                             <div className="narrow card"></div>
-
                                              <div className="narrow card">
                                                   <span className="textLabel">URL:&nbsp;</span>
                                              </div>

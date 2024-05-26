@@ -60,7 +60,11 @@ export default function WatchListItemsDtl() {
 
      const cancelClickHandler = async () => {
           setIsEditing(false);
-          setWatchListItemDtl(originalWatchListItemDtl);
+
+          if (!isAdding) {
+               setWatchListItemDtl(originalWatchListItemDtl);
+          }
+
           setOriginalWatchListItemDtl(null);
           setAddModified(false);
           setEditModified(false);
@@ -79,8 +83,6 @@ export default function WatchListItemsDtl() {
      };
 
      const closeDetail = async () => {
-          setIsAdding(false);
-          setIsEditing(false);
           setAddWatchListItemDtl(null);
           setWatchListItemDtl(null);
           setOriginalWatchListItemDtl(null);
@@ -89,6 +91,9 @@ export default function WatchListItemsDtl() {
                setWatchListItemsLoadingStarted(false);
                setWatchListItemsLoadingComplete(false);
           }
+
+          setIsAdding(false);
+          setIsEditing(false);
 
           if (showWatchListItems) {
                router.push("/WatchListItems");
@@ -338,7 +343,7 @@ export default function WatchListItemsDtl() {
                          } else {
                               // Sanitize object by replacing all null fields with "". There are issues with binding to input fields when the value is null
                               const wlid = res.data[1];
-debugger
+                              debugger
                               Object.keys(wlid[0]).map((keyName) => {
                                    if (wlid[0][keyName] === null) {
                                         wlid[0][keyName] = "";
@@ -370,10 +375,10 @@ debugger
           }
      }, [recommendationName, recommendationType]);
 
-     const IMDB_JSON =  watchListItemDtl?.IMDB_JSON !== null && typeof watchListItemDtl?.IMDB_JSON !== "undefined" && watchListItemDtl?.IMDB_JSON !== "" ? JSON.parse(watchListItemDtl?.IMDB_JSON) : null;
+     const IMDB_JSON = watchListItemDtl?.IMDB_JSON !== null && typeof watchListItemDtl?.IMDB_JSON !== "undefined" && watchListItemDtl?.IMDB_JSON !== "" ? JSON.parse(watchListItemDtl?.IMDB_JSON) : null;
 
-     const tooltip=IMDB_JSON &&
-     `Rated: ${IMDB_JSON.Rated}
+     const tooltip = IMDB_JSON &&
+          `Rated: ${IMDB_JSON.Rated}
 Year: ${IMDB_JSON.Year}
 Rated: ${IMDB_JSON.imdbRating}
 Genre: ${IMDB_JSON.Genre}

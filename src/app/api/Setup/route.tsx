@@ -1,5 +1,5 @@
 import { NextRequest } from 'next/server';
-import { addUser, DBFile, execSelect } from "../lib";
+import { addUser, DBFile, defaultSources, defaultTypes, execSelect, watchListSQL, watchListItemsSQL, watchListSourcesSQL, watchListTypesSQL, usersSQL } from "../lib";
 import fs from 'fs';
 
 const sqlite3 = require('sqlite3').verbose();
@@ -42,9 +42,6 @@ const sqlite3 = require('sqlite3').verbose();
  *            description: '["OK",""] on success, ["ERROR","error message"] on error'
  */
 
-const defaultSources = ['Amazon', 'Hulu', 'Movie Theatre', 'Netflix', 'Plex', 'Prime', 'Web'];
-const defaultTypes = ['Movie', 'Other', 'Special', 'TV'];
-
 export async function PUT(request: NextRequest) {
      if (fs.existsSync(DBFile)) {
           return Response.json(["ERROR", `Error! The WatchList database file already exists. Please move or rename this file`]);
@@ -66,11 +63,6 @@ export async function PUT(request: NextRequest) {
      }
 
      // WatchList
-     const watchListSQL = "CREATE TABLE WatchList (WatchListID INTEGER PRIMARY KEY, UserID INTEGER NOT NULL, WatchListItemID INTEGER NOT NULL, StartDate VARCHAR(80), EndDate VARCHAR(80), WatchListSourceID INTEGER, Season INTEGER, Archived TINYINT(1), Notes VARCHAR(200), Rating DECIMAL(18,2));";
-     const watchListItemsSQL = "CREATE TABLE WatchListItems(WatchListItemID INTEGER PRIMARY KEY,WatchListItemName VARCHAR(500),WatchListTypeID INTEGER,IMDB_URL VARCHAR(200),IMDB_Poster VARCHAR(2000),ItemNotes VARCHAR(200),Archived TINYINT(1), IMDB_JSON TEXT NULL);";
-     const watchListSourcesSQL = "CREATE TABLE WatchListSources (WatchListSourceID INTEGER PRIMARY KEY, WatchListSourceName VARCHAR(80) NOT NULL);";
-     const watchListTypesSQL = "CREATE TABLE WatchListTypes (WatchListTypeID INTEGER PRIMARY KEY, WatchListTypeName VARCHAR(80) NOT NULL);";
-     const usersSQL = "CREATE TABLE Users (UserID INTEGER PRIMARY KEY, Username BLOB NOT NULL, Realname BLOB NOT NULL, Password BLOB NOT NULL, Admin BIT NULL DEFAULT 0, Enabled NULL DEFAULT 0);";
 
      try {
           await execSelect(watchListSQL, []);

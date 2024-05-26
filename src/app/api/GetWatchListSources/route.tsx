@@ -1,4 +1,4 @@
-import { execSelect } from "../lib";
+import { defaultSources, execSelect, watchListSourcesSQL } from "../lib";
 
 /**
  * @swagger
@@ -12,14 +12,28 @@ import { execSelect } from "../lib";
  *          200:
  *            description: '["OK",""] on success, ["ERROR","error message"] on error'
  */
-export async function GET() {
-     const SQL="SELECT * FROM WatchListSources ORDER BY WatchListSourceName DESC";
+const SQL="SELECT * FROM WatchListSources ORDER BY WatchListSourceName DESC";
 
+export async function GET() {
      try {
           const results = await execSelect(SQL, []);
 
           return Response.json(["OK", results]);
      } catch (e) {
-          return Response.json(["ERROR", `/GetWatchListSources: The error ${e.message} occurred getting the WatchList Sources`]);
+          try {
+               await execSelect(watchListSourcesSQL, []);
+
+               defaultSources.forEach(async (element) => {
+                    const SQL = "INSERT INTO WatchListSources (WatchListSourceName) VALUES (?)";
+
+                    await execSelect(SQL, [element]);
+               });
+
+               const results = await execSelect(SQL, []);
+
+               return Response.json(["OK", results]);
+          } catch(e) {
+               return Response.json(["ERROR", `/GetWatchListSources: The error ${e.message} occurred getting the WatchList Sources`]);
+          }
      }
 }

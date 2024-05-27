@@ -8,6 +8,7 @@ WatchList can be set up to run as a regular web application or a Progressive Web
 1. Run `npm install`
 1. Run `npm run build`
 1. Run `npm run start`
+1. If you are setting up WatchList for the first time, make sure you do not already have a file in the root of your project named watchlistdb.sqlite. If it does exist, delete or rename it.
 1. Visit http://localhost:3000 in your browser. You should see the Setup page to set up a new account. This account will automatically be a WatchList admin account.
 1. Enter the following fields:
    - Name: Name of the new admin
@@ -17,9 +18,11 @@ WatchList can be set up to run as a regular web application or a Progressive Web
 1. Login using the credentials that you created above.
 
 # Docker setup
-1. Follow the instructions above but stop after running `npm run build`.
+1. Follow the instructions above but do not log in at the last step`.
+1. If you ran the command `npm run start` above and it is still running, stop the app from running.
+1. Make sure that you have a file named watchlistdb.sqlite in the root of your project.
 1. Build the Docker image: `docker buildx build . -t watchlist`.
-1. Edit docker-compose.yml and update the network name to match your Docker network. You can create a docker network if you haven't done so already with the command `docker network create YourNetworkName`.
+1. Edit docker-compose.yml and update the volume to watchlistdb.sqlite as needed & network name to match your Docker network. You can create a docker network if you haven't done so already with the command `docker network create YourNetworkName`.
 1. Build the Docker container: `docker-compose up -d`.
 
 ## Progressive Web Application (PWA).

@@ -3,6 +3,4 @@ BEFORE COMMITTING:
   update build date
   start doing micro commits!!!!
   
-  Test by simulating a new user
-  Errors when searching as new user when not using test data 
   look into error in dev console about image missing src and alt property

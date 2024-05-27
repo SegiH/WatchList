@@ -28,7 +28,7 @@ export default function Login() {
           setUserData
      } = useContext(DataContext) as DataContextType
 
-     const [password, setPassword] = useState(""); // TODO: Delete me later!
+     const [password, setPassword] = useState("");
      const [username, setUsername] = useState("");
      const [loginSubmitted, setLoginSubmitted] = useState(false);
 

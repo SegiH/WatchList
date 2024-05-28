@@ -629,6 +629,10 @@ input:checked+.slider:before {
      width: unset !important;
 }
 
+.whiteBackgroundColor {
+     background-color: white;
+}
+
 .wordWrapLabel {
      display: inline-flex;
      max-width: 95px;

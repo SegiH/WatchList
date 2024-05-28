@@ -629,7 +629,7 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
 
                                         {(isEditing || isAdding) && formattedNames &&
                                              <div className="narrow card">
-                                                  <Autocomplete id="wl_autocomplete" className="labelWidth" size="small" sx={{ width: 250, height: 40 }} {...defaultProps} options={formattedNames} value={autoComplete} onChange={(event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => autoCompleteChangeHandler(event)} renderInput={(params: typeof ReactNode) => <TextField {...params} label="Search" />} />
+                                                  <Autocomplete id="wl_autocomplete" className="labelWidth whiteBackgroundColor" size="small" sx={{ width: 250, height: 40 }} {...defaultProps} options={formattedNames} value={autoComplete} onChange={(event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => autoCompleteChangeHandler(event)} renderInput={(params: typeof ReactNode) => <TextField {...params} label="Search" />} />
                                              </div>
                                         }
                                    </div>
@@ -691,14 +691,13 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
 
                                                        {watchListItems?.sort((a: typeof IWatchListItem, b: typeof IWatchListItem) => {
                                                             return String(a.WatchListItemName) > String(b.WatchListItemName) ? (watchListSortDirection === "ASC" ? 1 : -1) : watchListSortDirection === "ASC" ? -1 : 1;
-                                                       })
-                                                            .map((watchListItem: typeof IWatchListItem, index: number) => {
-                                                                 return (
-                                                                      <option key={index} value={watchListItem.WatchListItemID}>
-                                                                           {watchListItem.WatchListItemName}
-                                                                      </option>
-                                                                 );
-                                                            })}
+                                                       }).map((watchListItem: typeof IWatchListItem, index: number) => {
+                                                            return (
+                                                                 <option key={index} value={watchListItem.WatchListItemID}>
+                                                                      {watchListItem.WatchListItemName}
+                                                                 </option>
+                                                            );
+                                                       })}
                                                   </select>
                                              </div>
                                         </>

@@ -528,12 +528,15 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
           if (watchListItems.length > 0) {
                // Generate names for auto complete
                const namesOnlyItems = watchListItems.map((watchListItem: typeof IWatchListItem) => {
-                    let itemName = watchListItem.WatchListItemName
+                    const IMDB_JSON = watchListItem?.IMDB_JSON !== null && typeof watchListItem?.IMDB_JSON !== "undefined" ? JSON.parse(watchListItem?.IMDB_JSON): null;
 
+                    let itemName = watchListItem.WatchListItemName + (IMDB_JSON !== null && IMDB_JSON.Year !== null ? ` (${IMDB_JSON.Year})` : ``);
+
+                    
                     if (watchListItems?.filter((watchListItemDupe: typeof IWatchListItem) => {
                          return String(watchListItemDupe.WatchListItemName) === String(watchListItem.WatchListItemName);
                     }).length > 1) {
-                         itemName += " (" + watchListItem.WatchListTypeName + ")"
+                         itemName += ` (${watchListItem.WatchListTypeName})`;
                     }
 
                     return itemName;
@@ -542,6 +545,8 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
                const namesWithIdSorted = namesOnlyItems.sort();
 
                setFormattedNames(namesWithIdSorted);
+
+               //console.log(namesWithIdSorted)
 
                const namesWithIdItems = watchListItems.map((watchListItem: typeof IWatchListItem) => {
                     let itemName = watchListItem.WatchListItemName

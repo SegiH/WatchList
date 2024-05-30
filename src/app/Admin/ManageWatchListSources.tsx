@@ -19,7 +19,9 @@ const ManageWatchListSources = () => {
           defaultRoute,
           demoMode,
           EditIconComponent,
+          isAdding,
           isAdmin,
+          isEditing,
           SaveIconComponent,
           setIsAdding,
           setIsEditing,
@@ -145,9 +147,11 @@ const ManageWatchListSources = () => {
                width: 100,
                cellClassName: "actions",
                getActions: ({ id }: { id: number }) => {
-                    if (editingId === null) {
+                    const newestSource = watchListSources?.filter((watchListSource: typeof IWatchListSource) => watchListSource.WatchListSourceID === id && watchListSource.isNew === true);
+
+                    if (editingId === null && !isAdding && !isEditing) {
                          return [<GridActionsCellItem key={id} icon={EditIconComponent} label="Edit" className="icon textPrimary" onClick={enterEditModeClickHandler(id)} color="inherit" />];
-                    } else if (editingId === id) {
+                    } else if ((isEditing && editingId === id) || (isAdding && newestSource.length === 1)) {
                          return [<GridActionsCellItem key={id} icon={SaveIconComponent} className="icon" label="Save" onClick={saveRowEditClickHandler(id)} color="primary" />, <GridActionsCellItem key={id} icon={CancelIconComponent} label="Cancel" className="icon textPrimary" onClick={cancelRowEditClickHandler(id)} color="error" />];
                     } else {
                          return [<></>]

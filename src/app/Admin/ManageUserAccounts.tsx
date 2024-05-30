@@ -33,7 +33,9 @@ const ManageUserAccounts = () => {
           demoMode,
           EditIconComponent,
           generateRandomPassword,
+          isAdding,
           isAdmin,
+          isEditing,
           SaveIconComponent,
           setIsAdding,
           setIsEditing,
@@ -50,7 +52,7 @@ const ManageUserAccounts = () => {
      const [newConfirmPassword, setNewConfirmPassword] = useState("");
      const [usersLoadingStarted, setUsersLoadingStarted] = useState(false);
      const [usersLoadingComplete, setUsersLoadingComplete] = useState(false);
-     const [users, setUsers] = React.useState([]);
+     const [users, setUsers] = useState([]);
      const [rowModesModel, setRowModesModel] = useState({});
 
      const section = "User";
@@ -341,10 +343,12 @@ const ManageUserAccounts = () => {
                width: 100,
                cellClassName: "actions",
                getActions: ({ id }: { id: number }) => {
-                    if (editingId === null) {
+                    const newestUser = users?.filter((user: typeof IUser) => user.UserID === id && user.isNew === true);
+
+                    if (editingId === null && !isAdding && !isEditing) {
                          return [<GridActionsCellItem key={id} icon={EditIconComponent} label="Edit" className="icon textPrimary" onClick={enterEditModeClickHandler(id)} color="inherit" />];
-                    } else if (editingId === id) {
-                         return [<GridActionsCellItem key={id} icon={SaveIconComponent} className="icon" label="Save" onClick={saveRowEditClickHandler(id)} color="primary" />, <GridActionsCellItem key={id} icon={CancelIconComponent} label="Cancel" className="icon textPrimary" onClick={cancelRowEditClickHandler(id)} color="error" />];
+                    } else if ((isEditing && editingId === id) || (isAdding && newestUser.length === 1)) {
+                         return [<GridActionsCellItem key={id} icon={SaveIconComponent} className="icon textPrimary" label="Save" onClick={saveRowEditClickHandler(id)} color="primary" />, <GridActionsCellItem key={id} icon={CancelIconComponent} label="Cancel" className="icon textPrimary" onClick={cancelRowEditClickHandler(id)} color="error" />];
                     } else {
                          return [<></>]
                     }

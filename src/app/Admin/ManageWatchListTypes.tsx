@@ -13,7 +13,18 @@ import { DataContext, DataContextType } from "../data-context";
 
 const ManageWatchListTypes = () => {
      const {
-          CancelIconComponent, demoMode, EditIconComponent, SaveIconComponent, setIsAdding, setIsEditing, setWatchListTypes, setWatchListTypesLoadingComplete, setWatchListTypesLoadingStarted, watchListTypes
+          CancelIconComponent,
+          demoMode,
+          EditIconComponent,
+          isAdding,
+          isEditing,
+          SaveIconComponent,
+          setIsAdding,
+          setIsEditing,
+          setWatchListTypes,
+          setWatchListTypesLoadingComplete,
+          setWatchListTypesLoadingStarted,
+          watchListTypes
      } = useContext(DataContext) as DataContextType;
 
      const [editingId, setEditingId] = useState(null);
@@ -130,9 +141,11 @@ const ManageWatchListTypes = () => {
                width: 100,
                cellClassName: "actions",
                getActions: ({ id }: { id: number }) => {
-                    if (editingId === null) {
+                    const newestType = watchListTypes?.filter((watchListType: typeof IWatchListType) => watchListType.WatchListTypeID === id && watchListType.isNew === true);
+
+                    if (editingId === null && !isAdding && !isEditing) {
                          return [<GridActionsCellItem key={id} icon={EditIconComponent} label="Edit" className="icon textPrimary" onClick={enterEditModeClickHandler(id)} color="inherit" />];
-                    } else if (editingId === id) {
+                    } else if ((isEditing && editingId === id) || (isAdding && newestType.length === 1)) {
                          return [<GridActionsCellItem key={id} icon={SaveIconComponent} className="icon" label="Save" onClick={saveRowEditClickHandler(id)} color="primary" />, <GridActionsCellItem key={id} icon={CancelIconComponent} label="Cancel" className="icon textPrimary" onClick={cancelRowEditClickHandler(id)} color="error" />];
                     } else {
                          return [<></>]

@@ -14,12 +14,14 @@ const Settings = () => {
           archivedVisible,
           autoAdd,
           buildDate,
+          getFormattedDate,
           isLoggedIn,
           LogOutIconComponent,
           setActiveRoute,
           setActiveRouteDisplayName,
           setArchivedVisible,
           setAutoAdd,
+          setBugLogVisible,
           setSettingsVisible,
           setShowMissingArtwork,
           setShowWatchListItems,
@@ -43,6 +45,7 @@ const Settings = () => {
      } = useContext(DataContext) as DataContextType
 
      const [formattedBuildDate, setFormattedBuildDate] = useState("");
+     const [titleClickCount, setTitleClickCount] = useState(0);
 
      const router = useRouter();
 
@@ -60,18 +63,19 @@ const Settings = () => {
           }
      }
 
+     const titleClickHandler = () => {
+          const newTitleClick = titleClickCount+1;
+
+          if (newTitleClick === 2) {
+               setBugLogVisible(true);
+               setTitleClickCount(0);
+          } else {
+               setTitleClickCount(newTitleClick);
+          }
+     }
+
      useEffect(() => {
-          const language = typeof navigator.languages != undefined ? navigator.languages[0] : "en-us";
-
-          const dateObj = new Date(buildDate);
-
-          const options: Intl.DateTimeFormatOptions = {
-               year: '2-digit',
-               month: '2-digit',
-               day: '2-digit',
-          };
-
-          const newFormattedBuildDate = dateObj.toLocaleDateString(language, options);
+          const newFormattedBuildDate = getFormattedDate(buildDate);
 
           setFormattedBuildDate(newFormattedBuildDate);
      }, []);
@@ -79,7 +83,7 @@ const Settings = () => {
      return (
           <div className="modal">
                <div className="modal-content textLabel">
-                    Settings
+                    <div onDoubleClick={titleClickHandler}>Settings</div>
                     <span className="clickable closeButton" onClick={closeDetail}>
                          X
                     </span>

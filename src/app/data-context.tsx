@@ -35,6 +35,9 @@ const AdminConsoleIconComponent = <AdminConsoleIcon />;
 const BrokenImageIcon = require("@mui/icons-material/BrokenImage").default;
 const BrokenImageIconComponent = <BrokenImageIcon className="brokenImage" />;
 
+const BugReport = require("@mui/icons-material/BugReport").default;
+const BugReportIconComponent = <BugReport className="icon" />;
+
 const CancelIcon = require("@mui/icons-material/Cancel").default;
 const CancelIconComponent = <CancelIcon />;
 
@@ -74,6 +77,7 @@ export interface DataContextType {
      admin: boolean;
      archivedVisible: boolean;
      autoAdd: boolean;
+     bugLogVisible: boolean;
      buildDate: string;
      BrokenImageIconComponent: React.ReactNode;
      CancelIconComponent: React.ReactNode;
@@ -82,6 +86,7 @@ export interface DataContextType {
      demoPassword: string;
      demoUsername: string;
      EditIconComponent: React.ReactNode;
+     getFormattedDate: (value: string | null) => string;
      generateRandomPassword: () => void;
      getDisplayName: (value: string) => string;
      getPath: (value: string) => string;
@@ -105,6 +110,7 @@ export interface DataContextType {
      setActiveRouteDisplayName: (value: string) => void;
      setArchivedVisible: (value: boolean) => void;
      setAutoAdd: (value: boolean) => void;
+     setBugLogVisible: (value: boolean) => void;
      setDemoMode: (value: boolean) => void;
      setIsAdding: (value: boolean) => void;
      setIsEditing: (value: boolean) => void;
@@ -167,13 +173,14 @@ export interface DataContextType {
      watchListTypesLoadingComplete: boolean;
 }
 
-const buildDate = "05-27-24";
+const buildDate = "05-29-24";
 
 const DataProvider = ({ children }) => {
      const [activeRoute, setActiveRoute] = useState("");
      const [activeRouteDisplayName, setActiveRouteDisplayName] = useState("");
      const [archivedVisible, setArchivedVisible] = useState(false);
      const [autoAdd, setAutoAdd] = useState(true);
+     const [bugLogVisible, setBugLogVisible] = useState(false);
      const [demoMode, setDemoMode] = useState(false);
      const [isAdding, setIsAdding] = useState(false);
      const [isClient, setIsClient] = useState(false);
@@ -189,11 +196,10 @@ const DataProvider = ({ children }) => {
      const [settingsVisible, setSettingsVisible] = useState(false);
      const [showMissingArtwork, setShowMissingArtwork] = useState(false);
      const [showWatchListItems, setShowWatchListItems] = useState(false);
+     const [stillWatching, setStillWatching] = useState(true);
      const [sourceFilter, setSourceFilter] = useState(-1);
      const [typeFilter, setTypeFilter] = useState(-1);
-     const [stillWatching, setStillWatching] = useState(true);
      const [userData, setUserData] = useState({ UserID: 0, Username: "", RealName: "", Admin: false }); // cannot use iUserEmpty() here
-
      const [watchList, setWatchList] = useState([]);
      const [watchListLoadingStarted, setWatchListLoadingStarted] = useState(false);
      const [watchListLoadingComplete, setWatchListLoadingComplete] = useState(false);
@@ -256,6 +262,22 @@ const DataProvider = ({ children }) => {
           }
 
           return randomString;
+     };
+
+     const getFormattedDate = (dateStr: string) => {
+          const language = typeof navigator.languages != undefined ? navigator.languages[0] : "en-us";
+
+          const dateObj = typeof dateStr !== "undefined" ? new Date(dateStr) : new Date();
+debugger
+          const options: Intl.DateTimeFormatOptions = {
+               year: '2-digit',
+               month: '2-digit',
+               day: '2-digit',
+          };
+
+          const newFormattedDate = dateObj.toLocaleDateString(language, options);
+
+          return newFormattedDate;
      };
 
      const isAdmin = () => {
@@ -704,7 +726,7 @@ const DataProvider = ({ children }) => {
                     newRoute = defaultRoute;
                } else if (currentPath !== "" && Object.keys(routeList).filter((routeName) => routeList[routeName].Path === currentPath).length === 1 && (currentPath !== "/WatchListItems" || (currentPath === "/WatchListItems" && showWatchListItems))) {
                     newRoute = currentPath.replace("/", "").replace("\\", "");
-               } else if (activeRoute !== "" && Object.keys(routeList).filter((routeName) => routeList[routeName].Name === activeRoute).length === 1 && (activeRoute !== "/WatchListItems" || (activeRoute === "/WatchListItems" && showWatchListItems))) {
+               } else if (activeRoute !== "" && Object.keys(routeList).filter((routeName) => routeList[routeName].Name === activeRoute).length === 1 && (activeRoute !== "/WatchListItems" || (activeRoute === "/WatchListItems" && showWatchListItems)) && (activeRoute !== "/BugLog" || (activeRoute === "/BugLog" && bugLogVisible))) {
                     newRoute = activeRoute;
                } else {
                     newRoute = defaultRoute;
@@ -723,7 +745,6 @@ const DataProvider = ({ children }) => {
                setActiveRouteDisplayName(displayName);
           }
      }, [defaultRoute, isError, isLoggedIn, isLoggedInCheckComplete]); // Do not add activeRoute, getDisplayName, routeList, setActiveRoute, setActiveRouteDisplayName to dependencies. Causes dtl to close when you click on edit
-
 
      const routeList = {
           WatchList: {
@@ -759,6 +780,13 @@ const DataProvider = ({ children }) => {
                DisplayName: "Login",
                Path: "/Login",
                RequiresAuth: false
+          },
+          BugLog: {
+               Name: "BugLog",
+               DisplayName: "Bug Log",
+               Path: "/BugLog",
+               Icon: BugReportIconComponent,
+               RequiresAuth: true
           }
      };
 
@@ -791,6 +819,7 @@ const DataProvider = ({ children }) => {
           archivedVisible: archivedVisible,
           autoAdd: autoAdd,
           BrokenImageIconComponent: BrokenImageIconComponent,
+          bugLogVisible: bugLogVisible,
           buildDate: buildDate,
           CancelIconComponent: CancelIconComponent,
           defaultRoute: defaultRoute,
@@ -798,6 +827,7 @@ const DataProvider = ({ children }) => {
           demoPassword: demoPassword,
           demoUsername: demoUsername,
           EditIconComponent: EditIconComponent,
+          getFormattedDate: getFormattedDate,
           generateRandomPassword: generateRandomPassword,
           getDisplayName: getDisplayName,
           getPath: getPath,
@@ -821,6 +851,7 @@ const DataProvider = ({ children }) => {
           setActiveRouteDisplayName: setActiveRouteDisplayName,
           setArchivedVisible: setArchivedVisible,
           setAutoAdd: setAutoAdd,
+          setBugLogVisible: setBugLogVisible,
           setDemoMode: setDemoMode,
           setIsAdding: setIsAdding,
           setIsEditing: setIsEditing,

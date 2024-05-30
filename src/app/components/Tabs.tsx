@@ -11,6 +11,8 @@ const Tabs = () => {
      const {
           activeRoute,
           admin,
+          bugLogVisible,
+          demoMode,
           getDisplayName,
           getPath,
           isClient,
@@ -50,6 +52,7 @@ const Tabs = () => {
                                    && routeName !== "SearchIMDB"
                                    && (routeName !== "AdminConsole" || (routeName === "AdminConsole" && admin === true))
                                    && (routeName !== "WatchListItems" || (routeName ==="WatchListItems" && showWatchListItems === true))
+                                   && (routeName !== "BugLog" || (routeName ==="BugLog" && bugLogVisible === true && !demoMode))
                               }
                               )
                               .map((routeName, index) => {

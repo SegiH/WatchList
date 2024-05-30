@@ -3,4 +3,4 @@ BEFORE COMMITTING:
   update build date
   start doing micro commits!!!!
   
-  look into error in dev console about image missing src and alt property
+  Move wlbugs contents to my DB

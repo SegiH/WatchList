@@ -1,6 +1,6 @@
 import { NextRequest } from 'next/server';
 
-export async function GET(request: NextRequest) {
+export async function PUT(request: NextRequest) {
     const searchParams = request.nextUrl.searchParams;
 
     const bugLogID = searchParams.get("WLBugID");

@@ -63,6 +63,22 @@ export async function addUser(request: NextRequest, isNewInstance = false) {
      return Response.json(["OK", newID]);
 }
 
+// Since Replit uses a primitive key/value pair, convert Replit BugLogs to format that matches what this app expects
+export const getBugLogModel = (data: object) => {
+     const newData: any = [];
+
+     Object.keys(data).forEach(async (element) => {
+          newData.push({
+               "WLBugID": element,
+               "WLBugName": data[element].WLBugName,
+               "AddDate": data[element].AddDate,
+               "CompletedDate": data[element].CompletedDate
+          });
+     });
+
+     return newData;
+};
+
 export const decrypt = (cipherText: string) => {
      const bytes = CryptoJS.AES.decrypt(cipherText, secretKey)
      const plainText = bytes.toString(CryptoJS.enc.Utf8)

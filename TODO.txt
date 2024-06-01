@@ -3,4 +3,3 @@ BEFORE COMMITTING:
   update build date
   start doing micro commits!!!!
   
-  Move wlbugs contents to my DB

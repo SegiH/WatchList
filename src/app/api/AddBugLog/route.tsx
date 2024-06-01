@@ -1,5 +1,6 @@
 import { NextRequest } from 'next/server';
-import { execInsert, getUserID } from '../lib';
+const axios = require("axios");
+const https = require('https');
 
 export async function PUT(request: NextRequest) {
      const searchParams = request.nextUrl.searchParams;
@@ -8,19 +9,17 @@ export async function PUT(request: NextRequest) {
      const addDate = searchParams.get("AddDate");
      const completedDate = searchParams.get("CompletedDate");
 
-     if (bugLogName === null) {
-          return Response.json({ "ERROR": "Bug log name is not set" });
-     } else if (addDate === null) {
-          return Response.json(["Add date was not provided"]);
-     } else {
-          const SQL = "INSERT INTO WLBugs(WLBugName, AddDate, CompletedDate) VALUES (?, ?, ?);"
+     const addBugLogURL = `https://nodejs-shovav.replit.app/AddBugLog?Name=${encodeURIComponent(String(bugLogName))}&AddedOn=${addDate}&CompletedOn=${completedDate}`;
 
-          const params = [bugLogName, addDate, completedDate];
+     const agent = new https.Agent({
+          rejectUnauthorized: false
+     });
 
-          const result = await execInsert(SQL, params);
-
-          const newID = result.lastID;
-
-          return Response.json(["OK", newID]);
-     }
+     return axios.get(addBugLogURL, { httpsAgent: agent })
+          .then((response: any) => {
+               return Response.json(response.data);
+          })
+          .catch((err: Error) => {
+               return Response.json(["ERROR", err.message]);
+          });
 }

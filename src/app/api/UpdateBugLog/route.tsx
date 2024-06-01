@@ -1,45 +1,51 @@
 import { NextRequest } from 'next/server';
-import { execUpdateDelete, getUserID } from '../lib';
 
-export async function PUT(request: NextRequest) {
+export async function GET(request: NextRequest) {
     const searchParams = request.nextUrl.searchParams;
 
-    const bugLogID = searchParams.get("BugLogID");
-    const bugLogName = searchParams.get("BugLogName");
+    const bugLogID = searchParams.get("WLBugID");
+    const bugLogName = searchParams.get("WLBugName");
     const addDate = searchParams.get("AddDate");
     const completedDate = searchParams.get("CompletedDate");
 
     if (bugLogID === null) {
-        return Response.json({ "ERROR": "Bug log name is not set" });
+        return Response.json({ "ERROR": "Bug log ID is not set" });
     }
 
-    let columns = "";
-    const values: any = [];
+    let params = "";
 
     if (bugLogName !== null) {
-        columns += (columns !== "" ? "," : "") + "WLBugName=?";
-        values.push(bugLogName);
+        params += "&WLBugName=" + encodeURIComponent(bugLogName);
     }
 
     if (addDate !== null) {
-        columns += (columns !== "" ? "," : "") + "AddDate=?";
-        values.push(addDate);
+        params += "&AddDate=" + encodeURIComponent(addDate);
     }
 
     if (completedDate !== null) {
-        columns += (columns !== "" ? "," : "") + "CompletedDate=?";
-        values.push(completedDate);
+        params += "&CompletedDate=" + encodeURIComponent(completedDate);
     }
 
-    if (values.length === 0) {
+    if (params === "") {
         return Response.json(["ERROR", `No parameters were passed`]);
     }
 
-    values.push(bugLogID);
+    params = "?WLBugID=" + bugLogID + params;
 
-    const SQL = `UPDATE WLBugs SET ${columns} WHERE WLBugID=?`
+    const axios = require("axios");
+    const https = require('https');
 
-    await execUpdateDelete(SQL, values);
+    const updateBugsLogURL = `https://nodejs-shovav.replit.app/UpdateBugLog`;
 
-    return Response.json(["OK"]);
+    const agent = new https.Agent({
+        rejectUnauthorized: false
+    });
+
+    return axios.get(updateBugsLogURL + params, { httpsAgent: agent })
+        .then(() => {
+            return Response.json(["OK"]);
+        })
+        .catch((err: Error) => {
+            return Response.json(["ERROR", err.message]);
+        });
 }

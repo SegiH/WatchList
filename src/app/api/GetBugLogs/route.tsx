@@ -1,14 +1,21 @@
-import { NextRequest } from 'next/server';
-import { execSelect } from "../lib";
+import { getBugLogModel } from '../lib';
+const axios = require("axios");
+const https = require('https');
 
-export async function GET(request: NextRequest) {
-     const SQL = `SELECT * FROM WLBugs ORDER BY WLBugID`;
+export async function GET() {
+     const getBugsLogURL = `https://nodejs-shovav.replit.app/GetBugLogs`;
 
-     try {
-          const results = await execSelect(SQL, []);
+     const agent = new https.Agent({
+          rejectUnauthorized: false
+     });
 
-          return Response.json(["OK", results]);
-     } catch (e) {
-          return Response.json(["ERROR", `/GetBugLogs: The error ${e.message} occurred getting the WL Bug Logs`]);
-     }
+     return axios.get(getBugsLogURL, { httpsAgent: agent })
+          .then(async (response: any) => {
+               const data = await getBugLogModel(response.data[1])
+
+               return Response.json(["OK", data]);
+          })
+          .catch((err: Error) => {
+               return Response.json(["ERROR", err.message]);
+          });
 }

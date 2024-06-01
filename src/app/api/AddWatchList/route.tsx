@@ -58,6 +58,12 @@ import { execInsert, getUserID } from '../lib';
  *             required: false
  *             schema:
  *                  type: string
+ *           - name: Archived
+ *             in: query
+ *             description: Archived status
+ *             required: false
+ *             schema:
+ *                  type: number
  *        responses:
  *          200:
  *            description: '["OK",""] on success, ["ERROR","error message"] on error'
@@ -74,6 +80,7 @@ export async function PUT(request: NextRequest) {
      const season = searchParams.get("Season");
      const rating = searchParams.get("Rating");
      const notes = searchParams.get("Notes");
+     const archived = searchParams.get("Archived") !== null ? searchParams.get("Archived") : 0;
 
      if (userID === null) {
           return Response.json({ "ERROR": "User ID is not set" });
@@ -83,7 +90,7 @@ export async function PUT(request: NextRequest) {
           return Response.json(["Start Date was not provided"]);
      } else {
           const SQL = "INSERT INTO WatchList(UserID, WatchListItemID, StartDate, EndDate, WatchListSourceID, Season, Archived, Rating, Notes) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);"
-          const params = [userID, watchListItemID, startDate, endDate, sourceID, season, 0, rating, notes];
+          const params = [userID, watchListItemID, startDate, endDate, sourceID, season, archived, rating, notes];
 
           const result = await execInsert(SQL, params);
 

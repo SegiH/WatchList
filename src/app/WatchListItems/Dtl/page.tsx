@@ -239,7 +239,7 @@ export default function WatchListItemsDtl() {
                return;
           }
 
-          let queryURL = `/api/AddWatchListItem?WatchListItemName=${addWatchListItemDtl.WatchListItemName}&WatchListTypeID=${addWatchListItemDtl.WatchListTypeID}&IMDB_URL=${addWatchListItemDtl.IMDB_URL}`;
+          let queryURL = `/api/AddWatchListItem?WatchListItemName=${addWatchListItemDtl.WatchListItemName}&WatchListTypeID=${addWatchListItemDtl.WatchListTypeID}&IMDB_URL=${addWatchListItemDtl.IMDB_URL}&Archived=${addWatchListItemDtl.Archived}`;
 
           if (addWatchListItemDtl.IMDB_Poster !== "") {
                queryURL += `&IMDB_Poster=${addWatchListItemDtl.IMDB_Poster}`;
@@ -608,7 +608,7 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
                                         </>
                                    }
 
-                                   {isEditing &&
+                                   {(isAdding || isEditing) &&
                                         <>
                                              <div className="narrow card"></div>
 
@@ -616,9 +616,18 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
                                                   <div className="textLabel">Archived:&nbsp;</div>
                                              </div>
 
-                                             <div className="narrow card">
-                                                  <input type="checkbox" checked={watchListItemDtl?.Archived} onChange={(event: React.ChangeEvent<HTMLInputElement>) => watchListItemDetailChangeHandler("Archived", event.target.checked)} />
-                                             </div>
+                                             {isAdding &&
+                                                  <div className="narrow card">
+                                                       <input type="checkbox" checked={addWatchListItemDtl?.Archived} onChange={(event) => addWatchListItemDetailChangeHandler("Archived", event.target.value)} />
+                                                  </div>
+
+                                             }
+
+                                             {isEditing &&
+                                                  <div className="narrow card">
+                                                       <input type="checkbox" checked={watchListItemDtl?.Archived} onChange={(event: React.ChangeEvent<HTMLInputElement>) => watchListItemDetailChangeHandler("Archived", event.target.checked)} />
+                                                  </div>
+                                             }
                                         </>
                                    }
                               </div>

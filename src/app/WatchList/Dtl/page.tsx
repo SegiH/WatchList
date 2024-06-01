@@ -277,7 +277,7 @@ export default function WatchListDetail() {
                return;
           }
 
-          let queryURL = `/api/AddWatchList?WatchListItemID=${addWatchListDtl.WatchListItemID}&StartDate=${addWatchListDtl.StartDate.substring(0, 10)}&WatchListSourceID=${addWatchListDtl.WatchListSourceID}`;
+          let queryURL = `/api/AddWatchList?WatchListItemID=${addWatchListDtl.WatchListItemID}&StartDate=${addWatchListDtl.StartDate.substring(0, 10)}&WatchListSourceID=${addWatchListDtl.WatchListSourceID}&Archived=${addWatchListDtl.Archived}`;
 
           if (addWatchListDtl.EndDate !== "") {
                queryURL += `&EndDate=${addWatchListDtl.EndDate.substring(0, 10)}`;
@@ -528,11 +528,11 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
           if (watchListItems.length > 0) {
                // Generate names for auto complete
                const namesOnlyItems = watchListItems.map((watchListItem: typeof IWatchListItem) => {
-                    const IMDB_JSON = watchListItem?.IMDB_JSON !== null && typeof watchListItem?.IMDB_JSON !== "undefined" ? JSON.parse(watchListItem?.IMDB_JSON): null;
+                    const IMDB_JSON = watchListItem?.IMDB_JSON !== null && typeof watchListItem?.IMDB_JSON !== "undefined" ? JSON.parse(watchListItem?.IMDB_JSON) : null;
 
                     let itemName = watchListItem.WatchListItemName + (IMDB_JSON !== null && IMDB_JSON.Year !== null ? ` (${IMDB_JSON.Year})` : ``);
 
-                    
+
                     if (watchListItems?.filter((watchListItemDupe: typeof IWatchListItem) => {
                          return String(watchListItemDupe.WatchListItemName) === String(watchListItem.WatchListItemName);
                     }).length > 1) {
@@ -888,7 +888,7 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
                                         }
                                    </div>
 
-                                   {isEditing &&
+                                   {(isAdding || isEditing) &&
                                         <>
                                              <div className="narrow card"></div>
 
@@ -896,9 +896,18 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
                                                   <div className="textLabel">Archive:</div>
                                              </div>
 
-                                             <div className="narrow card">
-                                                  <input type="checkbox" checked={watchListDtl?.Archived} onChange={(event: React.ChangeEvent<HTMLInputElement>) => watchListDetailChangeHandler("Archived", event.target.checked)} />
-                                             </div>
+                                             {isAdding &&
+                                                  <div className="narrow card">
+                                                       <input type="checkbox" checked={addWatchListDtl?.Archived} onChange={(event) => addWatchListDetailChangeHandler("Archived", event.target.value)} />
+                                                  </div>
+
+                                             }
+
+                                             {isEditing &&
+                                                  <div className="narrow card">
+                                                       <input type="checkbox" checked={watchListDtl?.Archived} onChange={(event: React.ChangeEvent<HTMLInputElement>) => watchListDetailChangeHandler("Archived", event.target.checked)} />
+                                                  </div>
+                                             }
                                         </>
                                    }
                               </div>

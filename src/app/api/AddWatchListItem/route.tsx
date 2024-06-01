@@ -52,6 +52,7 @@ export async function PUT(request: NextRequest) {
      const imdb_url = searchParams.get("IMDB_URL");
      const imdb_poster = searchParams.get("IMDB_Poster");
      const notes = searchParams.get("Notes");
+     const archived = searchParams.get("Archived") !== null ? searchParams.get("Archived") : 0;
 
      if (name === null) {
           return Response.json(["ERROR", "Name was not provided"]);
@@ -84,7 +85,7 @@ export async function PUT(request: NextRequest) {
 
           const SQL="INSERT INTO WatchListItems(WatchListItemName, WatchListTypeID, IMDB_URL, IMDB_Poster, IMDB_JSON, ItemNotes, Archived) VALUES(?, ?, ?, ?, ?, ?, ?);";
 
-          const params = [name, type, imdb_url, imdb_poster, imdb_json, notes, 0];
+          const params = [name, type, imdb_url, imdb_poster, imdb_json, notes, archived];
 
           const result = await execInsert(SQL, params);
 

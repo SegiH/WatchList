@@ -12,11 +12,13 @@ const useContext = require("react").useContext;
 
 import { DataContext, DataContextType } from "../data-context";
 
-const EditToolbar = ({ section, setRowModesModel }
+const EditToolbar = ({ section, setRowModesModel, setShowActiveBugLogs, showActiveBugLogs }
      :
-     { 
+     {
           section: string,
           setRowModesModel: (arg0: typeof IUser | typeof IWatchListSource | typeof IWatchListType) => void,
+          setShowActiveBugLogs: (value: boolean) => void;
+          showActiveBugLogs: boolean
      }) => {
 
      const {
@@ -83,6 +85,13 @@ const EditToolbar = ({ section, setRowModesModel }
                          <Button color="primary" onClick={handleClick}>
                               Add {section}
                          </Button>
+
+                         {section === "Bug Log" &&
+                              <span>
+                                   Show {showActiveBugLogs ? " Inactive" : " Active" } Bug Logs
+                                   <input type="checkbox" checked={showActiveBugLogs} onChange={(event) => setShowActiveBugLogs(event.target.checked)} />
+                              </span>
+                         }
                     </GridToolbarContainer>
                }
           </>

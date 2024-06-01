@@ -185,7 +185,7 @@ const ManageWatchListSources = () => {
                     Toolbar: EditToolbar,
                }}
                componentsProps={{
-                    toolbar: { section, setIsAdding, setWatchListSources, setRowModesModel, watchListSources },
+                    toolbar: { section, setRowModesModel },
                }}
                experimentalFeatures={{ newEditingApi: true }}
           />

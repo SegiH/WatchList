@@ -19,12 +19,14 @@ import "../page.css";
 
 export default function BugLog() {
      const {
+          bugLogs,
           CancelIconComponent,
           EditIconComponent,
           getFormattedDate,
           isAdding,
           isEditing,
           SaveIconComponent,
+          setBugLogs,
           setIsError,
           setIsAdding,
           setIsEditing
@@ -32,7 +34,6 @@ export default function BugLog() {
 
      const [bugLogsLoadingStarted, setBugLogsLoadingStarted] = useState(false);
      const [bugLogsLoadingComplete, setBugLogsLoadingComplete] = useState(false);
-     const [bugLogs, setBugLogs] = useState([]);
      const [editingId, setEditingId] = useState(null);
      const [rowModesModel, setRowModesModel] = useState({});
 
@@ -228,7 +229,7 @@ export default function BugLog() {
                          Toolbar: EditToolbar,
                     }}
                     componentsProps={{
-                         toolbar: { bugLogs, getFormattedDate, isAdding, section, setIsAdding, setBugLogs, setRowModesModel },
+                         toolbar: { section, setRowModesModel },
                     }}
                     experimentalFeatures={{ newEditingApi: true }}
                />

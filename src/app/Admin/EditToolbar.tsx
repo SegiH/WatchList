@@ -8,25 +8,30 @@ const IWatchListType = require("../interfaces/IWatchListType");
 const IUser = require("../interfaces/IUser");
 const GridRowModes = require("@mui/x-data-grid-pro").GridRowModes;
 const GridToolbarContainer = require("@mui/x-data-grid-pro").GridToolbarContainer;
+const useContext = require("react").useContext;
 
-const EditToolbar = ({ bugLogs, getFormattedDate, isAdding, isEditing, section, setRowModesModel, setIsAdding, setBugLogs, setUsers, setWatchListSources, setWatchListTypes, users, watchListSources, watchListTypes }
+import { DataContext, DataContextType } from "../data-context";
+
+const EditToolbar = ({ section, setRowModesModel }
      :
-     {
-          bugLogs: typeof IBugLog[],
-          getFormattedDate: () => string;
-          isAdding: boolean,
-          isEditing: boolean,
+     { 
           section: string,
-          setBugLogs: (arg0: typeof IBugLog) => void,
           setRowModesModel: (arg0: typeof IUser | typeof IWatchListSource | typeof IWatchListType) => void,
-          setIsAdding: (arg0: boolean) => void,
-          setUsers: (arg0: typeof IUser) => void,
-          setWatchListSources: (arg0: typeof IWatchListSource) => void,
-          setWatchListTypes: (arg0: typeof IWatchListType) => void,
-          users: typeof IUser,
-          watchListSources: typeof IWatchListSource,
-          watchListTypes: typeof IWatchListSource
      }) => {
+
+     const {
+          bugLogs,
+          isAdding,
+          isEditing,
+          setBugLogs,
+          setIsAdding,
+          setUsers,
+          setWatchListSources,
+          setWatchListTypes,
+          users,
+          watchListSources,
+          watchListTypes
+     } = useContext(DataContext) as DataContextType;
 
      const handleClick = () => {
           let focusField = '';

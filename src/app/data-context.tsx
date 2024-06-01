@@ -13,6 +13,7 @@ const useEffect = require("react").useEffect;
 const useMemo = require("react").useMemo;
 const useRouter = require("next/navigation").useRouter;
 const useState = require("react").useState;
+const IBugLog = require("./interfaces/IBugLog");
 const IRoute = require("./interfaces/IRoute");
 const IUser = require("./interfaces/IUser");
 const IWatchList = require("./interfaces/IWatchList");
@@ -77,6 +78,7 @@ export interface DataContextType {
      admin: boolean;
      archivedVisible: boolean;
      autoAdd: boolean;
+     bugLogs: typeof IBugLog[]
      bugLogVisible: boolean;
      buildDate: string;
      BrokenImageIconComponent: React.ReactNode;
@@ -110,6 +112,7 @@ export interface DataContextType {
      setActiveRouteDisplayName: (value: string) => void;
      setArchivedVisible: (value: boolean) => void;
      setAutoAdd: (value: boolean) => void;
+     setBugLogs: (value: typeof IBugLog) => void;
      setBugLogVisible: (value: boolean) => void;
      setDemoMode: (value: boolean) => void;
      setIsAdding: (value: boolean) => void;
@@ -129,6 +132,7 @@ export interface DataContextType {
      settingsVisible: boolean;
      setupVisible: boolean;
      setUserData: (value: typeof IUser) => void;
+     setUsers: (value: typeof IUser) => void;
      setWatchList: (value: typeof IWatchList) => void;
      setWatchListItems: (value: typeof IWatchListItem) => void;
      setWatchListItemsLoadingStarted: (value: boolean) => void;
@@ -154,6 +158,7 @@ export interface DataContextType {
      sourceFilter: number;
      stillWatching: boolean;
      typeFilter: number;
+     users: typeof IUser,
      userData: typeof IUser;
      validatePassword: (value: string) => boolean;
      watchList: typeof IWatchList;
@@ -180,6 +185,7 @@ const DataProvider = ({ children }) => {
      const [activeRouteDisplayName, setActiveRouteDisplayName] = useState("");
      const [archivedVisible, setArchivedVisible] = useState(false);
      const [autoAdd, setAutoAdd] = useState(true);
+     const [bugLogs, setBugLogs] = useState([]);
      const [bugLogVisible, setBugLogVisible] = useState(false);
      const [demoMode, setDemoMode] = useState(false);
      const [isAdding, setIsAdding] = useState(false);
@@ -199,6 +205,7 @@ const DataProvider = ({ children }) => {
      const [stillWatching, setStillWatching] = useState(true);
      const [sourceFilter, setSourceFilter] = useState(-1);
      const [typeFilter, setTypeFilter] = useState(-1);
+     const [users, setUsers] = useState([]);
      const [userData, setUserData] = useState({ UserID: 0, Username: "", RealName: "", Admin: false }); // cannot use iUserEmpty() here
      const [watchList, setWatchList] = useState([]);
      const [watchListLoadingStarted, setWatchListLoadingStarted] = useState(false);
@@ -819,6 +826,7 @@ const DataProvider = ({ children }) => {
           archivedVisible: archivedVisible,
           autoAdd: autoAdd,
           BrokenImageIconComponent: BrokenImageIconComponent,
+          bugLogs: bugLogs,
           bugLogVisible: bugLogVisible,
           buildDate: buildDate,
           CancelIconComponent: CancelIconComponent,
@@ -851,6 +859,7 @@ const DataProvider = ({ children }) => {
           setActiveRouteDisplayName: setActiveRouteDisplayName,
           setArchivedVisible: setArchivedVisible,
           setAutoAdd: setAutoAdd,
+          setBugLogs: setBugLogs,
           setBugLogVisible: setBugLogVisible,
           setDemoMode: setDemoMode,
           setIsAdding: setIsAdding,
@@ -865,6 +874,7 @@ const DataProvider = ({ children }) => {
           setShowMissingArtwork: setShowMissingArtwork,
           setStillWatching: setStillWatching,
           setSourceFilter: setSourceFilter,
+          setUsers: setUsers,
           SettingsIconComponent: SettingsIconComponent,
           settingsVisible: settingsVisible,
           setShowWatchListItems: setShowWatchListItems,
@@ -894,6 +904,7 @@ const DataProvider = ({ children }) => {
           sourceFilter: sourceFilter,
           stillWatching: stillWatching,
           typeFilter: typeFilter,
+          users: users,
           userData: userData,
           validatePassword: validatePassword,
           watchList: watchList,

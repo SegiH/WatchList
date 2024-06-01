@@ -40,6 +40,8 @@ const ManageUserAccounts = () => {
           setIsAdding,
           setIsEditing,
           setIsError,
+          setUsers,
+          users,
           validatePassword
      } = useContext(DataContext) as DataContextType;
 
@@ -52,7 +54,6 @@ const ManageUserAccounts = () => {
      const [newConfirmPassword, setNewConfirmPassword] = useState("");
      const [usersLoadingStarted, setUsersLoadingStarted] = useState(false);
      const [usersLoadingComplete, setUsersLoadingComplete] = useState(false);
-     const [users, setUsers] = useState([]);
      const [rowModesModel, setRowModesModel] = useState({});
 
      const section = "User";
@@ -394,7 +395,7 @@ const ManageUserAccounts = () => {
 
      return (
           <>
-               {users.length > 0 &&
+               {users && users.length > 0 &&
                     <DataGrid
                          rows={users}
                          columns={columns}
@@ -412,7 +413,7 @@ const ManageUserAccounts = () => {
                               Toolbar: EditToolbar,
                          }}
                          componentsProps={{
-                              toolbar: { section, setIsAdding, setUsers, setRowModesModel, users },
+                              toolbar: { section, setRowModesModel },
                          }}
                          experimentalFeatures={{ newEditingApi: true }}
                     />

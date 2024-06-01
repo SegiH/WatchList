@@ -97,33 +97,24 @@ export default function WatchList() {
                          {AddIconComponent}
                     </span>
                )}
-               
+
 
                {watchList.length > 0 &&
                     <ul className="clickable show-list">
                          {watchList?.filter(
                               (currentWatchList: typeof IWatchList) =>
-                                   ((currentWatchList?.Archived === 1 && archivedVisible === true) || (currentWatchList?.Archived === 0 && archivedVisible === false))
+                                   ((currentWatchList?.Archived === 1 && archivedVisible === true) || (currentWatchList?.Archived === 0 && archivedVisible === false
+                                        &&
+                                        ((stillWatching === false && currentWatchList?.EndDate !== null) || (stillWatching === true && currentWatchList?.EndDate === null && currentWatchList?.Archived === 0))
+                                   ))
                                    &&
                                    (searchTerm === "" || (searchTerm !== "" && currentWatchList?.WatchListItemName.toLowerCase().includes(searchTerm)))
-                                   &&
-                                   (
-                                        (stillWatching === false && currentWatchList?.EndDate !== null)
-                                        || 
-                                             (stillWatching === true && currentWatchList?.EndDate === null
-                                             && (
-                                                  (currentWatchList?.Archived === 1 && archivedVisible === true) 
-                                                  ||
-                                                  (currentWatchList?.Archived === 0 && archivedVisible === false)
-                                                )
-                                             )
-                                   )
                                    &&
                                    (sourceFilter === -1 || sourceFilter === null || (sourceFilter !== -1 && sourceFilter !== null && String(currentWatchList?.WatchListSourceID) === String(sourceFilter)))
                                    &&
                                    (typeFilter === -1 || (typeFilter !== -1 && String(currentWatchList?.WatchListTypeID) === String(typeFilter)))
                          ).map((currentWatchList: typeof IWatchList, index: number) => {
-                              const IMDB_JSON =  currentWatchList?.IMDB_JSON !== null && typeof currentWatchList?.IMDB_JSON !== "undefined" && currentWatchList?.IMDB_JSON !== "" ? JSON.parse(currentWatchList?.IMDB_JSON) : null;
+                              const IMDB_JSON = currentWatchList?.IMDB_JSON !== null && typeof currentWatchList?.IMDB_JSON !== "undefined" && currentWatchList?.IMDB_JSON !== "" ? JSON.parse(currentWatchList?.IMDB_JSON) : null;
 
                               const source_name = watchListSources?.filter((currentWatchListSource: typeof IWatchListSource) => {
                                    return String(currentWatchListSource.WatchListSourceID) === String(currentWatchList?.WatchListSourceID);

@@ -268,7 +268,7 @@ const DataProvider = ({ children }) => {
           const language = typeof navigator.languages != undefined ? navigator.languages[0] : "en-us";
 
           const dateObj = typeof dateStr !== "undefined" ? new Date(dateStr) : new Date();
-debugger
+
           const options: Intl.DateTimeFormatOptions = {
                year: '2-digit',
                month: '2-digit',

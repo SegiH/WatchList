@@ -84,10 +84,10 @@ export default function BugLog() {
           let columns = ``;
 
           if (newRow.isNew !== true) {
-               columns = `?BugLogID=${newRow.WLBugID}`;
+               columns = `?WLBugID=${newRow.WLBugID}`;
           }
 
-          columns += (columns === `` ? `?` : `&`) + `BugLogName=${encodeURIComponent(newRow.WLBugName)}`;
+          columns += (columns === `` ? `?` : `&`) + `WLBugName=${encodeURIComponent(newRow.WLBugName)}`;
           columns += (columns === `` ? `?` : `&`) + `AddDate=${newRow.AddDate}`;
 
           if (typeof newRow.CompletedDate !== "undefined") {

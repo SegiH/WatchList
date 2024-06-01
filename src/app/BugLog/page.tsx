@@ -22,7 +22,6 @@ export default function BugLog() {
           bugLogs,
           CancelIconComponent,
           EditIconComponent,
-          getFormattedDate,
           isAdding,
           isEditing,
           SaveIconComponent,
@@ -105,6 +104,7 @@ export default function BugLog() {
                          setBugLogsLoadingStarted(false);
                          setBugLogsLoadingComplete(false);
 
+                         setIsAdding(false);
                          setIsEditing(false);
 
                          setRowModesModel(null);

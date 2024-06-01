@@ -5,11 +5,11 @@ const https = require('https');
 export async function PUT(request: NextRequest) {
      const searchParams = request.nextUrl.searchParams;
 
-     const bugLogName = searchParams.get("BugLogName");
+     const bugLogName = searchParams.get("WLBugName");
      const addDate = searchParams.get("AddDate");
      const completedDate = searchParams.get("CompletedDate");
 
-     const addBugLogURL = `https://nodejs-shovav.replit.app/AddBugLog?Name=${encodeURIComponent(String(bugLogName))}&AddedOn=${addDate}&CompletedOn=${completedDate}`;
+     const addBugLogURL = `https://nodejs-shovav.replit.app/AddBugLog?WLBugName=${encodeURIComponent(String(bugLogName))}&AddDate=${addDate}${completedDate !== null ? `&CompletedDate=${completedDate}` : ``}`;
 
      const agent = new https.Agent({
           rejectUnauthorized: false

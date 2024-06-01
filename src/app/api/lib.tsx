@@ -72,7 +72,7 @@ export const getBugLogModel = (data: object) => {
                "WLBugID": element,
                "WLBugName": data[element].WLBugName,
                "AddDate": data[element].AddDate,
-               "CompletedDate": data[element].CompletedDate
+               "CompletedDate": data[element].CompletedDate !== null ? data[element].CompletedDate : ""
           });
      });
 

@@ -222,13 +222,6 @@ export default function WatchListStats() {
           </>
      );
 
-     /*const accordionData = {
-          "Most Frequently Watched Sources": sourceStats,
-          "Top Rated": topRated,
-          "Top 10 Movies": movieStats,
-          "Top 10 Shows": tvStats,
-     };*/
-
      // Get WatchListMovieStats
      useEffect(() => {
           if (demoMode) {

@@ -239,6 +239,10 @@ input:checked+.slider:before {
      z-index: 999;
 }
 
+.largeText {
+     font-size: 36px;
+}
+
 .leftMargin {
      margin-left: 25px;
 }

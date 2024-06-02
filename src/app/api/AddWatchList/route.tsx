@@ -80,7 +80,7 @@ export async function PUT(request: NextRequest) {
      const season = searchParams.get("Season");
      const rating = searchParams.get("Rating");
      const notes = searchParams.get("Notes");
-     const archived = searchParams.get("Archived") !== null ? searchParams.get("Archived") : 0;
+     const archived = typeof searchParams.get("Archived") !== "undefined" && searchParams.get("Archived") !== null && searchParams.get("Archived") === "true" ? searchParams.get("Archived") : 0;
 
      if (userID === null) {
           return Response.json({ "ERROR": "User ID is not set" });

@@ -34,9 +34,6 @@ export default function BugLog() {
      const [bugLogsLoadingStarted, setBugLogsLoadingStarted] = useState(false);
      const [bugLogsLoadingComplete, setBugLogsLoadingComplete] = useState(false);
      const [editingId, setEditingId] = useState(null);
-     const [filteredBugLogs, setFilteredBugLogs] = useState(false);
-     const [filteredBugLogsLoadingStarted, setFilteredBugLogsLoadingStarted] = useState(false);
-     const [filteredBugLogsLoadingComplete, setFilteredBugLogsLoadingComplete] = useState(false);
      const [rowModesModel, setRowModesModel] = useState({});
      const [showActiveBugLogs, setShowActiveBugLogs] = useState(true);
 
@@ -199,7 +196,7 @@ export default function BugLog() {
 
           setBugLogsLoadingStarted(true);
 
-          axios.get(`/api/GetBugLogs`)
+          axios.get(`/api/GetBugLogs?GetActiveBugLogs=${showActiveBugLogs}`)
                .then((res) => {
                     if (res.data[0] === "OK") {
                          setBugLogs(res.data[1]);
@@ -215,61 +212,34 @@ export default function BugLog() {
      }, [bugLogsLoadingStarted, bugLogsLoadingComplete]);
 
      useEffect(() => {
-          if (!bugLogsLoadingComplete) {
-               return;
-          }
-
-          if (filteredBugLogsLoadingStarted) {
-               return;
-          }
-
-          setFilteredBugLogsLoadingStarted(true);
-
-          /*if (bugLogs === null || (bugLogs !== null && bugLogs.length > 0)) {
-               return;
-          }*/
-
-          const newFilteredBugLogs = bugLogs?.filter((bugLog: typeof IBugLog) => {
-               return ((typeof bugLog.CompletedDate === "undefined" && showActiveBugLogs) || (typeof bugLog.CompletedDate !== "undefined" && !showActiveBugLogs));
-          });
-
-          setFilteredBugLogs(newFilteredBugLogs);
-          setFilteredBugLogsLoadingComplete(true);
-     }, [bugLogs, filteredBugLogs, filteredBugLogsLoadingStarted]);
-
-     useEffect(() => {
-          setFilteredBugLogsLoadingStarted(false);
-          setFilteredBugLogsLoadingComplete(false);
+          setBugLogsLoadingStarted(false);
+          setBugLogsLoadingComplete(false);
      }, [showActiveBugLogs]);
 
      return (
           <>
-               {filteredBugLogsLoadingComplete &&
-                    <>
-                         Bug Log
-                         <DataGrid
-                              rows={filteredBugLogs}
-                              columns={columns}
-                              sx={{
-                                   color: "white",
-                              }}
-                              editMode="row"
-                              getRowId={(row: typeof IBugLog) => row.WLBugID}
-                              rowModesModel={rowModesModel}
-                              onRowEditStart={startRowEditingClickHandler}
-                              onRowEditStop={stopRowEditingClickHandler}
-                              processRowUpdate={processRowUpdateHandler}
-                              onProcessRowUpdateError={processRowUpdateErrorHandler}
-                              components={{
-                                   Toolbar: EditToolbar,
-                              }}
-                              componentsProps={{
-                                   toolbar: { section, setRowModesModel, setShowActiveBugLogs, showActiveBugLogs },
-                              }}
-                              experimentalFeatures={{ newEditingApi: true }}
-                         />
-                    </>
-               }
+               Bug Log
+               <DataGrid
+                    rows={bugLogs}
+                    columns={columns}
+                    sx={{
+                         color: "white",
+                    }}
+                    editMode="row"
+                    getRowId={(row: typeof IBugLog) => row.WLBugID}
+                    rowModesModel={rowModesModel}
+                    onRowEditStart={startRowEditingClickHandler}
+                    onRowEditStop={stopRowEditingClickHandler}
+                    processRowUpdate={processRowUpdateHandler}
+                    onProcessRowUpdateError={processRowUpdateErrorHandler}
+                    components={{
+                         Toolbar: EditToolbar,
+                    }}
+                    componentsProps={{
+                         toolbar: { section, setRowModesModel, setShowActiveBugLogs, showActiveBugLogs },
+                    }}
+                    experimentalFeatures={{ newEditingApi: true }}
+               />
           </>
      )
 }

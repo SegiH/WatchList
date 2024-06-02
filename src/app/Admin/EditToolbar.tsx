@@ -88,7 +88,7 @@ const EditToolbar = ({ section, setRowModesModel, setShowActiveBugLogs, showActi
 
                          {section === "Bug Log" &&
                               <span>
-                                   Show {showActiveBugLogs ? " Inactive" : " Active" } Bug Logs
+                                   Show Active Bug Logs
                                    <input type="checkbox" checked={showActiveBugLogs} onChange={(event) => setShowActiveBugLogs(event.target.checked)} />
                               </span>
                          }

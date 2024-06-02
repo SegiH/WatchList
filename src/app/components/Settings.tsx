@@ -71,6 +71,7 @@ const Settings = () => {
                setTitleClickCount(0);
           } else {
                setTitleClickCount(newTitleClick);
+               setBugLogVisible(false);
           }
      }
 

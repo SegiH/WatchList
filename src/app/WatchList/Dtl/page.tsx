@@ -118,8 +118,19 @@ export default function WatchListDetail() {
                return;
           }
 
-          const watchListItem = watchListItems?.filter((watchListItem: typeof IWatchListItem) => {
-               return watchListItem.WatchListItemName === event.target.innerText;
+          const watchListItem = watchListItems.filter((watchListItem: typeof IWatchListItem) => {
+               const IMDB_JSON = watchListItem?.IMDB_JSON !== null && typeof watchListItem?.IMDB_JSON !== "undefined" ? JSON.parse(watchListItem?.IMDB_JSON) : null;
+
+               let itemName = watchListItem.WatchListItemName + (IMDB_JSON !== null && IMDB_JSON.Year !== null ? ` (${IMDB_JSON.Year})` : ``);
+
+
+               if (watchListItems?.filter((watchListItemDupe: typeof IWatchListItem) => {
+                    return String(watchListItemDupe.WatchListItemName) === String(watchListItem.WatchListItemName);
+               }).length > 1) {
+                    itemName += ` (${watchListItem.WatchListTypeName})`;
+               }
+
+               return itemName === event.target.innerText;
           });
 
           if (watchListItem.length === 1) {

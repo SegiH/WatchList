@@ -79,7 +79,16 @@ export default function Login() {
 
           axios.put(`/api/Login`)
                .then((res: typeof IUser) => {
+                    const timeout =  604800000;
+
                     if (res.data[0] === "OK") {
+                         if (typeof res.data[1].Token !== "undefined") {
+                              localStorage.setItem("WatchList.Token", res.data[1].Token);
+
+                              const expiration = new Date().getTime() + timeout;
+                              localStorage.setItem("WatchList.TokenExpiration", expiration.toString());
+                         }
+
                          loginSuccessfullActions(res.data[1]);
                     } else {
                          alert(res.data[1]);

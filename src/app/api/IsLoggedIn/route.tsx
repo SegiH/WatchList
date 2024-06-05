@@ -2,7 +2,7 @@
 import { NextRequest } from 'next/server';
 import fs from 'fs';
 import { cookies } from 'next/headers';
-import { DBFile, getUserSession, validateSettings } from "../lib";
+import { decrypt, DBFile, getUserSession, login, validateSettings } from "../lib";
 
 /**
  * @swagger
@@ -17,6 +17,10 @@ import { DBFile, getUserSession, validateSettings } from "../lib";
  *            description: '["OK",""] on success, ["ERROR","error message"] on error'
  */
 export async function GET(request: NextRequest) {
+     const searchParams = request.nextUrl.searchParams;
+
+     const token = typeof searchParams.get("Token") !== "undefined" ? searchParams.get("Token") : null;
+
      const validationResult: any = await validateSettings();
 
      if (validationResult === false) {
@@ -44,6 +48,15 @@ export async function GET(request: NextRequest) {
                     Admin: userSession.Admin,
                },
           ]);
+     } else if (token !== null) {
+          const tokenSplit = token.split(":");
+
+          if (tokenSplit.length === 2) {
+               const username = decrypt(tokenSplit[0]);
+               const password = decrypt(tokenSplit[1]);
+
+               return login(username, password);
+          }
      } else {
           return Response.json(["ERROR", ""]);
      }

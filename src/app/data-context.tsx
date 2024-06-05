@@ -466,7 +466,27 @@ const DataProvider = ({ children }) => {
                     return;
                }
 
-               axios.get(`/api/IsLoggedIn`)
+               const token = localStorage.getItem("WatchList.Token");
+               const tokenExpiration = localStorage.getItem("WatchList.TokenExpiration");
+
+               let params = '';
+
+               if (token !== null) {
+                    if (tokenExpiration !== null) {
+                         // Validation token expiration
+                         const currentEpoch = new Date().getTime();
+                         const tokenExpirationNum = parseFloat(tokenExpiration);
+
+                         if (currentEpoch >= tokenExpirationNum) {
+                              localStorage.removeItem("WatchList.Token");
+                              localStorage.removeItem("WatchList.TokenExpiration");
+                         } else {
+                              params = "?Token=" + encodeURIComponent(token);
+                         }
+                    }
+               }
+
+               axios.get(`/api/IsLoggedIn${params}`)
                     .then((res: typeof IUser) => {
                          if (res.data[0] === "OK") {
                               const newUserData = Object.assign({}, userData);

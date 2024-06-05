@@ -186,6 +186,41 @@ export async function getUserSession(req: NextRequest) {
      }
 }
 
+export async function login(username: string, password: string) {
+     try {
+          const SQL = "SELECT UserID,Username,Password,Realname,Admin FROM Users WHERE Enabled=1 LIMIT 1";
+
+          const results = await execSelect(SQL, []);
+
+          if (results.length === 0) {
+               return Response.json(["ERROR", "Invalid username or password"]);
+          }
+
+          // Since the encryption is done in the API, we have to get the username and password and decrypt it in this endpoint
+          const currentUser = results.filter((currentUser: any) => {
+               return username === decrypt(currentUser.Username) && password === decrypt(currentUser.Password)
+          });
+
+          if (currentUser.length !== 1) {
+               return Response.json(["ERROR", "Invalid username or password"]);
+          }
+
+          const userData = {
+               UserID: currentUser[0].UserID,
+               Username: decrypt(currentUser[0].Username),
+               Realname: decrypt(currentUser[0].Realname),
+               Admin: results[0]["Admin"],
+               Token: currentUser[0].Username + ":" + currentUser[0].Password
+          }
+
+          cookies().set('userData', JSON.stringify(userData));
+
+          return Response.json(["OK", userData]);
+     } catch (err: any) {
+          return Response.json(["ERROR", `/Login: The error ${err.message} occurred logging in`]);
+     }
+}
+
 const openDB = async () => {
      return await open({
           filename: DBFile,

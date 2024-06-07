@@ -79,14 +79,18 @@ export default function Login() {
 
           axios.put(`/api/Login`)
                .then((res: typeof IUser) => {
-                    const timeout =  604800000;
-
                     if (res.data[0] === "OK") {
-                         if (typeof res.data[1].Token !== "undefined") {
-                              localStorage.setItem("WatchList.Token", res.data[1].Token);
+                         const timeout = typeof res.data[1].Timeout !== "undefined" && !isNaN(res.data[1].Timeout) ? parseFloat(res.data[1].Timeout) : null;
 
-                              const expiration = new Date().getTime() + timeout;
-                              localStorage.setItem("WatchList.TokenExpiration", expiration.toString());
+                         if (timeout == null) {
+                              alert("Timeout is not set!");
+                         } else {
+                              if (typeof res.data[1].Token !== "undefined" && 'serviceWorker' in navigator) { // 'serviceWorker' in navigator should only be true when using the PWA
+                                   localStorage.setItem("WatchList.Token", res.data[1].Token);
+
+                                   const expiration = new Date().getTime() + timeout;
+                                   localStorage.setItem("WatchList.TokenExpiration", expiration.toString());
+                              }
                          }
 
                          loginSuccessfullActions(res.data[1]);

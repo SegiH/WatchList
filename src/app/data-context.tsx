@@ -1,8 +1,5 @@
 "use client"
-
 // NOTE: If you run this script in VS Code in Docker, you HAVE to run the web app on port 8080 or websocket will stop working which breaks hot reloading
-//
-// Known Issues/Future features
 //
 import PropTypes from 'prop-types';
 
@@ -178,7 +175,7 @@ export interface DataContextType {
      watchListTypesLoadingComplete: boolean;
 }
 
-const buildDate = "06-04-24";
+const buildDate = "06-06-24";
 
 const DataProvider = ({ children }) => {
      const [activeRoute, setActiveRoute] = useState("");
@@ -471,18 +468,16 @@ const DataProvider = ({ children }) => {
 
                let params = '';
 
-               if (token !== null) {
-                    if (tokenExpiration !== null) {
-                         // Validation token expiration
-                         const currentEpoch = new Date().getTime();
-                         const tokenExpirationNum = parseFloat(tokenExpiration);
+               if (token !== null && tokenExpiration !== null) {
+                    // Validation token expiration
+                    const currentEpoch = new Date().getTime();
+                    const tokenExpirationNum = parseFloat(tokenExpiration);
 
-                         if (currentEpoch >= tokenExpirationNum) {
-                              localStorage.removeItem("WatchList.Token");
-                              localStorage.removeItem("WatchList.TokenExpiration");
-                         } else {
-                              params = "?Token=" + encodeURIComponent(token);
-                         }
+                    if (currentEpoch >= tokenExpirationNum) {
+                         localStorage.removeItem("WatchList.Token");
+                         localStorage.removeItem("WatchList.TokenExpiration");
+                    } else {
+                         params = "?Token=" + encodeURIComponent(token);
                     }
                }
 
@@ -494,6 +489,9 @@ const DataProvider = ({ children }) => {
                               newUserData.Username = res.data[1].Username;
                               newUserData.RealName = res.data[1].RealName;
                               newUserData.Admin = res.data[1].Admin === 1 ? true : false;
+
+                              localStorage.setItem("WatchList.Token", res.data[1].Token);
+                              localStorage.setItem("WatchList.TokenExpiration", res.data[1].TokenExpiration);
 
                               setUserData(newUserData);
 
@@ -729,7 +727,7 @@ const DataProvider = ({ children }) => {
                return;
           }
 
-          if (!isLoggedIn && activeRoute !== "Login" && activeRoute !==" Setup") { // Tabs should never be rendered if the user is not logged in
+          if (!isLoggedIn && activeRoute !== "Login" && activeRoute !== "Setup") { // Tabs should never be rendered if the user is not logged in
                return;
           }
 

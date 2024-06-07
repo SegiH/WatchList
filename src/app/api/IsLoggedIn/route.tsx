@@ -2,7 +2,7 @@
 import { NextRequest } from 'next/server';
 import fs from 'fs';
 import { cookies } from 'next/headers';
-import { decrypt, DBFile, getUserSession, login, validateSettings } from "../lib";
+import { DBFile, execSelect, execUpdateDelete, getUserSession, loginSuccessfullActions, tokenSeparator, validateSettings } from "../lib";
 
 /**
  * @swagger
@@ -49,13 +49,45 @@ export async function GET(request: NextRequest) {
                },
           ]);
      } else if (token !== null) {
-          const tokenSplit = token.split(":");
+          // Validate token
+          const tokenSplit = token.split(tokenSeparator);
 
           if (tokenSplit.length === 2) {
-               const username = decrypt(tokenSplit[0]);
-               const password = decrypt(tokenSplit[1]);
+               const username = tokenSplit[0];
+               const token = tokenSplit[1];
 
-               return login(username, password);
+               const SQL = "SELECT * FROM Users WHERE Username = ? AND Token = ?";
+               const params = [username, token];
+
+               const results = await execSelect(SQL, params);
+
+               if (results.length === 0) {
+                    return Response.json(["ERROR", "Invalid username or password 1 when username is " + username + " and token=" + token]);
+               }
+
+               // Since the encryption is done in the API, we have to get the username and password and decrypt it in this endpoint
+               const currentUser = results.filter((currentUser: any) => {
+                    return username === currentUser.Username && token === currentUser.Token
+               });
+
+               if (currentUser.length !== 1) {
+                    return Response.json(["ERROR", "Invalid username or password 2"]);
+               }
+
+               // Make sure that the token has not expired. If it has, delete it.
+               const currentEpoch = new Date().getTime();
+               const tokenExpirationNum = parseFloat(currentUser[0].TokenExpiration);
+
+               if (currentEpoch >= tokenExpirationNum) {
+                    const tokenSQL = "UPDATE Users SET Token=NULL, TokenExpiration=NULL WHERE UserID=?";
+                    const tokenParams: any = [currentUser[0].UserID];
+
+                    await execUpdateDelete(tokenSQL, tokenParams);
+
+                    return Response.json(["ERROR", ""]);
+               }
+
+               return loginSuccessfullActions(currentUser, results);
           }
      } else {
           return Response.json(["ERROR", ""]);

@@ -96,6 +96,7 @@ export default function Login() {
                          loginSuccessfullActions(res.data[1]);
                     } else {
                          alert(res.data[1]);
+                         setLoginSubmitted(false);
                     }
                })
                .catch((err: Error) => {

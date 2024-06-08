@@ -20,7 +20,7 @@ $DESTINATION_DIR_EXISTS=Test-Path $DESTINATION_DIR
 $ZIP_FILE_EXISTS=Test-Path $ZIP_FILE
 
 # Validate that these 3 variables are set
-<#if ( ! $COMPOSE_SCRIPT_EXISTS) {
+if ( ! $COMPOSE_SCRIPT_EXISTS) {
      throw "$COMPOSE_SCRIPT was not found!”
 }
 
@@ -30,9 +30,9 @@ if ( ! $CONFIG_FILE_EXISTS) {
 
 if ( ! $DB_FILE_EXISTS) {
      throw "$DB_FILE was not found!”
-}#>
+}
 
-<#$command_line_param = $args[0]
+$command_line_param = $args[0]
 
 # The only command line parameter allowed is in USE_EXISTING_PARAM
 if ($command_line_param -ne $null -and $command_line_param -ne $USE_EXISTING_PARAM) {
@@ -57,9 +57,9 @@ if ($ZIP_FILE_EXISTS -eq $True -and $command_line_param -eq $USE_EXISTING_PARAM)
 # If watchlist.zip doesn't exist but WatchList directory does and USE_EXISTING_PARAM was not passed, force user  to remove it since cloning Github repo will create this directory
 if ($DESTINATION_DIR_EXISTS -eq $True -and $command_line_param -ne $USE_EXISTING_PARAM) {
      throw "$DESTINATION_DIR directory exists. Remove it”
-}#>
+}
 
-<#if ($ZIP_FILE_EXISTS -eq $True) {
+if ($ZIP_FILE_EXISTS -eq $True) {
      Expand-Archive -LiteralPath $ZIP_FILE -DestinationPath $DESTINATION_DIR
 } elseif ($command_line_param -ne $USE_EXISTING_PARAM) {
      $cloneCmd="git clone $REPO_URL $DESTINATION_DIR"
@@ -71,14 +71,15 @@ Set-Location $DESTINATION_DIR
 
 Copy-Item -Path $COMPOSE_SCRIPT -Destination $DESTINATION_DIR
 
-Copy-Item -Path $CONFIG_FILE -Destination $DESTINATION_DIR
+Copy-Item -Path $CONFIG_FILE -Destination $DESTINATION_DIR\config
 
 Copy-Item -Path $DB_FILE -Destination $DESTINATION_DIR
+
+Copy-Item -Path Docker\Dockerfile -Destination .
 
 # Run docker build command
 $buildCmd="docker build . -t watchlist"
 Invoke-Expression $buildCmd
-#>
 
 ForEach ($current_cmd in $DOCKER_COMMANDS) {
      Invoke-Expression $current_cmd

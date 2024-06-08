@@ -71,9 +71,11 @@
  
  cp "$COMPOSE_SCRIPT" .
  
- cp "$CONFIG_FILE" .
+ cp "$CONFIG_FILE" config/
  
  cp "$DB_FILE" .
+
+ cp Docker/Dockerfile .
  
  docker buildx build . -t watchlist
  

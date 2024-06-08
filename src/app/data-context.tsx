@@ -463,8 +463,18 @@ const DataProvider = ({ children }) => {
                     return;
                }
 
-               const token = localStorage.getItem("WatchList.Token");
-               const tokenExpiration = localStorage.getItem("WatchList.TokenExpiration");
+               let token = localStorage.getItem("WatchList.Token");
+               let tokenExpiration = localStorage.getItem("WatchList.TokenExpiration");
+
+               if (token === 'undefined') {
+                    token = null;
+                    localStorage.removeItem("WatchList.Token");
+               }
+
+               if (tokenExpiration === 'undefined') {
+                    tokenExpiration = null;
+                    localStorage.removeItem("WatchList.TokenExpiration");
+               }
 
                let params = '';
 

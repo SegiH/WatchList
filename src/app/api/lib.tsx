@@ -201,7 +201,6 @@ export async function login(username: string, password: string) {
 
           // Since the encryption is done in the API, we have to get the username and password and decrypt it in this endpoint
           const currentUser = results.filter((currentUser: any) => {
-               console.log(`username=${decrypt(currentUser.Username)} and password=${decrypt(currentUser.Password)}`)
                return username === decrypt(currentUser.Username) && password === decrypt(currentUser.Password)
           });
 

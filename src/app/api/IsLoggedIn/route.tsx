@@ -62,7 +62,7 @@ export async function GET(request: NextRequest) {
                const results = await execSelect(SQL, params);
 
                if (results.length === 0) {
-                    return Response.json(["ERROR", "Invalid username or password 1 when username is " + username + " and token=" + token]);
+                    return Response.json(["ERROR", "Invalid username or password"]);
                }
 
                // Since the encryption is done in the API, we have to get the username and password and decrypt it in this endpoint
@@ -71,7 +71,7 @@ export async function GET(request: NextRequest) {
                });
 
                if (currentUser.length !== 1) {
-                    return Response.json(["ERROR", "Invalid username or password 2"]);
+                    return Response.json(["ERROR", "Invalid username or password"]);
                }
 
                // Make sure that the token has not expired. If it has, delete it.

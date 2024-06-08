@@ -2,9 +2,9 @@
 # If you have a Directory named WatchList but do not have watchlist.zip in the same location as this script, yo u can use the parameter --use-existing to redeploy WatchList using the WatchList directory.
 # If you do not have a zip file named watchlist.zip and do not have a directory named WatchList in the current  directory, the latest code will be pulled from Github and used to build this app
 #>
-$COMPOSE_SCRIPT="C:\Users\245123\docker-compose.yml"
-$CONFIG_FILE="C:\Users\245123\default.json"
-$DB_FILE="C:\Users\245123\watchlistdb.sqlite"
+$COMPOSE_SCRIPT="C:\Users\JohnDoe\docker-compose.yml"
+$CONFIG_FILE="C:\Users\JohnDoe\default.json"
+$DB_FILE="C:\Users\JohnDoe\watchlistdb.sqlite"
 $DOCKER_COMMANDS='docker stop WatchList','docker rm WatchList'
 
 # DO NOT CHANGE ANYTHING BELOW THIS LINE

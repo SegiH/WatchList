@@ -22,7 +22,7 @@ export const watchListSQL = "CREATE TABLE WatchList (WatchListID INTEGER PRIMARY
 export const watchListItemsSQL = "CREATE TABLE WatchListItems(WatchListItemID INTEGER PRIMARY KEY,WatchListItemName VARCHAR(500),WatchListTypeID INTEGER,IMDB_URL VARCHAR(200),IMDB_Poster VARCHAR(2000),ItemNotes VARCHAR(200),Archived TINYINT(1), IMDB_JSON TEXT NULL);";
 export const watchListSourcesSQL = "CREATE TABLE WatchListSources (WatchListSourceID INTEGER PRIMARY KEY, WatchListSourceName VARCHAR(80) NOT NULL);";
 export const watchListTypesSQL = "CREATE TABLE WatchListTypes (WatchListTypeID INTEGER PRIMARY KEY, WatchListTypeName VARCHAR(80) NOT NULL);";
-export const usersSQL = "CREATE TABLE Users (UserID INTEGER PRIMARY KEY, Username BLOB NOT NULL, Realname BLOB NOT NULL, Password BLOB NOT NULL, Admin BIT NULL DEFAULT 0, Enabled NULL DEFAULT 0);";
+export const usersSQL = "CREATE TABLE Users (UserID INTEGER PRIMARY KEY, Username BLOB NOT NULL, Realname BLOB NOT NULL, Password BLOB NOT NULL, Admin BIT NULL DEFAULT 0, Enabled NULL DEFAULT 0, Token TEXT NULL, TokenExpiration INTEGER NULL);";
 
 export const defaultSources = ['Amazon', 'Hulu', 'Movie Theatre', 'Netflix', 'Plex', 'Prime', 'Web'];
 export const defaultTypes = ['Movie', 'Other', 'Special', 'TV'];

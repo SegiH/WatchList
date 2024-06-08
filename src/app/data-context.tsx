@@ -507,11 +507,10 @@ const DataProvider = ({ children }) => {
                                    setActiveRouteDisplayName("Setup");
                                    router.push("/Setup");
                                    return;
-                              } else if (res.data[1] !== null && res.data[1] !== "") {
+                              } /*else if (res.data[1] !== null && res.data[1] !== "") {
                                    alert(res.data[1]);
-                                   router.push("/404");
-                                   return;
-                              }
+                                   //return;
+                              }*/
 
                               setIsLoggedIn(false);
 

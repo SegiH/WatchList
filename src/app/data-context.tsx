@@ -94,6 +94,7 @@ export interface DataContextType {
      isClient: boolean;
      isEditing: boolean;
      isError: boolean;
+     isErrorMessage: string;
      isLoggedIn: boolean;
      isLoggedInCheckComplete: boolean;
      LogOutIconComponent: React.ReactNode;
@@ -115,6 +116,7 @@ export interface DataContextType {
      setIsAdding: (value: boolean) => void;
      setIsEditing: (value: boolean) => void;
      setIsError: (value: boolean) => void;
+     setIsErrorMessage: (value: string) => void;
      setIsLoggedIn: (value: boolean) => void;
      setIsLoggedInCheckComplete: (value: boolean) => void;
      setShowMissingArtwork: (value: boolean) => void;
@@ -175,7 +177,7 @@ export interface DataContextType {
      watchListTypesLoadingComplete: boolean;
 }
 
-const buildDate = "06-08-24";
+const buildDate = "06-09-24";
 
 const DataProvider = ({ children }) => {
      const [activeRoute, setActiveRoute] = useState("");
@@ -190,6 +192,7 @@ const DataProvider = ({ children }) => {
      const [isClientCheckComplete, setIsClientCheckComplete] = useState(false);
      const [isEditing, setIsEditing] = useState(false);
      const [isError, setIsError] = useState(false);
+     const [isErrorMessage, setIsErrorMessage] = useState("");
      const [isLoggedIn, setIsLoggedIn] = useState(false);
      const [isLoggedInCheckComplete, setIsLoggedInCheckComplete] = useState(false);
      const [isLoggedInCheckStarted, setIsLoggedInCheckStarted] = useState(false);
@@ -517,10 +520,7 @@ const DataProvider = ({ children }) => {
                                    setActiveRouteDisplayName("Setup");
                                    router.push("/Setup");
                                    return;
-                              } /*else if (res.data[1] !== null && res.data[1] !== "") {
-                                   alert(res.data[1]);
-                                   //return;
-                              }*/
+                              }
 
                               setIsLoggedIn(false);
 
@@ -533,7 +533,7 @@ const DataProvider = ({ children }) => {
                          setIsLoggedInCheckComplete(true);
                     })
                     .catch((err: Error) => {
-                         alert(new Date().toTimeString() + ": Error when calling /IsLoggedIn with the error " + err.message);
+                         //alert(new Date().toTimeString() + ": Error when calling /IsLoggedIn with the error " + err.message);
                          setIsLoggedInCheckComplete(true);
 
                          router.push("/Login");
@@ -565,7 +565,7 @@ const DataProvider = ({ children }) => {
                axios.get(`/api/GetWatchList?SortColumn=${watchListSortColumn}&SortDirection=${watchListSortDirection}`, { withCredentials: true })
                     .then((res: typeof IWatchList) => {
                          if (res.data[0] !== "OK") {
-                              alert("Failed to get WatchList with the error " + res.data[1]);
+                              setIsErrorMessage("Failed to get WatchList with the error " + res.data[1])
                               setIsError(true);
                               return;
                          }
@@ -574,7 +574,7 @@ const DataProvider = ({ children }) => {
                          setWatchListLoadingComplete(true);
                     })
                     .catch((err: Error) => {
-                         alert("Failed to get WatchList with the error " + err.message);
+                         setIsErrorMessage("Failed to get WatchList with the error " + err.message);
                          setIsError(true);
                     });
           }
@@ -600,7 +600,7 @@ const DataProvider = ({ children }) => {
                axios.get(`/api/GetWatchListItems${Object.keys(watchListItemsSortColumns).includes(watchListSortColumn) ? `?SortColumn=${watchListSortColumn}&SortDirection=${watchListSortDirection}` : ``}`, { withCredentials: true })
                     .then((res: typeof IWatchListItem) => {
                          if (res.data[0] !== "OK") {
-                              alert("Failed to get WatchList Items with the error " + res.data[1]);
+                              setIsErrorMessage("Failed to get WatchList Items with the error " + res.data[1]);
                               setIsError(true);
                               return;
                          }
@@ -610,7 +610,7 @@ const DataProvider = ({ children }) => {
                          setWatchListItemsSortingComplete(false);
                     })
                     .catch((err: Error) => {
-                         alert("Failed to get WatchList Items with the error " + err.message);
+                         setIsErrorMessage("Failed to get WatchList Items with the error " + err.message);
 
                          setIsError(true);
                     });
@@ -637,7 +637,7 @@ const DataProvider = ({ children }) => {
                axios.get(`/api/GetWatchListSources`, { withCredentials: true })
                     .then((res: typeof IWatchListSource) => {
                          if (res.data[0] !== "OK") {
-                              alert("Failed to get WatchList Sources with the error " + res.data[1]);
+                              setIsErrorMessage("Failed to get WatchList Sources with the error " + res.data[1]);
                               setIsError(true);
                               return;
                          }
@@ -655,7 +655,7 @@ const DataProvider = ({ children }) => {
                          setWatchListSourcesLoadingComplete(true);
                     })
                     .catch((err: Error) => {
-                         alert("Failed to get WatchList Sources with the error " + err.message);
+                         setIsErrorMessage("Failed to get WatchList Sources with the error " + err.message);
                          setIsError(true);
                     });
           }
@@ -681,7 +681,7 @@ const DataProvider = ({ children }) => {
                axios.get(`/api/GetWatchListTypes`, { withCredentials: true })
                     .then((res: typeof IWatchListType) => {
                          if (res.data[0] !== "OK") {
-                              alert("Failed to get WatchList Types with the error " + res.data[1]);
+                              setIsErrorMessage("Failed to get WatchList Types with the error " + res.data[1]);
                               setIsError(true);
                               return;
                          }
@@ -690,7 +690,7 @@ const DataProvider = ({ children }) => {
                          setWatchListTypesLoadingComplete(true);
                     })
                     .catch((err: Error) => {
-                         alert("Failed to get WatchList Types with the error " + err.message);
+                         setIsErrorMessage("Failed to get WatchList Types with the error " + err.message);
                          setIsError(true);
                     });
           }
@@ -871,6 +871,7 @@ const DataProvider = ({ children }) => {
           isClient: isClient,
           isEditing: isEditing,
           isError: isError,
+          isErrorMessage: isErrorMessage,
           isLoggedIn: isLoggedIn,
           isLoggedInCheckComplete: isLoggedInCheckComplete,
           LogOutIconComponent: LogOutIconComponent,
@@ -892,6 +893,7 @@ const DataProvider = ({ children }) => {
           setIsAdding: setIsAdding,
           setIsEditing: setIsEditing,
           setIsError: setIsError,
+          setIsErrorMessage,
           setIsLoggedIn: setIsLoggedIn,
           setIsLoggedInCheckComplete: setIsLoggedInCheckComplete,
           setSearchCount: setSearchCount,

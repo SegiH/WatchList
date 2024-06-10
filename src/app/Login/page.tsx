@@ -106,7 +106,7 @@ export default function Login() {
                     if (String(err.message).startsWith("Unauthorized")) {
                          alert(`Invalid username or password`);
                     } else if (err.message === "Request failed with status code 404") {
-                         alert(`An error occurred logging in. Please check the WatchList URL`);
+                         alert(`An error occurred logging in. Please check the WatchList Backend`);
                     } else {
                          alert(`An error occurred logging in with the error ${err.message}`);
                     }

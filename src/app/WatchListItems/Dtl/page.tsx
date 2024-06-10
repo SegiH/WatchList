@@ -30,6 +30,7 @@ export default function WatchListItemsDtl() {
           setIsAdding,
           setIsEditing,
           setIsError,
+          setIsErrorMessage,
           setWatchListItemsLoadingStarted,
           setWatchListItemsLoadingComplete,
           showWatchListItems,
@@ -183,7 +184,7 @@ export default function WatchListItemsDtl() {
                axios.put(queryURL)
                     .then((res: typeof IWatchListItem) => {
                          if (res.data[0] === "ERROR") {
-                              alert(`The error ${res.data[1]} occurred while  updating the item detail`);
+                              alert(`The error ${res.data[1]} occurred while updating the item detail`);
                          } else {
                               // Update type name if needed
                               if (watchListItemDtl["WatchListTypeIDIsModified"] === true) {
@@ -251,7 +252,7 @@ export default function WatchListItemsDtl() {
 
           axios.put(queryURL).then((res: typeof IWatchListItem) => {
                if (res.data[0] === "ERROR") {
-                    alert(`The error ${res.data[1]} occurred while  adding the detail`);
+                    alert(`The error ${res.data[1]} occurred while adding the detail`);
                } else if (res.data[0] === "ERROR-ALREADY-EXISTS") {
                     alert(res.data[1]);
                } else {
@@ -337,7 +338,7 @@ export default function WatchListItemsDtl() {
                          setWatchListItemDtlLoadingComplete(true);
 
                          if (res.data[0] === "ERROR") {
-                              alert(`The error ${res.data[1]} occurred while  getting the item detail`);
+                              setIsErrorMessage(`The error ${res.data[1]} occurred while getting the item detail`);
                               setIsError(true);
                               return;
                          } else {
@@ -372,7 +373,7 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
                          }
                     })
                     .catch((err: Error) => {
-                         alert(`The fatal error ${err.message} occurred while getting the item detail`);
+                         setIsErrorMessage(`The fatal error ${err.message} occurred while getting the item detail`);
                          setIsError(true);
                     });
           } else if (isAdding && watchListItemDtlID === -1) {

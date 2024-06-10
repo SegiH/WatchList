@@ -212,7 +212,7 @@ export default function SearchIMDB() {
                               `/api/SearchIMDB?SearchTerm=${searchTerm}&SearchCount=${searchCount}`
                          ).then((res: typeof ISearchImdb) => {
                               if (res.data[0] === "ERROR") {
-                                   alert(`The error ${res.data[1]} occurred while  searching IMDB`);
+                                   alert(`The error ${res.data[1]} occurred while searching IMDB`);
                               } else {
                                    setIMDBSearchResults(res.data[1]);
                                    setSearchLoadingComplete(true);

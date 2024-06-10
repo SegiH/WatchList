@@ -50,6 +50,7 @@ export default function WatchListDetail() {
           setIsAdding,
           setIsEditing,
           setIsError,
+          setIsErrorMessage,
           setWatchListLoadingStarted,
           setWatchListLoadingComplete,
           setWatchListSortingComplete,
@@ -308,7 +309,7 @@ export default function WatchListDetail() {
 
           axios.put(queryURL).then((res: typeof IWatchListItem) => {
                if (res.data[0] === "ERROR") {
-                    alert(`The error ${res.data[1]} occurred while  adding the detail`);
+                    alert(`The error ${res.data[1]} occurred while adding the detail`);
                } else {
                     setIsAdding(false);
                     setWatchListLoadingStarted(false);
@@ -408,7 +409,7 @@ export default function WatchListDetail() {
 
                axios.put(queryURL).then((res: typeof IWatchListItem) => {
                     if (res.data[0] === "ERROR") {
-                         alert(`The error ${res.data[1]} occurred while  updating the detail`);
+                         alert(`The error ${res.data[1]} occurred while updating the detail`);
                     } else {
                          setIsEditing(false);
                     }
@@ -482,7 +483,7 @@ export default function WatchListDetail() {
                axios.get(`/api/GetWatchListDtl?WatchListID=${watchListDtlID}`)
                     .then((res: typeof IWatchList) => {
                          if (res.data[0] === "ERROR") {
-                              alert(`The error ${res.data[1]} occurred while  getting the detail`);
+                              setIsErrorMessage(`The error ${res.data[1]} occurred while getting the detail`);
                               setIsError(true);
                               return;
                          } else {
@@ -518,7 +519,7 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
                          }
                     })
                     .catch((err: Error) => {
-                         alert(`The fatal error ${err.message} occurred while  getting the detail`);
+                         setIsErrorMessage(`The fatal error ${err.message} occurred while getting the detail`);
                          setIsError(true);
                     });
           } else if (isAdding) {

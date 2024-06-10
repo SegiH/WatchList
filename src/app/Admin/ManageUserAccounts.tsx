@@ -40,6 +40,7 @@ const ManageUserAccounts = () => {
           setIsAdding,
           setIsEditing,
           setIsError,
+          setIsErrorMessage,
           setUsers,
           users,
           validatePassword
@@ -240,7 +241,7 @@ const ManageUserAccounts = () => {
 
                const newRowResult = newRows.filter((row: typeof IUser) => row.UserID === dialogVisibleParamID);
 
-               if (newRowResult.length !== 1) {
+               if (newRowResult.length !== 1) { // This shouldn't ever happen
                     alert("Failed to update the password. Unable to find user ID");
                     return;
                }
@@ -380,14 +381,14 @@ const ManageUserAccounts = () => {
                          if (res.data[0] === "OK") {
                               setUsers(res.data[1]);
                          } else {
-                              alert(res.data[1]);
+                              setIsErrorMessage(res.data[1]);
                               setIsError(true);
                          }
 
                          setUsersLoadingComplete(true);
                     })
                     .catch((err: Error) => {
-                         alert("Failed to get users with the error " + err.message);
+                         setIsErrorMessage("Failed to get users with the error " + err.message);
                          setIsError(true);
                     });
           }

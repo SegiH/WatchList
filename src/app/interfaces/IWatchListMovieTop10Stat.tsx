@@ -1,4 +1,4 @@
-export default interface IWatchListMovieStat {
+export default interface IWatchListMovieTop10Stat {
      UserID: number,
      WatchListItemName: string,
      ItemCount: number,

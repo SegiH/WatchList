@@ -67,14 +67,21 @@ export default function WatchListStats() {
      const [watchListSourceDtlLoadingStarted, setWatchListSourceDtlLoadingStarted] = useState(false);
      const [watchListSourceDtlLoadingComplete, setWatchListSourceDtlLoadingComplete] = useState(false);
 
-     const [watchListWeeklyTVStats, setWatchListWeeklyTVStats] = useState([]);
-     const [watchListWeeklyTVYearsStats, setWatchListWeeklyTVYearsStats] = useState([]);
-     const [watchListWeeklyTVMaxWeek, setWatchListWeeklyTVMaxWeek] = useState(-1);
-     const [watchListWeeklyCurrentTVYearStat, setWatchListWeeklyCurrentTVYearStat] = useState(-1);
-     const [watchListWeeklyCurrentTVWeekGroupingStat, setWatchListWeeklyCurrentTVWeekGroupingStat] = useState([]);
+     const [watchListWeeklyTVSeasonStats, setWatchListWeeklyTVSeasonStats] = useState([]);
+     const [watchListWeeklyTVSeasonsYearsStats, setWatchListWeeklyTVSeasonsYearsStats] = useState([]);
+     const [watchListWeeklyTVSeasonsMaxWeek, setWatchListWeeklyTVSeasonsMaxWeek] = useState(-1);
+     const [watchListWeeklyCurrentTVSeasonsYearStat, setWatchListWeeklyCurrentTVSeasonsYearStat] = useState(-1);
+     const [watchListWeeklyCurrentTVSeasonsWeekGroupingStat, setWatchListWeeklyCurrentTVSeasonsWeekGroupingStat] = useState([]);
+     const [watchListWeeklyTVSeasonsStatsLoadingStarted, setWatchListWeeklyTVSeasonsStatsLoadingStarted] = useState(false);
+     const [watchListWeeklyTVSeasonsStatsLoadingComplete, setWatchListWeeklyTVSeasonsStatsLoadingComplete] = useState(false);
 
-     const [watchListWeeklyTVStatsLoadingStarted, setWatchListWeeklyTVStatsLoadingStarted] = useState(false);
-     const [watchListWeeklyTVStatsLoadingComplete, setWatchListWeeklyTVStatsLoadingComplete] = useState(false);
+     const [watchListWeeklyTVTotalYearsStats, setWatchListWeeklyTVTotalYearsStats] = useState([]);
+     const [watchListWeeklyCurrentTVTotalYearStat, setWatchListWeeklyCurrentTVTotalYearStat] = useState(-1);
+     const [watchListWeeklyTVTotalStats, setWatchListWeeklyTVTotalStats] = useState([]);
+     const [watchListWeeklyTVTotalStatsLoadingStarted, setWatchListWeeklyTVTotalStatsLoadingStarted] = useState(false);
+     const [watchListWeeklyTVTotalStatsLoadingComplete, setWatchListWeeklyTVTotalStatsLoadingComplete] = useState(false);
+     const [watchListWeeklyTVTotalMaxWeek, setWatchListWeeklyTVTotalMaxWeek] = useState(-1);
+     const [watchListWeeklyCurrentTVTotalWeekGroupingStat, setWatchListWeeklyCurrentTVTotalWeekGroupingStat] = useState([]);
 
      const [watchListWeeklyMovieStats, setWatchListWeeklyMovieStats] = useState([]);
      const [watchListWeeklyMovieYearsStats, setWatchListWeeklyMovieYearsStats] = useState([]);
@@ -389,44 +396,58 @@ export default function WatchListStats() {
      // Initiate start of fetching WatchList Weekly Stats
      useEffect(() => {
           if (demoMode) {
-               const demoWatchListWeeklyBreakdown = require("../demo/index").demoWatchListWeeklyBreakDown;
-               const uniqueTVYears = demoWatchListWeeklyBreakdown[1].map((item: typeof IWatchListWeeklyTVStat) => item.Year).filter((value: string, index: number, current_value: [string]) => { return current_value.indexOf(value) === index }).sort();
-               setWatchListWeeklyTVYearsStats(uniqueTVYears);
-               setWatchListWeeklyCurrentTVYearStat(new Date().getFullYear());
-               setWatchListWeeklyTVStats(demoWatchListWeeklyBreakdown[1]);
-               setWatchListWeeklyTVStatsLoadingComplete(true);
+               const demoWatchListWeeklyBreakDown = require("../demo/index").demoWatchListWeeklyBreakDown;
+               
+               const uniqueTVSeasonsYears = demoWatchListWeeklyBreakDown[1].map((item: typeof IWatchListWeeklyTVStat) => item.Year).filter((value: string, index: number, current_value: [string]) => { return current_value.indexOf(value) === index }).sort();
+               setWatchListWeeklyTVSeasonsYearsStats(uniqueTVSeasonsYears);
+               setWatchListWeeklyCurrentTVSeasonsYearStat(new Date().getFullYear());
+               setWatchListWeeklyTVSeasonStats(demoWatchListWeeklyBreakDown[1]);
+               setWatchListWeeklyTVSeasonsStatsLoadingComplete(true);
 
-               const uniqueMovieYears = demoWatchListWeeklyBreakdown[2].map((item: typeof IWatchListWeeklyMovieStat) => item.Year).filter((value: string, index: number, current_value: [string]) => { return current_value.indexOf(value) === index }).sort();
+               const uniqueTVTotalYears = demoWatchListWeeklyBreakDown[3].map((item: typeof IWatchListWeeklyTVStat) => item.Year).filter((value: string, index: number, current_value: [string]) => { return current_value.indexOf(value) === index }).sort();
+               setWatchListWeeklyTVTotalYearsStats(uniqueTVTotalYears);
+               setWatchListWeeklyCurrentTVTotalYearStat(new Date().getFullYear());
+               setWatchListWeeklyTVTotalStats(demoWatchListWeeklyBreakDown[3]);
+               setWatchListWeeklyTVTotalStatsLoadingComplete(true);
+
+               const uniqueMovieYears = demoWatchListWeeklyBreakDown[2].map((item: typeof IWatchListWeeklyMovieStat) => item.Year).filter((value: string, index: number, current_value: [string]) => { return current_value.indexOf(value) === index }).sort();
                setWatchListWeeklyMovieYearsStats(uniqueMovieYears);
                setWatchListWeeklyCurrentMovieYearStat(new Date().getFullYear());
-               setWatchListWeeklyMovieStats(demoWatchListWeeklyBreakdown[2]);
+               setWatchListWeeklyMovieStats(demoWatchListWeeklyBreakDown[2]);
                setWatchListWeeklyMovieStatsLoadingComplete(true);
                return;
           }
 
-          if (!watchListWeeklyTVStatsLoadingStarted && !watchListWeeklyTVStatsLoadingComplete && !watchListWeeklyMovieStatsLoadingStarted && !watchListWeeklyMovieStatsLoadingComplete) {
-               setWatchListWeeklyTVStatsLoadingStarted(true);
+          if (!watchListWeeklyTVSeasonsStatsLoadingStarted && !watchListWeeklyTVSeasonsStatsLoadingComplete && !watchListWeeklyTVTotalStatsLoadingStarted && !watchListWeeklyTVTotalStatsLoadingComplete && !watchListWeeklyMovieStatsLoadingStarted && !watchListWeeklyMovieStatsLoadingComplete) {
+               setWatchListWeeklyTVSeasonsStatsLoadingStarted(true);
+               setWatchListWeeklyTVTotalStatsLoadingStarted(true);
                setWatchListWeeklyMovieStatsLoadingStarted(true);
           }
-     }, [watchListWeeklyTVStatsLoadingStarted, watchListWeeklyTVStatsLoadingComplete, watchListWeeklyMovieStatsLoadingStarted, watchListWeeklyMovieStatsLoadingComplete]);
+     }, [watchListWeeklyTVSeasonsStatsLoadingStarted, watchListWeeklyTVSeasonsStatsLoadingComplete, watchListWeeklyTVTotalStatsLoadingStarted, watchListWeeklyTVTotalStatsLoadingComplete, watchListWeeklyMovieStatsLoadingStarted, watchListWeeklyMovieStatsLoadingComplete]);
 
      // Get WatchList Weekly Stats
      useEffect(() => {
-          if (watchListWeeklyTVStatsLoadingStarted && !watchListWeeklyTVStatsLoadingComplete && watchListWeeklyMovieStatsLoadingStarted && !watchListWeeklyMovieStatsLoadingComplete) {
+          if (watchListWeeklyTVSeasonsStatsLoadingStarted && !watchListWeeklyTVSeasonsStatsLoadingComplete && watchListWeeklyTVTotalStatsLoadingStarted && !watchListWeeklyTVTotalStatsLoadingComplete && watchListWeeklyMovieStatsLoadingStarted && !watchListWeeklyMovieStatsLoadingComplete) {
                axios.get(`/api/GetWatchListWeeklyBreakdown`, { withCredentials: true })
                     .then((res: typeof IWatchListWeeklyTVStat | typeof IWatchListWeeklyMovieStat) => {
                          if (res.data[0] === "OK") {
-                              const uniqueTVYears = res.data[1].map((item: typeof IWatchListWeeklyTVStat) => item.Year).filter((value: string, index: number, current_value: [string]) => { return current_value.indexOf(value) === index }).sort();
-                              setWatchListWeeklyTVYearsStats(uniqueTVYears);
-                              setWatchListWeeklyCurrentTVYearStat(new Date().getFullYear());
-                              setWatchListWeeklyTVStats(res.data[1]);
-                              setWatchListWeeklyTVStatsLoadingComplete(true);
+                              const uniqueTVSeasonsYears = res.data[1].map((item: typeof IWatchListWeeklyTVStat) => item.Year).filter((value: string, index: number, current_value: [string]) => { return current_value.indexOf(value) === index }).sort();
+                              setWatchListWeeklyTVSeasonsYearsStats(uniqueTVSeasonsYears);
+                              setWatchListWeeklyCurrentTVSeasonsYearStat(new Date().getFullYear());
+                              setWatchListWeeklyTVSeasonStats(res.data[1]);
+                              setWatchListWeeklyTVSeasonsStatsLoadingComplete(true);
 
                               const uniqueMovieYears = res.data[2].map((item: typeof IWatchListWeeklyMovieStat) => item.Year).filter((value: string, index: number, current_value: [string]) => { return current_value.indexOf(value) === index }).sort();
                               setWatchListWeeklyMovieYearsStats(uniqueMovieYears);
                               setWatchListWeeklyCurrentMovieYearStat(new Date().getFullYear());
                               setWatchListWeeklyMovieStats(res.data[2]);
                               setWatchListWeeklyMovieStatsLoadingComplete(true);
+
+                              const uniqueTVTotalYears = res.data[3].map((item: typeof IWatchListWeeklyTVStat) => item.Year).filter((value: string, index: number, current_value: [string]) => { return current_value.indexOf(value) === index }).sort();
+                              setWatchListWeeklyTVTotalYearsStats(uniqueTVTotalYears);
+                              setWatchListWeeklyCurrentTVTotalYearStat(new Date().getFullYear());
+                              setWatchListWeeklyTVTotalStats(res.data[3]);
+                              setWatchListWeeklyTVTotalStatsLoadingComplete(true);
                          } else {
                               setIsErrorMessage(`The following error occurred getting the WatchList weekly stats: ${res.data[1]}`);
                               setIsError(true);
@@ -437,9 +458,9 @@ export default function WatchListStats() {
                          setIsError(true);
                     });
           }
-     }, [watchListWeeklyTVStatsLoadingStarted, watchListWeeklyTVStatsLoadingComplete, watchListWeeklyMovieStatsLoadingStarted, watchListWeeklyMovieStatsLoadingComplete]);
+     }, [watchListWeeklyTVSeasonsStatsLoadingStarted, watchListWeeklyTVSeasonsStatsLoadingComplete, watchListWeeklyTVTotalStatsLoadingStarted, watchListWeeklyTVTotalStatsLoadingComplete, watchListWeeklyMovieStatsLoadingStarted, watchListWeeklyMovieStatsLoadingComplete]);
 
-     // Create array for TV weekly breakdown
+     // Create array for Movie weekly breakdown
      useEffect(() => {
           if (watchListWeeklyMovieStats.length == 0 || watchListWeeklyCurrentMovieYearStat === -1) {
                return;
@@ -465,20 +486,20 @@ export default function WatchListStats() {
           setWatchListWeeklyCurrentMovieWeekGroupingStat(movieWeekGrouping);
      }, [watchListWeeklyMovieStats, watchListWeeklyCurrentMovieYearStat]);
 
-     // Create array for Movie weekly breakdown
+     // Create array for TV seasons weekly breakdown
      useEffect(() => {
-          if (watchListWeeklyTVStats.length == 0 || watchListWeeklyCurrentTVYearStat === -1) {
+          if (watchListWeeklyTVSeasonStats.length == 0 || watchListWeeklyCurrentTVSeasonsYearStat === -1) {
                return;
           }
 
           const tvWeekGrouping: any = [];
 
-          const lastIndex = watchListWeeklyCurrentTVYearStat === new Date().getFullYear() ? getWeek() : 52;
-          setWatchListWeeklyTVMaxWeek(lastIndex);
+          const lastIndex = watchListWeeklyCurrentTVSeasonsYearStat === new Date().getFullYear() ? getWeek() : 52;
+          setWatchListWeeklyTVSeasonsMaxWeek(lastIndex);
 
           for (let i = 1; i <= lastIndex; i++) {
-               const currentWeek = watchListWeeklyTVStats.filter((currentWatchListWeeklyTVStat: typeof IWatchListWeeklyTVStat) => {
-                    return currentWatchListWeeklyTVStat.Year === watchListWeeklyCurrentTVYearStat.toString() && currentWatchListWeeklyTVStat.WeekNum === String(i).padStart(2, "0");
+               const currentWeek = watchListWeeklyTVSeasonStats.filter((currentWatchListWeeklyTVStat: typeof IWatchListWeeklyTVStat) => {
+                    return currentWatchListWeeklyTVStat.Year === watchListWeeklyCurrentTVSeasonsYearStat.toString() && currentWatchListWeeklyTVStat.WeekNum === String(i).padStart(2, "0");
                });
 
                if (currentWeek.length === 1) {
@@ -488,8 +509,34 @@ export default function WatchListStats() {
                }
           }
 
-          setWatchListWeeklyCurrentTVWeekGroupingStat(tvWeekGrouping);
-     }, [watchListWeeklyTVStats, watchListWeeklyCurrentTVYearStat]);
+          setWatchListWeeklyCurrentTVSeasonsWeekGroupingStat(tvWeekGrouping);
+     }, [watchListWeeklyTVSeasonStats, watchListWeeklyCurrentTVSeasonsYearStat]);
+
+     // Create array for TV total weekly breakdown
+     useEffect(() => {
+          if (watchListWeeklyTVTotalStats.length == 0 || watchListWeeklyCurrentTVTotalYearStat === -1) {
+               return;
+          }
+
+          const tvWeekGrouping: any = [];
+
+          const lastIndex = watchListWeeklyCurrentTVTotalYearStat === new Date().getFullYear() ? getWeek() : 52;
+          setWatchListWeeklyTVTotalMaxWeek(lastIndex);
+
+          for (let i = 1; i <= lastIndex; i++) {
+               const currentWeek = watchListWeeklyTVTotalStats.filter((currentWatchListWeeklyTVStat: typeof IWatchListWeeklyTVStat) => {
+                    return currentWatchListWeeklyTVStat.Year === watchListWeeklyCurrentTVTotalYearStat.toString() && currentWatchListWeeklyTVStat.WeekNum === String(i).padStart(2, "0");
+               });
+
+               if (currentWeek.length === 1) {
+                    tvWeekGrouping.push(currentWeek[0].TVCount);
+               } else {
+                    tvWeekGrouping.push(0);
+               }
+          }
+
+          setWatchListWeeklyCurrentTVTotalWeekGroupingStat(tvWeekGrouping);
+     }, [watchListWeeklyTVTotalStats, watchListWeeklyCurrentTVTotalYearStat]);
 
      const movieTop10Stats = (
           <>
@@ -731,18 +778,11 @@ export default function WatchListStats() {
                          <div className="col-4">
                               <h1>Total TV shows Watched</h1>
                               <div>{watchListTVTotalCountStats[0].TVTotalCount}</div>
-                         </div>
-                    }
 
-                    {watchListTVSeasonsCountStats?.length > 0 && watchListTVSeasonsCountStats[0].TVSeasonsCount > 0 &&
-                         <div className="col-4">
-                              <h1>TV Seasons Watched</h1>
-                              <div>{watchListTVSeasonsCountStats[0].TVSeasonsCount}</div>
-
-                              <select className="selectStyle" value={watchListWeeklyCurrentTVYearStat} onChange={(event) => setWatchListWeeklyCurrentTVYearStat(parseInt(event.target.value, 10))}>
+                              <select className="selectStyle" value={watchListWeeklyCurrentTVTotalYearStat} onChange={(event) => setWatchListWeeklyCurrentTVTotalYearStat(parseInt(event.target.value, 10))}>
                                    <option value="-1">Please select</option>
 
-                                   {watchListWeeklyTVYearsStats?.map((year: string, index: number) => {
+                                   {watchListWeeklyTVTotalYearsStats?.map((year: string, index: number) => {
                                         return (
                                              <option key={index} value={year}>
                                                   {year}
@@ -751,14 +791,49 @@ export default function WatchListStats() {
                                    })}
                               </select>
 
-                              {watchListWeeklyCurrentTVYearStat !== -1 && watchListWeeklyCurrentTVWeekGroupingStat &&
+                              {watchListWeeklyCurrentTVTotalYearStat !== -1 && watchListWeeklyCurrentTVTotalWeekGroupingStat &&
                                    <div className="whiteBackgroundColor">
                                         <LineChart
-                                             xAxis={[{ label: 'Week', data: Array.from({ length: watchListWeeklyTVMaxWeek }, (_, index) => index + 1) }]}
+                                             xAxis={[{ label: 'Week', data: Array.from({ length: watchListWeeklyTVTotalMaxWeek }, (_, index) => index + 1) }]}
                                              series={[
                                                   {
                                                        label: 'Times Watched',
-                                                       data: watchListWeeklyCurrentTVWeekGroupingStat
+                                                       data: watchListWeeklyCurrentTVTotalWeekGroupingStat
+                                                  },
+                                             ]}
+                                             width={500}
+                                             height={300}
+                                        />
+                                   </div>
+                              }
+                         </div>
+                    }
+
+                    {watchListTVSeasonsCountStats?.length > 0 && watchListTVSeasonsCountStats[0].TVSeasonsCount > 0 &&
+                         <div className="col-4">
+                              <h1>TV Seasons Watched</h1>
+                              <div>{watchListTVSeasonsCountStats[0].TVSeasonsCount}</div>
+
+                              <select className="selectStyle" value={watchListWeeklyCurrentTVSeasonsYearStat} onChange={(event) => setWatchListWeeklyCurrentTVSeasonsYearStat(parseInt(event.target.value, 10))}>
+                                   <option value="-1">Please select</option>
+
+                                   {watchListWeeklyTVSeasonsYearsStats?.map((year: string, index: number) => {
+                                        return (
+                                             <option key={index} value={year}>
+                                                  {year}
+                                             </option>
+                                        );
+                                   })}
+                              </select>
+
+                              {watchListWeeklyCurrentTVSeasonsYearStat !== -1 && watchListWeeklyCurrentTVSeasonsWeekGroupingStat &&
+                                   <div className="whiteBackgroundColor">
+                                        <LineChart
+                                             xAxis={[{ label: 'Week', data: Array.from({ length: watchListWeeklyTVSeasonsMaxWeek }, (_, index) => index + 1) }]}
+                                             series={[
+                                                  {
+                                                       label: 'Times Watched',
+                                                       data: watchListWeeklyCurrentTVSeasonsWeekGroupingStat
                                                   },
                                              ]}
                                              width={500}

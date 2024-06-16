@@ -20,8 +20,15 @@ export async function GET(request: NextRequest) {
           return Response.json(["ERROR", "User ID is not set"]);
      }
 
-     const weeklyTVSQL = `WITH GetWeekCount AS (
+     const weeklyTVSeasonsSQL = `WITH GetWeekCount AS (
                                SELECT STRFTIME('%Y',startdate) AS Year, STRFTIME('%W',StartDate) AS WeekNum FROM WatchList WL
+                               LEFT JOIN WatchListItems WLI ON WLI.WatchListItemID=WL.WatchListItemID
+                               LEFT JOIN WatchListTypes WLT ON WLT.WatchListTypeID=WLI.WatchListTypeID
+                               WHERE UserID=? AND WLT.WatchListTypeName='TV' AND Year IS NOT NULL)
+                         SELECT Year, WeekNum,COUNT(*) AS TVCount FROM GetWeekCount GROUP BY Year, WeekNum ORDER BY Year, WeekNum;`;
+
+     const weeklyTVTotalSQL = `WITH GetWeekCount AS (
+                               SELECT DISTINCT WLI.WatchListItemID, STRFTIME('%Y',startdate) AS Year, STRFTIME('%W',StartDate) AS WeekNum FROM WatchList WL
                                LEFT JOIN WatchListItems WLI ON WLI.WatchListItemID=WL.WatchListItemID
                                LEFT JOIN WatchListTypes WLT ON WLT.WatchListTypeID=WLI.WatchListTypeID
                                WHERE UserID=? AND WLT.WatchListTypeName='TV' AND Year IS NOT NULL)
@@ -35,11 +42,13 @@ export async function GET(request: NextRequest) {
                          SELECT Year, WeekNum,COUNT(*) AS MovieCount FROM GetWeekCount GROUP BY Year, WeekNum ORDER BY Year, WeekNum;`;
 
      try {
-          const tvResults = await execSelect(weeklyTVSQL, [userID]);
+          const tvSeasonsResults = await execSelect(weeklyTVSeasonsSQL, [userID]);
+
+          const tvTotalResults = await execSelect(weeklyTVTotalSQL, [userID]);
 
           const movieResults = await execSelect(weeklyMovieSQL, [userID]);
 
-          return Response.json(["OK", tvResults, movieResults]);
+          return Response.json(["OK", tvSeasonsResults, movieResults, tvTotalResults]);
      } catch (e) {
           return Response.json(["ERROR", `GetWatchListWeeklyBreakdown: The error ${e.message} occurred getting the WatchList weekly breakdown`]);
      }

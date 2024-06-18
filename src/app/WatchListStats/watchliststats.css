@@ -26,3 +26,7 @@
     max-width: 500px;
     flex-basis: 100%;
 }
+
+.flex-container:last-of-type {
+    margin-bottom: 100px;
+}

@@ -397,7 +397,7 @@ export default function WatchListStats() {
      useEffect(() => {
           if (demoMode) {
                const demoWatchListWeeklyBreakDown = require("../demo/index").demoWatchListWeeklyBreakDown;
-               
+
                const uniqueTVSeasonsYears = demoWatchListWeeklyBreakDown[1].map((item: typeof IWatchListWeeklyTVStat) => item.Year).filter((value: string, index: number, current_value: [string]) => { return current_value.indexOf(value) === index }).sort();
                setWatchListWeeklyTVSeasonsYearsStats(uniqueTVSeasonsYears);
                setWatchListWeeklyCurrentTVSeasonsYearStat(new Date().getFullYear());
@@ -702,113 +702,131 @@ export default function WatchListStats() {
           </>
      );
 
+     if (watchListSourceStats?.length === 0 && watchListTopRatedStats?.length === 0 && watchListMovieTop10Stats?.length === 0 && watchListTVTop10Stats?.length === 0) {
+          <div className="flex-container foregroundColor">
+               No stats are available
+          </div>
+     }
+
      return (
           <>
-               {watchListSourceStats?.length === 0 && watchListTopRatedStats?.length === 0 && watchListMovieTop10Stats?.length === 0 && watchListTVTop10Stats?.length === 0 &&
-                    <div className="flex-container foregroundColor">
-                         No stats are available
+               <div className="flex-container foregroundColor">
+                    <div className="col-1">
+                         {sourceStats !== null && watchListSourceStats?.length > 0 &&
+                              <>
+                                   <h1>Most Watched Sources</h1>
+                                   <div>{sourceStats}</div>
+                              </>
+                         }
                     </div>
-               }
+
+                    <div className="col-1">
+                         {topRated !== null && watchListTopRatedStats?.length > 0 &&
+                              <>
+                                   <h1>Top Rated</h1>
+                                   <div>{topRated}</div>
+                              </>
+                         }
+                    </div>
+
+                    <div className="col-1">
+                         {movieTop10Stats !== null && watchListMovieTop10Stats?.length > 0 &&
+                              <>
+                                   <h1>Top 10 Movies</h1>
+                                   <div>{movieTop10Stats}</div>
+                              </>
+                         }
+                    </div>
+
+                    <div className="col-1">
+                         {tvTop10Stats !== null && watchListTVTop10Stats?.length > 0 &&
+                              <>
+                                   <h1>Top 10 TV Shows</h1>
+                                   <div>{tvTop10Stats}</div>
+                              </>
+                         }
+                    </div>
+               </div>
 
                <div className="flex-container foregroundColor">
-                    {sourceStats !== null && watchListSourceStats?.length > 0 &&
-                         <div className="col-1">
-                              <h1>Most Watched Sources</h1>
-                              <div>{sourceStats}</div>
-                         </div>
-                    }
+                    <div className="col-4">
+                         {watchListMovieCountStats?.length > 0 && watchListWeeklyCurrentMovieWeekGroupingStat.length === watchListWeeklyMovieMaxWeek &&
+                              <>
+                                   <h1>Total Movies Watched</h1>
+                                   <div>{watchListMovieCountStats[0].MovieCount}</div>
 
-                    {topRated !== null && watchListTopRatedStats?.length > 0 &&
-                         <div className="col-2">
-                              <h1>Top Rated</h1>
-                              <div>{topRated}</div>
-                         </div>
-                    }
+                                   <select className="selectStyle" value={watchListWeeklyCurrentMovieYearStat} onChange={(event) => setWatchListWeeklyCurrentMovieYearStat(parseInt(event.target.value, 10))}>
+                                        <option value="-1">Please select</option>
 
-                    {movieTop10Stats !== null && watchListMovieTop10Stats?.length > 0 &&
-                         <div className="col-3">
-                              <h1>Top 10 Movies</h1>
-                              <div>{movieTop10Stats}</div>
-                         </div>
-                    }
+                                        {watchListWeeklyMovieYearsStats?.map((year: string, index: number) => {
+                                             return (
+                                                  <option key={index} value={year}>
+                                                       {year}
+                                                  </option>
+                                             );
+                                        })}
+                                   </select>
 
-                    {tvTop10Stats !== null && watchListTVTop10Stats?.length > 0 &&
-                         <div className="col-4">
-                              <h1>Top 10 TV Shows</h1>
-                              <div>{tvTop10Stats}</div>
-                         </div>
-                    }
+                                   {watchListWeeklyCurrentMovieYearStat !== -1 && watchListWeeklyCurrentMovieWeekGroupingStat &&
+                                        <div className="whiteBackgroundColor">
+                                             <LineChart
+                                                  xAxis={[{ label: 'Week', data: Array.from({ length: watchListWeeklyMovieMaxWeek }, (_, index) => index + 1) }]}
+                                                  series={[
+                                                       {
+                                                            label: 'Times Watched',
+                                                            data: watchListWeeklyCurrentMovieWeekGroupingStat
+                                                       },
+                                                  ]}
+                                                  width={500}
+                                                  height={300}
+                                             />
+                                        </div>
+                                   }
+                              </>
+                         }
+                    </div>
+               </div>
 
-                    {watchListMovieCountStats?.length > 0 && watchListWeeklyCurrentMovieWeekGroupingStat.length === watchListWeeklyMovieMaxWeek &&
-                         <div className="col-4">
-                              <h1>Total Movies Watched</h1>
-                              <div>{watchListMovieCountStats[0].MovieCount}</div>
+               <div className="flex-container foregroundColor">
+                    <div className="col-4">
+                         {watchListTVTotalCountStats.length === 1 && watchListTVTotalCountStats[0].TVTotalCount > 0 &&
+                              <>
+                                   <h1>Total TV shows Watched</h1>
+                                   <div>{watchListTVTotalCountStats[0].TVTotalCount}</div>
 
-                              <select className="selectStyle" value={watchListWeeklyCurrentMovieYearStat} onChange={(event) => setWatchListWeeklyCurrentMovieYearStat(parseInt(event.target.value, 10))}>
-                                   <option value="-1">Please select</option>
+                                   <select className="selectStyle" value={watchListWeeklyCurrentTVTotalYearStat} onChange={(event) => setWatchListWeeklyCurrentTVTotalYearStat(parseInt(event.target.value, 10))}>
+                                        <option value="-1">Please select</option>
 
-                                   {watchListWeeklyMovieYearsStats?.map((year: string, index: number) => {
-                                        return (
-                                             <option key={index} value={year}>
-                                                  {year}
-                                             </option>
-                                        );
-                                   })}
-                              </select>
+                                        {watchListWeeklyTVTotalYearsStats?.map((year: string, index: number) => {
+                                             return (
+                                                  <option key={index} value={year}>
+                                                       {year}
+                                                  </option>
+                                             );
+                                        })}
+                                   </select>
 
-                              {watchListWeeklyCurrentMovieYearStat !== -1 && watchListWeeklyCurrentMovieWeekGroupingStat &&
-                                   <div className="whiteBackgroundColor">
-                                        <LineChart
-                                             xAxis={[{ label: 'Week', data: Array.from({ length: watchListWeeklyMovieMaxWeek }, (_, index) => index + 1) }]}
-                                             series={[
-                                                  {
-                                                       label: 'Times Watched',
-                                                       data: watchListWeeklyCurrentMovieWeekGroupingStat
-                                                  },
-                                             ]}
-                                             width={500}
-                                             height={300}
-                                        />
-                                   </div>
-                              }
-                         </div>
-                    }
+                                   {watchListWeeklyCurrentTVTotalYearStat !== -1 && watchListWeeklyCurrentTVTotalWeekGroupingStat &&
+                                        <div className="whiteBackgroundColor">
+                                             <LineChart
+                                                  xAxis={[{ label: 'Week', data: Array.from({ length: watchListWeeklyTVTotalMaxWeek }, (_, index) => index + 1) }]}
+                                                  series={[
+                                                       {
+                                                            label: 'Times Watched',
+                                                            data: watchListWeeklyCurrentTVTotalWeekGroupingStat
+                                                       },
+                                                  ]}
+                                                  width={500}
+                                                  height={300}
+                                             />
+                                        </div>
+                                   }
+                              </>
+                         }
+                    </div>
+               </div>
 
-                    {watchListTVTotalCountStats.length === 1 && watchListTVTotalCountStats[0].TVTotalCount > 0 &&
-                         <div className="col-4">
-                              <h1>Total TV shows Watched</h1>
-                              <div>{watchListTVTotalCountStats[0].TVTotalCount}</div>
-
-                              <select className="selectStyle" value={watchListWeeklyCurrentTVTotalYearStat} onChange={(event) => setWatchListWeeklyCurrentTVTotalYearStat(parseInt(event.target.value, 10))}>
-                                   <option value="-1">Please select</option>
-
-                                   {watchListWeeklyTVTotalYearsStats?.map((year: string, index: number) => {
-                                        return (
-                                             <option key={index} value={year}>
-                                                  {year}
-                                             </option>
-                                        );
-                                   })}
-                              </select>
-
-                              {watchListWeeklyCurrentTVTotalYearStat !== -1 && watchListWeeklyCurrentTVTotalWeekGroupingStat &&
-                                   <div className="whiteBackgroundColor">
-                                        <LineChart
-                                             xAxis={[{ label: 'Week', data: Array.from({ length: watchListWeeklyTVTotalMaxWeek }, (_, index) => index + 1) }]}
-                                             series={[
-                                                  {
-                                                       label: 'Times Watched',
-                                                       data: watchListWeeklyCurrentTVTotalWeekGroupingStat
-                                                  },
-                                             ]}
-                                             width={500}
-                                             height={300}
-                                        />
-                                   </div>
-                              }
-                         </div>
-                    }
-
+               <div className="flex-container foregroundColor">
                     {watchListTVSeasonsCountStats?.length > 0 && watchListTVSeasonsCountStats[0].TVSeasonsCount > 0 &&
                          <div className="col-4">
                               <h1>TV Seasons Watched</h1>

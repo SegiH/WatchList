@@ -15,13 +15,14 @@
 }
 
 .col-2 {
-    flex-basis: 25%;
+    flex-basis: 50%;
 }
 
 .col-3 {
-    flex-basis: 25%;
+    flex-basis: 75%;
 }
 
 .col-4 {
-    flex-basis: 25%;
+    max-width: 400px;
+    flex-basis: 100%;
 }

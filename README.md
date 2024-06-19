@@ -78,6 +78,9 @@ Admin: If you are an administrator, you will have access to the admin section wh
 ### Add a WatchList record
 ![WatchList Add](https://github.com/SegiH/WatchList-NextJS/blob/main/screenshots/WatchList-AddItem.png?raw=true)
 
+### WatchList Stats
+![WatchList Stats](https://github.com/SegiH/WatchList-NextJS/blob/main/screenshots/Stats.png?raw=true)
+
 ### Search
 ![Search](https://github.com/SegiH/WatchList-NextJS/blob/main/screenshots/Search.png?raw=true)
 

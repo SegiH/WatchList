@@ -81,6 +81,9 @@ Admin: If you are an administrator, you will have access to the admin section wh
 ### WatchList Stats
 ![WatchList Stats](https://github.com/SegiH/WatchList-NextJS/blob/main/screenshots/Stats.png?raw=true)
 
+### WatchList Stats Video
+![WatchList Stats Video])https://github.com/SegiH/WatchList/blob/main/screenshots/WatchListStats.mp4?raw=true)
+
 ### Search
 ![Search](https://github.com/SegiH/WatchList-NextJS/blob/main/screenshots/Search.png?raw=true)
 

@@ -12,7 +12,7 @@ import { defaultSources, execSelect, watchListSourcesSQL } from "../lib";
  *          200:
  *            description: '["OK",""] on success, ["ERROR","error message"] on error'
  */
-const SQL="SELECT * FROM WatchListSources ORDER BY WatchListSourceName DESC";
+const SQL="SELECT * FROM WatchListSources ORDER BY WatchListSourceName ASC";
 
 export async function GET() {
      try {

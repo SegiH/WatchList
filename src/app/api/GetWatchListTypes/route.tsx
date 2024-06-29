@@ -14,7 +14,7 @@ import { execSelect } from "../lib";
  *            description: '["OK",""] on success, ["ERROR","error message"] on error'
  */
 export async function GET(request: NextRequest) {
-     const SQL="SELECT * FROM WatchListTypes ORDER BY WatchListTypeName DESC";
+     const SQL="SELECT * FROM WatchListTypes ORDER BY WatchListTypeName ASC";
 
      try {
           const results = await execSelect(SQL, []);

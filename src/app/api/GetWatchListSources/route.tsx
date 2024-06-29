@@ -18,8 +18,6 @@ export async function GET() {
      try {
           const results = await execSelect(SQL, []);
 
-          console.log("success")
-          console.log(results)
           return Response.json(["OK", results]);
      } catch (e) {
           try {
@@ -33,7 +31,6 @@ export async function GET() {
 
                const results = await execSelect(SQL, []);
 
-               console.log("returning default results")
                return Response.json(["OK", results]);
           } catch(e) {
                return Response.json(["ERROR", `/GetWatchListSources: The error ${e.message} occurred getting the WatchList Sources`]);

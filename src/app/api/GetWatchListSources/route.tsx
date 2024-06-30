@@ -33,7 +33,8 @@ export async function GET() {
                });
 
                const results = await execSelect(SQL, []);
-               console.log("Default Sources Results" + JSON.stringify(results))l
+               console.log("Default Sources Results");
+               console.log(JSON.stringify(results));
                return Response.json(["OK", results]);
           } catch(e) {
                console.log("Error Sources Results" + e.message);

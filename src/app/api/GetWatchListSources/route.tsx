@@ -19,7 +19,8 @@ export async function GET() {
      try {
           const results = await execSelect(SQL, []);
 
-          console.log("Sources Results" + JSON.stringify(results));
+          console.log("Sources Results")
+          console.log(JSON.stringify(results));
           return Response.json(["OK", results]);
      } catch (e) {
           try {

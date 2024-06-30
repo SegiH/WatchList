@@ -20,7 +20,8 @@ export async function GET(request: NextRequest) {
 
      try {
           const results = await execSelect(SQL, []);
-          console.log("Types Results" + JSON.stringify(results));
+          console.log("Types Results");
+          console.log(JSON.stringify(results));
           return Response.json(["OK", results]);
      } catch (e) {
           console.log("Error Types Results" + e.message);

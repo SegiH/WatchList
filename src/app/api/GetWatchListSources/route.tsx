@@ -15,10 +15,11 @@ import { defaultSources, execSelect, watchListSourcesSQL } from "../lib";
 
 export async function GET() {
      const SQL="SELECT * FROM WatchListSources ORDER BY WatchListSourceName ASC";
-
+     console.log("Getting sources with the SQL " + SQL);
      try {
           const results = await execSelect(SQL, []);
 
+          console.log("Sources Results" + JSON.stringify(results));
           return Response.json(["OK", results]);
      } catch (e) {
           try {
@@ -26,14 +27,15 @@ export async function GET() {
 
                defaultSources.forEach(async (element) => {
                     const SQL = "INSERT INTO WatchListSources (WatchListSourceName) VALUES (?)";
-
+                    console.log("Adding default source with the SQL " + SQL);
                     await execSelect(SQL, [element]);
                });
 
                const results = await execSelect(SQL, []);
-
+               console.log("Default Sources Results" + JSON.stringify(results))l
                return Response.json(["OK", results]);
           } catch(e) {
+               console.log("Error Sources Results" + e.message);
                return Response.json(["ERROR", `/GetWatchListSources: The error ${e.message} occurred getting the WatchList Sources`]);
           }
      }

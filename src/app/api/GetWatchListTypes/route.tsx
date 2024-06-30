@@ -15,12 +15,15 @@ import { execSelect } from "../lib";
  */
 export async function GET(request: NextRequest) {
      const SQL="SELECT * FROM WatchListTypes ORDER BY WatchListTypeName ASC";
+     
+     console.log("Getting types with the SQL " + SQL);
 
      try {
           const results = await execSelect(SQL, []);
-
+          console.log("Types Results" + JSON.stringify(results));
           return Response.json(["OK", results]);
      } catch (e) {
+          console.log("Error Types Results" + e.message);
           return Response.json(["ERROR", `/GetWatchListTypes: The error ${e.message} occurred getting the WatchList Types`]);
      }
 }

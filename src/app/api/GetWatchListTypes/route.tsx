@@ -1,5 +1,5 @@
 import { NextRequest } from 'next/server';
-import { execSelect } from "../lib";
+import { execSelect, logMessage } from "../lib";
 
 /**
  * @swagger
@@ -15,9 +15,13 @@ import { execSelect } from "../lib";
  */
 export async function GET(request: NextRequest) {
      const SQL="SELECT * FROM WatchListTypes ORDER BY WatchListTypeName ASC";
+     logMessage("Getting sources with the SQL " + SQL);
 
      try {
           const results = await execSelect(SQL, []);
+
+          logMessage("Results of Getting types");
+          logMessage(JSON.stringify(results));
 
           return Response.json(["OK", results]);
      } catch (e) {

@@ -1,6 +1,4 @@
-import { defaultSources, execSelect, watchListSourcesSQL } from "../lib";
-const fs = require("fs");
-const path = require("path");
+import { defaultSources, execSelect, logMessage, watchListSourcesSQL } from "../lib";
 
 /**
  * @swagger
@@ -16,24 +14,12 @@ const path = require("path");
  */
 
 export async function GET() {
-    // const logFilePath = path.join(__dirname, 'app.log');
- 
-function log (message) {
-     message = new Date().toISOString() + " " + message;
-     
-    fs.appendFile('app.log', message + '\n', (err) => {
-        if (err) {
-            console.error('Error appending to log file:', err);
-        }
-    });
-};
-
      const SQL="SELECT * FROM WatchListSources ORDER BY WatchListSourceName ASC";
-     log("Getting sources with the SQL " + SQL);
+     logMessage("Getting sources with the SQL " + SQL);
      try {
           const results = await execSelect(SQL, []);
-          log("Results of Getting sources");
-          log(JSON.stringify(results));
+          logMessage("Results of Getting sources");
+          logMessage(JSON.stringify(results));
 
           return Response.json(["OK", results]);
      } catch (e) {
@@ -48,7 +34,7 @@ function log (message) {
 
                const results = await execSelect(SQL, []);
 
-               log("Adding sources");
+               logMessage("Adding sources");
                return Response.json(["OK", results]);
           } catch(e) {
                return Response.json(["ERROR", `/GetWatchListSources: The error ${e.message} occurred getting the WatchList Sources`]);

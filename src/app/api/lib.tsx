@@ -1,5 +1,6 @@
 const axios = require("axios");
 const config = require("config");
+const fs = require("fs");
 const https = require('https');
 const sqlite3 = require('sqlite3').verbose();
 
@@ -30,6 +31,15 @@ export const tokenSeparator = "*****";
 const timeout = 604800000; // 1 week in MS
 
 const secretKey = config.get(`Secret`);
+
+export async function logMessage (message) {
+     message = new Date().toISOString() + " " + message
+    fs.appendFile('app.log', message + '\n', (err) => {
+        if (err) {
+            console.error('Error appending to log file:', err);
+        }
+    });
+};
 
 export async function addUser(request: NextRequest, isNewInstance = false) {
      const searchParams = request.nextUrl.searchParams;

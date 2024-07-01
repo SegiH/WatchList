@@ -1,6 +1,5 @@
 import { NextRequest } from 'next/server';
 import { execSelect, getUserID } from "../lib";
-import WatchList from "../../interfaces/IWatchList";
 
 /**
  * @swagger

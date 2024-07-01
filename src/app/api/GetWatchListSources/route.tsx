@@ -19,6 +19,8 @@ export async function GET() {
     // const logFilePath = path.join(__dirname, 'app.log');
  
 function log (message) {
+     message = new Date().toISOString() + " " + message;
+     
     fs.appendFile('app.log', message + '\n', (err) => {
         if (err) {
             console.error('Error appending to log file:', err);

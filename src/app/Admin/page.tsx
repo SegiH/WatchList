@@ -33,6 +33,8 @@ export default function Admin() {
      const tabClickHandler = (_event: Event, newValue: string) => {
           if (!isAdding && !isEditing) {
                setSelectedTab(newValue);
+
+               localStorage.setItem("WatchList.AdminTab", newValue);
           } else {
                if (isAdding) {
                     alert("You cannot switch tabs while adding an item");
@@ -56,6 +58,14 @@ export default function Admin() {
           if (!isAdmin()) {
                router.push(defaultRoute)
           }
+
+          const newSelectedTab = localStorage.getItem("WatchList.AdminTab");
+
+          if (newSelectedTab !== null) {
+               localStorage.removeItem("WatchList.AdminTab");
+               setSelectedTab(parseInt(newSelectedTab));
+          }
+
      }, []);
 
      return (

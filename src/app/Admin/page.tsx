@@ -62,7 +62,6 @@ export default function Admin() {
           const newSelectedTab = localStorage.getItem("WatchList.AdminTab");
 
           if (newSelectedTab !== null) {
-               localStorage.removeItem("WatchList.AdminTab");
                setSelectedTab(parseInt(newSelectedTab));
           }
 

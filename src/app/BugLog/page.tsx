@@ -181,7 +181,7 @@ export default function BugLog() {
                          width: "100%"
                     };
 
-                    return <textarea style={cssStyle} rows={params.value.length / 30} value={params.value} />;
+                    return <textarea style={cssStyle} rows={typeof params.value === "string" ? params.value.length / 30 : 2} value={params.value} />;
                }
           },
           {

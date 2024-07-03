@@ -5,9 +5,9 @@ const IBugLog = require("../interfaces/IBugLog");
 const DataGrid = require("@mui/x-data-grid").DataGrid;
 const EditToolbar = require("../Admin/EditToolbar").default;
 const GridEventListener = require("@mui/x-data-grid").GridEventListener;
-const GridActionsCellItem = require("@mui/x-data-grid-pro").GridActionsCellItem;
-const GridRenderEditCellParams = require("@mui/x-data-grid-pro").GridRenderEditCellParams;
-const GridRowModes = require("@mui/x-data-grid-pro").GridRowModes;
+const GridActionsCellItem = require("@mui/x-data-grid").GridActionsCellItem;
+const GridRenderEditCellParams = require("@mui/x-data-grid").GridRenderEditCellParams;
+const GridRowModes = require("@mui/x-data-grid").GridRowModes;
 const React = require("react");
 const useContext = require("react").useContext;
 const useEffect = require("react").useEffect;
@@ -37,6 +37,8 @@ export default function BugLog() {
      const [editingId, setEditingId] = useState(null);
      const [rowModesModel, setRowModesModel] = useState({});
      const [showActiveBugLogs, setShowActiveBugLogs] = useState(true);
+
+     //const apiRef = useGridApiContext();
 
      const section = "Bug Log";
 
@@ -143,6 +145,13 @@ export default function BugLog() {
           setRowModesModel(null);
      };
 
+     /*const handleValueChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+          const newValue = event.target.value; // The new value entered by the user
+          //console.log(apiRef);
+          debugger
+          //apiRef.current.setEditCellValue({ "", field, value: newValue });
+        };*/
+
      const columns = [
           {
                field: "WLBugID",
@@ -161,14 +170,15 @@ export default function BugLog() {
                headerName: "Bug name",
                editable: true,
                width: 350,
-               renderEditCell(params) {
+               // TODO: Fix me. Need to implement change event. Cannot add const apiRef = useGridApiContext(); because it crashes the app for some weird reason.
+               /*renderEditCell(params: typeof GridRenderEditCellParams) {
 
                     const cssStyle = {
                          width: "100%"
                     };
 
-                    return <textarea style={cssStyle} rows={params.value.length / 30} value={params.value} />;
-               }
+                    return <textarea readOnly={false} style={cssStyle} rows={params.value.length / 30} value={params.value} onChange={handleValueChange} />;
+               }*/
           },
           {
                field: "ResolutionNotes",
@@ -176,13 +186,14 @@ export default function BugLog() {
                editable: true,
                wrap: true,
                width: 350,
-               renderEditCell(params) {
+               // TODO: Fix me. Need to implement change event. Cannot add const apiRef = useGridApiContext(); because it crashes the app for some weird reason.
+               /*renderEditCell(params) {
                     const cssStyle = {
                          width: "100%"
                     };
 
                     return <textarea style={cssStyle} rows={typeof params.value === "string" ? params.value.length / 30 : 2} value={params.value} />;
-               }
+               }*/
           },
           {
                field: "AddDate",
@@ -247,6 +258,7 @@ export default function BugLog() {
           <>
                Bug Log
                <DataGrid
+                    //apiRef={apiRef}
                     rows={bugLogs}
                     columns={columns}
                     sx={{

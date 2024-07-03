@@ -96,6 +96,10 @@ export default function BugLog() {
                columns += (columns === `` ? `?` : `&`) + `CompletedDate=${newRow.CompletedDate}`;
           }
 
+          if (typeof newRow.ResolutionNotes !== "undefined") {
+               columns += (columns === `` ? `?` : `&`) + `ResolutionNotes=${encodeURIComponent(newRow.ResolutionNotes)}`;
+          }
+
           const endPoint = (newRow.isNew == true ? `/api/AddBugLog` : `/api/UpdateBugLog`) + columns;
 
           axios.put(endPoint, { withCredentials: true })
@@ -167,6 +171,12 @@ export default function BugLog() {
           {
                field: "CompletedDate",
                headerName: "Completed On",
+               editable: true,
+               width: 130,
+          },
+          {
+               field: "ResolutionNotes",
+               headerName: "Resolution Notes",
                editable: true,
                width: 130,
           },

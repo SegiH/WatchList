@@ -8,8 +8,9 @@ export async function PUT(request: NextRequest) {
      const bugLogName = searchParams.get("WLBugName");
      const addDate = searchParams.get("AddDate");
      const completedDate = searchParams.get("CompletedDate");
+     const resolutionNotes = searchParams.get("ResolutionNotes");
 
-     const addBugLogURL = `https://nodejs-shovav.replit.app/AddBugLog?WLBugName=${encodeURIComponent(String(bugLogName))}&AddDate=${addDate}${completedDate !== null ? `&CompletedDate=${completedDate}` : ``}`;
+     const addBugLogURL = `https://nodejs-shovav.replit.app/AddBugLog?WLBugName=${encodeURIComponent(String(bugLogName))}&AddDate=${addDate}${completedDate !== null ? `&CompletedDate=${completedDate}` : ``}${resolutionNotes !== null ? `&ResolutionNotes=${resolutionNotes}` : ``}`;
 
      const agent = new https.Agent({
           rejectUnauthorized: false

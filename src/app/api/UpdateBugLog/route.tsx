@@ -7,6 +7,7 @@ export async function PUT(request: NextRequest) {
     const bugLogName = searchParams.get("WLBugName");
     const addDate = searchParams.get("AddDate");
     const completedDate = searchParams.get("CompletedDate");
+    const resolutionNotes = searchParams.get("ResolutionNotes");
 
     if (bugLogID === null) {
         return Response.json({ "ERROR": "Bug log ID is not set" });
@@ -24,6 +25,10 @@ export async function PUT(request: NextRequest) {
 
     if (completedDate !== null) {
         params += "&CompletedDate=" + encodeURIComponent(completedDate);
+    }
+
+    if (resolutionNotes !== null) {
+        params += "&ResolutionNotes=" + encodeURIComponent(resolutionNotes);
     }
 
     if (params === "") {

@@ -161,6 +161,28 @@ export default function BugLog() {
                headerName: "Bug name",
                editable: true,
                width: 350,
+               renderEditCell(params) {
+
+                    const cssStyle = {
+                         width: "100%"
+                    };
+
+                    return <textarea style={cssStyle} rows={params.value.length / 30} value={params.value} />;
+               }
+          },
+          {
+               field: "ResolutionNotes",
+               headerName: "Resolution Notes",
+               editable: true,
+               wrap: true,
+               width: 350,
+               renderEditCell(params) {
+                    const cssStyle = {
+                         width: "100%"
+                    };
+
+                    return <textarea style={cssStyle} rows={params.value.length / 30} value={params.value} />;
+               }
           },
           {
                field: "AddDate",
@@ -171,12 +193,6 @@ export default function BugLog() {
           {
                field: "CompletedDate",
                headerName: "Completed On",
-               editable: true,
-               width: 130,
-          },
-          {
-               field: "ResolutionNotes",
-               headerName: "Resolution Notes",
                editable: true,
                width: 130,
           },
@@ -238,6 +254,7 @@ export default function BugLog() {
                     }}
                     editMode="row"
                     getRowId={(row: typeof IBugLog) => row.WLBugID}
+                    getRowHeight={(params) => "auto"}
                     rowModesModel={rowModesModel}
                     onRowEditStart={startRowEditingClickHandler}
                     onRowEditStop={stopRowEditingClickHandler}

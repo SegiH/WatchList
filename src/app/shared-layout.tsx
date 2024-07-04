@@ -16,6 +16,7 @@ const SharedLayout = () => {
           activeRoute,
           activeRouteDisplayName,
           archivedVisible,
+          demoMode,
           isError,
           isLoggedIn,
           SearchIconComponent,
@@ -78,7 +79,7 @@ const SharedLayout = () => {
                          {isLoggedIn && watchListSourcesLoadingComplete && watchListTypesLoadingComplete &&
                               <>
                                    <span className="menuBar">
-                                        <span className="leftMargin menuBarActiveRoute">{activeRouteDisplayName}</span>
+                                        <span className="leftMargin menuBarActiveRoute">{activeRouteDisplayName}{demoMode ? " (Demo)" : ""}</span>
 
                                         {/*<span className="leftMargin foregroundColor">
                                              <span>Show WLI</span>

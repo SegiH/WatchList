@@ -811,6 +811,7 @@ export default function WatchListStats() {
                                         <div className="whiteBackgroundColor">
                                              <LineChart
                                                   xAxis={[{ label: 'Week', data: Array.from({ length: watchListWeeklyTVTotalMaxWeek }, (_, index) => index + 1) }]}
+                                                  yAxis={[{ tickMinStep: 1 }]}
                                                   series={[
                                                        {
                                                             label: 'Times Watched',
@@ -849,6 +850,7 @@ export default function WatchListStats() {
                                    <div className="whiteBackgroundColor">
                                         <LineChart
                                              xAxis={[{ label: 'Week', data: Array.from({ length: watchListWeeklyTVSeasonsMaxWeek }, (_, index) => index + 1) }]}
+                                             yAxis={[{ tickMinStep: 1 }]}
                                              series={[
                                                   {
                                                        label: 'Times Watched',

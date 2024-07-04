@@ -91,16 +91,20 @@ const SharedLayout = () => {
                                              </label>
                                         </span>*/}
 
-                                        <span className="firstItem leftMargin foregroundColor">
-                                             <span className="wordWrapLabel">Still Watching</span>
-                                        </span>
+                                        {activeRoute === "WatchList" &&
+                                             <>
+                                                  <span className="firstItem leftMargin foregroundColor">
+                                                       <span className="wordWrapLabel">Still Watching</span>
+                                                  </span>
 
-                                        <span title="Stuff you are still watching">
-                                             <label className="switch">
-                                                  <input type="checkbox" checked={stillWatching} onChange={(event) => setStillWatching(event.target.checked)} />
-                                                  <span className="slider round"></span>
-                                             </label>
-                                        </span>
+                                                  <span title="Stuff you are still watching">
+                                                       <label className="switch">
+                                                            <input type="checkbox" checked={stillWatching} onChange={(event) => setStillWatching(event.target.checked)} />
+                                                            <span className="slider round"></span>
+                                                       </label>
+                                                  </span>
+                                             </>
+                                        }
 
                                         {/*<span className="firstItem leftMargin foregroundColor">
                                              <span>Archived</span>
@@ -118,82 +122,91 @@ const SharedLayout = () => {
                                              </label>
                                         </span>*/}
 
-                                        <span className="firstItem leftMargin foregroundColor">
-                                             <span>Source</span>
-                                        </span>
+                                        {activeRoute === "WatchList" &&
+                                             <>
+                                                  <span className="firstItem leftMargin foregroundColor">
+                                                       <span>Source</span>
+                                                  </span>
+}
 
-                                        <span title="Filter by source">
-                                             <select className="selectStyle" value={sourceFilter} onChange={(event) => setSourceFilter(parseInt(event.target.value, 10))}>
-                                                  <option value="-1">Please select</option>
+                                                  <span title="Filter by source">
+                                                       <select className="selectStyle" value={sourceFilter} onChange={(event) => setSourceFilter(parseInt(event.target.value, 10))}>
+                                                            <option value="-1">Please select</option>
 
-                                                  {watchListSources?.map((watchListSource: typeof IWatchListSource, index: number) => {
-                                                       return (
-                                                            <option key={index} value={watchListSource.WatchListSourceID}>
-                                                                 {watchListSource.WatchListSourceName}
-                                                            </option>
-                                                       );
-                                                  })}
-                                             </select>
-                                        </span>
+                                                            {watchListSources?.map((watchListSource: typeof IWatchListSource, index: number) => {
+                                                                 return (
+                                                                      <option key={index} value={watchListSource.WatchListSourceID}>
+                                                                           {watchListSource.WatchListSourceName}
+                                                                      </option>
+                                                                 );
+                                                            })}
+                                                       </select>
+                                                  </span>
+                                             </>
+                                        }
 
-                                        <span className="firstItem leftMargin foregroundColor">
-                                             <span>Type</span>
-                                        </span>
+                                        {(activeRoute === "WatchList" || activeRoute === "WatchListItems") &&
+                                             <>
+                                                  <span className="firstItem leftMargin foregroundColor">
+                                                       <span>Type</span>
+                                                  </span>
 
-                                        <span title="Filter by type">
-                                             <select className="selectStyle" value={typeFilter} onChange={(event) => setTypeFilter(parseInt(event.target.value, 10))}>
-                                                  <option value="-1">Please select</option>
+                                                  <span title="Filter by type">
+                                                       <select className="selectStyle" value={typeFilter} onChange={(event) => setTypeFilter(parseInt(event.target.value, 10))}>
+                                                            <option value="-1">Please select</option>
 
-                                                  {watchListTypes?.map((watchListType: typeof IWatchListType, index: number) => {
-                                                       return (
-                                                            <option key={index} value={watchListType.WatchListTypeID}>
-                                                                 {watchListType.WatchListTypeName}
-                                                            </option>
-                                                       );
-                                                  })}
-                                             </select>
-                                        </span>
+                                                            {watchListTypes?.map((watchListType: typeof IWatchListType, index: number) => {
+                                                                 return (
+                                                                      <option key={index} value={watchListType.WatchListTypeID}>
+                                                                           {watchListType.WatchListTypeName}
+                                                                      </option>
+                                                                 );
+                                                            })}
+                                                       </select>
+                                                  </span>
 
-                                        <span className="firstItem foregroundColor leftMargin">
-                                             <span>Sort By</span>
-                                        </span>
+                                                  <span className="firstItem foregroundColor leftMargin">
+                                                       <span>Sort By</span>
+                                                  </span>
 
-                                        <span title="Sort by">
-                                             <select className="selectStyle" value={watchListSortColumn} onChange={(event) => setWatchListSortColumn(event.target.value)}>
-                                                  {activeRoute === "WatchList" &&
-                                                       Object.keys(watchListSortColumns).filter((sortColumn) => {
-                                                            return sortColumn !== "EndDate" || (sortColumn === "EndDate" && !stillWatching);
-                                                       }).map((sortColumn: string, index: number) => {
-                                                            return (
-                                                                 <option key={index} value={sortColumn}>
-                                                                      {watchListSortColumns[sortColumn]}
-                                                                 </option>
-                                                            );
-                                                       })
-                                                  }
+                                                  <span title="Sort by">
+                                                       <select className="selectStyle" value={watchListSortColumn} onChange={(event) => setWatchListSortColumn(event.target.value)}>
+                                                            {activeRoute === "WatchList" &&
+                                                                 Object.keys(watchListSortColumns).filter((sortColumn) => {
+                                                                      return sortColumn !== "EndDate" || (sortColumn === "EndDate" && !stillWatching);
+                                                                 }).map((sortColumn: string, index: number) => {
+                                                                      return (
+                                                                           <option key={index} value={sortColumn}>
+                                                                                {watchListSortColumns[sortColumn]}
+                                                                           </option>
+                                                                      );
+                                                                 })
+                                                            }
 
-                                                  {activeRoute === "WatchListItems" &&
-                                                       Object.keys(watchListItemsSortColumns).map((sortColumn: string, index: number) => {
-                                                            return (
-                                                                 <option key={index} value={sortColumn}>
-                                                                      {watchListItemsSortColumns[sortColumn]}
-                                                                 </option>
-                                                            );
-                                                       })
-                                                  }
-                                             </select>
-                                        </span>
+                                                            {activeRoute === "WatchListItems" &&
+                                                                 Object.keys(watchListItemsSortColumns).map((sortColumn: string, index: number) => {
+                                                                      return (
+                                                                           <option key={index} value={sortColumn}>
+                                                                                {watchListItemsSortColumns[sortColumn]}
+                                                                           </option>
+                                                                      );
+                                                                 })
+                                                            }
+                                                       </select>
+                                                  </span>
 
-                                        <span className="leftMargin" title="Sort direction">
-                                             <select className="selectStyle" value={watchListSortDirection} onChange={(event) => setWatchListSortDirection(event.target.value)}>
-                                                  <option value="ASC">ASC</option>
-                                                  <option value="DESC">DESC</option>
-                                             </select>
-                                        </span>
+                                                  <span className="leftMargin" title="Sort direction">
+                                                       <select className="selectStyle" value={watchListSortDirection} onChange={(event) => setWatchListSortDirection(event.target.value)}>
+                                                            <option value="ASC">ASC</option>
+                                                            <option value="DESC">DESC</option>
+                                                       </select>
+                                                  </span>
 
-                                        <span className="clickable leftMargin searchIcon" style={{ color: "white" }} onClick={showSearch}>
-                                             {SearchIconComponent}
-                                        </span>
+                                                  <span className="clickable leftMargin searchIcon" style={{ color: "white" }} onClick={showSearch}>
+                                                       {SearchIconComponent}
+                                                  </span>
+                                             </>
+                                        }
 
                                         <span className="clickable leftMargin" style={{ color: "white" }} onClick={showSettings}>
                                              {SettingsIconComponent}

@@ -41,7 +41,11 @@ function CustomEditComponent(props: typeof GridRenderEditCellParams) {
           height: "100% !important"
      };
 
-     return <textarea ref={ref} readOnly={false} style={cssStyle} value={value} rows={value.length / 30} onChange={handleValueChange} />;
+     const bugNameLength = typeof apiRef.current.getRow(id).WLBugName !== "undefined" ? String(apiRef.current.getRow(id).WLBugName).length : 0;
+     const resolutionNotesLength = typeof apiRef.current.getRow(id).ResolutionNotes !== "undefined" ? String(apiRef.current.getRow(id).ResolutionNotes).length : 0;
+     const rowCount = (bugNameLength > resolutionNotesLength ? bugNameLength : resolutionNotesLength);
+
+     return <textarea ref={ref} readOnly={false} style={cssStyle} value={value} rows={rowCount/30} onChange={handleValueChange} />;
 }
 
 // Return custom input with custom event handler

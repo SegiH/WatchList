@@ -127,7 +127,7 @@ const SharedLayout = () => {
                                                   <span className="firstItem leftMargin foregroundColor">
                                                        <span>Source</span>
                                                   </span>
-}
+
 
                                                   <span title="Filter by source">
                                                        <select className="selectStyle" value={sourceFilter} onChange={(event) => setSourceFilter(parseInt(event.target.value, 10))}>

@@ -6,8 +6,8 @@ const IBugLog = require("../interfaces/IBugLog");
 const IWatchListSource = require("../interfaces/IWatchListSource");
 const IWatchListType = require("../interfaces/IWatchListType");
 const IUser = require("../interfaces/IUser");
-const GridRowModes = require("@mui/x-data-grid-pro").GridRowModes;
-const GridToolbarContainer = require("@mui/x-data-grid-pro").GridToolbarContainer;
+const GridRowModes = require("@mui/x-data-grid").GridRowModes;
+const GridToolbarContainer = require("@mui/x-data-grid").GridToolbarContainer;
 const useContext = require("react").useContext;
 
 import { DataContext, DataContextType } from "../data-context";

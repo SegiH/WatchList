@@ -770,7 +770,8 @@ export default function WatchListStats() {
                                    {watchListWeeklyCurrentMovieYearStat !== -1 && watchListWeeklyCurrentMovieWeekGroupingStat &&
                                         <div className="whiteBackgroundColor">
                                              <LineChart
-                                                  xAxis={[{ label: 'Week', data: Array.from({ length: watchListWeeklyMovieMaxWeek }, (_, index) => index + 1) }]}
+                                                  xAxis={[{ scaleType: 'point', label: 'Week', data: Array.from({ length: watchListWeeklyMovieMaxWeek }, (_, index) => index + 1) }]}
+                                                  yAxis={[{ tickMinStep: 1 }]}
                                                   series={[
                                                        {
                                                             label: 'Times Watched',

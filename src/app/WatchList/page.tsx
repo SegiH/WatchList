@@ -98,7 +98,6 @@ export default function WatchList() {
                     </span>
                )}
 
-
                {watchList.length > 0 &&
                     <ul className="clickable show-list">
                          {watchList?.filter(

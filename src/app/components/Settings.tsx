@@ -1,5 +1,5 @@
-const IWatchListSource = require("../interfaces/IWatchListSource");
-const IWatchListType = require("../interfaces/IWatchListType");
+//const IWatchListSource = require("../interfaces/IWatchListSource");
+//const IWatchListType = require("../interfaces/IWatchListType");
 const React = require("react");
 const useContext = require("react").useContext;
 const useEffect = require("react").useEffect;
@@ -25,23 +25,23 @@ const Settings = () => {
           setSettingsVisible,
           setShowMissingArtwork,
           setShowWatchListItems,
-          setSourceFilter,
+          //setSourceFilter,
           setStillWatching,
-          setTypeFilter,
+          //setTypeFilter,
           setWatchListSortColumn,
           setWatchListSortDirection,
           showMissingArtwork,
           showWatchListItems,
           signOut,
-          sourceFilter,
+          //sourceFilter,
           stillWatching,
-          typeFilter,
+          //typeFilter,
           watchListItemsSortColumns,
           watchListSortColumn,
           watchListSortColumns,
           watchListSortDirection,
-          watchListSources,
-          watchListTypes
+          //watchListSources,
+          //watchListTypes
      } = useContext(DataContext) as DataContextType
 
      const [formattedBuildDate, setFormattedBuildDate] = useState("");
@@ -90,7 +90,7 @@ const Settings = () => {
                     </span>
 
                     <ul className="menuContent">
-                         <li>
+                         <li className="topMargin">
                               <span className="firstItem">
                                    <span>Show WLI</span>
                               </span>
@@ -103,7 +103,7 @@ const Settings = () => {
                               </span>
                          </li>
 
-                         {activeRoute === "WatchList" && archivedVisible === false && (
+                         {/*{activeRoute === "WatchList" && archivedVisible === false && (
                               <li className="topMargin">
                                    <span className="firstItem">
                                         <span className="wordWrapLabel">Still Watching</span>
@@ -116,7 +116,7 @@ const Settings = () => {
                                         </label>
                                    </span>
                               </li>
-                         )}
+                         )}*/}
 
                          {(activeRoute === "WatchList" || activeRoute === "WatchListItems") && (
                               <li className="topMargin">
@@ -168,7 +168,7 @@ const Settings = () => {
                               </li>
                          )}
 
-                         {activeRoute === "WatchList" && (
+                        {/*} {activeRoute === "WatchList" && (
                               <li className="topMargin">
                                    <span className="firstItem">
                                         <span>Source</span>
@@ -188,9 +188,9 @@ const Settings = () => {
                                         </select>
                                    </span>
                               </li>
-                         )}
+                         )}*/}
 
-                         {(activeRoute === "WatchList" || activeRoute === "WatchListItems") && (
+                         {/*{(activeRoute === "WatchList" || activeRoute === "WatchListItems") && (
                               <li className="topMargin">
                                    <span className="firstItem">
                                         <span>Type</span>
@@ -210,9 +210,9 @@ const Settings = () => {
                                         </select>
                                    </span>
                               </li>
-                         )}
+                         )}*/}
 
-                         {(activeRoute === "WatchList" || activeRoute === "WatchListItems") && (
+                         {/*{(activeRoute === "WatchList" || activeRoute === "WatchListItems") && (
                               <li className="topMargin">
                                    <span className="firstItem">
                                         <span>Sort By</span>
@@ -244,9 +244,9 @@ const Settings = () => {
                                         </select>
                                    </span>
                               </li>
-                         )}
+                         )}*/}
 
-                         {(activeRoute === "WatchList" || activeRoute === "WatchListItems") && (
+                         {/*{(activeRoute === "WatchList" || activeRoute === "WatchListItems") && (
                               <li className="topMargin">
                                    <span className="firstItem">
                                         <span>Sort Order</span>
@@ -259,7 +259,7 @@ const Settings = () => {
                                         </select>
                                    </span>
                               </li>
-                         )}
+                         )}*/}
 
                          {isLoggedIn && (
                               <li className="topMargin">

@@ -274,6 +274,8 @@ input:checked+.slider:before {
     
      width: 100%;
      margin-bottom: 15px;
+     overflow: scroll;
+     scrollbar-width: none;
 }
 
 .menuBarActive {
@@ -391,6 +393,10 @@ input:checked+.slider:before {
      display: block;
      margin-left: auto;
      margin-right: 0;
+}
+
+.rightMargin {
+     margin-right: 50px;
 }
 
 .row {

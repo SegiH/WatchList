@@ -558,8 +558,6 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
 
                setFormattedNames(namesWithIdSorted);
 
-               //console.log(namesWithIdSorted)
-
                const namesWithIdItems = watchListItems.map((watchListItem: typeof IWatchListItem) => {
                     let itemName = watchListItem.WatchListItemName
 

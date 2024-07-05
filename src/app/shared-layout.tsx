@@ -209,7 +209,7 @@ const SharedLayout = () => {
                                              </>
                                         }
 
-                                        <span className="clickable leftMargin" style={{ color: "white" }} onClick={showSettings}>
+                                        <span className="clickable leftMargin settingsIcon" style={{ color: "white" }} onClick={showSettings}>
                                              {SettingsIconComponent}
                                         </span>
                                    </span>

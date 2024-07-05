@@ -1,3 +1,14 @@
+@media only screen and (min-width: 992px) {
+     .searchIcon {
+          margin-left: auto !important;
+     }
+
+     .settingsIcon {
+          margin-left: auto !important;
+          margin-right: 5% !important;
+     }
+}
+
 @media screen and (-webkit-min-device-pixel-ratio:0) {
      .inputStyle {
           max-width: 200px !important;
@@ -148,7 +159,7 @@ input:checked+.slider:before {
 }
 
 .customWidth {
-     min-width:100% !important;
+     min-width: 100% !important;
      height: 30px;
 }
 
@@ -173,7 +184,7 @@ input:checked+.slider:before {
      text-align: center;
      font-size: 1.2em;
      transition: all 1s;
- }
+}
 
 .fade-in {
      animation: fadeInAnimation 0.5s linear;
@@ -275,7 +286,7 @@ input:checked+.slider:before {
      color: #424242;
      display: inline-flex;
      min-height: 56px;
-    
+
      width: 100%;
      margin-bottom: 15px;
      overflow: scroll;
@@ -418,7 +429,7 @@ input:checked+.slider:before {
      position: relative;
      top: 65%;
      left: 50%;
-     transform: translate(-50%,-50%);
+     transform: translate(-50%, -50%);
      transition: all 1s;
      min-width: 400px !important;
      height: 50px;
@@ -428,20 +439,20 @@ input:checked+.slider:before {
      border: 4px solid white;
      padding: 5px;
 }
- 
+
 .searchContainer:hover,
-.searchContainer:valid{
+.searchContainer:valid {
      min-width: 300px;
      cursor: pointer;
 }
- 
+
 .searchContainer:hover input,
-.searchContainer:valid input{
+.searchContainer:valid input {
      display: block;
 }
- 
+
 .searchContainer:hover .fa,
-.searchContainer:valid .fa{
+.searchContainer:valid .fa {
      background: #07051a;
      color: white;
 }
@@ -461,10 +472,10 @@ input:checked+.slider:before {
 }
 
 /* The IMDB search input has type="search" that shows an x to clear the search input. This moves it up so its more centered */
-.searchInput::-webkit-search-cancel-button{
-     position:relative;
-     top:-20px;
- }
+.searchInput::-webkit-search-cancel-button {
+     position: relative;
+     top: -20px;
+}
 
 .searchHeader {
      /*background-color: #f1ebdf;*/

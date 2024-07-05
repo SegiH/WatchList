@@ -1,5 +1,3 @@
-//const IWatchListSource = require("../interfaces/IWatchListSource");
-//const IWatchListType = require("../interfaces/IWatchListType");
 const React = require("react");
 const useContext = require("react").useContext;
 const useEffect = require("react").useEffect;
@@ -25,23 +23,10 @@ const Settings = () => {
           setSettingsVisible,
           setShowMissingArtwork,
           setShowWatchListItems,
-          //setSourceFilter,
           setStillWatching,
-          //setTypeFilter,
-          //setWatchListSortColumn,
-          //setWatchListSortDirection,
           showMissingArtwork,
           showWatchListItems,
-          signOut,
-          //sourceFilter,
-          //stillWatching,
-          //typeFilter,
-          //watchListItemsSortColumns,
-          //watchListSortColumn,
-          //watchListSortColumns,
-          //watchListSortDirection,
-          //watchListSources,
-          //watchListTypes
+          signOut
      } = useContext(DataContext) as DataContextType
 
      const [formattedBuildDate, setFormattedBuildDate] = useState("");
@@ -103,21 +88,6 @@ const Settings = () => {
                               </span>
                          </li>
 
-                         {/*{activeRoute === "WatchList" && archivedVisible === false && (
-                              <li className="topMargin">
-                                   <span className="firstItem">
-                                        <span className="wordWrapLabel">Still Watching</span>
-                                   </span>
-
-                                   <span title="Stuff you are still watching">
-                                        <label className="switch">
-                                             <input type="checkbox" checked={stillWatching} onChange={(event) => setStillWatching(event.target.checked)} />
-                                             <span className="slider round"></span>
-                                        </label>
-                                   </span>
-                              </li>
-                         )}*/}
-
                          {(activeRoute === "WatchList" || activeRoute === "WatchListItems") && (
                               <li className="topMargin">
                                    <span className="firstItem">
@@ -167,99 +137,6 @@ const Settings = () => {
                                    </span>
                               </li>
                          )}
-
-                        {/*} {activeRoute === "WatchList" && (
-                              <li className="topMargin">
-                                   <span className="firstItem">
-                                        <span>Source</span>
-                                   </span>
-
-                                   <span title="Filter by source">
-                                        <select className="selectStyle" value={sourceFilter} onChange={(event) => setSourceFilter(parseInt(event.target.value, 10))}>
-                                             <option value="-1">Please select</option>
-
-                                             {watchListSources?.map((watchListSource: typeof IWatchListSource, index: number) => {
-                                                  return (
-                                                       <option key={index} value={watchListSource.WatchListSourceID}>
-                                                            {watchListSource.WatchListSourceName}
-                                                       </option>
-                                                  );
-                                             })}
-                                        </select>
-                                   </span>
-                              </li>
-                         )}*/}
-
-                         {/*{(activeRoute === "WatchList" || activeRoute === "WatchListItems") && (
-                              <li className="topMargin">
-                                   <span className="firstItem">
-                                        <span>Type</span>
-                                   </span>
-
-                                   <span title="Filter by type">
-                                        <select className="selectStyle" value={typeFilter} onChange={(event) => setTypeFilter(parseInt(event.target.value, 10))}>
-                                             <option value="-1">Please select</option>
-
-                                             {watchListTypes?.map((watchListType: typeof IWatchListType, index: number) => {
-                                                  return (
-                                                       <option key={index} value={watchListType.WatchListTypeID}>
-                                                            {watchListType.WatchListTypeName}
-                                                       </option>
-                                                  );
-                                             })}
-                                        </select>
-                                   </span>
-                              </li>
-                         )}*/}
-
-                         {/*{(activeRoute === "WatchList" || activeRoute === "WatchListItems") && (
-                              <li className="topMargin">
-                                   <span className="firstItem">
-                                        <span>Sort By</span>
-                                   </span>
-
-                                   <span title="Sort by">
-                                        <select className="selectStyle" value={watchListSortColumn} onChange={(event) => setWatchListSortColumn(event.target.value)}>
-                                             {activeRoute === "WatchList" &&
-                                                  Object.keys(watchListSortColumns).filter((sortColumn) => {
-                                                       return sortColumn !== "EndDate" || (sortColumn === "EndDate" && !stillWatching);
-                                                  }).map((sortColumn: string, index: number) => {
-                                                       return (
-                                                            <option key={index} value={sortColumn}>
-                                                                 {watchListSortColumns[sortColumn]}
-                                                            </option>
-                                                       );
-                                                  })
-                                             }
-
-                                             {activeRoute === "WatchListItems" &&
-                                                  Object.keys(watchListItemsSortColumns).map((sortColumn: string, index: number) => {
-                                                       return (
-                                                            <option key={index} value={sortColumn}>
-                                                                 {watchListItemsSortColumns[sortColumn]}
-                                                            </option>
-                                                       );
-                                                  })
-                                             }
-                                        </select>
-                                   </span>
-                              </li>
-                         )}*/}
-
-                         {/*{(activeRoute === "WatchList" || activeRoute === "WatchListItems") && (
-                              <li className="topMargin">
-                                   <span className="firstItem">
-                                        <span>Sort Order</span>
-                                   </span>
-
-                                   <span title="Sort direction">
-                                        <select className="selectStyle" value={watchListSortDirection} onChange={(event) => setWatchListSortDirection(event.target.value)}>
-                                             <option value="ASC">Ascending</option>
-                                             <option value="DESC">Descending</option>
-                                        </select>
-                                   </span>
-                              </li>
-                         )}*/}
 
                          {isLoggedIn && (
                               <li className="topMargin">

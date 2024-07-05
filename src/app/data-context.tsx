@@ -533,7 +533,6 @@ const DataProvider = ({ children }) => {
                          setIsLoggedInCheckComplete(true);
                     })
                     .catch((err: Error) => {
-                         //alert(new Date().toTimeString() + ": Error when calling /IsLoggedIn with the error " + err.message);
                          setIsLoggedInCheckComplete(true);
 
                          router.push("/Login");

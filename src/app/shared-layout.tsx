@@ -2,7 +2,6 @@
 
 const useContext = require("react").useContext;
 const useEffect = require("react").useEffect;
-const useRouter = require("next/navigation").useRouter;
 const useState = require("react").useState;
 
 const IWatchListSource = require("./interfaces/IWatchListSource");
@@ -15,16 +14,11 @@ const SharedLayout = () => {
      const {
           activeRoute,
           activeRouteDisplayName,
-          archivedVisible,
           demoMode,
           isError,
           isLoggedIn,
           SearchIconComponent,
           searchVisible,
-          setActiveRoute,
-          setActiveRouteDisplayName,
-          setArchivedVisible,
-          setShowWatchListItems,
           setSourceFilter,
           setStillWatching,
           SettingsIconComponent,
@@ -34,7 +28,6 @@ const SharedLayout = () => {
           setWatchListSortDirection,
           showSearch,
           showSettings,
-          showWatchListItems,
           sourceFilter,
           typeFilter,
           stillWatching,
@@ -49,18 +42,6 @@ const SharedLayout = () => {
      } = useContext(DataContext) as DataContextType
 
      const [isClient, setIsClient] = useState(false);
-
-     const router = useRouter();
-
-     const setShowWatchListItemsClickHandler = async (checked: boolean) => {
-          setShowWatchListItems(checked);
-
-          if (checked === false && activeRoute === "WatchListItems") {
-               setActiveRoute("WatchList");
-               setActiveRouteDisplayName("WatchList");
-               router.push("/WatchList");
-          }
-     }
 
      useEffect(() => {
           const newIsClient = !window.location.href.endsWith("api-doc") && !window.location.href.endsWith("api-doc/") ? true : false;
@@ -81,17 +62,6 @@ const SharedLayout = () => {
                                    <span className="menuBar">
                                         <span className="leftMargin menuBarActiveRoute">{activeRouteDisplayName}{demoMode ? " (Demo)" : ""}</span>
 
-                                        {/*<span className="leftMargin foregroundColor">
-                                             <span>Show WLI</span>
-                                        </span>
-
-                                        <span className="foregroundColor" title="Show WatchList Items">
-                                             <label className="switch">
-                                                  <input type="checkbox" checked={showWatchListItems} onChange={(event) => setShowWatchListItemsClickHandler(event.target.checked)} />
-                                                  <span className="slider round"></span>
-                                             </label>
-                                        </span>*/}
-
                                         {activeRoute === "WatchList" &&
                                              <>
                                                   <span className="firstItem leftMargin foregroundColor">
@@ -106,22 +76,6 @@ const SharedLayout = () => {
                                                   </span>
                                              </>
                                         }
-
-                                        {/*<span className="firstItem leftMargin foregroundColor">
-                                             <span>Archived</span>
-                                        </span>
-
-                                        <span title="Archived Items">
-                                             <label className="switch">
-                                                  <input type="checkbox" checked={archivedVisible} onChange={(event) => {
-                                                       setArchivedVisible(event.target.checked);
-
-                                                       if (event.target.checked === true) setStillWatching(false);
-                                                  }} />
-
-                                                  <span className="slider round"></span>
-                                             </label>
-                                        </span>*/}
 
                                         {activeRoute === "WatchList" &&
                                              <>

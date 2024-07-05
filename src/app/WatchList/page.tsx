@@ -11,6 +11,8 @@ const IWatchListSource = require("../interfaces/IWatchListSource");
 
 import { DataContext, DataContextType } from "../data-context";
 
+import "../page.css";
+
 export default function WatchList() {
      const {
           AddIconComponent,
@@ -93,7 +95,7 @@ export default function WatchList() {
      return (
           <>
                {isLoggedIn && !isError && (
-                    <span className="clickable customTopMargin foregroundColor" onClick={() => openDetailClickHandler(-1)}>
+                    <span className="bottomMargin20 clickable customTopMargin foregroundColor leftMargin40" onClick={() => openDetailClickHandler(-1)}>
                          {AddIconComponent}
                     </span>
                )}

@@ -82,6 +82,10 @@ input:checked+.slider:before {
      z-index: 999;
 }
 
+.bottomMargin20 {
+     margin-bottom: 20px;
+}
+
 .brokenImage,
 .image-crop svg,
 .editSaveCancelPanel .brokenImage {
@@ -256,6 +260,10 @@ input:checked+.slider:before {
 
 .leftMargin {
      margin-left: 25px;
+}
+
+.leftMargin40 {
+     margin-left: 40px;
 }
 
 .linkStyle {

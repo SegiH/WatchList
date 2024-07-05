@@ -120,12 +120,12 @@ export default function WatchListItems() {
      return (
           <>
                {!isError &&
-                    <span className="clickable customTopMargin foregroundColor" onClick={() => openDetailClickHandler(-1)}>
+                    <span className="clickable customTopMargin foregroundColor leftMargin40" onClick={() => openDetailClickHandler(-1)}>
                          {AddIconComponent}
                     </span>
                }
 
-               <ul className="clickable foregroundColor  show-list">
+               <ul className="clickable foregroundColor show-list">
                     {watchListItems?.filter(
                          (currentWatchListItem: typeof IWatchListItem) =>
                               ((currentWatchListItem?.Archived === 1 && archivedVisible === true) || (currentWatchListItem?.Archived === 0 && archivedVisible === false))

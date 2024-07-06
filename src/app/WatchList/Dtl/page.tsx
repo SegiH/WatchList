@@ -242,21 +242,8 @@ export default function WatchListDetail() {
      };
 
      const recommendationsClickHandler = () => {
-          const name = watchListDtl?.WatchListItemName;
-
-          const typeID = watchListDtl?.WatchListTypeID;
-
-          const typeNameResult = watchListTypes.filter((currentType: typeof IWatchListType) => currentType.WatchListTypeID === typeID);
-
-          if (typeNameResult.length === 0) { // This should never happen!
-               console.log("typeNameResult is null in useEffect() in WatchListDetailComponent");
-               return;
-          }
-
-          const typeName = typeNameResult[0].WatchListTypeName;
-
-          setRecommendationName(name);
-          setRecommendationType(typeName);
+          setRecommendationName(watchListDtl?.WatchListItemName);
+          setRecommendationType(watchListDtl?.WatchListTypeName);
      };
 
      const saveClickHandler = async () => {

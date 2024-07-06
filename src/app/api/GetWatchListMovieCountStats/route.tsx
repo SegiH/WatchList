@@ -20,7 +20,7 @@ export async function GET(request: NextRequest) {
           return Response.json(["ERROR", "User ID is not set"]);
      }
 
-     const SQL = `SELECT COUNT(*) AS MovieCount FROM WatcHList WL LEFT JOIN WatchListItems WLI ON WLI.WatchlistItemID=WL.WatchlistItemID LEFT JOIN WatchListTypes WLT ON WLT.WatchListTypeID=WLI.WatchListTypeID WHERE UserID=? AND WLT.WatchListTypeName='Movie';`;
+     const SQL = `SELECT COUNT(*) AS MovieCount FROM WatchList WL LEFT JOIN WatchListItems WLI ON WLI.WatchlistItemID=WL.WatchlistItemID LEFT JOIN WatchListTypes WLT ON WLT.WatchListTypeID=WLI.WatchListTypeID WHERE UserID=? AND WLT.WatchListTypeName='Movie';`;
 
      try {
           const results = await execSelect(SQL, [userID]);

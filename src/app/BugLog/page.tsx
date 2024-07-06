@@ -85,7 +85,8 @@ export default function BugLog() {
           const editedRow = bugLogs.find((row: typeof IBugLog) => row.WLBugID === id);
 
           if (editedRow.isNew) {
-               setBugLogs(bugLogs.filter((row: typeof IBugLog) => row.WLBugID !== id));
+               const editedRowToRemove = bugLogs.filter((row: typeof IBugLog) => row.WLBugID !== id)
+               setBugLogs(editedRowToRemove);
           }
 
           setIsAdding(false);

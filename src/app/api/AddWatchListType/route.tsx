@@ -23,7 +23,7 @@ import { execInsert } from "../lib";
 export async function PUT(request: NextRequest) {
      const searchParams = request.nextUrl.searchParams;
 
-     const watchListTypeName = searchParams.get("WatchListWatchListTypeName");
+     const watchListTypeName = searchParams.get("WatchListTypeName");
 
      if (watchListTypeName === null) {
           return Response.json(["ERROR", "WatchList WatchListType Name was not provided"]);

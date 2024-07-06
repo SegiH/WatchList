@@ -65,11 +65,11 @@ const SharedLayout = () => {
                                         {activeRoute === "WatchList" &&
                                              <>
                                                   <span className="firstItem leftMargin foregroundColor">
-                                                       <span className="wordWrapLabel">Still Watching</span>
+                                                       <span>Still Watching</span>
                                                   </span>
 
                                                   <span title="Stuff you are still watching">
-                                                       <label className="switch">
+                                                       <label className="leftMargin switch">
                                                             <input type="checkbox" checked={stillWatching} onChange={(event) => setStillWatching(event.target.checked)} />
                                                             <span className="slider round"></span>
                                                        </label>

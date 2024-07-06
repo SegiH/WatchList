@@ -7,7 +7,6 @@ const useContext = require("react").useContext;
 const useEffect = require("react").useEffect;
 const useRouter = require("next/navigation").useRouter;
 const IWatchList = require("../interfaces/IWatchList");
-const IWatchListSource = require("../interfaces/IWatchListSource");
 
 import { DataContext, DataContextType } from "../data-context";
 
@@ -32,8 +31,7 @@ export default function WatchList() {
           watchListLoadingComplete,
           watchListSortColumn,
           watchListSortDirection,
-          watchListSortingComplete,
-          watchListSources
+          watchListSortingComplete
      } = useContext(DataContext) as DataContextType;
 
      const router = useRouter();
@@ -117,10 +115,6 @@ export default function WatchList() {
                          ).map((currentWatchList: typeof IWatchList, index: number) => {
                               const IMDB_JSON = currentWatchList?.IMDB_JSON !== null && typeof currentWatchList?.IMDB_JSON !== "undefined" && currentWatchList?.IMDB_JSON !== "" ? JSON.parse(currentWatchList?.IMDB_JSON) : null;
 
-                              const source_name = watchListSources?.filter((currentWatchListSource: typeof IWatchListSource) => {
-                                   return String(currentWatchListSource.WatchListSourceID) === String(currentWatchList?.WatchListSourceID);
-                              });
-
                               return (
                                    <div key={index} className="foregroundColor">
                                         {watchListSortingComplete && (
@@ -163,7 +157,7 @@ export default function WatchList() {
                                                   </div>
 
                                                   <div>
-                                                       {source_name && source_name.length === 1 && source_name[0].WatchListSourceName}
+                                                       {currentWatchList.WatchListSourceName}
                                                   </div>
 
                                                   {currentWatchList?.Rating !== null && (

@@ -46,7 +46,8 @@ const ManageWatchListSources = () => {
           const editedRow = watchListSources.find((row: typeof IWatchListSource) => row.WatchListSourceID === id);
 
           if (editedRow.isNew) {
-               setWatchListSources(watchListSources.filter((row: typeof IWatchListSource) => row.WatchListSourceID !== id));
+               const editedRowToRemove = watchListSources.filter((row: typeof IWatchListSource) => row.WatchListSourceID !== id);
+               setWatchListSources(editedRowToRemove);
           }
 
           setIsAdding(false);

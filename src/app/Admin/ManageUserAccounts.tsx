@@ -70,7 +70,9 @@ const ManageUserAccounts = () => {
           const editedRow = users.find((row: typeof IUser) => row.UserID === id);
 
           if (editedRow.isNew) {
-               setUsers(users.filter((row: typeof IUser) => row.UserID !== id));
+               const editedRowToRemove = users.filter((row: typeof IUser) => row.UserID !== id);
+
+               setUsers(editedRowToRemove);
           }
 
           setIsAdding(false);

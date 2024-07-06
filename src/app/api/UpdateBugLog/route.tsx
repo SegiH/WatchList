@@ -1,6 +1,11 @@
 import { NextRequest } from 'next/server';
+import { isLoggedIn } from '../lib';
 
 export async function PUT(request: NextRequest) {
+    if (!isLoggedIn(request)) {
+        return Response.json(["ERROR", "Error. Not signed in"]);
+    }
+
     const searchParams = request.nextUrl.searchParams;
 
     const bugLogID = searchParams.get("WLBugID");

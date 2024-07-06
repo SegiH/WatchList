@@ -1,5 +1,5 @@
 import { NextRequest } from 'next/server';
-import { execInsert, execSelect, getIMDBDetails } from "../lib";
+import { execInsert, execSelect, getIMDBDetails, isLoggedIn } from "../lib";
 
 /**
  * @swagger
@@ -45,6 +45,10 @@ import { execInsert, execSelect, getIMDBDetails } from "../lib";
  *            description: '["OK",""] on success, ["ERROR","error message"] on error'
  */
 export async function PUT(request: NextRequest) {
+     if (!isLoggedIn(request)) {
+          return Response.json(["ERROR", "Error. Not signed in"]);
+     }
+
      const searchParams = request.nextUrl.searchParams;
 
      const name = searchParams.get("WatchListItemName");

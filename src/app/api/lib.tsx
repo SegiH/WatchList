@@ -32,13 +32,13 @@ const timeout = 604800000; // 1 week in MS
 
 const secretKey = config.get(`Secret`);
 
-export async function logMessage (message) {
+export async function logMessage(message) {
      message = new Date().toISOString() + " " + message
-    fs.appendFile('app.log', message + '\n', (err) => {
-        if (err) {
-            console.error('Error appending to log file:', err);
-        }
-    });
+     fs.appendFile('app.log', message + '\n', (err) => {
+          if (err) {
+               console.error('Error appending to log file:', err);
+          }
+     });
 };
 
 export async function addUser(request: NextRequest, isNewInstance = false) {
@@ -58,9 +58,9 @@ export async function addUser(request: NextRequest, isNewInstance = false) {
      }
      // This action should only be performed by logged in users who are an admin when not setting up new instance
      if (!isNewInstance) {
-          const userSession = await getUserSession(request);
+          const isAdminResult = await isUserAdmin(request);
 
-          if (typeof userSession === "undefined" || (typeof userSession !== "undefined" && userSession.Admin === false)) {
+          if (!isAdminResult) {
                return Response.json(["ERROR", `addUser(): Access Denied`]);
           }
      }
@@ -197,6 +197,28 @@ export async function getUserSession(req: NextRequest) {
      } else {
           const userObj = JSON.parse(userData.value);
           return userObj;
+     }
+}
+
+export async function isLoggedIn(req: NextRequest) {
+     const userSession = await getUserSession(req);
+
+     if (typeof userSession === "undefined") {
+          return false;
+     } else {
+          return true;
+     }
+}
+
+export async function isUserAdmin(req: NextRequest) {
+     const userSession = await getUserSession(req);
+
+     if (typeof userSession === "undefined" || (typeof userSession !== "undefined" && userSession.Admin === false)) {
+          return false;
+     } else if (userSession.Admin === true) {
+          return true;
+     } else {
+          return false;
      }
 }
 

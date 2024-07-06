@@ -1,5 +1,5 @@
 import { NextRequest } from 'next/server';
-import { decrypt, execSelect, getUserID } from "../lib";
+import { decrypt, execSelect, getUserID, isUserAdmin } from "../lib";
 import User from "../../interfaces/IUser";
 
 /**
@@ -29,6 +29,13 @@ import User from "../../interfaces/IUser";
  */
 export async function GET(request: NextRequest) {
      const searchParams = request.nextUrl.searchParams;
+
+     // Only admins can call this endpoint. this is to prevent a non-admin from making themselves an admin
+     const isAdminResult = await isUserAdmin(request);
+
+     if (!isAdminResult) {
+          return Response.json(["ERROR", "Access denied"]);
+     }
 
      const admin = searchParams.get("Admin");
      const enabled = searchParams.get("Enabled");

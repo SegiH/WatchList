@@ -1,9 +1,9 @@
-import { execSelect, execUpdateDelete } from "../lib";
+import { execSelect, execUpdateDelete, getUserSession, isUserAdmin } from "../lib";
 import { NextRequest } from 'next/server';
 /**
  * @swagger
  * /api/DeleteWatchListSource:
- *    get:
+ *    put:
  *        tags:
  *          - WatchListSources
  *        summary: Delete a WatchList source as long as its in not in use
@@ -13,11 +13,18 @@ import { NextRequest } from 'next/server';
  *            description: '["OK",""] on success, ["ERROR","error message"] on error'
  */
 
-export async function GET(request: NextRequest) {
+export async function PUT(request: NextRequest) {
      // This needs to be here even though this endpoint doesn't take any parameters because without this,
      // when you do 'npm run build', Next.js will compile this route as a static route which causes a bug where
      // repeated calls to this endpoint return stale data even after the DB  has been updated.
      const searchParams = request.nextUrl.searchParams;
+
+     // Only admins can call this endpoint. this is to prevent a non-admin from making themselves an admin
+     const isAdminResult = await isUserAdmin(request);
+
+     if (!isAdminResult) {
+          return Response.json(["ERROR", "Access denied"]);
+     }
 
      const watchListSourceID = searchParams.get("WatchListSourceID");
 

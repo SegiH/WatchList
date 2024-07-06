@@ -1,5 +1,5 @@
 import { NextRequest } from 'next/server';
-import { execUpdateDelete } from "../lib";
+import { execUpdateDelete, isLoggedIn } from "../lib";
 
 /**
  * @swagger
@@ -57,6 +57,10 @@ import { execUpdateDelete } from "../lib";
  *            description: '["OK",""] on success, ["ERROR","error message"] on error'
  */
 export async function PUT(request: NextRequest) {
+     if (!isLoggedIn(request)) {
+          return Response.json(["ERROR", "Error. Not signed in"]);
+     }
+
      const searchParams = request.nextUrl.searchParams;
 
      const watchListItemID = searchParams.get("WatchListItemID");

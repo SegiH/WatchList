@@ -1,5 +1,5 @@
 import { NextRequest } from 'next/server';
-import { getIMDBDetails } from "../lib";
+import { getIMDBDetails, isLoggedIn } from "../lib";
 
 /**
  * @swagger
@@ -21,6 +21,10 @@ import { getIMDBDetails } from "../lib";
  *            description: '["OK",imdb details] on success, ["ERROR","error message"] on error'
  */
 export async function GET(request: NextRequest) {
+     if (!isLoggedIn(request)) {
+          return Response.json(["ERROR", "Error. Not signed in"]);
+     }
+
      const searchParams = request.nextUrl.searchParams;
 
      const imdb_id = searchParams.get("IMDB_ID");

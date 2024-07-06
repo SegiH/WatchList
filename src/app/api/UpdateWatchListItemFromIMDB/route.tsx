@@ -1,5 +1,5 @@
 import { NextRequest } from 'next/server';
-import { execSelect, execUpdateDelete, getIMDBDetails } from "../lib";
+import { execSelect, execUpdateDelete, getIMDBDetails, isLoggedIn } from "../lib";
 import WatchListItem from "../../interfaces/IWatchListItem";
 
 /**
@@ -28,6 +28,10 @@ import WatchListItem from "../../interfaces/IWatchListItem";
  *            description: '["OK", ""] on success, ["ERROR","error message"] on error'
  */
 export async function GET(request: NextRequest) {
+     if (!isLoggedIn(request)) {
+          return Response.json(["ERROR", "Error. Not signed in"]);
+     }
+
      const searchParams = request.nextUrl.searchParams;
 
      const watchListItemID = searchParams.get("WatchListItemID");

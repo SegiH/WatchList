@@ -1,7 +1,7 @@
 import { NextRequest } from 'next/server';
 const axios = require("axios");
 const https = require('https');
-
+import { isLoggedIn } from '../lib';
 /**
  * @swagger
  * /api/Recommendations:
@@ -28,6 +28,10 @@ const https = require('https');
  *            description: '["OK",recommendations] on success, ["ERROR","error message"] on error'
  */
 export async function GET(request: NextRequest) {
+     if (!isLoggedIn(request)) {
+          return Response.json(["ERROR", "Error. Not signed in"]);
+     }
+
      const searchParams = request.nextUrl.searchParams;
 
      const queryTerm = searchParams.get("QueryTerm");

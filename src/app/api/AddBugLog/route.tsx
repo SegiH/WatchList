@@ -1,9 +1,14 @@
 import { NextRequest } from 'next/server';
 const axios = require("axios");
 const https = require('https');
+import { isLoggedIn } from "../lib";
 
 export async function PUT(request: NextRequest) {
      const searchParams = request.nextUrl.searchParams;
+
+     if (!isLoggedIn(request)) {
+          return Response.json(["ERROR", "Error. Not signed in"]);
+     }
 
      const bugLogName = searchParams.get("WLBugName");
      const addDate = searchParams.get("AddDate");

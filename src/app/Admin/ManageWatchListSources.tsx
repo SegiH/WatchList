@@ -17,6 +17,7 @@ const ManageWatchListSources = () => {
      const {
           CancelIconComponent,
           defaultRoute,
+          DeleteIconComponent,
           demoMode,
           EditIconComponent,
           isAdding,
@@ -55,6 +56,27 @@ const ManageWatchListSources = () => {
 
           setEditingId(null);
      };
+
+     const deleteSourceClickHandler = (id: number, name: string) => () => {
+          const confirmLeave = confirm(`Are you sure that you want to delete the WatchList Source ${name} ?`);
+
+          if (!confirmLeave) {
+               return;
+          }
+
+          axios.put(`/api/DeleteWatchListSource?WatchListSourceID=${id}`, { withCredentials: true })
+               .then((response: typeof IWatchListSource) => {
+                    if (response.data[0] === "ERROR") {
+                         alert(response.data[1])
+                    } else {
+                         setWatchListSourcesLoadingStarted(false);
+                         setWatchListSourcesLoadingComplete(false);
+                    }
+               })
+               .catch((err: Error) => {
+                    alert("Failed to delete source with the error " + err.message);
+               });
+     }
 
      const enterEditModeClickHandler = (id: number) => () => {
           setEditingId(id);
@@ -97,6 +119,7 @@ const ManageWatchListSources = () => {
                          setWatchListSourcesLoadingStarted(false);
                          setWatchListSourcesLoadingComplete(false);
 
+                         setIsAdding(false);
                          setIsEditing(false);
 
                          setRowModesModel(null);
@@ -142,7 +165,7 @@ const ManageWatchListSources = () => {
                width: 225,
           },
           {
-               field: "actions",
+               field: "editSaveActions",
                type: "actions",
                headerName: "Actions",
                width: 100,
@@ -154,6 +177,23 @@ const ManageWatchListSources = () => {
                          return [<GridActionsCellItem key={id} icon={EditIconComponent} label="Edit" className="icon textPrimary" onClick={enterEditModeClickHandler(id)} color="inherit" />];
                     } else if ((isEditing && editingId === id) || (isAdding && newestSource.length === 1)) {
                          return [<GridActionsCellItem key={id} icon={SaveIconComponent} className="icon" label="Save" onClick={saveRowEditClickHandler(id)} color="primary" />, <GridActionsCellItem key={id} icon={CancelIconComponent} label="Cancel" className="icon textPrimary" onClick={cancelRowEditClickHandler(id)} color="error" />];
+                    } else {
+                         return [<></>]
+                    }
+               },
+          },
+          {
+               field: "deleteActions",
+               type: "actions",
+               headerName: "Delete",
+               width: 100,
+               cellClassName: "actions",
+               getActions: ({ id }: { id: number }) => {
+                    const currentSource = watchListSources?.filter((watchListSource: typeof IWatchListSource) => watchListSource.WatchListSourceID === id);
+                    const currentSourceName = (currentSource.length === 1 ? currentSource[0].WatchListSourceName : "");
+
+                    if (editingId === null && !isAdding && !isEditing) {
+                         return [<GridActionsCellItem key={id} icon={DeleteIconComponent} label="Delete" className="icon textPrimary" onClick={deleteSourceClickHandler(id, currentSourceName)} color="inherit" />];
                     } else {
                          return [<></>]
                     }

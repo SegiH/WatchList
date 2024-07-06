@@ -1,5 +1,5 @@
 import { NextRequest } from 'next/server';
-import { encrypt, execUpdateDelete, getUserSession } from "../lib";
+import { encrypt, execUpdateDelete, isUserAdmin } from "../lib";
 
 /**
  * @swagger
@@ -51,10 +51,10 @@ import { encrypt, execUpdateDelete, getUserSession } from "../lib";
  *            description: '["OK",""] on success, ["ERROR","error message"] on error'
  */
 export async function PUT(request: NextRequest) {
-     const userSession = await getUserSession(request);
-
      // Only admins can call this endpoint. this is to prevent a non-admin from making themselves an admin
-     if (typeof userSession === "undefined" || (typeof userSession !== "undefined" && userSession.Admin === false)) {
+     const isAdminResult = await isUserAdmin(request);
+
+     if (!isAdminResult) {
           return Response.json(["ERROR", "Access denied"]);
      }
 

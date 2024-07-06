@@ -14,6 +14,7 @@ import { DataContext, DataContextType } from "../data-context";
 const ManageWatchListTypes = () => {
      const {
           CancelIconComponent,
+          DeleteIconComponent,
           demoMode,
           EditIconComponent,
           isAdding,
@@ -49,6 +50,27 @@ const ManageWatchListTypes = () => {
 
           setEditingId(null);
      };
+
+     const deleteTypeClickHandler = (id: number, name: string) => () => {
+          const confirmLeave = confirm(`Are you sure that you want to delete the WatchList Type ${name} ?`);
+
+          if (!confirmLeave) {
+               return;
+          }
+
+          axios.put(`/api/DeleteWatchListType?WatchListTypeID=${id}`, { withCredentials: true })
+               .then((response: typeof IWatchListType) => {
+                    if (response.data[0] === "ERROR") {
+                         alert(response.data[1])
+                    } else {
+                         setWatchListTypesLoadingStarted(false);
+                         setWatchListTypesLoadingComplete(false);
+                    }
+               })
+               .catch((err: Error) => {
+                    alert("Failed to delete type with the error " + err.message);
+               });
+     }
 
      const enterEditModeClickHandler = (id: number) => () => {
           setEditingId(id);
@@ -91,6 +113,7 @@ const ManageWatchListTypes = () => {
                          setWatchListTypesLoadingStarted(false);
                          setWatchListTypesLoadingComplete(false);
 
+                         setIsAdding(false);
                          setIsEditing(false);
 
                          setRowModesModel(null);
@@ -148,6 +171,23 @@ const ManageWatchListTypes = () => {
                          return [<GridActionsCellItem key={id} icon={EditIconComponent} label="Edit" className="icon textPrimary" onClick={enterEditModeClickHandler(id)} color="inherit" />];
                     } else if ((isEditing && editingId === id) || (isAdding && newestType.length === 1)) {
                          return [<GridActionsCellItem key={id} icon={SaveIconComponent} className="icon" label="Save" onClick={saveRowEditClickHandler(id)} color="primary" />, <GridActionsCellItem key={id} icon={CancelIconComponent} label="Cancel" className="icon textPrimary" onClick={cancelRowEditClickHandler(id)} color="error" />];
+                    } else {
+                         return [<></>]
+                    }
+               },
+          },
+          {
+               field: "deleteActions",
+               type: "actions",
+               headerName: "Delete",
+               width: 100,
+               cellClassName: "actions",
+               getActions: ({ id }: { id: number }) => {
+                    const currentType = watchListTypes?.filter((watchListSource: typeof IWatchListType) => watchListSource.WatchListSourceID === id);
+                    const currentTypeName = (currentType.length === 1 ? currentType[0].WatchListSourceName : "");
+
+                    if (editingId === null && !isAdding && !isEditing) {
+                         return [<GridActionsCellItem key={id} icon={DeleteIconComponent} label="Delete" className="icon textPrimary" onClick={deleteTypeClickHandler(id, currentTypeName)} color="inherit" />];
                     } else {
                          return [<></>]
                     }

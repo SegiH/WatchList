@@ -1,10 +1,14 @@
 import { NextRequest } from 'next/server';
-import { getBugLogModel } from '../lib';
+import { getBugLogModel, isLoggedIn } from '../lib';
 const axios = require("axios");
 const https = require('https');
 const IBugLog = require("../../interfaces/IBugLog");
 
 export async function GET(request: NextRequest) {
+     if (!isLoggedIn(request)) {
+          return Response.json(["ERROR", "Error. Not signed in"]);
+     }
+
      const searchParams = request.nextUrl.searchParams;
      const getActiveBugLogs = searchParams.get("GetActiveBugLogs");
      const getBugsLogURL = `https://nodejs-shovav.replit.app/GetBugLogs`;

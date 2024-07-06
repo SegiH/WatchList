@@ -172,6 +172,7 @@ const ManageUserAccounts = () => {
                          setUsersLoadingStarted(false);
                          setUsersLoadingComplete(false);
 
+                         setIsAdding(false);
                          setIsEditing(false);
 
                          setRowModesModel(null);

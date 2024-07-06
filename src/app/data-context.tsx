@@ -39,6 +39,9 @@ const BugReportIconComponent = <BugReport className="icon" />;
 const CancelIcon = require("@mui/icons-material/Cancel").default;
 const CancelIconComponent = <CancelIcon />;
 
+const DeleteIcon = require("@mui/icons-material/Delete").default;
+const DeleteIconComponent = <DeleteIcon />;
+
 const EditIcon = require("@mui/icons-material/Edit").default;
 const EditIconComponent = <EditIcon />;
 
@@ -81,6 +84,7 @@ export interface DataContextType {
      BrokenImageIconComponent: React.ReactNode;
      CancelIconComponent: React.ReactNode;
      defaultRoute: string;
+     DeleteIconComponent: React.ReactNode;
      demoMode: boolean;
      demoPassword: string;
      demoUsername: string;
@@ -177,7 +181,7 @@ export interface DataContextType {
      watchListTypesLoadingComplete: boolean;
 }
 
-const buildDate = "07-05-24";
+const buildDate = "07-06-24";
 
 const DataProvider = ({ children }) => {
      const [activeRoute, setActiveRoute] = useState("");
@@ -857,6 +861,7 @@ const DataProvider = ({ children }) => {
           buildDate: buildDate,
           CancelIconComponent: CancelIconComponent,
           defaultRoute: defaultRoute,
+          DeleteIconComponent: DeleteIconComponent,
           demoMode: demoMode,
           demoPassword: demoPassword,
           demoUsername: demoUsername,

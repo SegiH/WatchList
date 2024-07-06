@@ -1,4 +1,4 @@
-import { defaultSources, execSelect, watchListSourcesSQL } from "../lib";
+import { defaultSources, execSelect, isLoggedIn, watchListSourcesSQL } from "../lib";
 import { NextRequest } from 'next/server';
 /**
  * @swagger
@@ -14,6 +14,10 @@ import { NextRequest } from 'next/server';
  */
 
 export async function GET(request: NextRequest) {
+     if (!isLoggedIn(request)) {
+          return Response.json(["ERROR", "Error. Not signed in"]);
+     }
+
      // This needs to be here even though this endpoint doesn't take any parameters because without this,
      // when you do 'npm run build', Next.js will compile this route as a static route which causes a bug where
      // repeated calls to this endpoint return stale data even after the DB  has been updated.

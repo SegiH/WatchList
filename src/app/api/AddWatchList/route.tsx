@@ -1,5 +1,5 @@
 import { NextRequest } from 'next/server';
-import { execInsert, getUserID } from '../lib';
+import { execInsert, getUserID, isLoggedIn } from '../lib';
 
 /**
  * @swagger
@@ -69,6 +69,10 @@ import { execInsert, getUserID } from '../lib';
  *            description: '["OK",""] on success, ["ERROR","error message"] on error'
  */
 export async function PUT(request: NextRequest) {
+     if (!isLoggedIn(request)) {
+          return Response.json(["ERROR", "Error. Not signed in"]);
+     }
+
      const userID = await getUserID(request);
 
      const searchParams = request.nextUrl.searchParams;

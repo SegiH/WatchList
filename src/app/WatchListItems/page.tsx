@@ -31,8 +31,7 @@ export default function WatchListItems() {
           watchListItemsLoadingComplete,
           watchListItemsSortingComplete,
           watchListSortColumn,
-          watchListSortDirection,
-          watchListTypes
+          watchListSortDirection
      } = useContext(DataContext) as DataContextType;
 
      const router = useRouter();
@@ -136,10 +135,6 @@ export default function WatchListItems() {
                     ).map((currentWatchListItem: typeof IWatchListItem, index: number) => {
                               const IMDB_JSON =  currentWatchListItem?.IMDB_JSON !== null && typeof currentWatchListItem?.IMDB_JSON !== "undefined" && currentWatchListItem?.IMDB_JSON !== "" ? JSON.parse(currentWatchListItem?.IMDB_JSON) : null;
 
-                              const type_name = watchListTypes?.filter((currentWatchList: typeof IWatchListItem) => {
-                                   return String(currentWatchList.WatchListTypeID) === String(currentWatchListItem?.WatchListTypeID);
-                              });
-
                               return (
                                    <React.Fragment key={index}>
                                         {watchListItemsSortingComplete && (
@@ -171,7 +166,7 @@ export default function WatchListItems() {
                                                   </div>
 
                                                   <span>
-                                                       <div>{type_name && type_name.length === 1 && type_name[0].WatchListTypeName}</div>
+                                                       <div>{currentWatchListItem?.WatchListTypeName}</div>
                                                   </span>
                                              </li>
                                         )}

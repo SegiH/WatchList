@@ -601,10 +601,6 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
           }
      }, [recommendationName, recommendationType]);
 
-     const source_name = watchListSources?.filter((currentWatchList: typeof IWatchListSource) => {
-          return String(currentWatchList.WatchListSourceID) === String(watchListDtl?.WatchListSourceID);
-     });
-
      return (
           <div className="modal foregroundColor">
                <div className={`modal-content ${watchListDtlID != null ? "fade-in" : "fade-out"}`}>
@@ -774,7 +770,7 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
 
                                    <div className="narrow card">
                                         {!isAdding && !isEditing &&
-                                             <div>{source_name && source_name.length === 1 && source_name[0].WatchListSourceName}</div>
+                                             <div>{watchListDtl?.WatchListSourceName}</div>
                                         }
 
                                         {isEditing &&

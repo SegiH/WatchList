@@ -122,18 +122,10 @@ export default function WatchListItemsDtl() {
      const recommendationsClickHandler = () => {
           const name = watchListItemDtl?.WatchListItemName;
 
-          const typeID = watchListItemDtl?.WatchListTypeID;
-
-          const typeNameResult = watchListTypes.filter((currentType: typeof IWatchListType) => currentType.WatchListTypeID === typeID);
-
-          if (typeNameResult.length === 0) { // This should never happen!
-               console.log("typeNameResult is null in useEffect() in WatchListItemDetailComponent");
+          if (watchListItemDtl?.WatchListTypeName !== null) {
+               setRecommendationName(name);
+               setRecommendationType(watchListItemDtl?.WatchListTypeName);
           }
-
-          const typeName = typeNameResult[0].WatchListTypeName;
-
-          setRecommendationName(name);
-          setRecommendationType(typeName);
      };
 
      const saveClickHandler = async () => {
@@ -618,7 +610,12 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
                     }
 
                     {recommendationsVisible && (
-                         <Recommendations BrokenImageIcon={BrokenImageIconComponent} queryTerm={recommendationName} type={recommendationType} setRecommendationName={setRecommendationName} setRecommendationType={setRecommendationName} setRecommendationsVisible={setRecommendationsVisible} />
+                         <>
+                              <span className="clickable closeButton foregroundColor" onClick={closeDetail}>
+                                   X
+                              </span>
+                              <Recommendations BrokenImageIcon={BrokenImageIconComponent} queryTerm={recommendationName} type={recommendationType} setRecommendationName={setRecommendationName} setRecommendationType={setRecommendationName} setRecommendationsVisible={setRecommendationsVisible} />
+                         </>
                     )}
                </div>
           </div>

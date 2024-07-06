@@ -172,7 +172,7 @@ export default function SearchIMDB() {
                     const newWatchList: typeof IWatchList = Object.assign([], watchList);
 
                     const currentWatchListResults = newWatchList?.filter((currentWatchList: typeof IWatchList) => {
-                         return currentWatchList?.WatchListItem?.WatchListItemName.toString().toUpperCase().includes(String(searchTerm).toUpperCase());
+                         return currentWatchList?.WatchListItemName.toString().toUpperCase().includes(String(searchTerm).toUpperCase());
                     });
 
                     if (currentWatchListResults.length > 0) {

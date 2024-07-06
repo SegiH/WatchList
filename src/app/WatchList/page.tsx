@@ -76,8 +76,8 @@ export default function WatchList() {
                          case "ID":
                               return parseInt(a.WatchListID) > parseInt(b.WatchListID) ? (watchListSortDirection === "ASC" ? 1 : -1) : watchListSortDirection === "ASC" ? -1 : 1;
                          case "Name":
-                              const aName = a.WatchListItem?.WatchListItemName;
-                              const bName = b.WatchListItem?.WatchListItemName;
+                              const aName = a.WatchListItemName;
+                              const bName = b.WatchListItemName;
 
                               return String(aName) > String(bName) ? (watchListSortDirection === "ASC" ? 1 : -1) : watchListSortDirection === "ASC" ? -1 : 1;
                          case "StartDate":
@@ -138,7 +138,7 @@ export default function WatchList() {
                                                   </a>
 
                                                   <div className="show-title">
-                                                       {typeof currentWatchList?.WatchListItem?.IMDB_URL !== "undefined" &&
+                                                       {typeof currentWatchList?.IMDB_URL !== "undefined" &&
                                                             <a className="foregroundColor linkStyle" href={currentWatchList?.IMDB_URL} target='_blank'>{currentWatchList?.WatchListItemName}{IMDB_JSON !== null && IMDB_JSON.Year !== null ? ` (${IMDB_JSON.Year})` : ""}</a>
                                                        }
 

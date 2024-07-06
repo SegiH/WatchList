@@ -133,7 +133,7 @@ export default function WatchList() {
 
                                                   <div className="show-title">
                                                        {typeof currentWatchList?.IMDB_URL !== "undefined" &&
-                                                            <a className="foregroundColor linkStyle" href={currentWatchList?.IMDB_URL} target='_blank'>{currentWatchList?.WatchListItemName}{IMDB_JSON !== null && IMDB_JSON.Year !== null ? ` (${IMDB_JSON.Year})` : ""}</a>
+                                                            <a href={currentWatchList?.IMDB_URL} target='_blank'>{currentWatchList?.WatchListItemName}{IMDB_JSON !== null && IMDB_JSON.Year !== null ? ` (${IMDB_JSON.Year})` : ""}</a>
                                                        }
 
                                                        {typeof currentWatchList?.IMDB_URL === "undefined" &&

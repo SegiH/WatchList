@@ -40,7 +40,8 @@ const ManageWatchListTypes = () => {
           const editedRow = watchListTypes.find((row: typeof IWatchListType) => row.WatchListTypeID === id);
 
           if (editedRow.isNew) {
-               setWatchListTypes(watchListTypes.filter((row: typeof IWatchListType) => row.WatchListTypeID !== id));
+               const editedRowToRemove = watchListTypes.filter((row: typeof IWatchListType) => row.WatchListTypeID !== id)
+               setWatchListTypes(editedRowToRemove);
           }
 
           setIsAdding(false);

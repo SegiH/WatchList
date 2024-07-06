@@ -42,7 +42,7 @@
     "sqlite": "^5.1.1",
     "sqlite3": "^5.1.7",
     "swagger-ui-react": "^5.17.4",
-    "tedious": "^16.6.1",
+    "tedious": "^18.2.3",
     "ts-node": "^10.9.2"
   },
   "devDependencies": {

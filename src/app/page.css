@@ -40,8 +40,9 @@
      }
 
      .settingsIcon {
-          margin-top: 5px;
-          padding-right: 10px;
+          padding-left: 40px;
+          margin-left: auto !important;
+          margin-right: 5% !important;
      }
 }
 

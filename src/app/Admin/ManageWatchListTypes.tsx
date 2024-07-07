@@ -197,6 +197,7 @@ const ManageWatchListTypes = () => {
 
      return (
           <DataGrid
+               className="width100"
                rows={watchListTypes}
                columns={columns}
                sx={{

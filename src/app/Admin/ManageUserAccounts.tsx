@@ -401,6 +401,7 @@ const ManageUserAccounts = () => {
           <>
                {users && users.length > 0 &&
                     <DataGrid
+                         className="width100"
                          rows={users}
                          columns={columns}
                          sx={{

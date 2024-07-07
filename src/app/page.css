@@ -44,6 +44,10 @@
           margin-left: auto !important;
           margin-right: 5% !important;
      }
+
+     .stillWatching {
+          min-width: 110px;
+     }
 }
 
 body {

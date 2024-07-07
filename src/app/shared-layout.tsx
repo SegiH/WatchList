@@ -65,7 +65,7 @@ const SharedLayout = () => {
                                         {activeRoute === "WatchList" &&
                                              <>
                                                   <span className="firstItem leftMargin foregroundColor">
-                                                       <span>Still Watching</span>
+                                                       <span className="stillWatching">Still Watching</span>
                                                   </span>
 
                                                   <span title="Stuff you are still watching">

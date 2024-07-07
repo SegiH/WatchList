@@ -70,7 +70,7 @@ const Settings = () => {
           <div className="modal">
                <div className="modal-content textLabel">
                     <div onDoubleClick={titleClickHandler}>Settings</div>
-                    <span className="clickable closeButton" onClick={closeDetail}>
+                    <span className="clickable closeButton closeButtonAdjustment" onClick={closeDetail}>
                          X
                     </span>
 

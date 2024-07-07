@@ -127,6 +127,10 @@ input:checked+.slider:before {
      top: -8px;
 }
 
+.closeButtonAdjustment {
+     top: -24px !important;
+}
+
 .column {
      margin-right: 75px;
 }

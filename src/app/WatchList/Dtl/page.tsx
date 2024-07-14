@@ -8,7 +8,6 @@ import Image from 'next/image';
 const IWatchList = require("../../interfaces/IWatchList");
 const IWatchListItem = require("../../interfaces/IWatchListItem");
 const IWatchListSource = require("../../interfaces/IWatchListSource");
-const IWatchListType = require("../../interfaces/IWatchListType");
 const React = require("react");
 const ReactNode = require("react").ReactNode;
 const Recommendations = require("../../components/Recommendations").default;
@@ -45,8 +44,6 @@ export default function WatchListDetail() {
           isEditing,
           ratingMax,
           SaveIconComponent,
-          setActiveRoute,
-          setActiveRouteDisplayName,
           setIsAdding,
           setIsEditing,
           setIsError,
@@ -54,10 +51,10 @@ export default function WatchListDetail() {
           setWatchListLoadingStarted,
           setWatchListLoadingComplete,
           setWatchListSortingComplete,
+          showSearch,
           watchListItems,
           watchListSortDirection,
-          watchListSources,
-          watchListTypes
+          watchListSources
      } = useContext(DataContext) as DataContextType
 
      const currentDate = new Date().toLocaleDateString();
@@ -83,6 +80,7 @@ export default function WatchListDetail() {
           getOptionLabel: (option: typeof ReactNode) => option.toString(),
      };
 
+     // When you go to add a WL, if you forgot to add the WLI, the Add Link will show the search so you can add it immediately. This only applies to adding a WL, not editing one.
      const addNewChangeHandler = () => {
           if (addModified && (addWatchListDtl.WatchListItemID !== "-1" || addWatchListDtl.StartDate !== getLocaleDate() || addWatchListDtl.EndDate !== "" || addWatchListDtl.WatchListSourceID !== "-1" || addWatchListDtl.Season !== "" || addWatchListDtl.Rating !== "0" || addWatchListDtl.Notes !== "")) {
                const confirmLeave = confirm("You have started to add a record. Are you sure you weant to leave ?");
@@ -99,8 +97,8 @@ export default function WatchListDetail() {
           }
 
           closeDetail();
-          setActiveRoute("SearchIMDB");
-          setActiveRouteDisplayName("Search IMDB");
+
+          showSearch();
      };
 
      const addWatchListDetailChangeHandler = (fieldName: string, fieldValue: string) => {

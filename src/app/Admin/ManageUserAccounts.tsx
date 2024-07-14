@@ -281,7 +281,7 @@ const ManageUserAccounts = () => {
                type: "number",
                renderCell: (params: typeof GridRenderEditCellParams) => {
                     return (
-                    <div style={{color: editingId === null ? "white" : "black"}}>{params.value}</div>
+                    <div className={`${editingId === null ? `customBackgroundColor` : `whiteBackgroundColor`}`}>{params.value}</div>
                )},
           },
           {

@@ -3,6 +3,7 @@ const DataGrid = require("@mui/x-data-grid").DataGrid;
 const EditToolbar = require("./EditToolbar").default;
 const GridActionsCellItem = require("@mui/x-data-grid").GridActionsCellItem;
 const GridEventListener = require("@mui/x-data-grid").GridEventListener;
+const GridRenderEditCellParams = require("@mui/x-data-grid").GridRenderEditCellParams;
 const GridRowModes = require("@mui/x-data-grid").GridRowModes;
 const IWatchListSource = require("../interfaces/IWatchListSource");
 const React = require("react");
@@ -156,7 +157,11 @@ const ManageWatchListSources = () => {
           {
                field: "WatchListSourceID",
                headerName: "ID",
-               width: 100
+               width: 100,
+               renderCell: (params: typeof GridRenderEditCellParams) => {
+                    return (
+                    <div className={`${editingId === null ? `customBackgroundColor` : `whiteBackgroundColor`}`}>{params.value}</div>
+               )},
           },
           {
                field: "WatchListSourceName",

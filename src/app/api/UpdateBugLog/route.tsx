@@ -1,6 +1,49 @@
 import { NextRequest } from 'next/server';
 import { isLoggedIn } from '../lib';
 
+/**
+ * @swagger
+ * /api/UpdateBugLog:
+ *    put:
+ *        tags:
+ *          - BugLog
+ *        summary: Update a bug log
+ *        description: Update a bug log
+ *        parameters:
+ *           - name: WLBugID
+ *             in: query
+ *             description: ID of the bug
+ *             required: true
+ *             schema:
+ *                  type: number
+ *           - name: WLBugName
+ *             in: query
+ *             description: Description of the bug
+ *             required: true
+ *             schema:
+ *                  type: string
+ *           - name: AddDate
+ *             in: query
+ *             description: Date the bug log was added
+ *             required: true
+ *             schema:
+ *                  type: string
+ *           - name: CompletedDate
+ *             in: query
+ *             description: Date the bug was fixed
+ *             required: true
+ *             schema:
+ *                  type: string
+ *           - name: ResolutionNotes
+ *             in: query
+ *             description: Notes on what was done to fix the problem
+ *             required: false
+ *             schema:
+ *                  type: string
+ *        responses:
+ *          200:
+ *            description: '["OK",""] on success, ["ERROR","error message"] on error'
+ */
 export async function PUT(request: NextRequest) {
     if (!isLoggedIn(request)) {
         return Response.json(["ERROR", "Error. Not signed in"]);

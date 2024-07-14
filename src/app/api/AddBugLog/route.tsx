@@ -3,6 +3,43 @@ const axios = require("axios");
 const https = require('https');
 import { isLoggedIn } from "../lib";
 
+/**
+ * @swagger
+ * /api/AddBugLog:
+ *    put:
+ *        tags:
+ *          - BugLog
+ *        summary: Add a bug log
+ *        description: Add a bug log
+ *        parameters:
+ *           - name: WLBugName
+ *             in: query
+ *             description: Description of the bug
+ *             required: true
+ *             schema:
+ *                  type: string
+ *           - name: AddDate
+ *             in: query
+ *             description: Date the bug log was added
+ *             required: true
+ *             schema:
+ *                  type: string
+ *           - name: CompletedDate
+ *             in: query
+ *             description: Date the bug was fixed
+ *             required: true
+ *             schema:
+ *                  type: string
+ *           - name: ResolutionNotes
+ *             in: query
+ *             description: Notes on what was done to fix the problem
+ *             required: false
+ *             schema:
+ *                  type: string
+ *        responses:
+ *          200:
+ *            description: '["OK",""] on success, ["ERROR","error message"] on error'
+ */
 export async function PUT(request: NextRequest) {
      const searchParams = request.nextUrl.searchParams;
 

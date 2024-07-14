@@ -4,6 +4,25 @@ const axios = require("axios");
 const https = require('https');
 const IBugLog = require("../../interfaces/IBugLog");
 
+/**
+ * @swagger
+ * /api/GetBugLogs:
+ *    put:
+ *        tags:
+ *          - BugLog
+ *        summary: Get bug logs
+ *        description: Get bug logs
+ *        parameters:
+ *           - name: GetActiveBugLogs
+ *             in: query
+ *             description: Get active/all bug logs
+ *             required: true
+ *             schema:
+ *                  type: string
+ *        responses:
+ *          200:
+ *            description: '["OK",""] on success, ["ERROR","error message"] on error'
+ */
 export async function GET(request: NextRequest) {
      if (!isLoggedIn(request)) {
           return Response.json(["ERROR", "Error. Not signed in"]);

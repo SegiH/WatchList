@@ -12,7 +12,6 @@ import { NextRequest } from 'next/server';
  *          200:
  *            description: '["OK",""] on success, ["ERROR","error message"] on error'
  */
-
 export async function PUT(request: NextRequest) {
      // This needs to be here even though this endpoint doesn't take any parameters because without this,
      // when you do 'npm run build', Next.js will compile this route as a static route which causes a bug where

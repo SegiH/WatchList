@@ -71,6 +71,7 @@ export default function BugLog() {
      const [bugLogsLoadingStarted, setBugLogsLoadingStarted] = useState(false);
      const [bugLogsLoadingComplete, setBugLogsLoadingComplete] = useState(false);
      const [editingId, setEditingId] = useState(null);
+     const [filteredBugLogs, setFilteredBugLogs] = useState([]);
      const [rowModesModel, setRowModesModel] = useState({});
      const [showActiveBugLogs, setShowActiveBugLogs] = useState(true);
 
@@ -247,7 +248,7 @@ export default function BugLog() {
 
           setBugLogsLoadingStarted(true);
 
-          axios.get(`/api/GetBugLogs?GetActiveBugLogs=${showActiveBugLogs}`)
+          axios.get(`/api/GetBugLogs?GetActiveBugLogs`)
                .then((res) => {
                     if (res.data[0] === "OK") {
                          setBugLogs(res.data[1]);
@@ -263,16 +264,19 @@ export default function BugLog() {
      }, [bugLogsLoadingStarted, bugLogsLoadingComplete]);
 
      useEffect(() => {
-          setBugLogsLoadingStarted(false);
-          setBugLogsLoadingComplete(false);
+          if (showActiveBugLogs) {
+               const newFilteredBugLogs = bugLogs.filter((row: typeof IBugLog) => row.CompletedDate === null);
+               setFilteredBugLogs(newFilteredBugLogs);
+          } else {
+               setFilteredBugLogs(bugLogs);
+          }
      }, [showActiveBugLogs]);
 
      return (
           <>
                Bug Log
                <DataGrid
-                    //apiRef={apiRef}
-                    rows={bugLogs}
+                    rows={filteredBugLogs}
                     columns={columns}
                     sx={{
                          color: "white",

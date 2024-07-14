@@ -51,7 +51,7 @@ export async function PUT(request: NextRequest) {
      const dbResult: any = await new Promise((resolve, reject) => {
           new sqlite3.Database(DBFile, sqlite3.OPEN_READWRITE | sqlite3.OPEN_CREATE, (err) => {
               if (err) {
-                  reject(new Error(`/Setup: An error occurred creating a new database with the error ${err.message}`));
+                  reject(new Error(`An error occurred creating a new database with the error ${err.message}`));
               } else {
                   resolve(["OK"]);
               }
@@ -85,6 +85,6 @@ export async function PUT(request: NextRequest) {
 
           return await addUser(request, true);
      } catch (e) {
-          return Response.json(["ERROR", `/Setup: An error occurred initializing the database with the error ${e.message}`]);
+          return Response.json(["ERROR", `An error occurred initializing the database with the error ${e.message}`]);
      }
 }

@@ -247,7 +247,7 @@ export async function login(username: string, password: string) {
           return loginSuccessfullActions(currentUser, results);
 
      } catch (err: any) {
-          return Response.json(["ERROR", `/Login: The error ${err.message} occurred logging in`]);
+          return Response.json(["ERROR", `The error ${err.message} occurred logging in`]);
      }
 }
 

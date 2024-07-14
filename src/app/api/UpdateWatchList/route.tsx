@@ -145,6 +145,6 @@ export async function PUT(request: NextRequest) {
 
           return Response.json(["OK"]);
      } catch (e) {
-          return Response.json(["ERROR", `/UpdateWatchList: The error occurred updating the WatchList with ID ${watchListID} with the error ${e.message}`]);
+          return Response.json(["ERROR", `The error occurred updating the WatchList with ID ${watchListID} with the error ${e.message}`]);
      }
 }

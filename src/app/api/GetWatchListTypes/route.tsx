@@ -26,6 +26,6 @@ export async function GET(request: NextRequest) {
 
           return Response.json(["OK", results]);
      } catch (e) {
-          return Response.json(["ERROR", `/GetWatchListTypes: The error ${e.message} occurred getting the WatchList Types`]);
+          return Response.json(["ERROR", `The error ${e.message} occurred getting the WatchList Types`]);
      }
 }

@@ -37,7 +37,7 @@ export async function PUT(request: NextRequest) {
           const validSourceIDValidationResults = await execSelect(validSourceIDValidationSQL, [watchListSourceID]);
 
           if (validSourceIDValidationResults[0].SourceCount === 0) {
-               return Response.json(["ERROR", `/DeleteWatchListSource: The WatchList Source with ID ${watchListSourceID} is not a valid ID`]);
+               return Response.json(["ERROR", `The WatchList Source with ID ${watchListSourceID} is not a valid ID`]);
           }
 
           const inUseValidationSQL = `SELECT COUNT(*) AS SourceCount FROM WatchList WHERE WatchListSourceID=?`;
@@ -45,7 +45,7 @@ export async function PUT(request: NextRequest) {
           const inUseValidationResults = await execSelect(inUseValidationSQL, [watchListSourceID]);
 
           if (inUseValidationResults[0].SourceCount !== 0) {
-               return Response.json(["ERROR", `/DeleteWatchListSource: The WatchList Source with ID ${watchListSourceID} is in use`]);
+               return Response.json(["ERROR", `The WatchList Source with ID ${watchListSourceID} is in use`]);
           }
 
           const SQL = "DELETE FROM WatchListSources WHERE WatchListSourceID=?";
@@ -54,6 +54,6 @@ export async function PUT(request: NextRequest) {
 
           return Response.json(["OK"]);
      } catch (e) {
-          return Response.json(["ERROR", `/DeleteWatchListSource: The fatal error ${e.message} occurred deleting the WatchList Source with ID`]);
+          return Response.json(["ERROR", `The fatal error ${e.message} occurred deleting the WatchList Source with ID`]);
      }
 }

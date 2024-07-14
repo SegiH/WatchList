@@ -38,19 +38,19 @@ export async function GET(request: NextRequest) {
      const confirmUpdate = searchParams.get("ConfirmUpdate");
 
      if (watchListItemID === null && confirmUpdate === null) {
-          return Response.json(["ERROR", `/UpdateWatchListItemsFromIMDB: WatchListItemID was not passed and confirmUpdate was not passed. Either one must be provided`]);
+          return Response.json(["ERROR", `WatchListItemID was not passed and confirmUpdate was not passed. Either one must be provided`]);
      }
 
      if (watchListItemID === null && confirmUpdate !== "true") {
-          return Response.json(["ERROR", `/UpdateWatchListItemsFromIMDB: confirmUpdate was provided but is not true`]);
+          return Response.json(["ERROR", `confirmUpdate was provided but is not true`]);
      }
 
      try {
           if (watchListItemID !== null && isNaN(parseInt(watchListItemID, 10))) {
-               return Response.json(["ERROR", `/UpdateWatchListItemsFromIMDB: WatchListItemID is not a number`]);
+               return Response.json(["ERROR", `WatchListItemID is not a number`]);
           }
      } catch (e) {
-          return Response.json(["ERROR", `/UpdateWatchListItemsFromIMDB: WatchListItemID is not a number`]);
+          return Response.json(["ERROR", `WatchListItemID is not a number`]);
      }
 
      // Get all WatchListItems
@@ -63,7 +63,7 @@ export async function GET(request: NextRequest) {
           });
 
           if (currentWatchListItemResult.length !== 1) {
-               return Response.json(["ERROR", `/UpdateWatchListItemsFromIMDB: WatchListItemID is not a valid WatchList Item ID`]);
+               return Response.json(["ERROR", `WatchListItemID is not a valid WatchList Item ID`]);
           }
      }
      const errorResults: any = [];
@@ -102,10 +102,10 @@ export async function GET(request: NextRequest) {
                try {
                     await execUpdateDelete(SQL, [values])
                } catch (e) {
-                    return Response.json(["ERROR", `/UpdateWatchListItemFromIMDB: The error occurred updating the WatchList Item with ID ${watchListItemID} with the error ${e.message}`]);
+                    return Response.json(["ERROR", `The error occurred updating the WatchList Item with ID ${watchListItemID} with the error ${e.message}`]);
                }
           } else {
-               errorResults.push([`/UpdateWatchListItemFromIMDB: An error occurred updating ${watchListItemID}. Unable to get IMDB detail`])
+               errorResults.push([`An error occurred updating ${watchListItemID}. Unable to get IMDB detail`])
           }
      }
 

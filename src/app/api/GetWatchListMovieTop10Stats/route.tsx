@@ -27,6 +27,6 @@ export async function GET(request: NextRequest) {
 
           return Response.json(["OK", results]);
      } catch (e) {
-          return Response.json(["ERROR", `/GetWatchListMovieTop10Stats: The error ${e.message} occurred getting the WatchList Movie Top 10 Stats`]);
+          return Response.json(["ERROR", `The error ${e.message} occurred getting the WatchList Movie Top 10 Stats`]);
      }
 }

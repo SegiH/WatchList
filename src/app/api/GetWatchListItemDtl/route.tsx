@@ -43,6 +43,6 @@ export async function GET(request: NextRequest) {
 
           return Response.json(["OK", results]);
      } catch (e) {
-          return Response.json(["ERROR", `/GetWatchListItemDtl: The error ${e.message} occurred getting the WatchList Item Detail`]);
+          return Response.json(["ERROR", `The error ${e.message} occurred getting the WatchList Item Detail`]);
      }
 }

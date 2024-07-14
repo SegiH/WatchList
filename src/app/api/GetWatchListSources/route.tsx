@@ -43,7 +43,7 @@ export async function GET(request: NextRequest) {
 
                return Response.json(["OK", results]);
           } catch(e) {
-               return Response.json(["ERROR", `/GetWatchListSources: The error ${e.message} occurred getting the WatchList Sources`]);
+               return Response.json(["ERROR", `The error ${e.message} occurred getting the WatchList Sources`]);
           }
      }
 }

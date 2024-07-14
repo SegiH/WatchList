@@ -1,5 +1,7 @@
 WatchList can be set up to run as a regular web application or a Progressive Web Application (PWA). It can also be run as a Docker container.
 
+Requirements: Node 20.7.0+
+
 ## Setup WatchList as a web app
 1. Check out the source from Github and go to the root directory of the project.
 1. Edit config\default.json and fill in the following values:

@@ -89,7 +89,7 @@ export interface DataContextType {
      demoPassword: string;
      demoUsername: string;
      EditIconComponent: React.ReactNode;
-     getFormattedDate: (value: string | null) => string;
+     getFormattedDate: (value: string | null, separator: string | null) => string;
      generateRandomPassword: () => void;
      getDisplayName: (value: string) => string;
      getPath: (value: string) => string;
@@ -181,7 +181,7 @@ export interface DataContextType {
      watchListTypesLoadingComplete: boolean;
 }
 
-const buildDate = "07-13-24";
+const buildDate = "07/14/24";
 
 const DataProvider = ({ children }) => {
      const [activeRoute, setActiveRoute] = useState("");
@@ -275,10 +275,11 @@ const DataProvider = ({ children }) => {
           return randomString;
      };
 
-     const getFormattedDate = (dateStr: string) => {
+     // Returns date as mm/dd/yy or dd/mm/yy based on users' locale
+     const getFormattedDate = (dateStr: string, separator: string) => {
           const language = typeof navigator.languages != undefined ? navigator.languages[0] : "en-us";
 
-          const dateObj = typeof dateStr !== "undefined" ? new Date(dateStr) : new Date();
+          const dateObj = dateStr !== null && typeof dateStr !== "undefined" ? new Date(dateStr) : new Date();
 
           const options: Intl.DateTimeFormatOptions = {
                year: '2-digit',
@@ -288,7 +289,11 @@ const DataProvider = ({ children }) => {
 
           const newFormattedDate = dateObj.toLocaleDateString(language, options);
 
-          return newFormattedDate;
+          if (separator === null) {
+               return newFormattedDate;
+          } else {
+               return newFormattedDate.replaceAll("/",separator);
+          }
      };
 
      const isAdmin = () => {

@@ -57,7 +57,12 @@ const EditToolbar = ({ section, setRowModesModel, setShowActiveBugLogs, showActi
                     setWatchListTypes((oldRows: typeof IWatchListType) => [...oldRows, { WatchListTypeID: nextID, WatchListTypeName: "", isNew: true }]);
                     break;
                case "Bug Log":
-                    nextID = Math.max(...bugLogs.map((bugLog: typeof IBugLog) => bugLog.WLBugID)) + 1;
+                    if (bugLogs.length > 0) {
+                         nextID = Math.max(...bugLogs.map((bugLog: typeof IBugLog) => bugLog.WLBugID)) + 1;
+                    } else {
+                         nextID = 1;
+                    }
+
                     focusField = "WLBugName";
 
                     const formattedDate = getFormattedDate(null, "-");

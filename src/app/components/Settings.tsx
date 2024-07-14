@@ -12,7 +12,6 @@ const Settings = () => {
           archivedVisible,
           autoAdd,
           buildDate,
-          getFormattedDate,
           isLoggedIn,
           LogOutIconComponent,
           setActiveRoute,
@@ -61,9 +60,7 @@ const Settings = () => {
      }
 
      useEffect(() => {
-          const newFormattedBuildDate = getFormattedDate(buildDate);
-
-          setFormattedBuildDate(newFormattedBuildDate);
+          setFormattedBuildDate(buildDate);
      }, []);
 
      return (

@@ -181,7 +181,7 @@ export interface DataContextType {
      watchListTypesLoadingComplete: boolean;
 }
 
-const buildDate = "07-07-24";
+const buildDate = "07-13-24";
 
 const DataProvider = ({ children }) => {
      const [activeRoute, setActiveRoute] = useState("");

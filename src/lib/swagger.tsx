@@ -13,6 +13,30 @@ export const getApiDocs = async () => {
                },
                components: {
                     schemas: {
+                         BugLog: {
+                              properties: {
+                                   WLBugID: {
+                                        type: "number",
+                                        description: "Bug Log ID"
+                                   },
+                                   WLBugName: {
+                                        type: "string",
+                                        description: "Description of the bug"
+                                   },
+                                   AddDate: {
+                                        type: "string",
+                                        description: "Date you started watching the movie/show"
+                                   },
+                                   CompletedDate: {
+                                        type: "string",
+                                        description: "Date you finished watching the movie/show"
+                                   },
+                                   ResolutionNotes: {
+                                        type: "string",
+                                        description: "Notes about how you resolved the problem"
+                                   }
+                              }
+                         },
                          Recommendation: {
                               properties: {
                                    Title: {
@@ -201,24 +225,32 @@ export const getApiDocs = async () => {
                                    }
                               }
                          },
-                         WatchListMovieStat: {
+                         WatchListMovieCountStat: {
+                              properties: {
+                                   MovieCount: {
+                                        type: "number",
+                                        description: "Number of times the movie was watched",
+                                   }
+                              }
+                         },
+                         WatchListMovieTop10Stat: {
                               properties: {
                                    UserID: {
                                         type: "number",
-                                        description: "User ID that logged this entry",
+                                        description: "User who watched the movie",
                                    },
                                    WatchListItemName: {
-                                        type: "string",
-                                        description: "Name of the movie",
+                                        type: "number",
+                                        description: "Name of the movie or show",
                                    },
                                    ItemCount: {
                                         type: "number",
-                                        description: "Number of times this movie was watched",
+                                        description: "Number of times the movie or show was watched",
                                    },
                                    IMDB_URL: {
                                         type: "string",
-                                        description: "IMDB URL for this movie",
-                                   },
+                                        description: "IMDB URL for the movie/show",
+                                   }
                               }
                          },
                          WatchListSortColumn: {
@@ -361,7 +393,15 @@ export const getApiDocs = async () => {
                                    },
                               }
                          },
-                         WatchListTVStat: {
+                         WatchListTVSeasonsCountStat: {
+                              properties: {
+                                   TVSeasonsCount: {
+                                        type: "number",
+                                        description: "Times TV Seasons was watched",
+                                   }
+                              }
+                         },
+                         WatchListTVTop10Stat: {
                               properties: {
                                    UserID: {
                                         type: "number",
@@ -389,6 +429,14 @@ export const getApiDocs = async () => {
                                    },
                               }
                          },
+                         WatchListTVTotalCountStat: {
+                              properties: {
+                                   TVTotalCount: {
+                                        type: "number",
+                                        description: "Times TV show was watched",
+                                   }
+                              }
+                         },
                          WatchListType: {
                               properties: {
                                    WatchListTypeID: {
@@ -401,6 +449,38 @@ export const getApiDocs = async () => {
                                    }
                               }
                          },
+                         WatchListWeeklyMovieStat: {
+                              properties: {
+                                   Year: {
+                                        type: "number",
+                                        description: "The year that the movie was watched",
+                                   },
+                                   WeekNum: {
+                                        type: "number",
+                                        description: "The week num that the movie was watched",
+                                   },
+                                   MovieCount: {
+                                        type: "number",
+                                        description: "The number of times that the movie was watched",
+                                   }
+                              }
+                         },
+                         WatchListWeeklyTVStat: {
+                              properties: {
+                                   Year: {
+                                        type: "number",
+                                        description: "The year that the TV show was watched",
+                                   },
+                                   WeekNum: {
+                                        type: "number",
+                                        description: "The week num that the TV show was watched",
+                                   },
+                                   TVCount: {
+                                        type: "number",
+                                        description: "The number of times that the TV show was watched",
+                                   }
+                              }
+                         }
                     },
                     /*securitySchemes: {
                          BearerAuth: {
@@ -409,7 +489,7 @@ export const getApiDocs = async () => {
                               bearerFormat: "JWT",
                          },
                     },*/
-               },               
+               },
                security: [],
           },
      })

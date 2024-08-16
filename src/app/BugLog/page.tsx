@@ -45,7 +45,7 @@ function CustomEditComponent(props: typeof GridRenderEditCellParams) {
      const resolutionNotesLength = typeof apiRef.current.getRow(id).ResolutionNotes !== "undefined" ? String(apiRef.current.getRow(id).ResolutionNotes).length : 0;
      const rowCount = (bugNameLength > resolutionNotesLength ? bugNameLength : resolutionNotesLength);
 
-     return <textarea ref={ref} readOnly={false} style={cssStyle} value={value} rows={rowCount/30} onChange={handleValueChange} />;
+     return <textarea ref={ref} readOnly={false} style={cssStyle} value={value} rows={rowCount / 30} onChange={handleValueChange} />;
 }
 
 // Return custom input with custom event handler
@@ -57,6 +57,7 @@ export default function BugLog() {
      const {
           bugLogs,
           CancelIconComponent,
+          DeleteIconComponent,
           EditIconComponent,
           isAdding,
           isEditing,
@@ -94,6 +95,33 @@ export default function BugLog() {
 
           setEditingId(null);
      };
+
+     const deleteBugLogHandler = (id: number) => () => {
+          const confirmLeave = confirm(`Are you sure that you want to delete the Bug Log ?`);
+
+          if (!confirmLeave) {
+               return;
+          }
+
+          axios.put(`/api/DeleteBugLog?WLBugID=${id}`, { withCredentials: true })
+               .then((response: typeof IBugLog) => {
+                    if (response.data[0] === "ERROR") {
+                         alert(response.data[1])
+                    } else {
+                         alert("The bug log has been deleted");
+                         setBugLogsLoadingStarted(false);
+                         setBugLogsLoadingComplete(false);
+
+                         setIsAdding(false);
+                         setIsEditing(false);
+
+                         setEditingId(null);
+                    }
+               })
+               .catch((err: Error) => {
+                    alert("Failed to delete bug log with the error " + err.message);
+               });
+     }
 
      const enterEditModeClickHandler = (id: number) => () => {
           setEditingId(id);
@@ -232,12 +260,19 @@ export default function BugLog() {
                     if (editingId === null && !isAdding && !isEditing) {
                          return [<GridActionsCellItem key={id} icon={EditIconComponent} label="Edit" className="icon textPrimary" onClick={enterEditModeClickHandler(id)} color="inherit" />];
                     } else if ((isEditing && editingId === id) || (isAdding && newestBugLog.length === 1)) {
-                         return [<GridActionsCellItem key={id} icon={SaveIconComponent} className="icon textPrimary" label="Save" onClick={saveRowEditClickHandler(id)} color="primary" />, <GridActionsCellItem key={id} icon={CancelIconComponent} label="Cancel" className="icon textPrimary" onClick={cancelRowEditClickHandler(id)} color="error" />];
+                         const response = [<GridActionsCellItem key={id} icon={SaveIconComponent} className="icon textPrimary" label="Save" onClick={saveRowEditClickHandler(id)} color="primary" />, <GridActionsCellItem key={id} icon={CancelIconComponent} label="Cancel" className="icon textPrimary" onClick={cancelRowEditClickHandler(id)} color="error" />];
+
+                         // Delete is only visible when editing. You don't delete a bug log you are adding, you cancel it if you dont want to add it
+                         if (!isAdding) {
+                              response.push(<GridActionsCellItem key={id} icon={DeleteIconComponent} label="Delete" className="icon textPrimary" onClick={deleteBugLogHandler(id)} color="primary" />);
+                         }
+
+                         return response;
                     } else {
                          return [<></>]
                     }
                },
-          },
+          }
      ];
 
      useEffect(() => {

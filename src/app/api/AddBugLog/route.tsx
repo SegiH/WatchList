@@ -1,7 +1,5 @@
 import { NextRequest } from 'next/server';
-const axios = require("axios");
-const https = require('https');
-import { isLoggedIn } from "../lib";
+import { execInsert, isLoggedIn } from "../lib";
 
 /**
  * @swagger
@@ -52,17 +50,36 @@ export async function PUT(request: NextRequest) {
      const completedDate = searchParams.get("CompletedDate");
      const resolutionNotes = searchParams.get("ResolutionNotes");
 
-     const addBugLogURL = `https://nodejs-shovav.replit.app/AddBugLog?WLBugName=${encodeURIComponent(String(bugLogName))}&AddDate=${addDate}${completedDate !== null ? `&CompletedDate=${completedDate}` : ``}${resolutionNotes !== null ? `&ResolutionNotes=${resolutionNotes}` : ``}`;
+     if (bugLogName === null) {
+          return Response.json({ "ERROR": "Name was not provided" });
+     }
 
-     const agent = new https.Agent({
-          rejectUnauthorized: false
-     });
+     if (addDate === null) {
+          return Response.json({ "ERROR": "AddDate was not provided" });
+     }
 
-     return axios.get(addBugLogURL, { httpsAgent: agent })
-          .then((response: any) => {
-               return Response.json(response.data);
-          })
-          .catch((err: Error) => {
-               return Response.json(["ERROR", err.message]);
-          });
+     let SQL = `INSERT INTO BugLogs (WLBugName,AddDate`;
+     let valuePlaceholder = ' VALUES (?,?';
+     let params = [bugLogName, addDate];
+
+     if (completedDate !== null) {
+          SQL += ',CompletedDate';
+          valuePlaceholder += ",?";
+          params.push(completedDate);
+     }
+
+     if (resolutionNotes !== null) {
+          SQL += ',ResolutionNotes';
+          valuePlaceholder += ",?";
+          params.push(resolutionNotes);
+     }
+
+     SQL += ')';
+     valuePlaceholder += ");";
+
+     const result = await execInsert(SQL + valuePlaceholder, params);
+
+     const newID = result.lastID;
+
+     return Response.json(["OK", newID]);
 }

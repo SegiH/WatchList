@@ -1,5 +1,5 @@
 import { NextRequest } from 'next/server';
-import { isLoggedIn } from '../lib';
+import { execUpdateDelete, isLoggedIn } from '../lib';
 
 /**
  * @swagger
@@ -61,44 +61,40 @@ export async function PUT(request: NextRequest) {
         return Response.json({ "ERROR": "Bug log ID is not set" });
     }
 
-    let params = "";
+    let SQL = "UPDATE BugLogs ";
+    let params: any = [];
 
     if (bugLogName !== null) {
-        params += "&WLBugName=" + encodeURIComponent(bugLogName);
+        SQL += "WLBugName=?";
+        params.push(encodeURIComponent(bugLogName));
     }
 
     if (addDate !== null) {
-        params += "&AddDate=" + encodeURIComponent(addDate);
+        SQL += SQL != "" ? "," : "";
+        SQL += "AddDate=?";
+        params.push(encodeURIComponent(addDate));
     }
 
     if (completedDate !== null) {
-        params += "&CompletedDate=" + encodeURIComponent(completedDate);
+        SQL += SQL != "" ? "," : "";
+        SQL += "CompletedDate=?";
+        params.push(encodeURIComponent(completedDate));
     }
 
     if (resolutionNotes !== null) {
-        params += "&ResolutionNotes=" + encodeURIComponent(resolutionNotes);
+        SQL += SQL != "" ? "," : "";
+        SQL += "ResolutionNotes=?";
+        params.push(encodeURIComponent(resolutionNotes));
     }
 
-    if (params === "") {
+    if (params.length === 0) {
         return Response.json(["ERROR", `No parameters were passed`]);
     }
 
-    params = "?WLBugID=" + bugLogID + params;
+    SQL += " WHERE WLBugID=?";
+    params.push(bugLogID);
 
-    const axios = require("axios");
-    const https = require('https');
+    await execUpdateDelete(SQL, params);
 
-    const updateBugsLogURL = `https://nodejs-shovav.replit.app/UpdateBugLog`;
-
-    const agent = new https.Agent({
-        rejectUnauthorized: false
-    });
-
-    return axios.get(updateBugsLogURL + params, { httpsAgent: agent })
-        .then(() => {
-            return Response.json(["OK"]);
-        })
-        .catch((err: Error) => {
-            return Response.json(["ERROR", err.message]);
-        });
+    return Response.json(["OK"]);
 }

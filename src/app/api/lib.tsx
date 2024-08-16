@@ -24,6 +24,7 @@ export const watchListItemsSQL = "CREATE TABLE WatchListItems(WatchListItemID IN
 export const watchListSourcesSQL = "CREATE TABLE WatchListSources (WatchListSourceID INTEGER PRIMARY KEY, WatchListSourceName VARCHAR(80) NOT NULL);";
 export const watchListTypesSQL = "CREATE TABLE WatchListTypes (WatchListTypeID INTEGER PRIMARY KEY, WatchListTypeName VARCHAR(80) NOT NULL);";
 export const usersSQL = "CREATE TABLE Users (UserID INTEGER PRIMARY KEY, Username BLOB NOT NULL, Realname BLOB NOT NULL, Password BLOB NOT NULL, Admin BIT NULL DEFAULT 0, Enabled NULL DEFAULT 0, Token TEXT NULL, TokenExpiration INTEGER NULL);";
+export const bugLogsSQL = "CREATE TABLE BugLogs (WLBugID INTEGER PRIMARY KEY, WLBugName TEXT NOT NULL, AddDate TEXT NOT NULL,CompletedDate TEXT NULL, ResolutionNotes TEXT NULL);";
 
 export const defaultSources = ['Amazon', 'Hulu', 'Movie Theatre', 'Netflix', 'Plex', 'Prime', 'Web'];
 export const defaultTypes = ['Movie', 'Other', 'Special', 'TV'];

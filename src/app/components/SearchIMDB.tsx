@@ -18,6 +18,7 @@ export default function SearchIMDB() {
           AddIconComponent,
           autoAdd,
           BrokenImageIconComponent,
+          imdbSearchEnabled,
           searchCount,
           setIsAdding,
           setSearchCount,
@@ -193,7 +194,7 @@ export default function SearchIMDB() {
                     }
 
                     break;
-               case searchSectionTypes.IMDB:
+               case searchSectionTypes["IMDB"]: // This may or may not exist
                     setTimeout(() => {
                          if (searchTerm === "") {
                               setSearchLoadingStarted(true);
@@ -252,7 +253,11 @@ export default function SearchIMDB() {
                                         <div className="leftMargin searchLabel textLabel">Section</div>
 
                                         <select className="customBorderRadius leftMargin" value={searchSection} onChange={(event: React.ChangeEvent<HTMLSelectElement>) => setSearchSection(event.target.value)}>
-                                             {Object.keys(searchSectionTypes).map((searchSectionType: any, index: number) => {
+                                             {Object.keys(searchSectionTypes)
+                                             .filter((searchSectionType: any, index: number) => {
+                                                  return searchSectionType !== "IMDB" || (searchSectionType === "IMDB" && imdbSearchEnabled)
+                                             })
+                                             .map((searchSectionType: any, index: number) => {
                                                   return (
                                                        <option key={index} value={searchSectionType}>
                                                             {searchSectionTypes[searchSectionType]}

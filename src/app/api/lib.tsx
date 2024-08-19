@@ -157,6 +157,20 @@ export const execUpdateDelete = async (sql: string, params: Array<string | numbe
      await stmt.run(params);
 }
 
+const request = require("request");
+
+export async function fetchData(options) {
+     return new Promise((resolve, reject) => {
+          request(options, function (error, response, body) {
+               if (error) {
+                    reject(error);
+               } else {
+                    resolve(body);
+               }
+          });
+     });
+}
+
 export async function getIMDBDetails(imdb_id: string) {
      const detailsURL = `https://nodejs-shovav.replit.app//GetIMDBDetails?id=${imdb_id}`;
 
@@ -164,6 +178,7 @@ export async function getIMDBDetails(imdb_id: string) {
           rejectUnauthorized: false
      });
 
+     // Replit code
      return await axios.get(detailsURL, { httpsAgent: agent })
           .then((response: any) => {
                return (["OK", response.data]);
@@ -171,6 +186,37 @@ export async function getIMDBDetails(imdb_id: string) {
           .catch((err: Error) => {
                return Response.json(["ERROR", err.message]);
           });
+
+     // Local code
+     /*const rapidapi_key = config.has("RapidAPIKey") ? config.get("RapidAPIKey") : "";
+
+     let options = {
+          method: "GET",
+          url: "https://imdb107.p.rapidapi.com/",
+          qs: { i: imdb_id, r: "json" },
+          headers: {
+               "x-rapidapi-host": "movie-database-alternative.p.rapidapi.com",
+               "x-rapidapi-key": rapidapi_key,
+               useQueryString: true,
+          },
+     };
+
+     const result :any = await fetchData(options);
+     const jsonResult = JSON.parse(result);
+
+     return jsonResult;*/
+}
+
+export async function getRapidAPIKey() {
+     const rapidapi_key = config.has("RapidAPIKey") ? config.get("RapidAPIKey") : "";
+
+     return rapidapi_key;
+}
+
+export async function getRecommendationsAPIKey() {
+     const recommendations_key = config.has("RecommendationsAPIKey") ? config.get("RecommendationsAPIKey") : "";
+
+     return recommendations_key;
 }
 
 export const getSession = nextSession({

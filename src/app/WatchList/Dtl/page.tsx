@@ -43,6 +43,7 @@ export default function WatchListDetail() {
           isAdding,
           isEditing,
           ratingMax,
+          recommendationsEnabled,
           SaveIconComponent,
           setIsAdding,
           setIsEditing,
@@ -832,7 +833,7 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
                                    </div>
 
                                    <div className="narrow card">
-                                        {!isAdding && !isEditing &&
+                                        {!isAdding && !isEditing && recommendationsEnabled &&
                                              <div className="clickable hyperlink text-label rightAligned" onClick={recommendationsClickHandler}>Recommendations</div>
                                         }
                                    </div>

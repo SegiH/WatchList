@@ -93,6 +93,7 @@ export interface DataContextType {
      generateRandomPassword: () => void;
      getDisplayName: (value: string) => string;
      getPath: (value: string) => string;
+     imdbSearchEnabled: boolean;
      isAdding: boolean;
      isAdmin: () => boolean;
      isClient: boolean;
@@ -103,6 +104,7 @@ export interface DataContextType {
      isLoggedInCheckComplete: boolean;
      LogOutIconComponent: React.ReactNode;
      ratingMax: number;
+     recommendationsEnabled: boolean,
      RemoveIconComponent: React.ReactNode;
      routeList: typeof IRoute;
      SaveIconComponent: React.ReactNode;
@@ -181,7 +183,7 @@ export interface DataContextType {
      watchListTypesLoadingComplete: boolean;
 }
 
-const buildDate = "08/15/24";
+const buildDate = "08/18/24";
 
 const DataProvider = ({ children }) => {
      const [activeRoute, setActiveRoute] = useState("");
@@ -191,6 +193,7 @@ const DataProvider = ({ children }) => {
      const [bugLogs, setBugLogs] = useState([]);
      const [bugLogVisible, setBugLogVisible] = useState(false);
      const [demoMode, setDemoMode] = useState(false);
+     const [imdbSearchEnabled, setImdbSearchEnabled] = useState(false);
      const [isAdding, setIsAdding] = useState(false);
      const [isClient, setIsClient] = useState(false);
      const [isClientCheckComplete, setIsClientCheckComplete] = useState(false);
@@ -200,6 +203,7 @@ const DataProvider = ({ children }) => {
      const [isLoggedIn, setIsLoggedIn] = useState(false);
      const [isLoggedInCheckComplete, setIsLoggedInCheckComplete] = useState(false);
      const [isLoggedInCheckStarted, setIsLoggedInCheckStarted] = useState(false);
+     const [recommendationsEnabled, setRecommendationsEnabled] = useState(false);
      const [searchCount, setSearchCount] = useState(5);
      const [searchTerm, setSearchTerm] = useState("");
      const [searchVisible, setSearchVisible] = useState(false);
@@ -292,7 +296,7 @@ const DataProvider = ({ children }) => {
           if (separator === null) {
                return newFormattedDate;
           } else {
-               return newFormattedDate.replaceAll("/",separator);
+               return newFormattedDate.replaceAll("/", separator);
           }
      };
 
@@ -788,6 +792,30 @@ const DataProvider = ({ children }) => {
           }
      }, [defaultRoute, isError, isLoggedIn, isLoggedInCheckComplete]); // Do not add activeRoute, getDisplayName, routeList, setActiveRoute, setActiveRouteDisplayName to dependencies. Causes dtl to close when you click on edit
 
+     /* UseEffect that checks if IMDB search is enabled */
+     useEffect(() => {
+          axios.get(`/api/IsIMDBSearchEnabled`)
+               .then((res: any) => {
+                    if (res.data[0] === "OK") {
+                         setImdbSearchEnabled(true);
+                    }
+               })
+               .catch((err: Error) => {
+               });
+     }, []);
+
+     /* UseEffect that checks if Recommendations is enabled */
+     useEffect(() => {
+          axios.get(`/api/IsRecommendationsEnabled`)
+               .then((res: any) => {
+                    if (res.data[0] === "OK") {
+                         setRecommendationsEnabled(true);
+                    }
+               })
+               .catch((err: Error) => {
+               });
+     }, []);
+
      const routeList = {
           WatchList: {
                Name: "WatchList",
@@ -875,6 +903,7 @@ const DataProvider = ({ children }) => {
           generateRandomPassword: generateRandomPassword,
           getDisplayName: getDisplayName,
           getPath: getPath,
+          imdbSearchEnabled: imdbSearchEnabled,
           isAdding: isAdding,
           isAdmin: isAdmin,
           isClient: isClient,
@@ -885,6 +914,7 @@ const DataProvider = ({ children }) => {
           isLoggedInCheckComplete: isLoggedInCheckComplete,
           LogOutIconComponent: LogOutIconComponent,
           ratingMax: ratingMax,
+          recommendationsEnabled: recommendationsEnabled,
           RemoveIconComponent: RemoveIconComponent,
           routeList: routeList,
           SaveIconComponent: SaveIconComponent,

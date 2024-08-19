@@ -49,7 +49,7 @@ const Recommendations = ({ BrokenImageIcon, queryTerm, setRecommendationName, se
           if (queryTerm !== "" && type !== "" && !recommendationsLoadingStarted) {
                setRecommendationsLoadingStarted(true);
 
-               const url = `/api/Recommendations?QueryTerm=${encodeURIComponent(queryTerm)}&Type=${type}`;
+               const url = `/api/Recommendations?SearchTerm=${encodeURIComponent(queryTerm)}&Type=${type}`;
 
                axios.get(url).then((res: typeof IRecommendation) => {
                     setRecommendationsLoadingComplete(true);

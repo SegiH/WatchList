@@ -49,7 +49,7 @@ You can test out WatchList in demo mode without any setup. Adding and saving is 
 1. Visit `http://localhost:3000` in your browser and log in with demo as the username and password.
 
 # Installation
-Installation instructions have been moved to INSTALL.md
+Installation instructions can be found in INSTALL.md
 
 # WatchList sections
 The application has 5 different sections:

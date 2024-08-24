@@ -1,14 +1,3 @@
 {
-     "SQLServer": {
-          "username": "",
-          "password": "",
-          "host": "",
-          "database": ""
-     },
-     "SQLite": {
-          "username": "watchlist",
-          "password": "password",
-          "database": "WatchList"
-     },
      "Secret": ""
 }

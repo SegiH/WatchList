@@ -337,7 +337,7 @@ export async function validateSettings() {
           return `Config file error: Secret property is missing or not set`;
      }
 
-     if (!config.has(`SQLite.username`) || (config.has(`SQLite.username`) && config.get(`SQLite.username`) === "")) {
+     /*if (!config.has(`SQLite.username`) || (config.has(`SQLite.username`) && config.get(`SQLite.username`) === "")) {
           return `Config file error: SQLite.username property is missing or not set`;
      }
 
@@ -347,7 +347,7 @@ export async function validateSettings() {
 
      if (!config.has(`SQLite.database`) || (config.has(`SQLite.database`) && config.get(`SQLite.database`) === "")) {
           return `Config file error: SQLite.database property is missing or not set`;
-     }
+     }*/
 
      return "";
 }

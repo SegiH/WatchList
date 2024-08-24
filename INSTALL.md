@@ -4,13 +4,12 @@ Requirements: Node 20.7.0+
 
 ## Setup WatchList as a web app
 1. Check out the source from Github and go to the root directory of the project.
+1. If you are setting up WatchList for the first time, make sure you do not already have a file in the root of your project named watchlistdb.sqlite. If it does exist, delete or rename it.
 1. Edit config\default.json and fill in the following values:
-   - Fill in the "SQLite" section. Create a username and password and use "WatchList" as the database name.
    - Secret: Create a long and secure password that will be used to encrypt your database. If you lose this password, you may not be able to use your WatchList database.
 1. Run `npm install`
 1. Run `npm run build`
 1. Run `npm run start`
-1. If you are setting up WatchList for the first time, make sure you do not already have a file in the root of your project named watchlistdb.sqlite. If it does exist, delete or rename it.
 1. Visit http://localhost:3000 in your browser. You should see the Setup page to set up a new account. This account will automatically be a WatchList admin account.
 1. Enter the following fields:
    - Name: Name of the new admin

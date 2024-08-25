@@ -157,10 +157,17 @@ export const execUpdateDelete = async (sql: string, params: Array<string | numbe
      await stmt.run(params);
 }
 
-//const request = require("request");
-
 export async function fetchData(options) {
-     /*return new Promise((resolve, reject) => {
+     try {
+          const response = await axios(options);
+          return response.data;
+      } catch (error) {
+          throw error;
+      }
+     /*
+     const request = require("request");
+
+     return new Promise((resolve, reject) => {
           request(options, function (error, response, body) {
                if (error) {
                     reject(error);
@@ -193,7 +200,7 @@ export async function getIMDBDetails(imdb_id: string) {
      let options = {
           method: "GET",
           url: "https://imdb107.p.rapidapi.com/",
-          qs: { i: imdb_id, r: "json" },
+          params: { i: imdb_id, r: "json" },
           headers: {
                "x-rapidapi-host": "movie-database-alternative.p.rapidapi.com",
                "x-rapidapi-key": rapidapi_key,

@@ -71,7 +71,7 @@ export async function GET(request: NextRequest) {
                let options = {
                     method: "GET",
                     url: "https://imdb107.p.rapidapi.com/",
-                    qs: { s: searchTerm, page: i + 1, r: "json" },
+                    params: { s: searchTerm, page: i + 1, r: "json" },
                     headers: {
                          "x-rapidapi-host": "movie-database-alternative.p.rapidapi.com",
                          "x-rapidapi-key": rapidapi_key,

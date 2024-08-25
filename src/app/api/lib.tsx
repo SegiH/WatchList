@@ -157,10 +157,10 @@ export const execUpdateDelete = async (sql: string, params: Array<string | numbe
      await stmt.run(params);
 }
 
-const request = require("request");
+//const request = require("request");
 
 export async function fetchData(options) {
-     return new Promise((resolve, reject) => {
+     /*return new Promise((resolve, reject) => {
           request(options, function (error, response, body) {
                if (error) {
                     reject(error);
@@ -168,7 +168,7 @@ export async function fetchData(options) {
                     resolve(body);
                }
           });
-     });
+     });*/
 }
 
 export async function getIMDBDetails(imdb_id: string) {

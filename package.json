@@ -38,7 +38,6 @@
     "prop-types-exact": "^1.2.0",
     "react": "^18",
     "react-dom": "^18",
-    "request": "^2.88.2",
     "sqlite": "^5.1.1",
     "sqlite3": "^5.1.7",
     "swagger-ui-react": "^5.17.4",

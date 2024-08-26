@@ -725,8 +725,8 @@ const DataProvider = ({ children }) => {
           localStorage.setItem("WatchList.WatchListSortDirection", watchListSortDirection);
           localStorage.setItem("WatchList.ShowWatchListItems", showWatchListItems);
 
-          setWatchListSortingComplete(false);
-          setWatchListItemsSortingComplete(false);
+          //setWatchListSortingComplete(false);
+          //setWatchListItemsSortingComplete(false);
      }, [archivedVisible, autoAdd, isLoggedIn, searchCount, showWatchListItems, showMissingArtwork, stillWatching, sourceFilter, typeFilter, watchListSortColumn, watchListSortDirection]);
 
      /* useEffect that does isClient check */

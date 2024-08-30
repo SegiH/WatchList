@@ -57,6 +57,7 @@ export default function BugLog() {
      const {
           bugLogs,
           CancelIconComponent,
+          darkMode,
           DeleteIconComponent,
           EditIconComponent,
           isAdding,
@@ -306,6 +307,7 @@ export default function BugLog() {
           <>
                Bug Log
                <DataGrid
+                    className={`${!darkMode ? " blackForeground whiteBackground" : " whiteForeground blackBackground"}`}
                     rows={bugLogs}
                     columns={columns}
                     sx={{

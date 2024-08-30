@@ -16,10 +16,12 @@ import "./Login.css";
 export default function Login() {
      const {
           activeRoute,
+          darkMode,
           defaultRoute,
           demoPassword,
           demoUsername,
           isLoggedIn,
+          isLoggedInCheckComplete,
           setActiveRoute,
           setActiveRouteDisplayName,
           setDemoMode,
@@ -154,21 +156,23 @@ export default function Login() {
 
      return (
           <>
-               <div className="login-page">
-                    <div className="form">
-                         <form className="login-form">
-                              <span className="login-label">WatchList Login</span>
-                              <input type="text" autoFocus disabled={loginSubmitted} value={username} placeholder="username" required onChange={(event) => setUsername(event.target.value)} onKeyUp={handleKeyUp} />
-                              <input type="password" disabled={loginSubmitted} value={password} placeholder="password" required onChange={(event) => setPassword(event.target.value)} onKeyUp={handleKeyUp} />
+               {isLoggedInCheckComplete &&
+                    <div className={`login-page`}>
+                         <div className="form">
+                              <form className="login-form">
+                                   <span className={`login-label ${!darkMode ? "blackForeground" : "whiteForeground"}`}>WatchList Login</span>
+                                   <input type="text" autoFocus disabled={loginSubmitted} value={username} placeholder="username" required onChange={(event) => setUsername(event.target.value)} onKeyUp={handleKeyUp} />
+                                   <input type="password" disabled={loginSubmitted} value={password} placeholder="password" required onChange={(event) => setPassword(event.target.value)} onKeyUp={handleKeyUp} />
 
-                              {!loginSubmitted &&
-                                   <button type="button" onClick={login}>
-                                        Login
-                                   </button>
-                              }
-                         </form>
+                                   {!loginSubmitted &&
+                                        <button type="button" onClick={login}>
+                                             Login
+                                        </button>
+                                   }
+                              </form>
+                         </div>
                     </div>
-               </div>
+               }
           </>
      )
 }

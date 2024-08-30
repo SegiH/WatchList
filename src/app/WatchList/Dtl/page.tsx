@@ -38,6 +38,7 @@ export default function WatchListDetail() {
      const {
           BrokenImageIconComponent,
           CancelIconComponent,
+          darkMode,
           demoMode,
           EditIconComponent,
           isAdding,
@@ -588,20 +589,20 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
      }, [recommendationName, recommendationType]);
 
      return (
-          <div className="modal foregroundColor">
-               <div className={`modal-content ${watchListDtlID != null ? "fade-in" : "fade-out"}`}>
+          <div className="modal">
+               <div className={`modal-content ${watchListDtlID != null ? "fade-in" : "fade-out"}${!darkMode ? "blackForeground whiteBackground" : "whiteForeground blackBackground"}`}>
                     {!recommendationsVisible &&
                          <div className="container">
                               <div className="cards">
                                    <div className="narrow card">
                                         {!isAdding && !isEditing &&
                                              <span onClick={startEditing}>
-                                                  <span className="clickable editsaveCancelButton foregroundColor">{EditIconComponent}</span>
+                                                  <span className={`clickable editsaveCancelButton ${!darkMode ? " blackForeground" : " whiteForeground"}`}>{EditIconComponent}</span>
                                              </span>
                                         }
 
                                         {(isAdding || isEditing) &&
-                                             <span className="clickable saveIcon" onClick={isAdding ? saveNewClickHandler : saveClickHandler}>
+                                             <span className={`clickable saveIcon${!darkMode ? " blackForeground" : " whiteForeground"}`} onClick={isAdding ? saveNewClickHandler : saveClickHandler}>
                                                   {SaveIconComponent}
                                              </span>
                                         }
@@ -611,35 +612,35 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
                                         {!isAdding && !isEditing &&
                                              <>
                                                   {typeof watchListDtl?.IMDB_URL !== "undefined" &&
-                                                       <a className="foregroundColor linkStyle text-label" href={watchListDtl?.IMDB_URL} target='_blank' title={watchListDtl?.Tooltip}>{watchListDtl?.WatchListItemName}</a>
+                                                       <a className={`linkStyle text-label${!darkMode ? " blackForeground whiteBackground" : " whiteForeground blackBackground"}`} href={watchListDtl?.IMDB_URL} target='_blank' title={watchListDtl?.Tooltip}>{watchListDtl?.WatchListItemName}</a>
                                                   }
 
                                                   {typeof watchListDtl?.IMDB_URL === "undefined" &&
-                                                       <div title={watchListDtl?.Tooltip}>
+                                                       <div title={watchListDtl?.Tooltip} className={`${!darkMode ? "blackForeground" : "whiteForeground"}`}>
                                                             {watchListDtl?.WatchListItemName}
                                                        </div>
                                                   }
 
-                                                  {watchListDtl?.Archived === true ? <span>&nbsp;(A)</span> : <></>}
+                                                  {watchListDtl?.Archived === true ? <span className={`${!darkMode ? "blackForeground" : "whiteForeground"}`}>&nbsp;(A)</span> : <></>}
                                              </>
                                         }
 
                                         {(isEditing || isAdding) && formattedNames &&
                                              <div className="narrow card">
-                                                  <Autocomplete id="wl_autocomplete" className="labelWidth whiteBackgroundColor" size="small" sx={{ width: 250, height: 40 }} {...defaultProps} options={formattedNames} value={autoComplete} onChange={(event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => autoCompleteChangeHandler(event)} renderInput={(params: typeof ReactNode) => <TextField {...params} label="Search" />} />
+                                                  <Autocomplete id="wl_autocomplete" className={`labelWidth whiteBackground blackForeground`} size="small" sx={{ width: 250, height: 40 }} {...defaultProps} options={formattedNames} value={autoComplete} onChange={(event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => autoCompleteChangeHandler(event)} renderInput={(params: typeof ReactNode) => <TextField {...params} label="Search" />} />
                                              </div>
                                         }
                                    </div>
 
                                    <div className="narrow card rightAligned">
                                         {!isAdding && !isEditing &&
-                                             <span className="clickable closeButton" onClick={closeDetail}>
+                                             <span className={`clickable closeButton ${!darkMode ? "blackForeground" : "whiteForeground"}`} onClick={closeDetail}>
                                                   X
                                              </span>
                                         }
 
                                         {(isAdding || isEditing) &&
-                                             <span className="clickable cancelIcon" onClick={isAdding ? closeDetail : cancelClickHandler}>
+                                             <span className={`clickable cancelIcon${!darkMode ? " blackForeground" : " whiteForeground"}`} onClick={isAdding ? closeDetail : cancelClickHandler}>
                                                   {CancelIconComponent}
                                              </span>
                                         }
@@ -667,37 +668,37 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
                                    }
 
                                    {isAdding && addWatchListDtl &&
-                                        <select className="selectStyle" autoFocus value={addWatchListDtl?.WatchListItemID} onChange={(event) => addWatchListDetailChangeHandler("WatchListItemID", event.target.value)}>
-                                             <option value="-1">Please select</option>
+                                        <div className="narrow card">
+                                             <select className="selectStyle editing" autoFocus value={addWatchListDtl?.WatchListItemID} onChange={(event) => addWatchListDetailChangeHandler("WatchListItemID", event.target.value)}>
+                                                  <option value="-1">Please select</option>
 
-                                             {formattedNamesWithId && formattedNamesWithId.map((watchListItem: typeof IWatchListItem, index: number) => {
-                                                  return (
-                                                       <option key={index} value={watchListItem?.WatchListItemID}>
-                                                            {watchListItem?.WatchListItemName}
-                                                       </option>
-                                                  )
-                                             })}
-                                        </select>
+                                                  {formattedNamesWithId && formattedNamesWithId.map((watchListItem: typeof IWatchListItem, index: number) => {
+                                                       return (
+                                                            <option key={index} value={watchListItem?.WatchListItemID}>
+                                                                 {watchListItem?.WatchListItemName}
+                                                            </option>
+                                                       )
+                                                  })}
+                                             </select>
+                                        </div>
                                    }
 
                                    {isEditing &&
-                                        <>
-                                             <div className="narrow card">
-                                                  <select className="selectStyle selectWidth" autoFocus value={watchListDtl?.WatchListItemID} onChange={(event) => watchListDetailChangeHandler("WatchListItemID", event.target.value)}>
-                                                       <option value="-1">Please select</option>
+                                        <div className="narrow card">
+                                             <select className="selectStyle editing" autoFocus value={watchListDtl?.WatchListItemID} onChange={(event) => watchListDetailChangeHandler("WatchListItemID", event.target.value)}>
+                                                  <option value="-1">Please select</option>
 
-                                                       {watchListItems?.sort((a: typeof IWatchListItem, b: typeof IWatchListItem) => {
-                                                            return String(a.WatchListItemName) > String(b.WatchListItemName) ? (watchListSortDirection === "ASC" ? 1 : -1) : watchListSortDirection === "ASC" ? -1 : 1;
-                                                       }).map((watchListItem: typeof IWatchListItem, index: number) => {
-                                                            return (
-                                                                 <option key={index} value={watchListItem.WatchListItemID}>
-                                                                      {watchListItem.WatchListItemName}
-                                                                 </option>
-                                                            );
-                                                       })}
-                                                  </select>
-                                             </div>
-                                        </>
+                                                  {watchListItems?.sort((a: typeof IWatchListItem, b: typeof IWatchListItem) => {
+                                                       return String(a.WatchListItemName) > String(b.WatchListItemName) ? (watchListSortDirection === "ASC" ? 1 : -1) : watchListSortDirection === "ASC" ? -1 : 1;
+                                                  }).map((watchListItem: typeof IWatchListItem, index: number) => {
+                                                       return (
+                                                            <option key={index} value={watchListItem.WatchListItemID}>
+                                                                 {watchListItem.WatchListItemName}
+                                                            </option>
+                                                       );
+                                                  })}
+                                             </select>
+                                        </div>
                                    }
 
                                    <div className="narrow card">
@@ -711,56 +712,56 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
                                    }
 
                                    <div className="narrow card">
-                                        <span className="textLabel">Start Date:&nbsp;</span>
+                                        <span className={`textLabel ${!darkMode ? "blackForeground" : "whiteForeground"}`}>Start Date:&nbsp;</span>
                                    </div>
 
                                    <div className="labelWidth narrow card">
                                         {!isAdding && !isEditing &&
-                                             <span>{watchListDtl?.StartDate && watchListDtl?.StartDate}</span>
+                                             <span className={`${!darkMode ? "whiteBackground blackForeground" : "blackBackground whiteForeground"}`}>{watchListDtl?.StartDate && watchListDtl?.StartDate}</span>
                                         }
 
                                         {isEditing &&
-                                             <input type="date" value={watchListDtl?.StartDate !== null ? watchListDtl?.StartDate : ""} onChange={(event) => watchListDetailChangeHandler("StartDate", event.target.value)} />
+                                             <input className={`whiteBackground blackForeground`} type="date" value={watchListDtl?.StartDate !== null ? watchListDtl?.StartDate : ""} onChange={(event) => watchListDetailChangeHandler("StartDate", event.target.value)} />
                                         }
 
                                         {isAdding && addWatchListDtl &&
-                                             <input type="date" value={addWatchListDtl?.StartDate} onChange={(event) => addWatchListDetailChangeHandler("StartDate", event.target.value)} />
+                                             <input className={`whiteBackground blackForeground`} type="date" value={addWatchListDtl?.StartDate} onChange={(event) => addWatchListDetailChangeHandler("StartDate", event.target.value)} />
                                         }
                                    </div>
 
                                    <div className="narrow card"></div>
 
                                    <div className="narrow card">
-                                        <span className="textLabel">End Date:&nbsp;</span>
+                                        <span className={`textLabel ${!darkMode ? "blackForeground" : "whiteForeground"}`}>End Date:&nbsp;</span>
                                    </div>
 
                                    <div className="labelWidth narrow card">
                                         {!isAdding && !isEditing &&
-                                             <span>{watchListDtl?.EndDate && watchListDtl?.EndDate}</span>
+                                             <span className={`${!darkMode ? "blackForeground" : "whiteForeground"}`}>{watchListDtl?.EndDate && watchListDtl?.EndDate}</span>
                                         }
 
                                         {isEditing &&
-                                             <input type="date" value={watchListDtl?.EndDate !== null ? watchListDtl?.EndDate : ""} onChange={(event) => watchListDetailChangeHandler("EndDate", event.target.value)} />
+                                             <input className={`whiteBackground blackForeground`} type="date" value={watchListDtl?.EndDate !== null ? watchListDtl?.EndDate : ""} onChange={(event) => watchListDetailChangeHandler("EndDate", event.target.value)} />
                                         }
 
                                         {isAdding && addWatchListDtl &&
-                                             <input type="date" value={addWatchListDtl?.EndDate} onChange={(event) => addWatchListDetailChangeHandler("EndDate", event.target.value)} />
+                                             <input className={`whiteBackground blackForeground`} type="date" value={addWatchListDtl?.EndDate} onChange={(event) => addWatchListDetailChangeHandler("EndDate", event.target.value)} />
                                         }
                                    </div>
 
                                    <div className="narrow card"></div>
 
                                    <div className="narrow card">
-                                        <div className="textLabel">Source:</div>
+                                        <div className={`textLabel ${!darkMode ? "blackForeground" : "whiteForeground"}`}>Source:</div>
                                    </div>
 
                                    <div className="narrow card">
                                         {!isAdding && !isEditing &&
-                                             <div>{watchListDtl?.WatchListSourceName}</div>
+                                             <div className={`${!darkMode ? "blackForeground" : "whiteForeground"}`}>{watchListDtl?.WatchListSourceName}</div>
                                         }
 
                                         {isEditing &&
-                                             <select className="selectStyle selectWidth" value={watchListDtl?.WatchListSourceID} onChange={(event) => watchListDetailChangeHandler("WatchListSourceID", event.target.value)}>
+                                             <select className="selectStyle" value={watchListDtl?.WatchListSourceID} onChange={(event) => watchListDetailChangeHandler("WatchListSourceID", event.target.value)}>
                                                   <option value="-1">Please select</option>
 
                                                   {watchListSources?.map((watchListSource: typeof IWatchListSource, index: number) => {
@@ -793,7 +794,7 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
                                              <div className="narrow card"></div>
 
                                              <div className="narrow card">
-                                                  <div className="textLabel">Season:</div>
+                                                  <div className={`textLabel ${!darkMode ? "blackForeground" : "whiteForeground"}`}>Season:</div>
                                              </div>
 
                                              <div className="narrow card">
@@ -802,11 +803,11 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
                                                   }
 
                                                   {isEditing &&
-                                                       <input className="inputStyle narrowWidth" type="number" value={watchListDtl?.Season !== null ? watchListDtl?.Season : ""} onChange={(event) => watchListDetailChangeHandler("Season", event.target.value)} />
+                                                       <input className={`inputStyle narrowWidth whiteBackground blackForeground`} type="number" value={watchListDtl?.Season !== null ? watchListDtl?.Season : ""} onChange={(event) => watchListDetailChangeHandler("Season", event.target.value)} />
                                                   }
 
                                                   {isAdding && addWatchListDtl &&
-                                                       <input className="inputStyle narrowWidth" type="number" value={addWatchListDtl?.Season} onChange={(event) => addWatchListDetailChangeHandler("Season", event.target.value)} />
+                                                       <input className={`inputStyle narrowWidth whiteBackground blackForeground`} type="number" value={addWatchListDtl?.Season} onChange={(event) => addWatchListDetailChangeHandler("Season", event.target.value)} />
                                                   }
                                              </div>
                                         </>
@@ -815,36 +816,36 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
                                    <div className="narrow card"></div>
 
                                    <div className="narrow card">
-                                        <div className="textLabel">Notes:</div>
+                                        <div className={`textLabel ${!darkMode ? "blackForeground" : "whiteForeground"}`}>Notes:</div>
                                    </div>
 
                                    <div className="narrow card no-width">
                                         {!isAdding && !isEditing &&
-                                             <div className="textLabel">{watchListDtl?.Notes}</div>
+                                             <div className={`${!darkMode ? "whiteBackground blackForeground" : "whiteForeground blackBackground"}`}>{watchListDtl?.Notes}</div>
                                         }
 
                                         {isEditing &&
-                                             <input className="inputStyle" value={watchListDtl?.Notes} onChange={(event) => watchListDetailChangeHandler("Notes", event.target.value)} />
+                                             <input className={`inputStyle whiteBackground blackForeground`} value={watchListDtl?.Notes} onChange={(event) => watchListDetailChangeHandler("Notes", event.target.value)} />
                                         }
 
                                         {isAdding && addWatchListDtl &&
-                                             <input className="inputStyle" value={addWatchListDtl?.Notes} onChange={(event) => addWatchListDetailChangeHandler("Notes", event.target.value)} />
+                                             <input className={`inputStyle whiteBackground blackForeground`} value={addWatchListDtl?.Notes} onChange={(event) => addWatchListDetailChangeHandler("Notes", event.target.value)} />
                                         }
                                    </div>
 
                                    <div className="narrow card">
                                         {!isAdding && !isEditing && recommendationsEnabled &&
-                                             <div className="clickable hyperlink text-label rightAligned" onClick={recommendationsClickHandler}>Recommendations</div>
+                                             <div className={`clickable hyperlink text-label rightAligned`} onClick={recommendationsClickHandler}>Recommendations</div>
                                         }
                                    </div>
 
                                    <div className="narrow card">
-                                        <div className="textLabel">Rating:</div>
+                                        <div className={`textLabel ${!darkMode ? "blackForeground" : "whiteForeground"}`}>Rating:</div>
                                    </div>
 
                                    <div className="labelWidth narrow card">
                                         {!isAdding && !isEditing &&
-                                             <span>
+                                             <span className={`${!darkMode ? "whiteBackground blackForeground" : "whiteForeground blackBackground"}`}>
                                                   {Array.from(Array(ratingMax), (e: Event, index: number) => {
                                                        return (
                                                             <span className="favoriteIcon" key={index}>
@@ -856,7 +857,7 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
                                         }
 
                                         {isEditing &&
-                                             <span className="customTopMargin clickable">
+                                             <span className={`customTopMargin clickable ${!darkMode ? "whiteBackground blackForeground" : "whiteForeground blackBackground"}`}>
                                                   {Array.from(Array(ratingMax), (e, index) => {
                                                        return (
                                                             <span className="favoriteIcon" key={index} onClick={() => ratingClickHandler(index)}>
@@ -868,7 +869,7 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
                                         }
 
                                         {isAdding && addWatchListDtl &&
-                                             <span className="customTopMargin clickable">
+                                             <span className={`customTopMargin clickable ${!darkMode ? "whiteBackground blackForeground" : "whiteForeground blackBackground"}`}>
                                                   {Array.from(Array(ratingMax), (e, index) => {
                                                        return (
                                                             <span className="favoriteIcon" key={index} onClick={() => ratingClickHandler(index)}>
@@ -885,19 +886,19 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
                                              <div className="narrow card"></div>
 
                                              <div className="narrow card">
-                                                  <div className="textLabel">Archive:</div>
+                                                  <div className={`textLabel ${!darkMode ? "blackForeground whiteBackground" : "whiteForeground blackBackground"}`}>Archive:</div>
                                              </div>
 
                                              {isAdding &&
                                                   <div className="narrow card">
-                                                       <input type="checkbox" checked={addWatchListDtl?.Archived} onChange={(event) => addWatchListDetailChangeHandler("Archived", event.target.value)} />
+                                                       <input className={`whiteBackground blackForeground`} type="checkbox" checked={addWatchListDtl?.Archived} onChange={(event) => addWatchListDetailChangeHandler("Archived", event.target.value)} />
                                                   </div>
 
                                              }
 
                                              {isEditing &&
                                                   <div className="narrow card">
-                                                       <input type="checkbox" checked={watchListDtl?.Archived} onChange={(event: React.ChangeEvent<HTMLInputElement>) => watchListDetailChangeHandler("Archived", event.target.checked)} />
+                                                       <input className={`whiteBackground blackForeground`} type="checkbox" checked={watchListDtl?.Archived} onChange={(event: React.ChangeEvent<HTMLInputElement>) => watchListDetailChangeHandler("Archived", event.target.checked)} />
                                                   </div>
                                              }
                                         </>
@@ -907,7 +908,7 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
                     }
 
                     {recommendationsVisible && (
-                         <Recommendations BrokenImageIcon={BrokenImageIconComponent} queryTerm={recommendationName} type={recommendationType} setRecommendationName={setRecommendationName} setRecommendationType={setRecommendationName} setRecommendationsVisible={setRecommendationsVisible} />
+                         <Recommendations queryTerm={recommendationName} type={recommendationType} setRecommendationName={setRecommendationName} setRecommendationType={setRecommendationName} setRecommendationsVisible={setRecommendationsVisible} />
                     )}
                </div>
           </div>

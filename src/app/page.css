@@ -50,11 +50,11 @@
      }
 }
 
-body {
+body.darkMode {
+     background-color: black;
+}
      /*background-color: #f1ebe4;*/
      /*background-color: #0c0f11;*/
-     background-color: #000;
-}
 
 input:checked+.slider {
      background-color: #2196f3;
@@ -73,6 +73,7 @@ input:checked+.slider:before {
 #wl_autocomplete {
      margin-bottom: 5px;
      min-width: 300px;
+     max-width: 350px;
 }
 
 .addSearchResultIcon {
@@ -85,6 +86,14 @@ input:checked+.slider:before {
      position: relative;
      top: -12px;
      z-index: 999;
+}
+
+.blackBackground {
+     background-color: black !important;
+}
+
+.blackForeground {
+     color: black !important;
 }
 
 .bottomMargin20 {
@@ -144,7 +153,7 @@ input:checked+.slider:before {
      justify-content: center;
 }
 
-.customCloseButton {
+.customCloseButtoblackn {
      position: relative;
      left: -20px;
      top: 15px;
@@ -216,8 +225,8 @@ input:checked+.slider:before {
      display: flex;
 }
 
-.foregroundColor {
-     color: white !important;
+.fontStyle {
+     font-family: "Brush Script MT", cursive !important;
 }
 
 .hyperlink {
@@ -279,6 +288,11 @@ input:checked+.slider:before {
      position: absolute;
      margin-left: 500px;
      display: none;
+}
+
+.lineChart {
+     border-width: 1px;
+     border-style: solid;
 }
 
 .linkStyle {
@@ -534,6 +548,15 @@ input:checked+.slider:before {
      border-radius: 5px;
 }
 
+.selectStyle .editing {
+     max-width: 270px !important;
+     display: none;
+}
+
+.settingsPanel {
+     width: 270px !important;
+}
+
 .show-item {
      border-style: dashed;
      border-radius: 15px;
@@ -655,10 +678,6 @@ input:checked+.slider:before {
      height: 0;
 }
 
-.text-label {
-     font-family: "Brush Script MT", cursive !important;
-}
-
 .textLabel {
      color: white;
      font-weight: bold;
@@ -674,8 +693,12 @@ input:checked+.slider:before {
      width: unset !important;
 }
 
-.whiteBackgroundColor {
-     background-color: white;
+.whiteBackground {
+     background-color: white !important;
+}
+
+.whiteForeground {
+     color: white !important;
 }
 
 .wordWrapLabel {

@@ -17,6 +17,7 @@ import { DataContext, DataContextType } from "../data-context";
 const ManageWatchListSources = () => {
      const {
           CancelIconComponent,
+          darkMode,
           defaultRoute,
           DeleteIconComponent,
           demoMode,
@@ -160,7 +161,7 @@ const ManageWatchListSources = () => {
                width: 100,
                renderCell: (params: typeof GridRenderEditCellParams) => {
                     return (
-                    <div className={`${editingId === null ? `customBackgroundColor` : `whiteBackgroundColor`}`}>{params.value}</div>
+                    <div>{params.value}</div>
                )},
           },
           {
@@ -215,6 +216,7 @@ const ManageWatchListSources = () => {
 
      return (
           <DataGrid
+               className={`${!darkMode ? " blackForeground whiteBackground" : " whiteForeground blackBackground"}`}
                rows={watchListSources}
                columns={columns}
                sx={{

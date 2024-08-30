@@ -29,6 +29,7 @@ import "./watchliststats.css";
 
 export default function WatchListStats() {
      const {
+          darkMode,
           demoMode,
           ratingMax,
           setIsError,
@@ -547,14 +548,14 @@ export default function WatchListStats() {
                                    <tr>
                                         <td>
                                              {currentWatchListMovieStat.IMDB_URL === null && (
-                                                  <div className="textLabel">
+                                                  <div className={`textLabel ${!darkMode ? "blackForeground" : "whiteForeground"}`}>
                                                        {currentWatchListMovieStat.WatchListItemName} watched {currentWatchListMovieStat.ItemCount} time(s)
                                                   </div>
                                              )}
 
                                              {currentWatchListMovieStat.IMDB_URL !== null && (
                                                   <>
-                                                       <a href={currentWatchListMovieStat.IMDB_URL} target="_blank">
+                                                       <a className={`textLabel ${!darkMode ? "blackForeground" : "whiteForeground"}`} href={currentWatchListMovieStat.IMDB_URL} target="_blank">
                                                             {currentWatchListMovieStat.WatchListItemName}
                                                        </a>
 
@@ -575,11 +576,11 @@ export default function WatchListStats() {
           <>
                {watchListSourceStats && watchListSourceStats?.map((currentWatchListSourceStat: typeof IWatchListSourceStat, index: number) => {
                     return (
-                         <table key={index} className="datagrid">
+                         <table key={index} className={`datagrid ${!darkMode ? " blackForeground whiteBackground" : " whiteForeground blackBackground"}`}>
                               <tbody className="data">
                                    <tr>
                                         <td>
-                                             <div className="testLabel">
+                                             <div>
                                                   {/* This monstrosity watchListSourceDtlStats.filter accounts for items where StartDate is null which should never be and factors that into the total count */}
                                                   {currentWatchListSourceStat.WatchListSourceName} watched {
                                                        currentWatchListSourceStat.SourceCount
@@ -702,15 +703,17 @@ export default function WatchListStats() {
           </>
      );
 
-     if (watchListSourceStats?.length === 0 && watchListTopRatedStats?.length === 0 && watchListMovieTop10Stats?.length === 0 && watchListTVTop10Stats?.length === 0) {
-          <div className="flex-container foregroundColor">
-               No stats are available
-          </div>
+     if (watchListSourceStats?.length > 0 && watchListTopRatedStats?.length === 0 && watchListMovieTop10Stats?.length === 0 && watchListTVTop10Stats?.length === 0) {
+          return (
+               <div className={`flex-container ${!darkMode ? " blackForeground whiteBackground" : " whiteForeground blackBackground"}`}>
+                    No stats are available
+               </div>
+          )
      }
 
      return (
           <>
-               <div className="flex-container foregroundColor">
+               <div className={`flex-container${!darkMode ? " blackForeground whiteBackground" : " whiteForeground blackBackground"}`}>
                     <div className="col-1">
                          {sourceStats !== null && watchListSourceStats?.length > 0 &&
                               <>
@@ -748,7 +751,7 @@ export default function WatchListStats() {
                     </div>
                </div>
 
-               <div className="flex-container foregroundColor">
+               <div className={`flex-container textLabel ${!darkMode ? "blackForeground" : "whiteForeground"}`}>
                     <div className="col-4">
                          {watchListMovieCountStats?.length > 0 && watchListWeeklyCurrentMovieWeekGroupingStat.length === watchListWeeklyMovieMaxWeek &&
                               <>
@@ -768,7 +771,7 @@ export default function WatchListStats() {
                                    </select>
 
                                    {watchListWeeklyCurrentMovieYearStat !== -1 && watchListWeeklyCurrentMovieWeekGroupingStat &&
-                                        <div className="whiteBackgroundColor">
+                                        <div className={`lineChart blackForeground whiteBackground`}>
                                              <LineChart
                                                   xAxis={[{ scaleType: 'point', label: 'Week', data: Array.from({ length: watchListWeeklyMovieMaxWeek }, (_, index) => index + 1) }]}
                                                   yAxis={[{ tickMinStep: 1 }]}
@@ -788,7 +791,7 @@ export default function WatchListStats() {
                     </div>
                </div>
 
-               <div className="flex-container foregroundColor">
+               <div className={`flex-container textLabel ${!darkMode ? "blackForeground" : "whiteForeground"}`}>
                     <div className="col-4">
                          {watchListTVTotalCountStats.length === 1 && watchListTVTotalCountStats[0].TVTotalCount > 0 &&
                               <>
@@ -808,7 +811,7 @@ export default function WatchListStats() {
                                    </select>
 
                                    {watchListWeeklyCurrentTVTotalYearStat !== -1 && watchListWeeklyCurrentTVTotalWeekGroupingStat &&
-                                        <div className="whiteBackgroundColor">
+                                        <div className={`lineChart blackForeground whiteBackground`}>
                                              <LineChart
                                                   xAxis={[{ label: 'Week', data: Array.from({ length: watchListWeeklyTVTotalMaxWeek }, (_, index) => index + 1) }]}
                                                   yAxis={[{ tickMinStep: 1 }]}
@@ -828,7 +831,7 @@ export default function WatchListStats() {
                     </div>
                </div>
 
-               <div className="flex-container foregroundColor">
+               <div className={`flex-container textLabel ${!darkMode ? "blackForeground" : "whiteForeground"}`}>
                     {watchListTVSeasonsCountStats?.length > 0 && watchListTVSeasonsCountStats[0].TVSeasonsCount > 0 &&
                          <div className="col-4">
                               <h1>TV Seasons Watched</h1>
@@ -847,7 +850,7 @@ export default function WatchListStats() {
                               </select>
 
                               {watchListWeeklyCurrentTVSeasonsYearStat !== -1 && watchListWeeklyCurrentTVSeasonsWeekGroupingStat &&
-                                   <div className="whiteBackgroundColor">
+                                   <div className={`lineChart blackForeground whiteBackground`}>
                                         <LineChart
                                              xAxis={[{ label: 'Week', data: Array.from({ length: watchListWeeklyTVSeasonsMaxWeek }, (_, index) => index + 1) }]}
                                              yAxis={[{ tickMinStep: 1 }]}

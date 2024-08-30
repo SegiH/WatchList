@@ -1,5 +1,5 @@
 "use client"
-
+const React = require("react");
 const useContext = require("react").useContext;
 const useEffect = require("react").useEffect;
 const useState = require("react").useState;
@@ -14,6 +14,7 @@ const SharedLayout = () => {
      const {
           activeRoute,
           activeRouteDisplayName,
+          darkMode,
           demoMode,
           isError,
           isLoggedIn,
@@ -49,23 +50,27 @@ const SharedLayout = () => {
           setIsClient(newIsClient);
      }, []);
 
+     useEffect(() => {
+          document.body.className = darkMode ? 'darkMode' : '';
+      }, [darkMode]);
+
      if (!isLoggedIn || !isClient) {
           return <></>
      }
 
      return (
-          <>
+          <React.Fragment className={`${!darkMode ? " blackForeground whiteBackground" : " whiteForeground blackBackground"}`}>
                {!isError &&
                     <>
                          {isLoggedIn && watchListSourcesLoadingComplete && watchListTypesLoadingComplete &&
                               <>
-                                   <span className="menuBar">
-                                        <span className="leftMargin menuBarActiveRoute">{activeRouteDisplayName}{demoMode ? " (Demo)" : ""}</span>
+                                   <span className={`menuBar${!darkMode ? " blackForeground blackBackground" : " whiteForeground blackBackground"}`}>
+                                        <span className={`leftMargin menuBarActiveRoute${!darkMode ? " blackForeground whiteBackground" : " whiteForeground blackBackground"}`}>{activeRouteDisplayName}{demoMode ? " (Demo)" : ""}</span>
 
                                         {activeRoute === "WatchList" &&
                                              <>
-                                                  <span className="firstItem leftMargin foregroundColor">
-                                                       <span className="stillWatching">Still Watching</span>
+                                                  <span className="firstItem leftMargin">
+                                                       <span className={`stillWatching${!darkMode ? " blackForeground whiteBackground" : " whiteForeground blackBackground"}`}>Still Watching</span>
                                                   </span>
 
                                                   <span title="Stuff you are still watching">
@@ -79,7 +84,7 @@ const SharedLayout = () => {
 
                                         {activeRoute === "WatchList" &&
                                              <>
-                                                  <span className="firstItem leftMargin foregroundColor">
+                                                  <span className={`firstItem leftMargin${!darkMode ? " blackForeground whiteBackground" : " whiteForeground blackBackground"}`}>
                                                        <span>Source</span>
                                                   </span>
 
@@ -102,7 +107,7 @@ const SharedLayout = () => {
 
                                         {(activeRoute === "WatchList" || activeRoute === "WatchListItems") &&
                                              <>
-                                                  <span className="firstItem leftMargin foregroundColor">
+                                                  <span className={`firstItem leftMargin ${!darkMode ? " blackForeground whiteBackground" : " whiteForeground blackBackground"}`}>
                                                        <span>Type</span>
                                                   </span>
 
@@ -120,7 +125,7 @@ const SharedLayout = () => {
                                                        </select>
                                                   </span>
 
-                                                  <span className="firstItem foregroundColor leftMargin">
+                                                  <span className={`firstItem leftMargin${!darkMode ? " blackForeground whiteBackground" : " whiteForeground blackBackground"}`}>
                                                        <span>Sort By</span>
                                                   </span>
 
@@ -157,13 +162,13 @@ const SharedLayout = () => {
                                                        </select>
                                                   </span>
 
-                                                  <span className="clickable leftMargin searchIcon" style={{ color: "white" }} onClick={showSearch}>
+                                                  <span className={`clickable leftMargin searchIcon${!darkMode ? " blackForeground" : ""}`} style={{ color: "white" }} onClick={showSearch}>
                                                        {SearchIconComponent}
                                                   </span>
                                              </>
                                         }
 
-                                        <span className="clickable leftMargin settingsIcon" style={{ color: "white" }} onClick={showSettings}>
+                                        <span className={`clickable leftMargin settingsIcon${!darkMode ? " blackForeground" : ""}`} style={{ color: "white" }} onClick={showSettings}>
                                              {SettingsIconComponent}
                                         </span>
                                    </span>
@@ -179,7 +184,7 @@ const SharedLayout = () => {
                          }
                     </>
                }
-          </>
+          </React.Fragment>
      )
 }
 

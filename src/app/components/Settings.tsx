@@ -4,6 +4,7 @@ const useEffect = require("react").useEffect;
 const useRouter = require("next/navigation").useRouter;
 const useState = require("react").useState;
 
+import { DarkMode } from "@mui/icons-material";
 import { DataContext, DataContextType } from "../data-context";
 
 const Settings = () => {
@@ -12,6 +13,7 @@ const Settings = () => {
           archivedVisible,
           autoAdd,
           buildDate,
+          darkMode,
           isLoggedIn,
           LogOutIconComponent,
           setActiveRoute,
@@ -19,6 +21,7 @@ const Settings = () => {
           setArchivedVisible,
           setAutoAdd,
           setBugLogVisible,
+          setDarkMode,
           setSettingsVisible,
           setShowMissingArtwork,
           setShowWatchListItems,
@@ -48,7 +51,7 @@ const Settings = () => {
      }
 
      const titleClickHandler = () => {
-          const newTitleClick = titleClickCount+1;
+          const newTitleClick = titleClickCount + 1;
 
           if (newTitleClick === 2) {
                setBugLogVisible(true);
@@ -65,7 +68,7 @@ const Settings = () => {
 
      return (
           <div className="modal">
-               <div className="modal-content textLabel">
+               <div className="modal-content settingsPanel textLabel">
                     <div onDoubleClick={titleClickHandler}>Settings</div>
                     <span className="clickable closeButton closeButtonAdjustment" onClick={closeDetail}>
                          X
@@ -74,10 +77,23 @@ const Settings = () => {
                     <ul className="menuContent">
                          <li className="topMargin">
                               <span className="firstItem">
+                                   <span>Dark Mode</span>
+                              </span>
+
+                              <span className="leftMargin" title="Show WatchList Items">
+                                   <label className="switch">
+                                        <input type="checkbox" checked={darkMode} onChange={(event) => setDarkMode(event.target.checked)} />
+                                        <span className="slider round"></span>
+                                   </label>
+                              </span>
+                         </li>
+
+                         <li className="topMargin">
+                              <span className="firstItem">
                                    <span>Show WLI</span>
                               </span>
 
-                              <span title="Show WatchList Items">
+                              <span className="leftMargin" title="Show WatchList Items">
                                    <label className="switch">
                                         <input type="checkbox" checked={showWatchListItems} onChange={(event) => setShowWatchListItemsClickHandler(event.target.checked)} />
                                         <span className="slider round"></span>
@@ -91,7 +107,7 @@ const Settings = () => {
                                         <span>Archived</span>
                                    </span>
 
-                                   <span title="Archived Items">
+                                   <span className="leftMargin" title="Archived Items">
                                         <label className="switch">
                                              <input type="checkbox" checked={archivedVisible} onChange={(event) => {
                                                   setArchivedVisible(event.target.checked);
@@ -111,7 +127,7 @@ const Settings = () => {
                                         <span>Auto Add</span>
                                    </span>
 
-                                   <span title="Automatically add WatchList after adding new item">
+                                   <span className="leftMargin" title="Automatically add WatchList after adding new item">
                                         <label className="switch">
                                              <input type="checkbox" checked={autoAdd} onChange={(event) => setAutoAdd(event.target.checked)} />
                                              <span className="slider round"></span>
@@ -122,7 +138,7 @@ const Settings = () => {
 
                          {(activeRoute === "WatchListItems") && (
                               <li className="topMargin">
-                                   <span title="Show WatchListItems with missing images">
+                                   <span className="leftMargin" title="Show WatchListItems with missing images">
                                         <span className="wordWrapLabel">Missing images</span>
                                    </span>
 

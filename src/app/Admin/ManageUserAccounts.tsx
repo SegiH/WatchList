@@ -29,6 +29,7 @@ import "../page.css";
 const ManageUserAccounts = () => {
      const {
           CancelIconComponent,
+          darkMode,
           defaultRoute,
           demoMode,
           EditIconComponent,
@@ -281,7 +282,7 @@ const ManageUserAccounts = () => {
                type: "number",
                renderCell: (params: typeof GridRenderEditCellParams) => {
                     return (
-                    <div className={`${editingId === null ? `customBackgroundColor` : `whiteBackgroundColor`}`}>{params.value}</div>
+                    <div>{params.value}</div>
                )},
           },
           {
@@ -328,7 +329,7 @@ const ManageUserAccounts = () => {
                width: 130,
                type: "boolean",
                renderCell: (params: typeof GridRenderEditCellParams) => (
-                    <div className="foregroundColor">{params.value == true ? "Y" : "N"}</div>
+                    <div>{params.value == true ? "Y" : "N"}</div>
                ),
           },
           {
@@ -338,7 +339,7 @@ const ManageUserAccounts = () => {
                width: 130,
                type: "boolean",
                renderCell: (params: typeof GridRenderEditCellParams) => (
-                    <div className="foregroundColor">{params.value == true ? "Y" : "N"}</div>
+                    <div>{params.value == true ? "Y" : "N"}</div>
                ),
           },
           {
@@ -401,6 +402,7 @@ const ManageUserAccounts = () => {
           <>
                {users && users.length > 0 &&
                     <DataGrid
+                         className={`${!darkMode ? " blackForeground whiteBackground" : " whiteForeground blackBackground"}`}
                          rows={users}
                          columns={columns}
                          sx={{

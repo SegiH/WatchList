@@ -5,18 +5,25 @@ const IRecommendation = require("../interfaces/IRecommendation");
 const MuiIcon = require("@mui/icons-material").MuiIcon;
 const PropTypes = require("prop-types");
 const React = require("react");
+const useContext = require("react").useContext;
 const useEffect = require("react").useEffect;
 const useState = require("react").useState;
 
-const Recommendations = ({ BrokenImageIcon, queryTerm, setRecommendationName, setRecommendationType, setRecommendationsVisible, type }:
+import { DataContext, DataContextType } from "../data-context";
+
+const Recommendations = ({ queryTerm, setRecommendationName, setRecommendationType, setRecommendationsVisible, type }:
      {
-          BrokenImageIcon: typeof MuiIcon,
           queryTerm: string,
           setRecommendationName: (arg0: string) => void,
           setRecommendationType: (arg0: string) => void,
           setRecommendationsVisible: (arg0: boolean) => void,
           type: string
      }) => {
+     const {
+          BrokenImageIconComponent,
+          darkMode
+     } = useContext(DataContext) as DataContextType
+
      const [recommendations, setRecommendations] = useState([]);
      const [recommendationsError, setRecommendationsError] = useState(false);
      const [recommendationsLoadingStarted, setRecommendationsLoadingStarted] = useState(false);
@@ -69,7 +76,7 @@ const Recommendations = ({ BrokenImageIcon, queryTerm, setRecommendationName, se
      }, [queryTerm, recommendationsLoadingStarted, type]);
 
      return (
-          <>
+          <div className={`flex-container${!darkMode ? " blackForeground whiteBackground" : " whiteForeground blackBackground"}`}>
                {recommendationsLoadingComplete &&
                     <span className="clickable closeButton" onClick={closeRecommendations}>
                          X
@@ -107,7 +114,7 @@ const Recommendations = ({ BrokenImageIcon, queryTerm, setRecommendationName, se
 
                                         {(recommendation.Image_Error || recommendation.poster_path === null) &&
                                              <>
-                                                  {BrokenImageIcon}
+                                                  {BrokenImageIconComponent}
                                              </>
                                         }
                                    </span>
@@ -129,7 +136,7 @@ const Recommendations = ({ BrokenImageIcon, queryTerm, setRecommendationName, se
                          </li>
                     }
                </ul>
-          </>
+          </div>
      );
 };
 

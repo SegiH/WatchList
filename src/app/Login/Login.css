@@ -4,19 +4,20 @@
 
 .form {
      background-color: rgba(255,255,255,0.13) !important;
+     /*background-color: white;*/
      position: relative;
      z-index: 1;
-     background: #FFFFFF;
      max-width: 360px;
      margin: 0 auto 100px;
      padding: 45px;
      text-align: center;
-     /*box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 5px 5px 0 rgba(0, 0, 0, 0.24);*/
+     box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 5px 5px 0 rgba(0, 0, 0, 0.24);
      border: 2px solid rgba(255,255,255,0.1);
-     box-shadow: 0 0 40px rgba(8,7,16,0.6);
+     /*box-shadow: 0 0 40px rgba(8,7,16,0.6);*/
 }
 
 .login-background {
+     background-color: white;
      background-size: cover;
      background-repeat: repeat;
      box-sizing: border-box;
@@ -78,7 +79,6 @@
 }
 
 .login-label {
-     color: white;
      /*font-family: 'Courier New', Courier, monospace;*/
      font-family: 'Poppins',sans-serif;
      font-size: 28px;

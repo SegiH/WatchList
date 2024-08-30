@@ -18,6 +18,7 @@ export default function SearchIMDB() {
           AddIconComponent,
           autoAdd,
           BrokenImageIconComponent,
+          darkMode,
           imdbSearchEnabled,
           searchCount,
           setIsAdding,
@@ -229,18 +230,18 @@ export default function SearchIMDB() {
      }, [searchSection, searchTerm]);
 
      return (
-          <div className="modal zIndex">
-               <div className={`customBackgroundColor modal-content ${searchLoadingComplete === true ? "" : "customModalHeight"}`}>
+          <div className={`modal zIndex ${!darkMode ? " blackForeground whiteBackground" : " whiteForeground blackBackground"}`}>
+               <div className={`modal-content ${searchLoadingComplete === true ? "" : "customModalHeight"}`}>
                     {searchLoadingStarted &&
                          <>
-                              <div className="card foregroundColor rightAligned customCloseButton searchMarginTop">
+                              <div className="card rightAligned customCloseButton searchMarginTop">
                                    <span className="clickable closeButton" onClick={closeSearch}>
                                         X
                                    </span>
                               </div>
 
                               <div className="spinner-custom">
-                                   <div className="foregroundColor spinner-label">Loading</div>
+                                   <div className="spinner-label">Loading</div>
                                    <div className="spinner"></div>
                               </div>
                          </>
@@ -248,7 +249,7 @@ export default function SearchIMDB() {
 
                     <div className="container searchHeader sticky">
                          {!searchLoadingStarted &&
-                              <div className="foregroundColor" style={{ marginBottom: "20px" }}>
+                              <div style={{ marginBottom: "20px" }}>
                                    <div className='customWidth flex'>
                                         <div className="leftMargin searchLabel textLabel">Section</div>
 
@@ -303,7 +304,7 @@ export default function SearchIMDB() {
                                              </div>
                                         </div>
 
-                                        <div className="card foregroundColor rightAligned customCloseButton searchMarginTop">
+                                        <div className="card rightAligned customCloseButton searchMarginTop">
                                              <span className="clickable closeButton" onClick={closeSearch}>
                                                   X
                                              </span>
@@ -324,7 +325,7 @@ export default function SearchIMDB() {
                                                             <tr key={index}>
                                                                  <td className="row">
                                                                       <span className="searchResult">
-                                                                           <span className="addSearchResultIcon foregroundColor" onClick={() => addIMDBSearchResultClickHandler(index)}>{AddIconComponent}</span>
+                                                                           <span className="addSearchResultIcon" onClick={() => addIMDBSearchResultClickHandler(index)}>{AddIconComponent}</span>
 
                                                                            {currentResult.Poster !== "N/A" && (
                                                                                 <>
@@ -363,7 +364,7 @@ export default function SearchIMDB() {
                                                                  <span className="clickable searchResult" onClick={() => openWatchListDetailClickHandler(currentResult.WatchListID)}>
                                                                       {currentResult?.IMDB_Poster !== null && !currentResult?.IMDB_Poster_Error && (
                                                                            // The poster column
-                                                                           <div className="foregroundColor">
+                                                                           <div>
                                                                                 <Image
                                                                                      className="searchResultPoster"
                                                                                      src={currentResult?.IMDB_Poster}
@@ -377,7 +378,7 @@ export default function SearchIMDB() {
 
                                                                       {(currentResult.IMDB_Poster_Error || currentResult.IMDB_Poster === null) && (
                                                                            // The poster column
-                                                                           <div className="brokenImage foregroundColor">
+                                                                           <div className="brokenImage">
                                                                                 broken
                                                                                 {BrokenImageIconComponent}
                                                                            </div>
@@ -404,7 +405,7 @@ export default function SearchIMDB() {
                                                                  <span className="clickable searchResult" onClick={(event) => openWatchListItemDetailClickHandler(currentResult.WatchListItemID)}>
                                                                       {currentResult.IMDB_Poster !== null && !currentResult.IMDB_Poster_Error && (
                                                                            // The poster column
-                                                                           <div className="foregroundColor">
+                                                                           <div>
                                                                                 <Image
                                                                                      className="searchResultPoster"
                                                                                      src={currentResult.IMDB_Poster}
@@ -418,7 +419,7 @@ export default function SearchIMDB() {
 
                                                                       {(currentResult.IMDB_Poster_Error || currentResult.IMDB_Poster === null) && (
                                                                            // The poster column
-                                                                           <div className="brokenImage foregroundColor">
+                                                                           <div className="brokenImage">
                                                                                 broken
                                                                                 {BrokenImageIconComponent}
                                                                            </div>

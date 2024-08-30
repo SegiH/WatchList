@@ -15,6 +15,7 @@ export default function WatchListItems() {
           AddIconComponent,
           archivedVisible,
           BrokenImageIconComponent,
+          darkMode,
           isError,
           searchTerm,
           setIsAdding,
@@ -119,12 +120,12 @@ export default function WatchListItems() {
      return (
           <>
                {!isError &&
-                    <span className="clickable customTopMargin foregroundColor leftMargin40" onClick={() => openDetailClickHandler(-1)}>
+                    <span className={`clickable customTopMargin leftMargin40 ${!darkMode ? " blackForeground whiteBackground" : " whiteForeground blackBackground"}`} onClick={() => openDetailClickHandler(-1)}>
                          {AddIconComponent}
                     </span>
                }
 
-               <ul className="clickable foregroundColor show-list">
+               <ul className={`clickable show-list${!darkMode ? " blackForeground whiteBackground" : " whiteForeground blackBackground"}`}>
                     {watchListItems?.filter(
                          (currentWatchListItem: typeof IWatchListItem) =>
                               ((currentWatchListItem?.Archived === 1 && archivedVisible === true) || (currentWatchListItem?.Archived === 0 && archivedVisible === false))
@@ -136,7 +137,7 @@ export default function WatchListItems() {
                               const IMDB_JSON =  currentWatchListItem?.IMDB_JSON !== null && typeof currentWatchListItem?.IMDB_JSON !== "undefined" && currentWatchListItem?.IMDB_JSON !== "" ? JSON.parse(currentWatchListItem?.IMDB_JSON) : null;
 
                               return (
-                                   <React.Fragment key={index}>
+                                   <div key={index} className={`${!darkMode ? "blackForeground whiteBackground" : "whiteForeground blackBackground"}`}>
                                         {watchListItemsSortingComplete && (
                                              <li className="show-item">
                                                   <span className="item-id" onClick={() => openDetailClickHandler(currentWatchListItem?.WatchListItemID)}>
@@ -153,24 +154,24 @@ export default function WatchListItems() {
 
                                                   <div>
                                                        {typeof currentWatchListItem?.IMDB_URL !== "undefined" &&
-                                                            <a href={currentWatchListItem?.IMDB_URL} target='_blank'>{currentWatchListItem?.WatchListItemName}{IMDB_JSON !== null && IMDB_JSON.Year !== null ? ` (${IMDB_JSON.Year})` : ""}</a>
+                                                            <a  className={`${!darkMode ? "blackForeground whiteBackground" : "whiteForeground blackBackground"}`} href={currentWatchListItem?.IMDB_URL} target='_blank'>{currentWatchListItem?.WatchListItemName}{IMDB_JSON !== null && IMDB_JSON.Year !== null ? ` (${IMDB_JSON.Year})` : ""}</a>
                                                        }
 
                                                        {typeof currentWatchListItem?.IMDB_URL === "undefined" &&
-                                                            <div>
+                                                            <div className={`${!darkMode ? "blackForeground whiteBackground" : "whiteForeground blackBackground"}`}>
                                                                  {currentWatchListItem?.WatchListItemName}{IMDB_JSON !== null && IMDB_JSON.Year !== null ? ` (${IMDB_JSON.Year})` : ""}
                                                             </div>
                                                        }
 
-                                                       {currentWatchListItem?.Archived === true ? <span>&nbsp;(A)</span> : <></>}
+                                                       {currentWatchListItem?.Archived === true ? <span className={`${!darkMode ? "blackForeground whiteBackground" : "whiteForeground blackBackground"}`}>&nbsp;(A)</span> : <></>}
                                                   </div>
 
-                                                  <span>
+                                                  <span className={`${!darkMode ? "blackForeground whiteBackground" : "whiteForeground blackBackground"}`}>
                                                        <div>{currentWatchListItem?.WatchListTypeName}</div>
                                                   </span>
                                              </li>
                                         )}
-                                   </React.Fragment>
+                                   </div>
                               );
                          })}
                </ul>

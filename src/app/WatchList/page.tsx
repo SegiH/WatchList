@@ -17,6 +17,7 @@ export default function WatchList() {
           AddIconComponent,
           archivedVisible,
           BrokenImageIconComponent,
+          darkMode,
           isError,
           isLoggedIn,
           ratingMax,
@@ -91,15 +92,15 @@ export default function WatchList() {
      }, [setWatchList, setWatchListSortingComplete, watchList, watchListLoadingComplete, watchListSortColumn, watchListSortDirection, watchListSortingComplete]);
 
      return (
-          <>
+          <React.Fragment>
                {isLoggedIn && !isError && (
-                    <span className="bottomMargin20 clickable customTopMargin foregroundColor leftMargin40" onClick={() => openDetailClickHandler(-1)}>
+                    <span className={`bottomMargin20 clickable customTopMargin leftMargin40 ${!darkMode ? " blackForeground whiteBackground" : " whiteForeground blackBackground"}`} onClick={() => openDetailClickHandler(-1)}>
                          {AddIconComponent}
                     </span>
                )}
 
                {watchList.length > 0 &&
-                    <ul className="clickable show-list">
+                    <ul className={`clickable show-list${!darkMode ? " blackForeground whiteBackground" : " whiteForeground blackBackground"}`}>
                          {watchList?.filter(
                               (currentWatchList: typeof IWatchList) =>
                                    ((currentWatchList?.Archived === 1 && archivedVisible === true) || (currentWatchList?.Archived === 0 && archivedVisible === false
@@ -116,14 +117,14 @@ export default function WatchList() {
                               const IMDB_JSON = currentWatchList?.IMDB_JSON !== null && typeof currentWatchList?.IMDB_JSON !== "undefined" && currentWatchList?.IMDB_JSON !== "" ? JSON.parse(currentWatchList?.IMDB_JSON) : null;
 
                               return (
-                                   <div key={index} className="foregroundColor">
+                                   <div key={index} className={`${!darkMode ? "blackForeground whiteBackground" : "whiteForeground blackBackground"}`}>
                                         {watchListSortingComplete && (
                                              <li className="show-item" key={index}>
                                                   <span className="item-id">
                                                        <div>{currentWatchList?.WatchListID}</div>
                                                   </span>
 
-                                                  <a className="clickable foregroundColor image-crop show-link" onClick={() => openDetailClickHandler(currentWatchList?.WatchListID)}>
+                                                  <a className="clickable image-crop show-link" onClick={() => openDetailClickHandler(currentWatchList?.WatchListID)}>
                                                        <div>
                                                             {currentWatchList?.IMDB_Poster !== null && currentWatchList?.IMDB_Poster_Error !== true && <Image width="128" height="187" alt={currentWatchList?.WatchListItemName} src={currentWatchList?.IMDB_Poster} onError={() => showDefaultSrc(currentWatchList?.WatchListID)} />}
 
@@ -137,7 +138,7 @@ export default function WatchList() {
                                                        }
 
                                                        {typeof currentWatchList?.IMDB_URL === "undefined" &&
-                                                            <span className="foregroundColor">
+                                                            <span>
                                                                  {currentWatchList?.WatchListItemName}{IMDB_JSON !== null && IMDB_JSON.Year !== null ? ` (${IMDB_JSON.Year})` : ""}
                                                             </span>
                                                        }
@@ -147,21 +148,21 @@ export default function WatchList() {
 
                                                   {currentWatchList?.WatchListTypeID === 2 && <div>Season {currentWatchList?.Season}</div>}
 
-                                                  <div>
+                                                  <div className={`${!darkMode ? "blackForeground whiteBackground" : "whiteForeground blackBackground"}`}>
                                                        {currentWatchList?.StartDate}
                                                        {currentWatchList?.EndDate !== null && currentWatchList?.EndDate !== currentWatchList?.StartDate ? ` - ${currentWatchList?.EndDate}` : ""}
                                                   </div>
 
-                                                  <div>
+                                                  <div className={`${!darkMode ? "blackForeground whiteBackground" : "whiteForeground blackBackground"}`}>
                                                        {currentWatchList?.WatchListTypeName}
                                                   </div>
 
-                                                  <div>
+                                                  <div className={`${!darkMode ? "blackForeground whiteBackground" : "whiteForeground blackBackground"}`}>
                                                        {currentWatchList.WatchListSourceName}
                                                   </div>
 
                                                   {currentWatchList?.Rating !== null && (
-                                                       <div>
+                                                       <div className={`${!darkMode ? "blackForeground whiteBackground" : "whiteForeground blackBackground"}`}>
                                                             {currentWatchList?.Rating}/{ratingMax}
                                                        </div>
                                                   )}
@@ -172,6 +173,6 @@ export default function WatchList() {
                          })}
                     </ul>
                }
-          </>
+          </React.Fragment>
      )
 }

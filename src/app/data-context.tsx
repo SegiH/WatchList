@@ -83,6 +83,7 @@ export interface DataContextType {
      buildDate: string;
      BrokenImageIconComponent: React.ReactNode;
      CancelIconComponent: React.ReactNode;
+     darkMode: boolean;
      defaultRoute: string;
      DeleteIconComponent: React.ReactNode;
      demoMode: boolean;
@@ -118,6 +119,7 @@ export interface DataContextType {
      setAutoAdd: (value: boolean) => void;
      setBugLogs: (value: typeof IBugLog) => void;
      setBugLogVisible: (value: boolean) => void;
+     setDarkMode: (value: boolean) => void;
      setDemoMode: (value: boolean) => void;
      setIsAdding: (value: boolean) => void;
      setIsEditing: (value: boolean) => void;
@@ -183,7 +185,7 @@ export interface DataContextType {
      watchListTypesLoadingComplete: boolean;
 }
 
-const buildDate = "08/25/24";
+const buildDate = "08/29/24";
 
 const DataProvider = ({ children }) => {
      const [activeRoute, setActiveRoute] = useState("");
@@ -192,6 +194,7 @@ const DataProvider = ({ children }) => {
      const [autoAdd, setAutoAdd] = useState(true);
      const [bugLogs, setBugLogs] = useState([]);
      const [bugLogVisible, setBugLogVisible] = useState(false);
+     const [darkMode, setDarkMode] = useState(true);
      const [demoMode, setDemoMode] = useState(false);
      const [imdbSearchEnabled, setImdbSearchEnabled] = useState(false);
      const [isAdding, setIsAdding] = useState(false);
@@ -405,6 +408,7 @@ const DataProvider = ({ children }) => {
           if (!isLoggedIn && !isLoggedInCheckStarted) {
                const newArchivedVisible = localStorage.getItem("WatchList.ArchivedVisible");
                const newAutoAdd = localStorage.getItem("WatchList.AutoAdd");
+               const darkMode = localStorage.getItem("WatchList.DarkMode");
                const newSearchCount = localStorage.getItem("WatchList.SearchCount");
                const newStillWatching = localStorage.getItem("WatchList.StillWatching");
                const newShowMissingArtwork = localStorage.getItem("WatchList.ShowMissingArtwork");
@@ -420,6 +424,10 @@ const DataProvider = ({ children }) => {
 
                if (newAutoAdd !== null) {
                     setAutoAdd(newAutoAdd === "true" ? true : false);
+               }
+
+               if (darkMode !== null) {
+                    setDarkMode(darkMode === "true" ? true : false);
                }
 
                if (newSearchCount !== null) {
@@ -716,6 +724,7 @@ const DataProvider = ({ children }) => {
 
           localStorage.setItem("WatchList.ArchivedVisible", archivedVisible);
           localStorage.setItem("WatchList.AutoAdd", autoAdd);
+          localStorage.setItem("WatchList.DarkMode", darkMode);
           localStorage.setItem("WatchList.SearchCount", searchCount);
           localStorage.setItem("WatchList.ShowMissingArtwork", showMissingArtwork);
           localStorage.setItem("WatchList.SourceFilter", sourceFilter);
@@ -727,7 +736,7 @@ const DataProvider = ({ children }) => {
 
           //setWatchListSortingComplete(false);
           //setWatchListItemsSortingComplete(false);
-     }, [archivedVisible, autoAdd, isLoggedIn, searchCount, showWatchListItems, showMissingArtwork, stillWatching, sourceFilter, typeFilter, watchListSortColumn, watchListSortDirection]);
+     }, [archivedVisible, autoAdd, darkMode, isLoggedIn, searchCount, showWatchListItems, showMissingArtwork, stillWatching, sourceFilter, typeFilter, watchListSortColumn, watchListSortDirection]);
 
      /* useEffect that does isClient check */
      useEffect(() => {
@@ -893,6 +902,7 @@ const DataProvider = ({ children }) => {
           bugLogVisible: bugLogVisible,
           buildDate: buildDate,
           CancelIconComponent: CancelIconComponent,
+          darkMode: darkMode,
           defaultRoute: defaultRoute,
           DeleteIconComponent: DeleteIconComponent,
           demoMode: demoMode,
@@ -928,6 +938,7 @@ const DataProvider = ({ children }) => {
           setAutoAdd: setAutoAdd,
           setBugLogs: setBugLogs,
           setBugLogVisible: setBugLogVisible,
+          setDarkMode: setDarkMode,
           setDemoMode: setDemoMode,
           setIsAdding: setIsAdding,
           setIsEditing: setIsEditing,

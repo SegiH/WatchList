@@ -16,7 +16,10 @@ export default function Setup() {
      const {
           activeRoute,
           defaultRoute,
+          darkMode,
           demoUsername,
+          isLoggedIn,
+          isLoggedInCheckComplete,
           validatePassword
      } = useContext(DataContext) as DataContextType
 
@@ -101,10 +104,11 @@ export default function Setup() {
 
      return (
           <>
-               <div className="foregroundColor login-page">
+          {isLoggedInCheckComplete && !isLoggedIn && 
+               <div className={`login-page`}>
                     <div className="form">
                          <form className="login-form">
-                              <span className="login-label">WatchList Setup</span>
+                              <span className={`login-label ${!darkMode ? "blackForeground" : "whiteForeground"}`}>WatchList Setup</span>
 
                               <input type="text" autoFocus disabled={submitClicked} value={realname} placeholder="Name" required onChange={(event) => setRealname(event.target.value)} onKeyUp={handleKeyUp} />
                               <input type="text" autoFocus disabled={submitClicked} value={username} placeholder="Username" required onChange={(event) => setUsername(event.target.value)} onKeyUp={handleKeyUp} />
@@ -121,6 +125,7 @@ export default function Setup() {
                          </form>
                     </div>
                </div>
+}
           </>
      )
 }

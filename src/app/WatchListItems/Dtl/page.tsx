@@ -22,6 +22,7 @@ export default function WatchListItemsDtl() {
      const {
           BrokenImageIconComponent,
           CancelIconComponent,
+          darkMode,
           demoMode,
           EditIconComponent,
           isAdding,
@@ -61,11 +62,7 @@ export default function WatchListItemsDtl() {
 
      const cancelClickHandler = async () => {
           setIsEditing(false);
-
-          if (!isAdding) {
-               setWatchListItemDtl(originalWatchListItemDtl);
-          }
-
+          setWatchListItemDtl(originalWatchListItemDtl);
           setOriginalWatchListItemDtl(null);
           setAddModified(false);
           setEditModified(false);
@@ -84,6 +81,8 @@ export default function WatchListItemsDtl() {
      };
 
      const closeDetail = async () => {
+          setIsAdding(false);
+          
           setAddWatchListItemDtl(null);
           setWatchListItemDtl(null);
           setOriginalWatchListItemDtl(null);
@@ -388,19 +387,19 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
 
      return (
           <div className="modal">
-               <div className={`modal-content ${watchListItemDtlID != null ? "fade-in" : "fade-out"}`}>
+               <div className={`modal-content ${watchListItemDtlID != null ? "fade-in" : "fade-out"}${!darkMode ? "blackForeground whiteBackground" : "whiteForeground blackBackground"}`}>
                     {!recommendationsVisible &&
                          <div className="container">
                               <div className="cards">
                                    <div className="narrow card">
                                         {!isAdding && !isEditing &&
                                              <span onClick={startEditing}>
-                                                  <span className="clickable editsaveCancelButton foregroundColor">{EditIconComponent}</span>
+                                                  <span className={`clickable editsaveCancelButton ${!darkMode ? " blackForeground" : " whiteForeground"}`}>{EditIconComponent}</span>
                                              </span>
                                         }
 
                                         {(isAdding || isEditing) &&
-                                             <span className="clickable foregroundColor saveIcon" onClick={isAdding ? saveNewClickHandler : saveClickHandler}>
+                                             <span className={`clickable saveIcon ${!darkMode ? " blackForeground" : " whiteForeground"}`} onClick={isAdding ? saveNewClickHandler : saveClickHandler}>
                                                   {SaveIconComponent}
                                              </span>
                                         }
@@ -410,13 +409,13 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
 
                                    <div className="narrow card rightAligned">
                                         {!isAdding && !isEditing &&
-                                             <span className="clickable closeButton foregroundColor" onClick={closeDetail}>
+                                             <span className={`clickable closeButton ${!darkMode ? "blackForeground" : "whiteForeground"}`} onClick={closeDetail}>
                                                   X
                                              </span>
                                         }
 
                                         {(isAdding || isEditing) &&
-                                             <span className="clickable cancelIcon foregroundColor" onClick={isAdding ? closeDetail : cancelClickHandler}>
+                                             <span className={`clickable cancelIcon${!darkMode ? " blackForeground" : " whiteForeground"}`} onClick={isAdding ? closeDetail : cancelClickHandler}>
                                                   {CancelIconComponent}
                                              </span>
                                         }
@@ -437,7 +436,7 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
                                    </div>
 
                                    <div className="narrow card">
-                                        <span className="textLabel">Name:&nbsp;</span>
+                                        <span className={`textLabel ${!darkMode ? "blackForeground" : "whiteForeground"}`}>Name:&nbsp;</span>
                                    </div>
 
                                    <div className="labelWidth card">
@@ -458,43 +457,45 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
                                         }
 
                                         {isEditing &&
-                                             <div className="narrow card">
-                                                  <input className="inputStyle" autoFocus value={watchListItemDtl?.WatchListItemName} onChange={(event) => watchListItemDetailChangeHandler("WatchListItemName", event.target.value)} />
+                                             <div className="narrow card no-width">
+                                                  <input className={`inputStyle whiteBackground blackForeground`} autoFocus value={watchListItemDtl?.WatchListItemName} onChange={(event) => watchListItemDetailChangeHandler("WatchListItemName", event.target.value)} />
                                              </div>
                                         }
 
                                         {isAdding &&
-                                             <input className="inputStyle" autoFocus value={addWatchListItemDtl?.WatchListItemName} onChange={(event: React.ChangeEvent<HTMLInputElement>) => addWatchListItemDetailChangeHandler("WatchListItemName", event.target.value)} />
+                                             <input className={`inputStyle whiteBackground blackForeground`} autoFocus value={addWatchListItemDtl?.WatchListItemName} onChange={(event: React.ChangeEvent<HTMLInputElement>) => addWatchListItemDetailChangeHandler("WatchListItemName", event.target.value)} />
                                         }
                                    </div>
 
                                    <div className="narrow card"></div>
 
                                    <div className="narrow card">
-                                        <span className="textLabel">Type:&nbsp;</span>
+                                        <span className={`textLabel ${!darkMode ? "blackForeground" : "whiteForeground"}`}>Type:&nbsp;</span>
                                    </div>
 
                                    <div className="narrow card">
                                         {!isAdding && !isEditing &&
-                                             <span className="foregroundColor">{watchListItemDtl?.WatchListTypeName}</span>
+                                             <span className={`${!darkMode ? "blackForeground" : "whiteForeground"}`}>{watchListItemDtl?.WatchListTypeName}</span>
                                         }
 
                                         {isEditing &&
-                                             <select className="selectStyle selectWidth" value={watchListItemDtl?.WatchListTypeID} onChange={(event) => watchListItemDetailChangeHandler("WatchListTypeID", event.target.value)}>
-                                                  <option value="-1">Please select</option>
+                                             <div className="narrow card">
+                                                  <select className="selectStyle editing" value={watchListItemDtl?.WatchListTypeID} onChange={(event) => watchListItemDetailChangeHandler("WatchListTypeID", event.target.value)}>
+                                                       <option value="-1">Please select</option>
 
-                                                  {watchListTypes?.map((watchListType: typeof IWatchListType, index: number) => {
-                                                       return (
-                                                            <option key={index} value={watchListType?.WatchListTypeID}>
-                                                                 {watchListType?.WatchListTypeName}
-                                                            </option>
-                                                       );
-                                                  })}
-                                             </select>
+                                                       {watchListTypes?.map((watchListType: typeof IWatchListType, index: number) => {
+                                                            return (
+                                                                 <option key={index} value={watchListType?.WatchListTypeID}>
+                                                                      {watchListType?.WatchListTypeName}
+                                                                 </option>
+                                                            );
+                                                       })}
+                                                  </select>
+                                             </div>
                                         }
 
                                         {isAdding &&
-                                             <select className="selectStyle selectWidth" value={addWatchListItemDtl?.WatchListTypeID} onChange={(event: React.ChangeEvent<HTMLSelectElement>) => addWatchListItemDetailChangeHandler("WatchListTypeID", event.target.value)}>
+                                             <select className="selectStyle" value={addWatchListItemDtl?.WatchListTypeID} onChange={(event: React.ChangeEvent<HTMLSelectElement>) => addWatchListItemDetailChangeHandler("WatchListTypeID", event.target.value)}>
                                                   <option value="-1">Please select</option>
 
                                                   {watchListTypes?.map((watchListType: typeof IWatchListType, index: number) => {
@@ -512,23 +513,23 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
                                         <>
                                              <div className="narrow card"></div>
 
-                                             <div className="narrow card">
-                                                  <span className="textLabel">URL:&nbsp;</span>
+                                             <div className="narrow card no-width">
+                                                  <span className={`textLabel ${!darkMode ? "blackForeground" : "whiteForeground"}`}>URL:&nbsp;</span>
                                              </div>
 
                                              <div className="narrow card">
                                                   {!isAdding && !isEditing &&
-                                                       <a href={watchListItemDtl?.IMDB_URL} target="_blank">
+                                                       <a className={`${!darkMode ? "blackForeground" : "whiteForeground"}`} href={watchListItemDtl?.IMDB_URL} target="_blank">
                                                             Open in IMDB
                                                        </a>
                                                   }
 
                                                   {isEditing &&
-                                                       <input className="inputStyle" value={watchListItemDtl?.IMDB_URL} onChange={(event) => watchListItemDetailChangeHandler("IMDB_URL", event.target.value)} />
+                                                       <input className={`inputStyle whiteBackground blackForeground`} value={watchListItemDtl?.IMDB_URL} onChange={(event) => watchListItemDetailChangeHandler("IMDB_URL", event.target.value)} />
                                                   }
 
                                                   {isAdding &&
-                                                       <input className="inputStyle" value={addWatchListItemDtl?.IMDB_URL} onChange={(event: React.ChangeEvent<HTMLInputElement>) => addWatchListItemDetailChangeHandler("IMDB_URL", event.target.value)} />
+                                                       <input className={`inputStyle whiteBackground blackForeground`} value={addWatchListItemDtl?.IMDB_URL} onChange={(event: React.ChangeEvent<HTMLInputElement>) => addWatchListItemDetailChangeHandler("IMDB_URL", event.target.value)} />
                                                   }
                                              </div>
                                         </>}
@@ -538,16 +539,16 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
                                              <div className="narrow card"></div>
 
                                              <div className="narrow card">
-                                                  <div className="textLabel">Image:&nbsp;</div>
+                                                  <div className={`textLabel ${!darkMode ? "blackForeground" : "whiteForeground"}`}>Image:&nbsp;</div>
                                              </div>
 
                                              <div className="narrow card">
                                                   {isEditing &&
-                                                       <input className="inputStyle" value={watchListItemDtl?.IMDB_Poster} onBlur={(event: React.ChangeEvent<HTMLInputElement>) => onIMDBPosterChangeHandler(event.target.value)} onChange={(event) => watchListItemDetailChangeHandler("IMDB_Poster", event.target.value)} />
+                                                       <input className={`inputStyle whiteBackground blackForeground`} value={watchListItemDtl?.IMDB_Poster} onBlur={(event: React.ChangeEvent<HTMLInputElement>) => onIMDBPosterChangeHandler(event.target.value)} onChange={(event) => watchListItemDetailChangeHandler("IMDB_Poster", event.target.value)} />
                                                   }
 
                                                   {isAdding &&
-                                                       <input className="inputStyle" value={addWatchListItemDtl?.IMDB_Poster} onChange={(event: React.ChangeEvent<HTMLInputElement>) => addWatchListItemDetailChangeHandler("IMDB_Poster", event.target.value)} />
+                                                       <input className={`inputStyle whiteBackground blackForeground`} value={addWatchListItemDtl?.IMDB_Poster} onChange={(event: React.ChangeEvent<HTMLInputElement>) => addWatchListItemDetailChangeHandler("IMDB_Poster", event.target.value)} />
                                                   }
                                              </div>
                                         </>
@@ -556,20 +557,20 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
                                    <div className="narrow card"></div>
 
                                    <div className="narrow card">
-                                        <div className="textLabel">Notes:&nbsp;</div>
+                                        <div className={`textLabel ${!darkMode ? "blackForeground" : "whiteForeground"}`}>Notes:&nbsp;</div>
                                    </div>
 
                                    <div className="narrow card no-width">
                                         {!isAdding && !isEditing &&
-                                             <div className="textLabel">{watchListItemDtl?.ItemNotes}</div>
+                                             <div className={`${!darkMode ? "whiteBackground blackForeground" : "whiteForeground blackBackground"}`}>{watchListItemDtl?.ItemNotes}</div>
                                         }
 
                                         {isEditing &&
-                                             <input className="inputStyle" value={watchListItemDtl?.ItemNotes} onChange={(event: React.ChangeEvent<HTMLInputElement>) => watchListItemDetailChangeHandler("ItemNotes", event.target.value)} />
+                                             <input className={`inputStyle whiteBackground blackForeground`} value={watchListItemDtl?.ItemNotes} onChange={(event: React.ChangeEvent<HTMLInputElement>) => watchListItemDetailChangeHandler("ItemNotes", event.target.value)} />
                                         }
 
                                         {isAdding &&
-                                             <input className="inputStyle" value={addWatchListItemDtl?.ItemNotes} onChange={(event: React.ChangeEvent<HTMLInputElement>) => addWatchListItemDetailChangeHandler("ItemNotes", event.target.value)} />
+                                             <input className={`inputStyle whiteBackground blackForeground`} value={addWatchListItemDtl?.ItemNotes} onChange={(event: React.ChangeEvent<HTMLInputElement>) => addWatchListItemDetailChangeHandler("ItemNotes", event.target.value)} />
                                         }
                                    </div>
 
@@ -588,19 +589,19 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
                                              <div className="narrow card"></div>
 
                                              <div className="narrow card">
-                                                  <div className="textLabel">Archived:&nbsp;</div>
+                                                  <div className={`textLabel ${!darkMode ? "blackForeground" : "whiteForeground"}`}>Archived:&nbsp;</div>
                                              </div>
 
                                              {isAdding &&
                                                   <div className="narrow card">
-                                                       <input type="checkbox" checked={addWatchListItemDtl?.Archived} onChange={(event) => addWatchListItemDetailChangeHandler("Archived", event.target.value)} />
+                                                       <input className={`whiteBackground blackForeground`} type="checkbox" checked={addWatchListItemDtl?.Archived} onChange={(event) => addWatchListItemDetailChangeHandler("Archived", event.target.value)} />
                                                   </div>
 
                                              }
 
                                              {isEditing &&
                                                   <div className="narrow card">
-                                                       <input type="checkbox" checked={watchListItemDtl?.Archived} onChange={(event: React.ChangeEvent<HTMLInputElement>) => watchListItemDetailChangeHandler("Archived", event.target.checked)} />
+                                                       <input className={`whiteBackground blackForeground`}  type="checkbox" checked={watchListItemDtl?.Archived} onChange={(event: React.ChangeEvent<HTMLInputElement>) => watchListItemDetailChangeHandler("Archived", event.target.checked)} />
                                                   </div>
                                              }
                                         </>
@@ -611,7 +612,7 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
 
                     {recommendationsVisible && (
                          <>
-                              <span className="clickable closeButton foregroundColor" onClick={closeDetail}>
+                              <span className={`clickable closeButton ${!darkMode ? "blackForeground" : "whiteForeground"}`} onClick={closeDetail}>
                                    X
                               </span>
                               <Recommendations BrokenImageIcon={BrokenImageIconComponent} queryTerm={recommendationName} type={recommendationType} setRecommendationName={setRecommendationName} setRecommendationType={setRecommendationName} setRecommendationsVisible={setRecommendationsVisible} />

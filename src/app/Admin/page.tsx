@@ -20,6 +20,7 @@ const CustomTabPanel = require("./CustomTabPanel").default;
 
 export default function Admin() {
      const {
+          darkMode,
           defaultRoute,
           isAdding,
           isAdmin,
@@ -69,10 +70,10 @@ export default function Admin() {
 
      return (
           <div>
-               <Tabs style={{backgroundColor: "white"}} value={selectedTab} onChange={tabClickHandler}>
-                    <Tab label="Users" {...tabProps(0)} />
-                    <Tab label="Sources" {...tabProps(1)} />
-                    <Tab label="Types" {...tabProps(2)} />
+               <Tabs value={selectedTab} onChange={tabClickHandler}>
+                    <Tab className={`${!darkMode ? " blackForeground whiteBackground" : " whiteForeground blackBackground"}`} label="Users" {...tabProps(0)} />
+                    <Tab className={`${!darkMode ? " blackForeground whiteBackground" : " whiteForeground blackBackground"}`} label="Sources" {...tabProps(1)} />
+                    <Tab className={`${!darkMode ? " blackForeground whiteBackground" : " whiteForeground blackBackground"}`} label="Types" {...tabProps(2)} />
                </Tabs>
 
                <CustomTabPanel value={selectedTab} index={0}>

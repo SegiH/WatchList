@@ -203,12 +203,9 @@ const ManageWatchListTypes = () => {
 
      return (
           <DataGrid
-               className={`${!darkMode ? " blackForeground whiteBackground" : " whiteForeground blackBackground"}`}
+               className={`${!darkMode ? " lightMode" : " darkMode"}`}
                rows={watchListTypes}
                columns={columns}
-               sx={{
-                    color: "white",
-               }}
                editMode="row"
                getRowId={(row: typeof IWatchListType) => row.WatchListTypeID}
                rowModesModel={rowModesModel}
@@ -223,6 +220,9 @@ const ManageWatchListTypes = () => {
                     toolbar: { section, setRowModesModel },
                }}
                experimentalFeatures={{ newEditingApi: true }}
+               columnVisibilityModel={{
+                    deleteActions: !isAdding && !isEditing
+               }}
           />
      );
 };

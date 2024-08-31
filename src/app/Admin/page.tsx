@@ -71,9 +71,9 @@ export default function Admin() {
      return (
           <div>
                <Tabs value={selectedTab} onChange={tabClickHandler}>
-                    <Tab className={`${!darkMode ? " blackForeground whiteBackground" : " whiteForeground blackBackground"}`} label="Users" {...tabProps(0)} />
-                    <Tab className={`${!darkMode ? " blackForeground whiteBackground" : " whiteForeground blackBackground"}`} label="Sources" {...tabProps(1)} />
-                    <Tab className={`${!darkMode ? " blackForeground whiteBackground" : " whiteForeground blackBackground"}`} label="Types" {...tabProps(2)} />
+                    <Tab className={`${!darkMode ? " lightMode" : " darkMode"}`} label="Users" {...tabProps(0)} />
+                    <Tab className={`${!darkMode ? " lightMode" : " darkMode"}`} label="Sources" {...tabProps(1)} />
+                    <Tab className={`${!darkMode ? " lightMode" : " darkMode"}`} label="Types" {...tabProps(2)} />
                </Tabs>
 
                <CustomTabPanel value={selectedTab} index={0}>

@@ -2,12 +2,8 @@
      /*border-color: cornflowerblue !important;
     font-weight: bold !important;
     border-width: 2px;*/
-     background-color: deepskyblue;
-     color: white;
-}
-
-.active span {
-     color: white;
+     background-color: deepskyblue !important;
+     border-radius: 8px;
 }
 
 .tab {
@@ -23,9 +19,6 @@
 
 .tabBar {
      border: 1px solid lightgray;
-     /*background-color: lightgray;*/
-     /*background-color: #F1EBE4;*/
-     background-color: white;
      bottom: 0;
      /* Critical */
      box-sizing: border-box;
@@ -68,7 +61,6 @@
      align-items: center;
      border: none;
      border-radius: 10px;
-     color: black;
      cursor: pointer;
      font-weight: normal;
      height: 100%;

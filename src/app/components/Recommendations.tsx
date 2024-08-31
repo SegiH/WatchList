@@ -76,7 +76,7 @@ const Recommendations = ({ queryTerm, setRecommendationName, setRecommendationTy
      }, [queryTerm, recommendationsLoadingStarted, type]);
 
      return (
-          <div className={`flex-container${!darkMode ? " blackForeground whiteBackground" : " whiteForeground blackBackground"}`}>
+          <div className={`flex-container${!darkMode ? " lightMode" : " darkMode"}`}>
                {recommendationsLoadingComplete &&
                     <span className="clickable closeButton" onClick={closeRecommendations}>
                          X

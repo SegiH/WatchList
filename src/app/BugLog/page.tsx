@@ -218,7 +218,7 @@ export default function BugLog() {
                type: "number",
                renderCell: (params: typeof GridRenderEditCellParams) => {
                     return (
-                         <div style={{ color: editingId === null ? "white" : "black" }}>{typeof params.value !== "undefined" ? params.value : ""}</div>
+                         <div className={`${!darkMode ? " lightMode" : " darkMode"}`}>{typeof params.value !== "undefined" ? params.value : ""}</div>
                     )
                },
           },
@@ -307,12 +307,9 @@ export default function BugLog() {
           <>
                Bug Log
                <DataGrid
-                    className={`${!darkMode ? " blackForeground whiteBackground" : " whiteForeground blackBackground"}`}
+                    className={`${!darkMode ? " lightMode" : " darkMode"}`}
                     rows={bugLogs}
                     columns={columns}
-                    sx={{
-                         color: "white",
-                    }}
                     editMode="row"
                     getRowId={(row: typeof IBugLog) => row.WLBugID}
                     getRowHeight={(params) => "auto"}

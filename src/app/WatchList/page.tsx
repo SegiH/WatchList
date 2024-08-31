@@ -23,6 +23,7 @@ export default function WatchList() {
           ratingMax,
           searchTerm,
           setIsAdding,
+          setIsEditing,
           setWatchList,
           setWatchListSortingComplete,
           stillWatching,
@@ -91,16 +92,21 @@ export default function WatchList() {
           }
      }, [setWatchList, setWatchListSortingComplete, watchList, watchListLoadingComplete, watchListSortColumn, watchListSortDirection, watchListSortingComplete]);
 
+     useEffect(() => {
+          setIsAdding(false);
+          setIsEditing(false);
+     }, []);
+
      return (
           <React.Fragment>
                {isLoggedIn && !isError && (
-                    <span className={`bottomMargin20 clickable customTopMargin leftMargin40 ${!darkMode ? " blackForeground whiteBackground" : " whiteForeground blackBackground"}`} onClick={() => openDetailClickHandler(-1)}>
+                    <span className={`bottomMargin20 clickable customTopMargin leftMargin40 ${!darkMode ? " lightMode" : " darkMode"}`} onClick={() => openDetailClickHandler(-1)}>
                          {AddIconComponent}
                     </span>
                )}
 
                {watchList.length > 0 &&
-                    <ul className={`clickable show-list${!darkMode ? " blackForeground whiteBackground" : " whiteForeground blackBackground"}`}>
+                    <ul className={`clickable show-list${!darkMode ? " lightMode" : " darkMode"}`}>
                          {watchList?.filter(
                               (currentWatchList: typeof IWatchList) =>
                                    ((currentWatchList?.Archived === 1 && archivedVisible === true) || (currentWatchList?.Archived === 0 && archivedVisible === false
@@ -117,7 +123,7 @@ export default function WatchList() {
                               const IMDB_JSON = currentWatchList?.IMDB_JSON !== null && typeof currentWatchList?.IMDB_JSON !== "undefined" && currentWatchList?.IMDB_JSON !== "" ? JSON.parse(currentWatchList?.IMDB_JSON) : null;
 
                               return (
-                                   <div key={index} className={`${!darkMode ? "blackForeground whiteBackground" : "whiteForeground blackBackground"}`}>
+                                   <div key={index} className={`${!darkMode ? "lightMode" : "darkMode"}`}>
                                         {watchListSortingComplete && (
                                              <li className="show-item" key={index}>
                                                   <span className="item-id">
@@ -148,21 +154,21 @@ export default function WatchList() {
 
                                                   {currentWatchList?.WatchListTypeID === 2 && <div>Season {currentWatchList?.Season}</div>}
 
-                                                  <div className={`${!darkMode ? "blackForeground whiteBackground" : "whiteForeground blackBackground"}`}>
+                                                  <div className={`${!darkMode ? "lightMode" : "darkMode"}`}>
                                                        {currentWatchList?.StartDate}
                                                        {currentWatchList?.EndDate !== null && currentWatchList?.EndDate !== currentWatchList?.StartDate ? ` - ${currentWatchList?.EndDate}` : ""}
                                                   </div>
 
-                                                  <div className={`${!darkMode ? "blackForeground whiteBackground" : "whiteForeground blackBackground"}`}>
+                                                  <div className={`${!darkMode ? "lightMode" : "darkMode"}`}>
                                                        {currentWatchList?.WatchListTypeName}
                                                   </div>
 
-                                                  <div className={`${!darkMode ? "blackForeground whiteBackground" : "whiteForeground blackBackground"}`}>
+                                                  <div className={`${!darkMode ? "lightMode" : "darkMode"}`}>
                                                        {currentWatchList.WatchListSourceName}
                                                   </div>
 
                                                   {currentWatchList?.Rating !== null && (
-                                                       <div className={`${!darkMode ? "blackForeground whiteBackground" : "whiteForeground blackBackground"}`}>
+                                                       <div className={`${!darkMode ? "lightMode" : "darkMode"}`}>
                                                             {currentWatchList?.Rating}/{ratingMax}
                                                        </div>
                                                   )}

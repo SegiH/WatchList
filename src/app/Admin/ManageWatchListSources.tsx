@@ -161,8 +161,9 @@ const ManageWatchListSources = () => {
                width: 100,
                renderCell: (params: typeof GridRenderEditCellParams) => {
                     return (
-                    <div>{params.value}</div>
-               )},
+                         <div>{params.value}</div>
+                    )
+               },
           },
           {
                field: "WatchListSourceName",
@@ -216,12 +217,9 @@ const ManageWatchListSources = () => {
 
      return (
           <DataGrid
-               className={`${!darkMode ? " blackForeground whiteBackground" : " whiteForeground blackBackground"}`}
+               className={`${!darkMode ? " lightMode" : " darkMode"}`}
                rows={watchListSources}
                columns={columns}
-               sx={{
-                    color: "white",
-               }}
                editMode="row"
                getRowId={(row: typeof IWatchListSource) => row.WatchListSourceID}
                rowModesModel={rowModesModel}
@@ -235,7 +233,9 @@ const ManageWatchListSources = () => {
                componentsProps={{
                     toolbar: { section, setRowModesModel },
                }}
-               experimentalFeatures={{ newEditingApi: true }}
+               columnVisibilityModel={{
+                    deleteActions: !isAdding && !isEditing
+               }}
           />
      );
 };

@@ -12,6 +12,7 @@ const Tabs = () => {
           activeRoute,
           admin,
           bugLogVisible,
+          darkMode,
           demoMode,
           getDisplayName,
           getPath,
@@ -44,7 +45,7 @@ const Tabs = () => {
      return (
           <>
                {isClient && isLoggedInCheckComplete && isLoggedIn && !isError && (
-                    <div className="tabBar">
+                    <div className={`tabBar ${!darkMode ? "lightMode" : "darkMode"}`}>
                          {Object.keys(routeList)
                               .filter((routeName) => {
                                    return routeList[routeName].RequiresAuth === true
@@ -57,8 +58,8 @@ const Tabs = () => {
                               )
                               .map((routeName, index) => {
                                    return (
-                                        <span key={index} className="tab">
-                                             <span className={`tabitem ${activeRoute === routeList[routeName].Name ? "active" : ""}`}>
+                                        <span key={index} className={`tab ${activeRoute === routeList[routeName].Name ? "active" : ""} ${!darkMode ? "lightMode" : "darkMode"}`}>
+                                             <span className={`tabitem ${(!darkMode || (darkMode && darkMode && activeRoute === routeList[routeName].Name)) ? " lightMode" : " darkMode"}`}>
                                                   <span className={`clickable tabIcon`} onClick={() => tabClickHandler(routeList[routeName].Name)}>
                                                        {routeList[routeName].Icon}
                                                   </span>

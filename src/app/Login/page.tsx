@@ -160,7 +160,7 @@ export default function Login() {
                     <div className={`login-page`}>
                          <div className="form">
                               <form className="login-form">
-                                   <span className={`login-label ${!darkMode ? "blackForeground" : "whiteForeground"}`}>WatchList Login</span>
+                                   <span className={`login-label ${!darkMode ? " lightMode" : " darkMode"}`}>WatchList Login</span>
                                    <input type="text" autoFocus disabled={loginSubmitted} value={username} placeholder="username" required onChange={(event) => setUsername(event.target.value)} onKeyUp={handleKeyUp} />
                                    <input type="password" disabled={loginSubmitted} value={password} placeholder="password" required onChange={(event) => setPassword(event.target.value)} onKeyUp={handleKeyUp} />
 

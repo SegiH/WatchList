@@ -1,10 +1,4 @@
-/*body {
-     background-color: black;
-}*/
-
 .form {
-     background-color: rgba(255,255,255,0.13) !important;
-     /*background-color: white;*/
      position: relative;
      z-index: 1;
      max-width: 360px;
@@ -17,7 +11,6 @@
 }
 
 .login-background {
-     background-color: white;
      background-size: cover;
      background-repeat: repeat;
      box-sizing: border-box;

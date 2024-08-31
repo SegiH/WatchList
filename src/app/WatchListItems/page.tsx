@@ -19,6 +19,7 @@ export default function WatchListItems() {
           isError,
           searchTerm,
           setIsAdding,
+          setIsEditing,
           setWatchListItems,
           setWatchListItemsLoadingStarted,
           setWatchListItemsLoadingComplete,
@@ -117,15 +118,20 @@ export default function WatchListItems() {
           }
      }, [setWatchListLoadingStarted, setWatchListItemsLoadingStarted, setWatchListLoadingComplete, setWatchListItemsLoadingComplete, setWatchListItemsSortingComplete, watchListCount, watchListItems.length]);
 
+     useEffect(() => {
+          setIsAdding(false);
+          setIsEditing(false);
+     }, []);
+
      return (
           <>
                {!isError &&
-                    <span className={`clickable customTopMargin leftMargin40 ${!darkMode ? " blackForeground whiteBackground" : " whiteForeground blackBackground"}`} onClick={() => openDetailClickHandler(-1)}>
+                    <span className={`clickable customTopMargin leftMargin40 ${!darkMode ? " lightMode" : " darkMode"}`} onClick={() => openDetailClickHandler(-1)}>
                          {AddIconComponent}
                     </span>
                }
 
-               <ul className={`clickable show-list${!darkMode ? " blackForeground whiteBackground" : " whiteForeground blackBackground"}`}>
+               <ul className={`clickable show-list${!darkMode ? " lightMode" : " darkMode"}`}>
                     {watchListItems?.filter(
                          (currentWatchListItem: typeof IWatchListItem) =>
                               ((currentWatchListItem?.Archived === 1 && archivedVisible === true) || (currentWatchListItem?.Archived === 0 && archivedVisible === false))
@@ -137,7 +143,7 @@ export default function WatchListItems() {
                               const IMDB_JSON =  currentWatchListItem?.IMDB_JSON !== null && typeof currentWatchListItem?.IMDB_JSON !== "undefined" && currentWatchListItem?.IMDB_JSON !== "" ? JSON.parse(currentWatchListItem?.IMDB_JSON) : null;
 
                               return (
-                                   <div key={index} className={`${!darkMode ? "blackForeground whiteBackground" : "whiteForeground blackBackground"}`}>
+                                   <div key={index} className={`${!darkMode ? "lightMode" : "darkMode"}`}>
                                         {watchListItemsSortingComplete && (
                                              <li className="show-item">
                                                   <span className="item-id" onClick={() => openDetailClickHandler(currentWatchListItem?.WatchListItemID)}>
@@ -154,19 +160,19 @@ export default function WatchListItems() {
 
                                                   <div>
                                                        {typeof currentWatchListItem?.IMDB_URL !== "undefined" &&
-                                                            <a  className={`${!darkMode ? "blackForeground whiteBackground" : "whiteForeground blackBackground"}`} href={currentWatchListItem?.IMDB_URL} target='_blank'>{currentWatchListItem?.WatchListItemName}{IMDB_JSON !== null && IMDB_JSON.Year !== null ? ` (${IMDB_JSON.Year})` : ""}</a>
+                                                            <a  className={`${!darkMode ? "lightMode" : "darkMode"}`} href={currentWatchListItem?.IMDB_URL} target='_blank'>{currentWatchListItem?.WatchListItemName}{IMDB_JSON !== null && IMDB_JSON.Year !== null ? ` (${IMDB_JSON.Year})` : ""}</a>
                                                        }
 
                                                        {typeof currentWatchListItem?.IMDB_URL === "undefined" &&
-                                                            <div className={`${!darkMode ? "blackForeground whiteBackground" : "whiteForeground blackBackground"}`}>
+                                                            <div className={`${!darkMode ? "lightMode" : "darkMode"}`}>
                                                                  {currentWatchListItem?.WatchListItemName}{IMDB_JSON !== null && IMDB_JSON.Year !== null ? ` (${IMDB_JSON.Year})` : ""}
                                                             </div>
                                                        }
 
-                                                       {currentWatchListItem?.Archived === true ? <span className={`${!darkMode ? "blackForeground whiteBackground" : "whiteForeground blackBackground"}`}>&nbsp;(A)</span> : <></>}
+                                                       {currentWatchListItem?.Archived === true ? <span className={`${!darkMode ? "lightMode" : "darkMode"}`}>&nbsp;(A)</span> : <></>}
                                                   </div>
 
-                                                  <span className={`${!darkMode ? "blackForeground whiteBackground" : "whiteForeground blackBackground"}`}>
+                                                  <span className={`${!darkMode ? "lightMode" : "darkMode"}`}>
                                                        <div>{currentWatchListItem?.WatchListTypeName}</div>
                                                   </span>
                                              </li>

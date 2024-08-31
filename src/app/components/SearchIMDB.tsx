@@ -230,7 +230,7 @@ export default function SearchIMDB() {
      }, [searchSection, searchTerm]);
 
      return (
-          <div className={`modal zIndex ${!darkMode ? " blackForeground whiteBackground" : " whiteForeground blackBackground"}`}>
+          <div className={`modal zIndex ${!darkMode ? " lightMode" : " darkMode"}`}>
                <div className={`modal-content ${searchLoadingComplete === true ? "" : "customModalHeight"}`}>
                     {searchLoadingStarted &&
                          <>

@@ -50,6 +50,7 @@ const SharedLayout = () => {
           setIsClient(newIsClient);
      }, []);
 
+     // This is the only way to really set the  body class based on dark mode
      useEffect(() => {
           document.body.className = darkMode ? 'darkMode' : '';
      }, [darkMode]);
@@ -59,18 +60,18 @@ const SharedLayout = () => {
      }
 
      return (
-          <span className={`${!darkMode ? " blackForeground whiteBackground" : " whiteForeground blackBackground"}`}>
+          <span className={`${!darkMode ? "lightMode" : "darkMode"}`}>
                {!isError &&
                     <>
                          {isLoggedIn && watchListSourcesLoadingComplete && watchListTypesLoadingComplete &&
                               <>
                                    <span className={`menuBar`}>
-                                        <span className={`leftMargin menuBarActiveRoute${!darkMode ? " blackForeground whiteBackground" : " whiteForeground blackBackground"}`}>{activeRouteDisplayName}{demoMode ? " (Demo)" : ""}</span>
+                                        <span className={`leftMargin menuBarActiveRoute${!darkMode ? " lightMode" : " darkMode"}`}>{activeRouteDisplayName}{demoMode ? " (Demo)" : ""}</span>
 
                                         {activeRoute === "WatchList" &&
                                              <>
                                                   <span className="firstItem leftMargin">
-                                                       <span className={`stillWatching${!darkMode ? " blackForeground whiteBackground" : " whiteForeground blackBackground"}`}>Still Watching</span>
+                                                       <span className={`stillWatching${!darkMode ? " lightMode" : " darkMode"}`}>Still Watching</span>
                                                   </span>
 
                                                   <span title="Stuff you are still watching">
@@ -84,7 +85,7 @@ const SharedLayout = () => {
 
                                         {activeRoute === "WatchList" &&
                                              <>
-                                                  <span className={`firstItem leftMargin${!darkMode ? " blackForeground whiteBackground" : " whiteForeground blackBackground"}`}>
+                                                  <span className={`firstItem leftMargin${!darkMode ? " lightMode" : " darkMode"}`}>
                                                        <span>Source</span>
                                                   </span>
 
@@ -107,7 +108,7 @@ const SharedLayout = () => {
 
                                         {(activeRoute === "WatchList" || activeRoute === "WatchListItems") &&
                                              <>
-                                                  <span className={`firstItem leftMargin ${!darkMode ? " blackForeground whiteBackground" : " whiteForeground blackBackground"}`}>
+                                                  <span className={`firstItem leftMargin ${!darkMode ? " lightMode" : " darkMode"}`}>
                                                        <span>Type</span>
                                                   </span>
 
@@ -125,7 +126,7 @@ const SharedLayout = () => {
                                                        </select>
                                                   </span>
 
-                                                  <span className={`firstItem leftMargin${!darkMode ? " blackForeground whiteBackground" : " whiteForeground blackBackground"}`}>
+                                                  <span className={`firstItem leftMargin${!darkMode ? " lightMode" : " darkMode"}`}>
                                                        <span>Sort By</span>
                                                   </span>
 
@@ -162,13 +163,13 @@ const SharedLayout = () => {
                                                        </select>
                                                   </span>
 
-                                                  <span className={`clickable leftMargin searchIcon${!darkMode ? " blackForeground" : ""}`} style={{ color: "white" }} onClick={showSearch}>
+                                                  <span className={`clickable leftMargin searchIcon${!darkMode ? " lightMode" : " darkMode"}`} onClick={showSearch}>
                                                        {SearchIconComponent}
                                                   </span>
                                              </>
                                         }
 
-                                        <span className={`clickable leftMargin settingsIcon${!darkMode ? " blackForeground" : ""}`} style={{ color: "white" }} onClick={showSettings}>
+                                        <span className={`clickable leftMargin settingsIcon${!darkMode ? " lightMode" : " darkMode"}`} onClick={showSettings}>
                                              {SettingsIconComponent}
                                         </span>
                                    </span>

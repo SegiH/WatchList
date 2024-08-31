@@ -23,6 +23,7 @@ const EditToolbar = ({ section, setRowModesModel, setShowActiveBugLogs, showActi
 
      const {
           bugLogs,
+          darkMode,
           getFormattedDate,
           isAdding,
           isEditing,
@@ -90,7 +91,7 @@ const EditToolbar = ({ section, setRowModesModel, setShowActiveBugLogs, showActi
                          {section === "Bug Log" &&
                               <span>
                                    Show Active Bug Logs
-                                   <input type="checkbox" checked={showActiveBugLogs} onChange={(event) => setShowActiveBugLogs(event.target.checked)} />
+                                   <input className={`${!darkMode ? "lightMode" : "darkMode"}`} type="checkbox" checked={showActiveBugLogs} onChange={(event) => setShowActiveBugLogs(event.target.checked)} />
                               </span>
                          }
                     </GridToolbarContainer>

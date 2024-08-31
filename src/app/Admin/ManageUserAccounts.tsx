@@ -12,6 +12,7 @@ const EditToolbar = require("./EditToolbar").default;
 const GridEventListener = require("@mui/x-data-grid").GridEventListener;
 const GridParams = require("@mui/x-data-grid").GridParams;
 const GridActionsCellItem = require("@mui/x-data-grid").GridActionsCellItem;
+const GridColumnHeaderParams = require("@mui/x-data-grid").GridColumnHeaderParams;
 const GridRenderEditCellParams = require("@mui/x-data-grid").GridRenderEditCellParams;
 const GridRowModes = require("@mui/x-data-grid").GridRowModes;
 const IUser = require("../interfaces/IUser");
@@ -280,9 +281,10 @@ const ManageUserAccounts = () => {
                width: 100,
                editable: false,
                type: "number",
+               headerClassName: !darkMode ? "lightMode" : "darkMode",
                renderCell: (params: typeof GridRenderEditCellParams) => {
                     return (
-                    <div>{params.value}</div>
+                    <div className={`${!darkMode ? "lightMode" : "darkMode"}`}>{params.value}</div>
                )},
           },
           {
@@ -290,6 +292,11 @@ const ManageUserAccounts = () => {
                headerName: "User name",
                editable: true,
                width: 150,
+               headerClassName: !darkMode ? "lightMode" : "darkMode",
+               renderCell: (params: typeof GridRenderEditCellParams) => {
+                    return (
+                    <div className={`${!darkMode ? "lightMode" : "darkMode"}`}>{params.value}</div>
+               )},
           },
           {
                field: "Realname",
@@ -302,6 +309,7 @@ const ManageUserAccounts = () => {
                headerName: "Password",
                editable: false,
                width: 230,
+               headerClassName: !darkMode ? "lightMode" : "darkMode",
                renderCell: (params: typeof GridParams) => {
                     return (
                          <Button
@@ -328,8 +336,9 @@ const ManageUserAccounts = () => {
                enabled: false,
                width: 130,
                type: "boolean",
+               headerClassName: !darkMode ? "lightMode" : "darkMode",
                renderCell: (params: typeof GridRenderEditCellParams) => (
-                    <div>{params.value == true ? "Y" : "N"}</div>
+                    <div className={`${!darkMode ? "lightMode" : "darkMode"}`}>{params.value == true ? "Y" : "N"}</div>
                ),
           },
           {
@@ -338,8 +347,9 @@ const ManageUserAccounts = () => {
                editable: true,
                width: 130,
                type: "boolean",
+               headerClassName: !darkMode ? "lightMode" : "darkMode",
                renderCell: (params: typeof GridRenderEditCellParams) => (
-                    <div>{params.value == true ? "Y" : "N"}</div>
+                    <div className={`${!darkMode ? "lightMode" : "darkMode"}`}>{params.value == true ? "Y" : "N"}</div>
                ),
           },
           {
@@ -348,13 +358,14 @@ const ManageUserAccounts = () => {
                headerName: "Actions",
                width: 100,
                cellClassName: "actions",
+               headerClassName: !darkMode ? "lightMode" : "darkMode",
                getActions: ({ id }: { id: number }) => {
                     const newestUser = users?.filter((user: typeof IUser) => user.UserID === id && user.isNew === true);
 
                     if (editingId === null && !isAdding && !isEditing) {
-                         return [<GridActionsCellItem key={id} icon={EditIconComponent} label="Edit" className="icon textPrimary" onClick={enterEditModeClickHandler(id)} color="inherit" />];
+                         return [<GridActionsCellItem key={id} icon={EditIconComponent} label="Edit" className={`icon`} onClick={enterEditModeClickHandler(id)} color="inherit" />];
                     } else if ((isEditing && editingId === id) || (isAdding && newestUser.length === 1)) {
-                         return [<GridActionsCellItem key={id} icon={SaveIconComponent} className="icon textPrimary" label="Save" onClick={saveRowEditClickHandler(id)} color="primary" />, <GridActionsCellItem key={id} icon={CancelIconComponent} label="Cancel" className="icon textPrimary" onClick={cancelRowEditClickHandler(id)} color="error" />];
+                         return [<GridActionsCellItem key={id} icon={SaveIconComponent} className="icon" label="Save" onClick={saveRowEditClickHandler(id)} color="primary" />, <GridActionsCellItem key={id} icon={CancelIconComponent} label="Cancel" className="icon textPrimary" onClick={cancelRowEditClickHandler(id)} color="error" />];
                     } else {
                          return [<></>]
                     }
@@ -402,12 +413,9 @@ const ManageUserAccounts = () => {
           <>
                {users && users.length > 0 &&
                     <DataGrid
-                         className={`${!darkMode ? " blackForeground whiteBackground" : " whiteForeground blackBackground"}`}
+                         className={`${!darkMode ? "lightMode" : "darkMode"}`}
                          rows={users}
                          columns={columns}
-                         sx={{
-                              color: "white",
-                         }}
                          editMode="row"
                          getRowId={(row: typeof IUser) => row.UserID}
                          rowModesModel={rowModesModel}

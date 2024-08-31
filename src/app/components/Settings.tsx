@@ -68,7 +68,7 @@ const Settings = () => {
 
      return (
           <div className="modal">
-               <div className="modal-content settingsPanel textLabel">
+               <div className={`modal-content settingsPanel textLabel ${!darkMode ? " lightMode" : " darkMode"}`}>
                     <div onDoubleClick={titleClickHandler}>Settings</div>
                     <span className="clickable closeButton closeButtonAdjustment" onClick={closeDetail}>
                          X

@@ -13,13 +13,13 @@ export default function ErrorPage() {
      const router = useRouter();
 
      return (
-          <div className={`${!darkMode ? " blackForeground whiteBackground" : " whiteForeground blackBackground"}`}>
+          <div className={`${!darkMode ? " lightMode" : " darkMode"}`}>
                <span>
                     <img src="/404.jpg" alt="Uh oh. Something went wrong" />
 
                     <br /><br />
 
-                    <a className={`clickable largeText ${!darkMode ? " blackForeground whiteBackground" : " whiteForeground blackBackground"}`} onClick={() => router.push("/")}>Go Home</a>
+                    <a className={`clickable largeText ${!darkMode ? " lightMode" : " darkMode"}`} onClick={() => router.push("/")}>Go Home</a>
 
                     <h1>{isErrorMessage}</h1>
                </span>

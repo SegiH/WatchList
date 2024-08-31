@@ -108,7 +108,7 @@ export default function Setup() {
                <div className={`login-page`}>
                     <div className="form">
                          <form className="login-form">
-                              <span className={`login-label ${!darkMode ? "blackForeground" : "whiteForeground"}`}>WatchList Setup</span>
+                              <span className={`login-label ${!darkMode ? " lightMode" : " darkMode"}`}>WatchList Setup</span>
 
                               <input type="text" autoFocus disabled={submitClicked} value={realname} placeholder="Name" required onChange={(event) => setRealname(event.target.value)} onKeyUp={handleKeyUp} />
                               <input type="text" autoFocus disabled={submitClicked} value={username} placeholder="Username" required onChange={(event) => setUsername(event.target.value)} onKeyUp={handleKeyUp} />

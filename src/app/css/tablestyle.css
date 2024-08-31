@@ -24,13 +24,11 @@
 }
 
 .data ul {
-    background-color: white;
     border-radius: 15px !important;
     display: inline;
 }
 
 .data li {
-    background-color: #FCFBF4;
     border-radius: 15px;
     display: flex;
     list-style-type: none;

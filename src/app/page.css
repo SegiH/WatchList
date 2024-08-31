@@ -455,6 +455,7 @@ input:checked+.slider:before {
      transition: all 1s;
      min-width: 400px !important;
      height: 50px;
+     background: white;
      box-sizing: border-box;
      border-radius: 25px;
      border: 4px solid white;

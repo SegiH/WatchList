@@ -52,19 +52,19 @@ const SharedLayout = () => {
 
      useEffect(() => {
           document.body.className = darkMode ? 'darkMode' : '';
-      }, [darkMode]);
+     }, [darkMode]);
 
      if (!isLoggedIn || !isClient) {
           return <></>
      }
 
      return (
-          <React.Fragment className={`${!darkMode ? " blackForeground whiteBackground" : " whiteForeground blackBackground"}`}>
+          <span className={`${!darkMode ? " blackForeground whiteBackground" : " whiteForeground blackBackground"}`}>
                {!isError &&
                     <>
                          {isLoggedIn && watchListSourcesLoadingComplete && watchListTypesLoadingComplete &&
                               <>
-                                   <span className={`menuBar${!darkMode ? " blackForeground blackBackground" : " whiteForeground blackBackground"}`}>
+                                   <span className={`menuBar`}>
                                         <span className={`leftMargin menuBarActiveRoute${!darkMode ? " blackForeground whiteBackground" : " whiteForeground blackBackground"}`}>{activeRouteDisplayName}{demoMode ? " (Demo)" : ""}</span>
 
                                         {activeRoute === "WatchList" &&
@@ -184,7 +184,7 @@ const SharedLayout = () => {
                          }
                     </>
                }
-          </React.Fragment>
+          </span>
      )
 }
 

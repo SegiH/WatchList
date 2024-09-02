@@ -305,7 +305,6 @@ export default function BugLog() {
 
      return (
           <span className="topMarginContent">
-               Bug Log
                <DataGrid
                     className={`${!darkMode ? " lightMode" : " darkMode"}`}
                     rows={bugLogs}

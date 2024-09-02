@@ -65,7 +65,7 @@ const SharedLayout = () => {
                     <>
                          {isLoggedIn && watchListSourcesLoadingComplete && watchListTypesLoadingComplete &&
                               <>
-                                   <span className={`menuBar`}>
+                                   <span className={`menuBar ${!darkMode ? "lightMode" : "darkMode"}`}>
                                         <span className={`leftMargin menuBarActiveRoute${!darkMode ? " lightMode" : " darkMode"}`}>{activeRouteDisplayName}{demoMode ? " (Demo)" : ""}</span>
 
                                         {activeRoute === "WatchList" &&

@@ -309,16 +309,17 @@ input:checked+.slider:before {
      border-color: white;
      border-width: 1px;
      border-style: solid;
-     box-shadow:
-          0 2px 2px 0 rgba(0, 0, 0, 0.14),
-          0 3px 1px -2px rgba(0, 0, 0, 0.2),
-          0 1px 5px 0 rgba(0, 0, 0, 0.12);
      display: inline-flex;
      min-height: 56px;
      width: 100%;
      margin-bottom: 15px;
      overflow: scroll;
      scrollbar-width: none;
+     position: fixed;
+     top: 0;
+     left: 0;
+     z-index: 999;
+     width: 100%;
 }
 
 .menuBarActive {
@@ -547,7 +548,7 @@ input:checked+.slider:before {
      margin-bottom: 45px;
      margin-right: 55px;
      /*max-width: 175px;*/
-     max-height: 350px;
+     /*max-height: 350px;*/
      overflow: hidden;
      text-align: center;
      vertical-align: top;

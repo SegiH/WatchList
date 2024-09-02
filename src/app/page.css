@@ -1,3 +1,10 @@
+:root {
+     --light-mode-foregroundColor: black;
+     --light-mode-backgroundColor: white;
+     --dark-mode-foregroundColor: white;
+     --dark-mode-backgroundColor: black;
+}
+
 @media only screen and (min-width: 992px) {
      .searchIcon {
           margin-left: auto !important;
@@ -72,13 +79,13 @@ input:checked+.slider:before {
 
 /* Move me later! */
 .lightMode {
-     color: black;
-     background-color: white;
+     color: var(--light-mode-foregroundColor);
+     background-color: var(--light-mode-backgroundColor);
 }
 
 .darkMode {
-     color: white;
-     background-color: black;
+     color: var(--dark-mode-foregroundColor);
+     background-color: var(--dark-mode-backgroundColor);
 }
 
 .addSearchResultIcon {
@@ -306,7 +313,6 @@ input:checked+.slider:before {
 .menuBar {
      align-items: center;
      border-radius: 15px;
-     border-color: white;
      border-width: 1px;
      border-style: solid;
      display: inline-flex;
@@ -320,6 +326,14 @@ input:checked+.slider:before {
      left: 0;
      z-index: 999;
      width: 100%;
+}
+
+.menuBar .lightMode {
+     border-color: var(--light-mode-foregroundColor);
+}
+
+.menuBar .darkMode {
+     border-color: var(--dark-mode-foregroundColor) !important;
 }
 
 .menuBarActive {

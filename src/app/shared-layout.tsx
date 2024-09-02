@@ -60,7 +60,7 @@ const SharedLayout = () => {
      }
 
      return (
-          <span className={`${!darkMode ? "lightMode" : "darkMode"}`}>
+          <span>
                {!isError &&
                     <>
                          {isLoggedIn && watchListSourcesLoadingComplete && watchListTypesLoadingComplete &&

@@ -98,7 +98,7 @@ export default function WatchList() {
      }, []);
 
      return (
-          <React.Fragment>
+          <span className="topMarginContent">
                {isLoggedIn && !isError && (
                     <span className={`bottomMargin20 clickable customTopMargin leftMargin40 ${!darkMode ? " lightMode" : " darkMode"}`} onClick={() => openDetailClickHandler(-1)}>
                          {AddIconComponent}
@@ -179,6 +179,6 @@ export default function WatchList() {
                          })}
                     </ul>
                }
-          </React.Fragment>
+          </span>
      )
 }

@@ -712,7 +712,7 @@ export default function WatchListStats() {
      }
 
      return (
-          <>
+          <span className="topMarginContent">
                <div className={`flex-container${!darkMode ? " lightMode" : " darkMode"}`}>
                     <div className="col-1">
                          {sourceStats !== null && watchListSourceStats?.length > 0 &&
@@ -868,6 +868,6 @@ export default function WatchListStats() {
                          </div>
                     }
                </div>
-          </>
+          </span>
      );
 }

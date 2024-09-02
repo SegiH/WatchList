@@ -304,7 +304,7 @@ export default function BugLog() {
      }, [showActiveBugLogs]);
 
      return (
-          <>
+          <span className="topMarginContent">
                Bug Log
                <DataGrid
                     className={`${!darkMode ? " lightMode" : " darkMode"}`}
@@ -326,6 +326,6 @@ export default function BugLog() {
                     }}
                     experimentalFeatures={{ newEditingApi: true }}
                />
-          </>
+          </span>
      )
 }

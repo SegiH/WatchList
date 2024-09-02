@@ -124,7 +124,7 @@ export default function WatchListItems() {
      }, []);
 
      return (
-          <>
+          <span className="topMarginContent">
                {!isError &&
                     <span className={`clickable customTopMargin leftMargin40 ${!darkMode ? " lightMode" : " darkMode"}`} onClick={() => openDetailClickHandler(-1)}>
                          {AddIconComponent}
@@ -181,6 +181,6 @@ export default function WatchListItems() {
                               );
                          })}
                </ul>
-          </>
+          </span>
      )
 }

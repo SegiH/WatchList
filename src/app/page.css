@@ -318,7 +318,6 @@ input:checked+.slider:before {
      display: inline-flex;
      min-height: 56px;
      width: 100%;
-     margin-bottom: 15px;
      overflow: scroll;
      scrollbar-width: none;
      position: fixed;
@@ -683,6 +682,12 @@ input:checked+.slider:before {
 
 .topMargin {
      margin-top: 25px !important;
+}
+
+
+.topMarginContent {
+     position: relative;
+     top: 50px !important;
 }
 
 .unsetcardwidth {

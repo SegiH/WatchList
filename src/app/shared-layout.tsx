@@ -3,6 +3,7 @@ const React = require("react");
 const useContext = require("react").useContext;
 const useEffect = require("react").useEffect;
 const useState = require("react").useState;
+const useCallback = require("react").useCallback;
 
 const IWatchListSource = require("./interfaces/IWatchListSource");
 const IWatchListType = require("./interfaces/IWatchListType");
@@ -14,10 +15,12 @@ const SharedLayout = () => {
      const {
           activeRoute,
           activeRouteDisplayName,
+          AddIconComponent,
           darkMode,
           demoMode,
           isError,
           isLoggedIn,
+          openDetailClickHandler,
           SearchIconComponent,
           searchVisible,
           setSourceFilter,
@@ -67,6 +70,16 @@ const SharedLayout = () => {
                               <>
                                    <span className={`menuBar ${!darkMode ? "lightMode" : "darkMode"}`}>
                                         <span className={`leftMargin menuBarActiveRoute${!darkMode ? " lightMode" : " darkMode"}`}>{activeRouteDisplayName}{demoMode ? " (Demo)" : ""}</span>
+
+                                        {(activeRoute === "WatchList" || activeRoute === "WatchListItems") &&
+                                        <>
+                                             { isLoggedIn && !isError && (
+                                                  <span className={`bottomMargin20 clickable customTopMargin leftMargin40 ${!darkMode ? " lightMode" : " darkMode"}`} onClick={() => openDetailClickHandler(-1)}>
+                                                       {AddIconComponent}
+                                                  </span>
+                                             )}
+                                             </>
+                                        }
 
                                         {activeRoute === "WatchList" &&
                                              <>
@@ -173,15 +186,15 @@ const SharedLayout = () => {
                                              {SettingsIconComponent}
                                         </span>
                                    </span>
+
+                                   {searchVisible &&
+                                        <SearchIMDB />
+                                   }
+
+                                   {settingsVisible &&
+                                        <Settings />
+                                   }
                               </>
-                         }
-
-                         {searchVisible &&
-                              <SearchIMDB />
-                         }
-
-                         {settingsVisible &&
-                              <Settings />
                          }
                     </>
                }

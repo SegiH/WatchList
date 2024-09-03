@@ -12,12 +12,12 @@ import { DataContext, DataContextType } from "../data-context";
 
 export default function WatchListItems() {
      const {
-          AddIconComponent,
           archivedVisible,
           BrokenImageIconComponent,
           darkMode,
-          isError,
+          openDetailClickHandler,
           searchTerm,
+          setActiveRoute,
           setIsAdding,
           setIsEditing,
           setWatchListItems,
@@ -36,18 +36,7 @@ export default function WatchListItems() {
           watchListSortDirection
      } = useContext(DataContext) as DataContextType;
 
-     const router = useRouter();
      const watchListCount = watchList.length;
-
-     const openDetailClickHandler = (watchListItemID: number) => {
-          if (watchListItemID !== null) {
-               if (watchListItemID === -1) {
-                    setIsAdding(true);
-               }
-
-               router.push(`/WatchListItems/Dtl?WatchListItemID=${watchListItemID}`);
-          }
-     };
 
      const setImageLoaded = (watchListItemID: number) => (): void => {
           const newWatchListItems: typeof IWatchListItem = Object.assign(typeof WatchListItems, watchListItems);
@@ -119,18 +108,13 @@ export default function WatchListItems() {
      }, [setWatchListLoadingStarted, setWatchListItemsLoadingStarted, setWatchListLoadingComplete, setWatchListItemsLoadingComplete, setWatchListItemsSortingComplete, watchListCount, watchListItems.length]);
 
      useEffect(() => {
+          setActiveRoute("WatchListItems");
           setIsAdding(false);
           setIsEditing(false);
      }, []);
 
      return (
           <span className="topMarginContent">
-               {!isError &&
-                    <span className={`clickable customTopMargin leftMargin40 ${!darkMode ? " lightMode" : " darkMode"}`} onClick={() => openDetailClickHandler(-1)}>
-                         {AddIconComponent}
-                    </span>
-               }
-
                <ul className={`clickable show-list${!darkMode ? " lightMode" : " darkMode"}`}>
                     {watchListItems?.filter(
                          (currentWatchListItem: typeof IWatchListItem) =>

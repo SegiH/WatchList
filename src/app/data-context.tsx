@@ -104,6 +104,7 @@ export interface DataContextType {
      isLoggedIn: boolean;
      isLoggedInCheckComplete: boolean;
      LogOutIconComponent: React.ReactNode;
+     openDetailClickHandler: (value: number) => void;
      ratingMax: number;
      recommendationsEnabled: boolean,
      RemoveIconComponent: React.ReactNode;
@@ -314,6 +315,22 @@ const DataProvider = ({ children }) => {
 
           return true;
      }, [isLoggedIn, isLoggedInCheckComplete]);
+
+     const openDetailClickHandler = useCallback((Id: number) => {
+          if (activeRoute === "WatchList" && Id !== null) {
+               if (Id === -1) {
+                    setIsAdding(true);
+               }
+
+               router.push(`/WatchList/Dtl${Id !== -1 ? `?WatchListID=${Id}` : ""}`);
+          } else if (activeRoute === "WatchListItems" && Id !== null) {
+               if (Id === -1) {
+                    setIsAdding(true);
+               }
+
+               router.push(`/WatchListItems/Dtl?WatchListItemID=${Id}`);
+          }
+     }, [activeRoute, setIsAdding]);
 
      const showSearch = () => {
           setSearchVisible(true);
@@ -923,6 +940,7 @@ const DataProvider = ({ children }) => {
           isLoggedIn: isLoggedIn,
           isLoggedInCheckComplete: isLoggedInCheckComplete,
           LogOutIconComponent: LogOutIconComponent,
+          openDetailClickHandler: openDetailClickHandler,
           ratingMax: ratingMax,
           recommendationsEnabled: recommendationsEnabled,
           RemoveIconComponent: RemoveIconComponent,

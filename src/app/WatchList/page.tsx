@@ -14,14 +14,14 @@ import "../page.css";
 
 export default function WatchList() {
      const {
-          AddIconComponent,
+          activeRoute,
           archivedVisible,
           BrokenImageIconComponent,
           darkMode,
-          isError,
-          isLoggedIn,
+          openDetailClickHandler,
           ratingMax,
           searchTerm,
+          setActiveRoute,
           setIsAdding,
           setIsEditing,
           setWatchList,
@@ -35,18 +35,6 @@ export default function WatchList() {
           watchListSortDirection,
           watchListSortingComplete
      } = useContext(DataContext) as DataContextType;
-
-     const router = useRouter();
-
-     const openDetailClickHandler = useCallback((watchListID: number) => {
-          if (watchListID !== null) {
-               if (watchListID === -1) {
-                    setIsAdding(true);
-               }
-
-               router.push(`/WatchList/Dtl${watchListID !== -1 ? `?WatchListID=${watchListID}` : ""}`);
-          }
-     }, [setIsAdding]);
 
      const showDefaultSrc = (watchListID: number) => (): void => {
           const newWatchList = Object.assign([], watchList);
@@ -93,18 +81,13 @@ export default function WatchList() {
      }, [setWatchList, setWatchListSortingComplete, watchList, watchListLoadingComplete, watchListSortColumn, watchListSortDirection, watchListSortingComplete]);
 
      useEffect(() => {
+          setActiveRoute("WatchList");
           setIsAdding(false);
           setIsEditing(false);
      }, []);
 
      return (
           <span className="topMarginContent">
-               {isLoggedIn && !isError && (
-                    <span className={`bottomMargin20 clickable customTopMargin leftMargin40 ${!darkMode ? " lightMode" : " darkMode"}`} onClick={() => openDetailClickHandler(-1)}>
-                         {AddIconComponent}
-                    </span>
-               )}
-
                {watchList.length > 0 &&
                     <ul className={`clickable show-list${!darkMode ? " lightMode" : " darkMode"}`}>
                          {watchList?.filter(

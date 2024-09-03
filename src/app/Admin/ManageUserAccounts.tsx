@@ -42,7 +42,7 @@ const ManageUserAccounts = () => {
           setIsAdding,
           setIsEditing,
           setIsError,
-          setIsErrorMessage,
+          setErrorMessage,
           setUsers,
           users,
           validatePassword
@@ -396,14 +396,14 @@ const ManageUserAccounts = () => {
                          if (res.data[0] === "OK") {
                               setUsers(res.data[1]);
                          } else {
-                              setIsErrorMessage(res.data[1]);
+                              setErrorMessage(res.data[1]);
                               setIsError(true);
                          }
 
                          setUsersLoadingComplete(true);
                     })
                     .catch((err: Error) => {
-                         setIsErrorMessage("Failed to get users with the error " + err.message);
+                         setErrorMessage("Failed to get users with the error " + err.message);
                          setIsError(true);
                     });
           }

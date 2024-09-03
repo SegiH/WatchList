@@ -33,7 +33,7 @@ export default function WatchListStats() {
           demoMode,
           ratingMax,
           setIsError,
-          setIsErrorMessage
+          setErrorMessage
      } = useContext(DataContext) as DataContextType
 
      const [watchListMovieTop10Stats, setWatchListMovieTop10Stats] = useState([]);
@@ -138,12 +138,12 @@ export default function WatchListStats() {
                               setWatchListMovieTop10Stats(res.data[1]);
                               setWatchListMovieTop10StatsLoadingComplete(true);
                          } else {
-                              setIsErrorMessage(`The following error occurred getting the WatchList Movie Top 10 Stats: ${res.data[1]}`);
+                              setErrorMessage(`The following error occurred getting the WatchList Movie Top 10 Stats: ${res.data[1]}`);
                               setIsError(true);
                          }
                     })
                     .catch((err: Error) => {
-                         setIsErrorMessage("Failed to get WatchList Movie Top 10 Stats with the error " + err.message);
+                         setErrorMessage("Failed to get WatchList Movie Top 10 Stats with the error " + err.message);
                          setIsError(true);
                     });
           }
@@ -173,12 +173,12 @@ export default function WatchListStats() {
                               setWatchListMovieCountStats(res.data[1]);
                               setWatchListMovieCountStatsLoadingComplete(true);
                          } else {
-                              setIsErrorMessage(`The following error occurred getting the WatchList Movie count stats: ${res.data[1]}`);
+                              setErrorMessage(`The following error occurred getting the WatchList Movie count stats: ${res.data[1]}`);
                               setIsError(true);
                          }
                     })
                     .catch((err: Error) => {
-                         setIsErrorMessage("Failed to get WatchList Movie count stats with the error " + err.message);
+                         setErrorMessage("Failed to get WatchList Movie count stats with the error " + err.message);
                          setIsError(true);
                     });
           }
@@ -223,12 +223,12 @@ export default function WatchListStats() {
                               setWatchListSourceDtlStats(res.data[1]);
                               setWatchListSourceDtlLoadingComplete(true);
                          } else {
-                              setIsErrorMessage(`The following error occurred getting the WatchList Source Stats: ${res.data[1]}`);
+                              setErrorMessage(`The following error occurred getting the WatchList Source Stats: ${res.data[1]}`);
                               setIsError(true);
                          }
                     })
                     .catch((err: Error) => {
-                         setIsErrorMessage(`The fatal error ${err.message} occurred while getting the detail`);
+                         setErrorMessage(`The fatal error ${err.message} occurred while getting the detail`);
                          setIsError(true);
                     });
           }
@@ -243,12 +243,12 @@ export default function WatchListStats() {
                               setWatchListSourceStats(res.data[1]);
                               setWatchListSourceStatsLoadingComplete(true);
                          } else {
-                              setIsErrorMessage(`The following error occurred getting the WatchList Source Stats: ${res.data[1]}`);
+                              setErrorMessage(`The following error occurred getting the WatchList Source Stats: ${res.data[1]}`);
                               setIsError(true);
                          }
                     })
                     .catch((err: Error) => {
-                         setIsErrorMessage("Failed to get WatchList Source Stats with the error " + err.message);
+                         setErrorMessage("Failed to get WatchList Source Stats with the error " + err.message);
                          setIsError(true);
                     });
           }
@@ -278,12 +278,12 @@ export default function WatchListStats() {
                               setWatchListTopRatedStats(res.data[1]);
                               setWatchListTopRatedStatsLoadingComplete(true);
                          } else {
-                              setIsErrorMessage(`The following error occurred getting the WatchList Top Rated Stats: ${res.data[1]}`);
+                              setErrorMessage(`The following error occurred getting the WatchList Top Rated Stats: ${res.data[1]}`);
                               setIsError(true);
                          }
                     })
                     .catch((err: Error) => {
-                         setIsErrorMessage("Failed to get WatchList Top Rated Stats with the error " + err.message);
+                         setErrorMessage("Failed to get WatchList Top Rated Stats with the error " + err.message);
                          setIsError(true);
                     });
           }
@@ -313,12 +313,12 @@ export default function WatchListStats() {
                               setWatchListTVTop10Stats(res.data[1]);
                               setWatchListTVTop10StatsLoadingComplete(true);
                          } else {
-                              setIsErrorMessage(`The following error occurred getting the WatchList TV Top 10 Rated Stats: ${res.data[1]}`);
+                              setErrorMessage(`The following error occurred getting the WatchList TV Top 10 Rated Stats: ${res.data[1]}`);
                               setIsError(true);
                          }
                     })
                     .catch((err: Error) => {
-                         setIsErrorMessage("Failed to get WatchList TV Top 10 Stats with the error " + err.message);
+                         setErrorMessage("Failed to get WatchList TV Top 10 Stats with the error " + err.message);
                          setIsError(true);
                     });
           }
@@ -348,12 +348,12 @@ export default function WatchListStats() {
                               setWatchListTVSeasonsCountStats(res.data[1]);
                               setWatchListTVSeasonsCountStatsLoadingComplete(true);
                          } else {
-                              setIsErrorMessage(`The following error occurred getting the WatchList TV seasons count stats: ${res.data[1]}`);
+                              setErrorMessage(`The following error occurred getting the WatchList TV seasons count stats: ${res.data[1]}`);
                               setIsError(true);
                          }
                     })
                     .catch((err: Error) => {
-                         setIsErrorMessage("Failed to get WatchList TV seasons count stats with the error " + err.message);
+                         setErrorMessage("Failed to get WatchList TV seasons count stats with the error " + err.message);
                          setIsError(true);
                     });
           }
@@ -383,12 +383,12 @@ export default function WatchListStats() {
                               setWatchListTVTotalCountStats(res.data[1]);
                               setWatchListTVTotalCountStatsLoadingComplete(true);
                          } else {
-                              setIsErrorMessage(`The following error occurred getting the WatchList TV total count stats: ${res.data[1]}`);
+                              setErrorMessage(`The following error occurred getting the WatchList TV total count stats: ${res.data[1]}`);
                               setIsError(true);
                          }
                     })
                     .catch((err: Error) => {
-                         setIsErrorMessage("Failed to get WatchList TV total count stats with the error " + err.message);
+                         setErrorMessage("Failed to get WatchList TV total count stats with the error " + err.message);
                          setIsError(true);
                     });
           }
@@ -450,12 +450,12 @@ export default function WatchListStats() {
                               setWatchListWeeklyTVTotalStats(res.data[3]);
                               setWatchListWeeklyTVTotalStatsLoadingComplete(true);
                          } else {
-                              setIsErrorMessage(`The following error occurred getting the WatchList weekly stats: ${res.data[1]}`);
+                              setErrorMessage(`The following error occurred getting the WatchList weekly stats: ${res.data[1]}`);
                               setIsError(true);
                          }
                     })
                     .catch((err: Error) => {
-                         setIsErrorMessage("Failed to get WatchList weekly stats with the error " + err.message);
+                         setErrorMessage("Failed to get WatchList weekly stats with the error " + err.message);
                          setIsError(true);
                     });
           }

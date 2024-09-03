@@ -7,7 +7,7 @@ import { DataContext, DataContextType } from "../data-context";
 export default function ErrorPage() {
      const {
           darkMode,
-          isErrorMessage
+          errorMessage
      } = useContext(DataContext) as DataContextType
 
      const router = useRouter();
@@ -21,7 +21,7 @@ export default function ErrorPage() {
 
                     <a className={`clickable largeText ${!darkMode ? " lightMode" : " darkMode"}`} onClick={() => router.push("/")}>Go Home</a>
 
-                    <h1>{isErrorMessage}</h1>
+                    <h1>{errorMessage}</h1>
                </span>
           </div>
      )

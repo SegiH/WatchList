@@ -49,7 +49,7 @@ export default function WatchListDetail() {
           setIsAdding,
           setIsEditing,
           setIsError,
-          setIsErrorMessage,
+          setErrorMessage,
           setWatchListLoadingStarted,
           setWatchListLoadingComplete,
           setWatchListSortingComplete,
@@ -468,7 +468,7 @@ export default function WatchListDetail() {
                axios.get(`/api/GetWatchListDtl?WatchListID=${watchListDtlID}`)
                     .then((res: typeof IWatchList) => {
                          if (res.data[0] === "ERROR") {
-                              setIsErrorMessage(`The error ${res.data[1]} occurred while getting the detail`);
+                              setErrorMessage(`The error ${res.data[1]} occurred while getting the detail`);
                               setIsError(true);
                               return;
                          } else {
@@ -504,7 +504,7 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
                          }
                     })
                     .catch((err: Error) => {
-                         setIsErrorMessage(`The fatal error ${err.message} occurred while getting the detail`);
+                         setErrorMessage(`The fatal error ${err.message} occurred while getting the detail`);
                          setIsError(true);
                     });
           } else if (isAdding) {

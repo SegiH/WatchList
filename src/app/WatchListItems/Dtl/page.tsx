@@ -31,7 +31,7 @@ export default function WatchListItemsDtl() {
           setIsAdding,
           setIsEditing,
           setIsError,
-          setIsErrorMessage,
+          setErrorMessage,
           setWatchListItemsLoadingStarted,
           setWatchListItemsLoadingComplete,
           showWatchListItems,
@@ -324,7 +324,7 @@ export default function WatchListItemsDtl() {
                          setWatchListItemDtlLoadingComplete(true);
 
                          if (res.data[0] === "ERROR") {
-                              setIsErrorMessage(`The error ${res.data[1]} occurred while getting the item detail`);
+                              setErrorMessage(`The error ${res.data[1]} occurred while getting the item detail`);
                               setIsError(true);
                               return;
                          } else {
@@ -359,7 +359,7 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
                          }
                     })
                     .catch((err: Error) => {
-                         setIsErrorMessage(`The fatal error ${err.message} occurred while getting the item detail`);
+                         setErrorMessage(`The fatal error ${err.message} occurred while getting the item detail`);
                          setIsError(true);
                     });
           } else if (isAdding && watchListItemDtlID === -1) {

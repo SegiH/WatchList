@@ -65,7 +65,7 @@ export default function BugLog() {
           SaveIconComponent,
           setBugLogs,
           setIsError,
-          setIsErrorMessage,
+          setErrorMessage,
           setIsAdding,
           setIsEditing
      } = useContext(DataContext) as DataContextType;
@@ -293,7 +293,7 @@ export default function BugLog() {
                     }
                })
                .catch((err: Error) => {
-                    setIsErrorMessage(`The fatal error ${err.message} occurred while getting the bug logs`);
+                    setErrorMessage(`The fatal error ${err.message} occurred while getting the bug logs`);
                     setIsError(true);
                });
      }, [bugLogsLoadingStarted, bugLogsLoadingComplete]);

@@ -3,7 +3,7 @@ WatchList is a multi-user app that lets you track the movies and TV that you wat
 
 You can track how many times you watched something, where you watched it and when you watched it. You can also rate movies or shows and get recommendations based on the movie or show you are looking at.
 
-It is possible to search IMDB for a movie or TV show.
+It is possible to search IMDB for a movie or TV show (if you provide an API key. More info in INSTALL.md).
 
 WatchList uses a SQLite3 database to store your logged movie and TV shows.
 

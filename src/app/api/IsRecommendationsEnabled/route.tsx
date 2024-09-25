@@ -17,15 +17,11 @@ export async function GET(request: NextRequest) {
           return Response.json(["ERROR", "Error. Not signed in"]);
      }
 
-     // Replit code
-     return Response.json(["OK"]);
-
-     // Local code
-     /*const recommendationsAPIKey = getRecommendationsAPIKey();
+     const recommendationsAPIKey = getRecommendationsAPIKey();
 
      if (recommendationsAPIKey === null) {
           return Response.json(["ERROR", "Recommendations API key is not set"]);
      } else {
          return Response.json(["OK"]);
-     }*/
+     }
 }

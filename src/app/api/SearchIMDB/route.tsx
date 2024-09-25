@@ -42,32 +42,16 @@ export async function GET(request: NextRequest) {
           return Response.json(["ERROR", "Search term not provided"]);
      }
 
-     // Replit code
-     const searchURL = `https://nodejs-shovav.replit.app/SearchIMDB?SearchTerm=${encodeURIComponent(String(searchTerm))}&SearchCount=${searchCount}`;
-
-     const agent = new https.Agent({
-          rejectUnauthorized: false
-     });
-
-     return axios.get(searchURL, { httpsAgent: agent })
-          .then((response: any) => {
-               return Response.json(response.data);
-          })
-          .catch((err: Error) => {
-               return Response.json(["ERROR", err.message]);
-          });
-
-     // Local code
-     /*const rapidapi_key = await getRapidAPIKey();
+     const rapidapi_key = await getRapidAPIKey();
 
      if (rapidapi_key === null) {
           return Response.json(["ERROR", "API key is not set"]);
      }
 
-     const results :any = [];
+     const results: any = [];
 
      try {
-          for (let i = 0; i < parseInt(searchCount !== null ? searchCount : "10",10); i++) {
+          for (let i = 0; i < parseInt(searchCount !== null ? searchCount : "10", 10); i++) {
                let options = {
                     method: "GET",
                     url: "https://imdb107.p.rapidapi.com/",
@@ -79,18 +63,14 @@ export async function GET(request: NextRequest) {
                     },
                };
 
-               const result :any = await fetchData(options);
+               const result: any = await fetchData(options);
 
-               const jsonResult :any = JSON.parse(result);
-
-               if (typeof jsonResult.Search !== "undefined") {
-                    results.push(...jsonResult.Search);
-               }
+               results.push(...result.Search);
           }
 
           return Response.json(["OK", results]);
      } catch (error) {
           console.error('Error during requests:', error);
           throw error;
-     }*/
+     }
 }

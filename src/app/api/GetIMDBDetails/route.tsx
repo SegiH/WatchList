@@ -26,9 +26,9 @@ export async function GET(request: NextRequest) {
      }
 
      // Reenable when using local RapidAPI key
-     //if (await getRapidAPIKey() === "") {
-     //     return Response.json(["ERROR", "API key is not set"]);
-     //}
+     if (await getRapidAPIKey() === "") {
+          return Response.json(["ERROR", "API key is not set"]);
+     }
 
      const searchParams = request.nextUrl.searchParams;
 
@@ -39,11 +39,11 @@ export async function GET(request: NextRequest) {
      } else {
           const result = await getIMDBDetails(imdb_id);
 
-          if (result[0] === "OK" && result[1][0] === "OK") {
+          /*if (result[0] === "OK" && result[1][0] === "OK") {
                return Response.json(["OK", result[1][1]]); //, result
-          }
+          }*/
 
           // Reenable when using local RapidAPI key
-          //return Response.json(["OK", result]);
+          return Response.json(["OK", result]);
      }
 }

@@ -179,23 +179,7 @@ export async function fetchData(options) {
 }
 
 export async function getIMDBDetails(imdb_id: string) {
-     const detailsURL = `https://nodejs-shovav.replit.app//GetIMDBDetails?id=${imdb_id}`;
-
-     const agent = new https.Agent({
-          rejectUnauthorized: false
-     });
-
-     // Replit code
-     return await axios.get(detailsURL, { httpsAgent: agent })
-          .then((response: any) => {
-               return (["OK", response.data]);
-          })
-          .catch((err: Error) => {
-               return Response.json(["ERROR", err.message]);
-          });
-
-     // Local code
-     /*const rapidapi_key = config.has("RapidAPIKey") ? config.get("RapidAPIKey") : "";
+     const rapidapi_key = config.has("RapidAPIKey") ? config.get("RapidAPIKey") : "";
 
      let options = {
           method: "GET",
@@ -211,7 +195,7 @@ export async function getIMDBDetails(imdb_id: string) {
      const result :any = await fetchData(options);
      const jsonResult = JSON.parse(result);
 
-     return jsonResult;*/
+     return jsonResult;
 }
 
 export async function getRapidAPIKey() {

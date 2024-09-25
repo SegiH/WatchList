@@ -17,15 +17,11 @@ export async function GET(request: NextRequest) {
           return Response.json(["ERROR", "Error. Not signed in"]);
      }
 
-     // Replit code
-     return Response.json(["OK"]);
-
-     // Local code
-     /*const rapidapi_key = getRapidAPIKey();
+     const rapidapi_key = getRapidAPIKey();
 
      if (rapidapi_key === null) {
           return Response.json(["ERROR", "API key is not set"]);
      } else {
          return Response.json(["OK"]);
-     }*/
+     }
 }

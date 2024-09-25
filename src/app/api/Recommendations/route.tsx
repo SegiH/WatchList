@@ -42,9 +42,9 @@ export async function GET(request: NextRequest) {
      const resultPages = 5;
 
      // Reenable when using local TheMovieDB API key
-     /*if (recommendationsAPIKey === null) {
+     if (recommendationsAPIKey === null) {
           return Response.json(["ERROR", "Recommendation API key is not set"]);
-     }*/
+     }
 
      if (queryTerm === null) {
           return Response.json(["ERROR", "Query term was not provided"]);
@@ -58,23 +58,7 @@ export async function GET(request: NextRequest) {
           return Response.json(["ERROR", "Type must be TV or Movie"]);
      }
 
-     // Replit code
-     const recommendationsURL = `https://nodejs-shovav.replit.app/Recommendations?QueryTerm=${encodeURIComponent(String(queryTerm))}&Type=${typeName}`;
-
-     const agent = new https.Agent({
-          rejectUnauthorized: false
-     });
-
-     return axios.get(recommendationsURL, { httpsAgent: agent })
-          .then((response: any) => {
-               return Response.json(["OK", response.data]);
-          })
-          .catch((err: Error) => {
-               return Response.json(["ERROR", err.message]);
-          });
-
-     // Local code
-     /*if (typeName === "TV") {
+     if (typeName === "TV") {
           const results :any = await tvLookup(queryTerm, resultPages);
 
           if (results && results.length > 0) {
@@ -96,7 +80,7 @@ export async function GET(request: NextRequest) {
                //     return Response.json(["OK", tvResults]);
                //}
           //}
-     }*/
+     }
 }
 
 async function executeAxios(url) {

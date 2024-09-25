@@ -18,6 +18,30 @@ Requirements: Node 20.7.0+
 1. Once you click on "Create the new account", you should see a message that says that the account creation was successfull. You should now be redirected back to the Login page at /Login.
 1. Login using the credentials that you created above.
 
+## Searching IMDB
+WatchList will allow you to search for a movie or tv show on IMDB.com. To do this, you need to create a free RAPIDAPI Key. 
+
+Note: RapidAPI allows you 1000 free searches per month. In order for this API to work, you have to "subscribe" by adding your credit card with RapidAPI. It appears to work similarly to Amazon where they won't charge you if you do not go over your allotted API usage. If you do not add a credit card, the API will return an "Unsubscribed" error when you try to use it. I have never been charged for my usage. Once you have used 100 searches, you will receive an error that you have exceeded your daily usage.
+
+1. Visit [RapidAPI](https://rapidapi.com) and create a free account.
+1. Click on "My APIs" at the top right
+1. Click on "Add New API" at the top right
+1. Name your API, give it a description and select a category. For "Specify Using" make sure UI is selected
+1. Click on "Add API" button to save it
+1. On the next page, enter a short description and click on Save
+1. Click on the down arrow next to your application name and select Security underneath the sub menu
+1. Click on the eye icon to show your API key and copy it to the clipboard.
+1. Paste the API key into the config\default.json file for "RapidAPIKey".
+
+## Recommendations
+You can get recommendations from a movie or TV show. This requires an api key from themoviedb.com which is completely free and does not require you to add a credit card.
+
+1. Visit [TheMovieDB](https://www.themoviedb.org) and create a free account.
+1. Click on the avatar icon at the top right and go to settings
+1. Click on API
+1. Copy the "API Read Access Token"
+1. Paste the API key into the config\default.json file for "RecommendationsAPIKey".
+
 ## First time Docker setup
 1. Follow the instructions above but do not log in at the last step`.
 1. If you ran the command `npm run start` above and it is still running, stop npm.
@@ -62,4 +86,4 @@ If you cannot log into WatchList with the admin account, you can reset the passw
 
 ## Known Issues:
 
-If you search for a movie or show that is pretty new, you may not be able to find it when searching and have to add a WatchList manually.
+If you search for a movie or show that is pretty new, you may not be able to find it when searching and have to add a WatchList Item manually.

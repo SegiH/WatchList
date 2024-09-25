@@ -63,9 +63,12 @@ export async function GET(request: NextRequest) {
                     },
                };
 
+
                const result: any = await fetchData(options);
 
-               results.push(...result.Search);
+               if (typeof result.Search !== "undefined") {
+                    results.push(...result.Search);
+               }
           }
 
           return Response.json(["OK", results]);

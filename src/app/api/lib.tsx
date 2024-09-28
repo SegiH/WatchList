@@ -193,9 +193,8 @@ export async function getIMDBDetails(imdb_id: string) {
      };
 
      const result :any = await fetchData(options);
-     const jsonResult = JSON.parse(result);
 
-     return jsonResult;
+     return result;
 }
 
 export async function getRapidAPIKey() {

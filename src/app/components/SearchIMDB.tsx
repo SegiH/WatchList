@@ -221,7 +221,7 @@ export default function SearchIMDB() {
                                    setSearchLoadingStarted(false);
                               }
                          }).catch((err: Error) => {
-                              alert(`The error ${err.message} occurred while searching IMDB`);
+                              //alert(`The error ${err} occurred while searching IMDB`);
                          });
                     }, 1000);
 

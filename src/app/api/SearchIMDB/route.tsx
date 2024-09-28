@@ -67,13 +67,14 @@ export async function GET(request: NextRequest) {
                const result: any = await fetchData(options);
 
                if (typeof result.Search !== "undefined") {
+                    try {
                     results.push(...result.Search);
+                    } catch(e) {}
                }
           }
 
           return Response.json(["OK", results]);
      } catch (error) {
-          console.error('Error during requests:', error);
-          throw error;
+          return Response.json(["ERROR", error]);
      }
 }

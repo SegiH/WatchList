@@ -286,10 +286,8 @@ input:checked+.slider:before {
      margin-left: 40px;
 }
 
-.leftMargin50 {
-     position: absolute;
-     margin-left: 500px;
-     display: none;
+.leftMargin50 { 
+     margin-left: 50px;
 }
 
 .lineChart {

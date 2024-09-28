@@ -73,6 +73,10 @@ const SharedLayout = () => {
 
                                         {(activeRoute === "WatchList" || activeRoute === "WatchListItems") &&
                                         <>
+                                             <span className={`clickable leftMargin50${!darkMode ? " lightMode" : " darkMode"}`} onClick={showSearch}>
+                                                  {SearchIconComponent}
+                                             </span>
+
                                              { isLoggedIn && !isError && (
                                                   <span className={`bottomMargin20 clickable customTopMargin leftMargin40 ${!darkMode ? " lightMode" : " darkMode"}`} onClick={() => openDetailClickHandler(-1)}>
                                                        {AddIconComponent}
@@ -174,10 +178,6 @@ const SharedLayout = () => {
                                                             <option value="ASC">ASC</option>
                                                             <option value="DESC">DESC</option>
                                                        </select>
-                                                  </span>
-
-                                                  <span className={`clickable leftMargin searchIcon${!darkMode ? " lightMode" : " darkMode"}`} onClick={showSearch}>
-                                                       {SearchIconComponent}
                                                   </span>
                                              </>
                                         }

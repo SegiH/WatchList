@@ -79,13 +79,13 @@ input:checked+.slider:before {
 
 /* Move me later! */
 .lightMode {
-     color: var(--light-mode-foregroundColor);
-     background-color: var(--light-mode-backgroundColor);
+     color: var(--light-mode-foregroundColor) !important;
+     background-color: var(--light-mode-backgroundColor) !important;
 }
 
 .darkMode {
-     color: var(--dark-mode-foregroundColor);
-     background-color: var(--dark-mode-backgroundColor);
+     color: var(--dark-mode-foregroundColor) !important;
+     background-color: var(--dark-mode-backgroundColor) !important;
 }
 
 .addSearchResultIcon {

@@ -70,10 +70,10 @@ export default function Admin() {
 
      return (
           <div className={`topMarginContent ${!darkMode ? " lightMode" : " darkMode"}`}>
-               <Tabs className={`${!darkMode ? " lightMode" : " darkMode"}`} value={selectedTab} onChange={tabClickHandler}>
-                    <Tab className={`${!darkMode ? " lightMode" : " darkMode"}`} label="Users" {...tabProps(0)} />
-                    <Tab className={`${!darkMode ? " lightMode" : " darkMode"}`} label="Sources" {...tabProps(1)} />
-                    <Tab className={`${!darkMode ? " lightMode" : " darkMode"}`} label="Types" {...tabProps(2)} />
+               <Tabs value={selectedTab} onChange={tabClickHandler}>
+                    <Tab className={`${!darkMode ? "lightMode" : "darkMode"}`} label="Users" {...tabProps(0)} />
+                    <Tab className={`${!darkMode ? "lightMode" : "darkMode"}`} label="Sources" {...tabProps(1)} />
+                    <Tab className={`${!darkMode ? "lightMode" : "darkMode"}`} label="Types" {...tabProps(2)} />
                </Tabs>
 
                <CustomTabPanel value={selectedTab} index={0}>

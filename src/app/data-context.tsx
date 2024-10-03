@@ -186,13 +186,12 @@ export interface DataContextType {
      watchListTypesLoadingComplete: boolean;
 }
 
-const buildDate = "10/02/24";
-
 const DataProvider = ({ children }) => {
      const [activeRoute, setActiveRoute] = useState("");
      const [activeRouteDisplayName, setActiveRouteDisplayName] = useState("");
      const [archivedVisible, setArchivedVisible] = useState(false);
      const [autoAdd, setAutoAdd] = useState(true);
+     const [buildDate, setBuildDate] = useState('');
      const [bugLogs, setBugLogs] = useState([]);
      const [bugLogVisible, setBugLogVisible] = useState(false);
      const [darkMode, setDarkMode] = useState(true);
@@ -839,6 +838,15 @@ const DataProvider = ({ children }) => {
                     }
                })
                .catch((err: Error) => {
+               });
+     }, []);
+
+     useEffect(() => {
+          // Fetch the build date from the JSON file
+          fetch('/build-info.json')
+               .then((response) => response.json())
+               .then((data) => {
+                    setBuildDate(getFormattedDate(data.buildDate.substring(0,10), "-"));
                });
      }, []);
 

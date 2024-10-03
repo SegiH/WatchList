@@ -12,9 +12,9 @@
     ]
   },
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start"
+    "dev": "node writeBuildDate.js && next dev",
+    "build": "node writeBuildDate.js && next build",
+    "start": "node writeBuildDate.js && next start"
   },
   "dependencies": {
     "@emotion/react": "^11.11.3",

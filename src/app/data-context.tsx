@@ -848,7 +848,7 @@ const DataProvider = ({ children }) => {
                .then((data) => {
                     setBuildDate(getFormattedDate(data.buildDate.substring(0,10), "-"));
                });
-     }, []);
+     }, []); 
 
      const routeList = {
           WatchList: {

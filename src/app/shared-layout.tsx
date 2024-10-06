@@ -30,6 +30,7 @@ const SharedLayout = () => {
           setTypeFilter,
           setWatchListSortColumn,
           setWatchListSortDirection,
+          setWatchListSortingComplete,
           showSearch,
           showSettings,
           sourceFilter,
@@ -148,7 +149,7 @@ const SharedLayout = () => {
                                                   </span>
 
                                                   <span title="Sort by">
-                                                       <select className="selectStyle" value={watchListSortColumn} onChange={(event) => setWatchListSortColumn(event.target.value)}>
+                                                       <select className="selectStyle" value={watchListSortColumn} onChange={(event) => {setWatchListSortColumn(event.target.value); setWatchListSortingComplete(false); }}>
                                                             {activeRoute === "WatchList" &&
                                                                  Object.keys(watchListSortColumns).filter((sortColumn) => {
                                                                       return sortColumn !== "EndDate" || (sortColumn === "EndDate" && !stillWatching);
@@ -174,7 +175,7 @@ const SharedLayout = () => {
                                                   </span>
 
                                                   <span className="leftMargin" title="Sort direction">
-                                                       <select className="selectStyle" value={watchListSortDirection} onChange={(event) => setWatchListSortDirection(event.target.value)}>
+                                                       <select className="selectStyle" value={watchListSortDirection} onChange={(event) => { setWatchListSortDirection(event.target.value); setWatchListSortingComplete(false); }}>
                                                             <option value="ASC">ASC</option>
                                                             <option value="DESC">DESC</option>
                                                        </select>

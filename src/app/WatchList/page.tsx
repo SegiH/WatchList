@@ -56,7 +56,7 @@ export default function WatchList() {
      };
 
      useEffect(() => {
-          if (!watchListSortingComplete && watchListLoadingComplete && watchList !== null) {
+          if (!watchListSortingComplete && watchListLoadingComplete && watchList.length > 0) {
                const newWatchList = Object.assign([], watchList);
 
                newWatchList.sort((a: typeof IWatchList, b: typeof IWatchList) => {

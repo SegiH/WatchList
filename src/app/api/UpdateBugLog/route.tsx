@@ -66,7 +66,7 @@ export async function PUT(request: NextRequest) {
 
     if (bugLogName !== null) {
         SQL += "WLBugName=?";
-        params.push(encodeURIComponent(bugLogName));
+        params.push(bugLogName); // Client already encodes this. Do not encode it again or it will cause issues!
     }
 
     if (addDate !== null) {
@@ -84,7 +84,7 @@ export async function PUT(request: NextRequest) {
     if (resolutionNotes !== null) {
         SQL += SQL != "" ? "," : "";
         SQL += "ResolutionNotes=?";
-        params.push(encodeURIComponent(resolutionNotes));
+        params.push(resolutionNotes); // Client already encodes this. Do not encode it again or it will cause issues!
     }
 
     if (params.length === 0) {

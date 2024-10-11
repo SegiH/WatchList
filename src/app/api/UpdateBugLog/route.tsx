@@ -61,7 +61,7 @@ export async function PUT(request: NextRequest) {
         return Response.json({ "ERROR": "Bug log ID is not set" });
     }
 
-    let SQL = "UPDATE BugLogs ";
+    let SQL = "UPDATE BugLogs SET ";
     let params: any = [];
 
     if (bugLogName !== null) {
@@ -92,6 +92,7 @@ export async function PUT(request: NextRequest) {
     }
 
     SQL += " WHERE WLBugID=?";
+    console.log(SQL);
     params.push(bugLogID);
 
     await execUpdateDelete(SQL, params);

@@ -28,7 +28,6 @@ const nextConfig = {
                },
           ]
      },
-     distDir: 'build',
      transpilePackages: [
           "react-syntax-highlighter",
           "swagger-client",

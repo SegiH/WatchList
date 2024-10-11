@@ -227,7 +227,12 @@ export default function BugLog() {
                headerName: "Bug name",
                editable: true,
                width: 350,
-               renderEditCell: renderEditInputCell
+               renderEditCell: renderEditInputCell,
+               renderCell: (params: typeof GridRenderEditCellParams) => {
+                    return (
+                         <div className={`${!darkMode ? " lightMode" : " darkMode"}`}>{typeof params.value !== "undefined" ? decodeURIComponent(params.value) : ""}</div>
+                    )
+               },
           },
           {
                field: "ResolutionNotes",
@@ -235,7 +240,12 @@ export default function BugLog() {
                editable: true,
                wrap: true,
                width: 350,
-               renderEditCell: renderEditInputCell
+               renderEditCell: renderEditInputCell,
+               renderCell: (params: typeof GridRenderEditCellParams) => {
+                    return (
+                         <div className={`${!darkMode ? " lightMode" : " darkMode"}`}>{typeof params.value !== "undefined" ? decodeURIComponent(params.value) : ""}</div>
+                    )
+               },
           },
           {
                field: "AddDate",

@@ -158,7 +158,7 @@ export default function BugLog() {
           columns += (columns === `` ? `?` : `&`) + `WLBugName=${encodeURIComponent(newRow.WLBugName)}`;
           columns += (columns === `` ? `?` : `&`) + `AddDate=${newRow.AddDate}`;
 
-          if (typeof newRow.CompletedDate !== "undefined") {
+          if (typeof newRow.CompletedDate !== "undefined" && newRow.CompletedDate !== null) {
                columns += (columns === `` ? `?` : `&`) + `CompletedDate=${newRow.CompletedDate}`;
           }
 

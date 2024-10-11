@@ -92,10 +92,12 @@ export async function PUT(request: NextRequest) {
     }
 
     SQL += " WHERE WLBugID=?";
-    console.log(SQL);
     params.push(bugLogID);
 
     await execUpdateDelete(SQL, params);
+
+    console.log(SQL);
+    console.log(params);
 
     return Response.json(["OK"]);
 }

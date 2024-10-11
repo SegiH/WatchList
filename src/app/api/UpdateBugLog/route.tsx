@@ -96,8 +96,5 @@ export async function PUT(request: NextRequest) {
 
     await execUpdateDelete(SQL, params);
 
-    console.log(SQL);
-    console.log(params);
-
     return Response.json(["OK"]);
 }

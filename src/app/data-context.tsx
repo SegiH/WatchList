@@ -815,12 +815,16 @@ const DataProvider = ({ children }) => {
                     if (findRouteByPath.length !== 1) { // Path wasn't found so use default route
                          newRoute = defaultRoute;
                     } else if (
-                         (currentPath === "/WatchList" || currentPath === "BugLogs") ||
+                         (currentPath === "/WatchList") ||
                          (currentPath === "/WatchListStats" && isVisible("Stats")) ||
                          (currentPath === "/Items" && isVisible("Items")) ||
                          (currentPath === "/Admin" && isVisible("Admin"))
                     ) {
                          newRoute = currentPath.replace("/", "").replace("\\", "");
+                    } else if (currentPath === "/BugLog") {
+                         setBugLogVisible(true);
+
+                         newRoute="BugLog";
                     }
                } else if (activeRoute !== "") {
                     const findRouteByName = Object.keys(routeList).filter((routeName) => routeList[routeName].Name === activeRoute);
@@ -828,12 +832,16 @@ const DataProvider = ({ children }) => {
                     if (findRouteByName.length !== 1) { // Path wasn't found so use default route
                          newRoute = defaultRoute;
                     } else if (
-                         (activeRoute === "/WatchList" || activeRoute === "BugLogs") ||
+                         (activeRoute === "/WatchList") ||
                          (activeRoute === "WatchListStats" && isVisible("Stats")) ||
                          (activeRoute === "Items" && isVisible("Items")) ||
                          (activeRoute === "Admin" && isVisible("Admin"))
                     ) {
-                         newRoute = currentPath.replace("/", "").replace("\\", "");
+                         newRoute = activeRoute.replace("/", "").replace("\\", "");
+                    } else if (activeRoute === "BugLog") {
+                         setBugLogVisible(true);
+
+                         newRoute="BugLog";
                     }
                } else {
                     newRoute = defaultRoute;

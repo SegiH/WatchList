@@ -4,7 +4,7 @@ const useEffect = require("react").useEffect;
 const useRouter = require("next/navigation").useRouter;
 const useState = require("react").useState;
 
-import { DarkMode } from "@mui/icons-material";
+import Multiselect from 'multiselect-react-dropdown';
 import { DataContext, DataContextType } from "../data-context";
 
 const Settings = () => {
@@ -14,6 +14,8 @@ const Settings = () => {
           autoAdd,
           buildDate,
           darkMode,
+          defaultRoute,
+          getDisplayName,
           isLoggedIn,
           LogOutIconComponent,
           setActiveRoute,
@@ -24,11 +26,12 @@ const Settings = () => {
           setDarkMode,
           setSettingsVisible,
           setShowMissingArtwork,
-          setShowWatchListItems,
           setStillWatching,
           showMissingArtwork,
-          showWatchListItems,
-          signOut
+          setVisibleSections,
+          signOut,
+          visibleSectionChoices,
+          visibleSections
      } = useContext(DataContext) as DataContextType
 
      const [formattedBuildDate, setFormattedBuildDate] = useState("");
@@ -36,19 +39,26 @@ const Settings = () => {
 
      const router = useRouter();
 
+     const addRemoveVisibleSectionChange = async (newList: []) => {
+          setVisibleSections(newList);
+
+          // Handle situation where activeRoute is no longer visible
+          if (newList.filter((section) => section["name"] === activeRoute).length === 0) {
+               setActiveRoute(defaultRoute);
+
+               const displayName = getDisplayName(defaultRoute);
+
+               if (displayName !== "") {
+                    setActiveRouteDisplayName(displayName);
+               }
+
+               router.push("/" + defaultRoute)
+          }
+     }
+
      const closeDetail = async () => {
           setSettingsVisible(false);
      };
-
-     const setShowWatchListItemsClickHandler = async (checked: boolean) => {
-          setShowWatchListItems(checked);
-
-          if (checked === false && activeRoute === "WatchListItems") {
-               setActiveRoute("WatchList");
-               setActiveRouteDisplayName("WatchList");
-               router.push("/WatchList");
-          }
-     }
 
      const titleClickHandler = () => {
           const newTitleClick = titleClickCount + 1;
@@ -77,6 +87,23 @@ const Settings = () => {
                     <ul className="menuContent">
                          <li className="topMargin">
                               <span className="firstItem">
+                                   <span>Visible Sections</span>
+                              </span>
+
+                              <span className="leftMargin" title="Show WatchList Items">
+                                   <Multiselect
+                                        className={`${!darkMode ? " lightMode" : " darkMode"}`}
+                                        options={visibleSectionChoices}
+                                        selectedValues={visibleSections}
+                                        onSelect={(newList) => addRemoveVisibleSectionChange(newList)}
+                                        onRemove={(newList) => addRemoveVisibleSectionChange(newList)}
+                                        displayValue="name"
+                                   />
+                              </span>
+                         </li>
+
+                         <li className="topMargin">
+                              <span className="firstItem">
                                    <span>Dark Mode</span>
                               </span>
 
@@ -88,20 +115,7 @@ const Settings = () => {
                               </span>
                          </li>
 
-                         <li className="topMargin">
-                              <span className="firstItem">
-                                   <span>Show WLI</span>
-                              </span>
-
-                              <span className="leftMargin" title="Show WatchList Items">
-                                   <label className="switch">
-                                        <input type="checkbox" checked={showWatchListItems} onChange={(event) => setShowWatchListItemsClickHandler(event.target.checked)} />
-                                        <span className="slider round"></span>
-                                   </label>
-                              </span>
-                         </li>
-
-                         {(activeRoute === "WatchList" || activeRoute === "WatchListItems") && (
+                         {(activeRoute === "WatchList" || activeRoute === "Items") && (
                               <li className="topMargin">
                                    <span className="firstItem">
                                         <span>Archived</span>
@@ -121,7 +135,7 @@ const Settings = () => {
                               </li>
                          )}
 
-                         {(activeRoute === "WatchList" || activeRoute === "WatchListItems" || activeRoute === "SearchIMDB") && (
+                         {(activeRoute === "WatchList" || activeRoute === "Items" || activeRoute === "SearchIMDB") && (
                               <li className="topMargin">
                                    <span className="firstItem">
                                         <span>Auto Add</span>
@@ -136,7 +150,7 @@ const Settings = () => {
                               </li>
                          )}
 
-                         {(activeRoute === "WatchListItems") && (
+                         {(activeRoute === "Items") && (
                               <li className="topMargin">
                                    <span className="leftMargin" title="Show WatchListItems with missing images">
                                         <span className="wordWrapLabel">Missing images</span>

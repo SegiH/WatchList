@@ -251,13 +251,10 @@ export async function isUserAdmin(req: NextRequest) {
      const userSession = await getUserSession(req);
 
      if (typeof userSession === "undefined" || (typeof userSession !== "undefined" && userSession.Admin === 0)) {
-          console.log("false 1")
           return false;
      } else if (userSession.Admin === 1) {
-          console.log("true")
           return true;
      } else {
-          console.log("false 2")
           return false;
      }
 }

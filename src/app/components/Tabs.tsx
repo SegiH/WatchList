@@ -20,10 +20,10 @@ const Tabs = () => {
           isError,
           isLoggedIn,
           isLoggedInCheckComplete,
+          isVisible,
           routeList,
           setActiveRoute,
           setActiveRouteDisplayName,
-          showWatchListItems
      } = useContext(DataContext) as DataContextType
 
      const router = useRouter();
@@ -51,9 +51,10 @@ const Tabs = () => {
                                    return routeList[routeName].RequiresAuth === true
                                    && routeName !== "Setup"
                                    && routeName !== "SearchIMDB"
-                                   && (routeName !== "AdminConsole" || (routeName === "AdminConsole" && admin === true))
-                                   && (routeName !== "WatchListItems" || (routeName ==="WatchListItems" && showWatchListItems === true))
+                                   && (routeName !== "Admin" || (routeName === "Admin" && admin === true && isVisible("Admin")))
+                                   && (routeName !== "Items" || (routeName ==="Items" && isVisible("Items")))
                                    && (routeName !== "BugLog" || (routeName ==="BugLog" && bugLogVisible === true && !demoMode))
+                                   && (routeName !== "WatchListStats" || (routeName === "WatchListStats" && isVisible("Stats")))
                               }
                               )
                               .map((routeName, index) => {

@@ -15,7 +15,7 @@ Docker is also supported. See INSTALL.MD for details.
 
 WatchList - WatchList is used to refer to the log that you add to record a movie or TV show that you have watched. You would usually add the date you started watching it, when you finished watching it, where you watched it and your rating of the movie/show.
 
-WatchList Item - The record of the movie or TV show. You would only add a WatchListItem once to add a specific movie/tv show or special. The WatchListItem includes information like the name of the movie/show, type (movie/TV show/special), link to IMDB and image from IMDB. By default WatchList Items are hidden and you only see WatchList which shows what you have watched. You can show WatchList items by clicking on the Settings gear and enabling "Show WLI"
+Items - The record of the movie or TV show. You would only add a WatchListItem once to add a specific movie/tv show or special. The WatchListItem includes information like the name of the movie/show, type (movie/TV show/special), link to IMDB and image from IMDB. By default WatchList Items are hidden and you only see WatchList which shows what you have watched. You can show WatchList items by clicking on the Settings gear and showing it in Visible Sections.
 
 # Tips
 There are different options available in WatchList. Some of options are only available in certain tabs.
@@ -35,9 +35,9 @@ Sort Order - Sort direction which is ascending or descending
 
 These options are available in Settings:
 
-Dark Mode - Toggle dark or light mode. This is on by default.
+Visible Sections - All of the sections except for WatchList can be hidden or shown. Tap on an empty area under Visible Section to show a section.
 
-Show WLI - When you add a movie or show, it will be added as a WatchList Item record. The WatchList Item is hidden by default but can be show by enabling this toggle.
+Dark Mode - Toggle dark or light mode. This is on by default.
 
 Archived - If you add a WatchList record and decide not to continue watching the movie or TV show, you can archive that WatchList record. The WatchList record will not be visible any more in WatchList. If you want to find it again, enable the "Archived" toggle.
 

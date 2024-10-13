@@ -72,7 +72,7 @@ const SharedLayout = () => {
                                    <span className={`menuBar ${!darkMode ? "lightMode" : "darkMode"}`}>
                                         <span className={`leftMargin menuBarActiveRoute${!darkMode ? " lightMode" : " darkMode"}`}>{activeRouteDisplayName}{demoMode ? " (Demo)" : ""}</span>
 
-                                        {(activeRoute === "WatchList" || activeRoute === "WatchListItems") &&
+                                        {(activeRoute === "WatchList" || activeRoute === "Items") &&
                                         <>
                                              <span className={`clickable leftMargin50${!darkMode ? " lightMode" : " darkMode"}`} onClick={showSearch}>
                                                   {SearchIconComponent}
@@ -124,7 +124,7 @@ const SharedLayout = () => {
                                              </>
                                         }
 
-                                        {(activeRoute === "WatchList" || activeRoute === "WatchListItems") &&
+                                        {(activeRoute === "WatchList" || activeRoute === "Items") &&
                                              <>
                                                   <span className={`firstItem leftMargin ${!darkMode ? " lightMode" : " darkMode"}`}>
                                                        <span>Type</span>
@@ -162,7 +162,7 @@ const SharedLayout = () => {
                                                                  })
                                                             }
 
-                                                            {activeRoute === "WatchListItems" &&
+                                                            {activeRoute === "Items" &&
                                                                  Object.keys(watchListItemsSortColumns).map((sortColumn: string, index: number) => {
                                                                       return (
                                                                            <option key={index} value={sortColumn}>

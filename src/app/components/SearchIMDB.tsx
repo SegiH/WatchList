@@ -48,7 +48,7 @@ export default function SearchIMDB() {
 
      const searchSectionTypes = {
           WatchList: "WatchList",
-          WatchListItems: "WatchListItems",
+          WatchListItems: "Items",
           IMDB: "IMDB"
      }
 
@@ -116,7 +116,7 @@ export default function SearchIMDB() {
      }
 
      const openWatchListItemDetailClickHandler = (watchListItemID: number) => {
-          router.push(`/WatchListItems/Dtl?WatchListItemID=${watchListItemID}`);
+          router.push(`/Items/Dtl?WatchListItemID=${watchListItemID}`);
 
           closeSearch();
      }

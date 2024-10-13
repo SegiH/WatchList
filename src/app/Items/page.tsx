@@ -108,7 +108,7 @@ export default function WatchListItems() {
      }, [setWatchListLoadingStarted, setWatchListItemsLoadingStarted, setWatchListLoadingComplete, setWatchListItemsLoadingComplete, setWatchListItemsSortingComplete, watchListCount, watchListItems.length]);
 
      useEffect(() => {
-          setActiveRoute("WatchListItems");
+          setActiveRoute("Items");
           setIsAdding(false);
           setIsEditing(false);
      }, []);

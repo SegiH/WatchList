@@ -57,6 +57,17 @@
      }
 }
 
+#multiselectContainerReact.lightMode .optionListContainer {
+     color: var(--light-mode-foregroundColor) !important;
+     background-color: var(--light-mode-backgroundColor) !important;
+}
+
+
+#multiselectContainerReact.darkMode .optionContainer {
+     color: var(--dark-mode-foregroundColor) !important;
+     background-color: var(--dark-mode-backgroundColor) !important;
+}
+
 input:checked+.slider {
      background-color: #2196f3;
 }

@@ -103,6 +103,7 @@ export interface DataContextType {
      errorMessage: string;
      isLoggedIn: boolean;
      isLoggedInCheckComplete: boolean;
+     isVisible: (value: string) => string;
      LogOutIconComponent: React.ReactNode;
      openDetailClickHandler: (value: number) => void;
      ratingMax: number;
@@ -141,6 +142,7 @@ export interface DataContextType {
      setupVisible: boolean;
      setUserData: (value: typeof IUser) => void;
      setUsers: (value: typeof IUser) => void;
+     setVisibleSections: (value: []) => void;
      setWatchList: (value: typeof IWatchList) => void;
      setWatchListItems: (value: typeof IWatchListItem) => void;
      setWatchListItemsLoadingStarted: (value: boolean) => void;
@@ -157,11 +159,9 @@ export interface DataContextType {
      setWatchListTypes: (value: typeof IWatchListType) => void;
      setWatchListTypesLoadingStarted: (value: boolean) => void;
      setWatchListTypesLoadingComplete: (value: boolean) => void;
-     setShowWatchListItems: (value: boolean) => void;
      showMissingArtwork: boolean;
      showSearch: () => void;
      showSettings: () => void;
-     showWatchListItems: boolean;
      signOut: () => void;
      sourceFilter: number;
      stillWatching: boolean;
@@ -169,6 +169,8 @@ export interface DataContextType {
      users: typeof IUser,
      userData: typeof IUser;
      validatePassword: (value: string) => boolean;
+     visibleSectionChoices: [],
+     visibleSections: [],
      watchList: typeof IWatchList;
      watchListItems: typeof IWatchListItem;
      watchListItemsLoadingStarted: boolean;
@@ -212,7 +214,6 @@ const DataProvider = ({ children }) => {
      const [searchVisible, setSearchVisible] = useState(false);
      const [settingsVisible, setSettingsVisible] = useState(false);
      const [showMissingArtwork, setShowMissingArtwork] = useState(false);
-     const [showWatchListItems, setShowWatchListItems] = useState(false);
      const [stillWatching, setStillWatching] = useState(true);
      const [sourceFilter, setSourceFilter] = useState(-1);
      const [typeFilter, setTypeFilter] = useState(-1);
@@ -239,9 +240,13 @@ const DataProvider = ({ children }) => {
      const [watchListSortColumn, setWatchListSortColumn] = useState("Name");
      const [watchListSortDirection, setWatchListSortDirection] = useState("ASC");
 
+     const [visibleSections, setVisibleSections] = useState([{ "name": "Admin", "id": 3 }]);
+
      const defaultRoute = "WatchList";
      const demoUsername = "demo";
      const demoPassword = "demo";
+
+     const visibleSectionChoices = [{ name: 'Items', id: 1 }, { name: 'Stats', id: 2 }, { name: 'Admin', id: 3 }]
 
      const router = useRouter();
 
@@ -315,6 +320,10 @@ const DataProvider = ({ children }) => {
           return true;
      }, [isLoggedIn, isLoggedInCheckComplete]);
 
+     const isVisible = (sectionName: string) => {
+          return visibleSections.length > 0 && visibleSections?.filter((section) => section["name"] === sectionName).length > 0 ? true : false;
+     }
+
      const openDetailClickHandler = useCallback((Id: number) => {
           if (activeRoute === "WatchList" && Id !== null) {
                if (Id === -1) {
@@ -322,12 +331,12 @@ const DataProvider = ({ children }) => {
                }
 
                router.push(`/WatchList/Dtl${Id !== -1 ? `?WatchListID=${Id}` : ""}`);
-          } else if (activeRoute === "WatchListItems" && Id !== null) {
+          } else if (activeRoute === "Items" && Id !== null) {
                if (Id === -1) {
                     setIsAdding(true);
                }
 
-               router.push(`/WatchListItems/Dtl?WatchListItemID=${Id}`);
+               router.push(`/Items/Dtl?WatchListItemID=${Id}`);
           }
      }, [activeRoute, setIsAdding]);
 
@@ -432,7 +441,12 @@ const DataProvider = ({ children }) => {
                const newTypeFilter = localStorage.getItem("WatchList.TypeFilter");
                const newSortColumn = localStorage.getItem("WatchList.WatchListSortColumn");
                const newSortDirection = localStorage.getItem("WatchList.WatchListSortDirection");
-               const newShowWatchListItems = localStorage.getItem("WatchList.ShowWatchListItems");
+
+               let newVisibleSections = localStorage.getItem("WatchList.VisibleSections");
+
+               if (newVisibleSections !== null && typeof newVisibleSections !== "undefined" && newVisibleSections !== "") {
+                    newVisibleSections = JSON.parse(newVisibleSections);
+               }
 
                if (newArchivedVisible !== null) {
                     setArchivedVisible(newArchivedVisible === "true" ? true : false);
@@ -474,8 +488,8 @@ const DataProvider = ({ children }) => {
                     setWatchListSortDirection(newSortDirection);
                }
 
-               if (newShowWatchListItems !== null) {
-                    setShowWatchListItems(newShowWatchListItems === "true" ? true : false);
+               if (newVisibleSections !== null) {
+                    setVisibleSections(newVisibleSections);
                }
 
                if (isLoggedInCheckStarted) {
@@ -746,13 +760,13 @@ const DataProvider = ({ children }) => {
           localStorage.setItem("WatchList.SourceFilter", sourceFilter);
           localStorage.setItem("WatchList.StillWatching", stillWatching);
           localStorage.setItem("WatchList.TypeFilter", typeFilter);
+          localStorage.setItem("WatchList.VisibleSections", JSON.stringify(visibleSections));
           localStorage.setItem("WatchList.WatchListSortColumn", watchListSortColumn);
           localStorage.setItem("WatchList.WatchListSortDirection", watchListSortDirection);
-          localStorage.setItem("WatchList.ShowWatchListItems", showWatchListItems);
 
           //setWatchListSortingComplete(false);
           //setWatchListItemsSortingComplete(false);
-     }, [archivedVisible, autoAdd, darkMode, isLoggedIn, searchCount, showWatchListItems, showMissingArtwork, stillWatching, sourceFilter, typeFilter, watchListSortColumn, watchListSortDirection]);
+     }, [archivedVisible, autoAdd, darkMode, isLoggedIn, searchCount, showMissingArtwork, stillWatching, sourceFilter, typeFilter, visibleSections, watchListSortColumn, watchListSortDirection]);
 
      /* useEffect that does isClient check */
      useEffect(() => {
@@ -795,10 +809,32 @@ const DataProvider = ({ children }) => {
 
                if (currentPath === routeList["Login"].Path && isLoggedIn) {
                     newRoute = defaultRoute;
-               } else if (currentPath !== "" && Object.keys(routeList).filter((routeName) => routeList[routeName].Path === currentPath).length === 1 && (currentPath !== "/WatchListItems" || (currentPath === "/WatchListItems" && showWatchListItems))) {
-                    newRoute = currentPath.replace("/", "").replace("\\", "");
-               } else if (activeRoute !== "" && Object.keys(routeList).filter((routeName) => routeList[routeName].Name === activeRoute).length === 1 && (activeRoute !== "/WatchListItems" || (activeRoute === "/WatchListItems" && showWatchListItems)) && (activeRoute !== "/BugLog" || (activeRoute === "/BugLog" && bugLogVisible))) {
-                    newRoute = activeRoute;
+               } else if (currentPath !== "") {
+                    const findRouteByPath = Object.keys(routeList).filter((routeName) => routeList[routeName].Path === currentPath);
+
+                    if (findRouteByPath.length !== 1) { // Path wasn't found so use default route
+                         newRoute = defaultRoute;
+                    } else if (
+                         (currentPath === "/WatchList" || currentPath === "BugLogs") ||
+                         (currentPath === "/WatchListStats" && isVisible("Stats")) ||
+                         (currentPath === "/Items" && isVisible("Items")) ||
+                         (currentPath === "/Admin" && isVisible("Admin"))
+                    ) {
+                         newRoute = currentPath.replace("/", "").replace("\\", "");
+                    }
+               } else if (activeRoute !== "") {
+                    const findRouteByName = Object.keys(routeList).filter((routeName) => routeList[routeName].Name === activeRoute);
+
+                    if (findRouteByName.length !== 1) { // Path wasn't found so use default route
+                         newRoute = defaultRoute;
+                    } else if (
+                         (activeRoute === "/WatchList" || activeRoute === "BugLogs") ||
+                         (activeRoute === "WatchListStats" && isVisible("Stats")) ||
+                         (activeRoute === "Items" && isVisible("Items")) ||
+                         (activeRoute === "Admin" && isVisible("Admin"))
+                    ) {
+                         newRoute = currentPath.replace("/", "").replace("\\", "");
+                    }
                } else {
                     newRoute = defaultRoute;
                }
@@ -841,14 +877,15 @@ const DataProvider = ({ children }) => {
                });
      }, []);
 
+     /* UseEffect that gets the build date from the JSON file generated by the scripts section in package.json */
      useEffect(() => {
           // Fetch the build date from the JSON file
           fetch('/build-info.json')
                .then((response) => response.json())
                .then((data) => {
-                    setBuildDate(getFormattedDate(data.buildDate.substring(0,10), "-"));
+                    setBuildDate(getFormattedDate(data.buildDate.substring(0, 10), "-"));
                });
-     }, []); 
+     }, []);
 
      const routeList = {
           WatchList: {
@@ -858,10 +895,10 @@ const DataProvider = ({ children }) => {
                Icon: WatchListIconComponent,
                RequiresAuth: true
           },
-          WatchListItems: {
-               Name: "WatchListItems",
+          Items: {
+               Name: "Items",
                DisplayName: "Items",
-               Path: "/WatchListItems",
+               Path: "/Items",
                Icon: WatchListItemsIconComponent,
                RequiresAuth: true
           },
@@ -872,8 +909,8 @@ const DataProvider = ({ children }) => {
                Icon: StatsIconComponent,
                RequiresAuth: true
           },
-          AdminConsole: {
-               Name: "AdminConsole",
+          Admin: {
+               Name: "Admin",
                DisplayName: "Admin",
                Path: "/Admin",
                Icon: AdminConsoleIconComponent,
@@ -944,6 +981,7 @@ const DataProvider = ({ children }) => {
           isClient: isClient,
           isEditing: isEditing,
           isError: isError,
+          isVisible: isVisible,
           errorMessage: errorMessage,
           isLoggedIn: isLoggedIn,
           isLoggedInCheckComplete: isLoggedInCheckComplete,
@@ -982,9 +1020,9 @@ const DataProvider = ({ children }) => {
           setUsers: setUsers,
           SettingsIconComponent: SettingsIconComponent,
           settingsVisible: settingsVisible,
-          setShowWatchListItems: setShowWatchListItems,
           setTypeFilter: setTypeFilter,
           setUserData: setUserData,
+          setVisibleSections: setVisibleSections,
           setWatchList: setWatchList,
           setWatchListItems: setWatchListItems,
           setWatchListItemsLoadingStarted: setWatchListItemsLoadingStarted,
@@ -1004,7 +1042,6 @@ const DataProvider = ({ children }) => {
           showMissingArtwork: showMissingArtwork,
           showSearch: showSearch,
           showSettings: showSettings,
-          showWatchListItems: showWatchListItems,
           signOut: signOut,
           sourceFilter: sourceFilter,
           stillWatching: stillWatching,
@@ -1012,6 +1049,8 @@ const DataProvider = ({ children }) => {
           users: users,
           userData: userData,
           validatePassword: validatePassword,
+          visibleSectionChoices: visibleSectionChoices,
+          visibleSections: visibleSections,
           watchList: watchList,
           watchListItems: watchListItems,
           watchListItemsLoadingStarted: watchListItemsLoadingStarted,

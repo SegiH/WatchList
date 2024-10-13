@@ -27,6 +27,7 @@ export default function WatchListItemsDtl() {
           EditIconComponent,
           isAdding,
           isEditing,
+          isVisible,
           SaveIconComponent,
           setIsAdding,
           setIsEditing,
@@ -34,7 +35,6 @@ export default function WatchListItemsDtl() {
           setErrorMessage,
           setWatchListItemsLoadingStarted,
           setWatchListItemsLoadingComplete,
-          showWatchListItems,
           watchListTypes
      } = useContext(DataContext) as DataContextType
 
@@ -90,8 +90,8 @@ export default function WatchListItemsDtl() {
                setWatchListItemsLoadingComplete(false);
           }
 
-          if (showWatchListItems) {
-               router.push("/WatchListItems");
+          if (isVisible("Items")) {
+               router.push("/Items");
           } else {
                router.push("/WatchList");
           }

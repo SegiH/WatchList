@@ -1,5 +1,5 @@
 import { NextRequest } from 'next/server';
-import { addUser, bugLogsSQL, DBFile, defaultSources, defaultTypes, execSelect, watchListSQL, watchListItemsSQL, watchListSourcesSQL, watchListTypesSQL, usersSQL } from "../lib";
+import { addUser, bugLogsSQL, DBFile, defaultSources, defaultTypes, execSelect, optionsSQL, watchListSQL, watchListItemsSQL, watchListSourcesSQL, watchListTypesSQL, usersSQL } from "../lib";
 import fs from 'fs';
 
 const sqlite3 = require('sqlite3').verbose();
@@ -62,8 +62,6 @@ export async function PUT(request: NextRequest) {
           return Response.json(["ERROR", dbResult[1]]);
      }
 
-     // WatchList
-
      try {
           await execSelect(watchListSQL, []);
           await execSelect(watchListItemsSQL, []);
@@ -71,6 +69,7 @@ export async function PUT(request: NextRequest) {
           await execSelect(watchListTypesSQL, []);
           await execSelect(usersSQL, []);
           await execSelect(bugLogsSQL, []);
+          await execSelect(optionsSQL, []);
 
           defaultSources.forEach(async (element) => {
                const SQL = "INSERT INTO WatchListSources (WatchListSourceName) VALUES (?)";
@@ -83,6 +82,10 @@ export async function PUT(request: NextRequest) {
 
                await execSelect(SQL, [element]);
           });
+
+          await execSelect("INSERT INTO VisibleSections (name) VALUES(?);", ['Items']);
+          await execSelect("INSERT INTO VisibleSections (name) VALUES(?);", ['Stats']);
+          await execSelect("INSERT INTO VisibleSections (name) VALUES(?);", ['Admin']);
 
           return await addUser(request, true);
      } catch (e) {

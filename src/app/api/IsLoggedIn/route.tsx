@@ -2,7 +2,7 @@
 import { NextRequest } from 'next/server';
 import fs from 'fs';
 import { cookies } from 'next/headers';
-import { DBFile, execSelect, execUpdateDelete, getUserSession, loginSuccessfullActions, tokenSeparator, validateSettings } from "../lib";
+import { DBFile, execSelect, execUpdateDelete, getUserOptions, getUserSession, loginSuccessfullActions, tokenSeparator, validateSettings } from "../lib";
 
 /**
  * @swagger
@@ -37,16 +37,18 @@ export async function GET(request: NextRequest) {
      }
 
      const userSession = await getUserSession(request);
+     const userOptions = await getUserOptions(userSession.UserID, userSession.Admin);
 
      if (userSession && userSession.UserID) {
           return Response.json([
                "OK",
                {
                     UserID: userSession.UserID,
-                    Username: userSession.UserName,
-                    RealName: userSession.RealName,
+                    Username: userSession.Username,
+                    RealName: userSession.Realname,
                     Admin: userSession.Admin,
-               },
+                    Options: userOptions
+               }
           ]);
      } else if (token !== null) {
           // Validate token

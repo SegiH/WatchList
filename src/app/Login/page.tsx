@@ -27,6 +27,7 @@ export default function Login() {
           setDemoMode,
           setIsLoggedIn,
           setIsLoggedInCheckComplete,
+          setOptions,
           setUserData
      } = useContext(DataContext) as DataContextType
 
@@ -66,8 +67,6 @@ export default function Login() {
                setUserData(newUserData);
                setIsLoggedIn(true);
                setIsLoggedInCheckComplete(true);
-
-               localStorage.setItem("watchlist_demomode", "true");
 
                setTimeout(() => {
                     router.push("/WatchList");
@@ -115,7 +114,7 @@ export default function Login() {
                });
      };
 
-     const loginSuccessfullActions = useCallback((response: typeof IUser) => {
+     const loginSuccessfullActions = useCallback(async (response: typeof IUser) => {
           const newUserData: typeof IUser = [];
 
           try {
@@ -139,6 +138,9 @@ export default function Login() {
                setActiveRoute(defaultRoute);
                setActiveRouteDisplayName(defaultRoute);
                setUserData(newUserData);
+
+               setOptions(response.Options[0]);
+
                setIsLoggedIn(true);
                setIsLoggedInCheckComplete(true);
 

@@ -129,6 +129,7 @@ export interface DataContextType {
      setErrorMessage: (value: string) => void;
      setIsLoggedIn: (value: boolean) => void;
      setIsLoggedInCheckComplete: (value: boolean) => void;
+     setOptions: (value: []) => void;
      setShowMissingArtwork: (value: boolean) => void;
      setSearchCount: (value: number) => void;
      setSearchTerm: (value: string) => void;
@@ -240,13 +241,13 @@ const DataProvider = ({ children }) => {
      const [watchListSortColumn, setWatchListSortColumn] = useState("Name");
      const [watchListSortDirection, setWatchListSortDirection] = useState("ASC");
 
-     const [visibleSections, setVisibleSections] = useState([{ "name": "Admin", "id": 3 }]);
+     const [visibleSections, setVisibleSections] = useState([{ name: 'Stats', id: 2 }]);
 
      const defaultRoute = "WatchList";
      const demoUsername = "demo";
      const demoPassword = "demo";
 
-     const visibleSectionChoices = [{ name: 'Items', id: 1 }, { name: 'Stats', id: 2 }, { name: 'Admin', id: 3 }]
+     const visibleSectionChoices = [{ name: 'Items', id: 1 }, { name: 'Stats', id: 2 }, { name: 'Admin', id: 3 }];
 
      const router = useRouter();
 
@@ -340,6 +341,41 @@ const DataProvider = ({ children }) => {
           }
      }, [activeRoute, setIsAdding]);
 
+     const setOptions = async (newOptions: any) => {
+          const newArchivedVisible = typeof newOptions.ArchivedVisible !== "undefined" && newOptions.ArchivedVisible === 1 ? true : false;
+          setArchivedVisible(newArchivedVisible);
+
+          const newAutoAdd = typeof newOptions.AutoAdd !== "undefined" && newOptions.AutoAdd === 1 ? true : false;
+          setAutoAdd(newAutoAdd);
+
+          const darkMode = typeof newOptions.DarkMode !== "undefined" && newOptions.DarkMode === 1 ? true : false;
+          setDarkMode(darkMode);
+
+          const newSearchCount = typeof newOptions.SearchCount !== "undefined" && !isNaN(newOptions.SearchCount) ? parseInt(newOptions.SearchCount, 10) : 5;
+          setSearchCount(newSearchCount);
+
+          const newStillWatching = typeof newOptions.StillWatching !== "undefined" && newOptions.StillWatching === 1 ? true : false;
+          setStillWatching(newStillWatching);
+
+          const newShowMissingArtwork = typeof newOptions.ShowMissingArtwork !== "undefined" && newOptions.ShowMissingArtwork === 1 ? true : false;
+          setShowMissingArtwork(newShowMissingArtwork);
+
+          const newSourceFilter = typeof newOptions.SourceFilter !== "undefined" && !isNaN(newOptions.SourceFilter) ? parseInt(newOptions.SourceFilter, 10) : 5;
+          setSourceFilter(newSourceFilter);
+
+          const newTypeFilter = typeof newOptions.TypeFilter !== "undefined" && !isNaN(newOptions.TypeFilter) ? parseInt(newOptions.TypeFilter, 10) : 5;
+          setTypeFilter(newTypeFilter);
+
+          const newSortColumn = typeof newOptions.WatchListSortColumn !== "undefined" ? newOptions.WatchListSortColumn : "Name";
+          setWatchListSortColumn(newSortColumn);
+
+          const newSortDirection = typeof newOptions.WatchListSortDirection !== "undefined" ? newOptions.WatchListSortDirection : "Name";
+          setWatchListSortDirection(newSortDirection);
+
+          const newVisibleSections = typeof newOptions.VisibleSections !== "undefined" ? JSON.parse(newOptions.VisibleSections) : [{ name: 'Stats', id: 2 }];
+          setVisibleSections(newVisibleSections);
+     }
+
      const showSearch = () => {
           setSearchVisible(true);
      };
@@ -404,8 +440,6 @@ const DataProvider = ({ children }) => {
 
           setSettingsVisible(false);
 
-          localStorage.removeItem("watchlist_demomode")
-
           setActiveRoute("Login");
 
           router.push("/Login");
@@ -431,89 +465,7 @@ const DataProvider = ({ children }) => {
           setIsLoggedInCheckStarted(true);
 
           if (!isLoggedIn && !isLoggedInCheckStarted) {
-               const newArchivedVisible = localStorage.getItem("WatchList.ArchivedVisible");
-               const newAutoAdd = localStorage.getItem("WatchList.AutoAdd");
-               const darkMode = localStorage.getItem("WatchList.DarkMode");
-               const newSearchCount = localStorage.getItem("WatchList.SearchCount");
-               const newStillWatching = localStorage.getItem("WatchList.StillWatching");
-               const newShowMissingArtwork = localStorage.getItem("WatchList.ShowMissingArtwork");
-               const newSourceFilter = localStorage.getItem("WatchList.SourceFilter");
-               const newTypeFilter = localStorage.getItem("WatchList.TypeFilter");
-               const newSortColumn = localStorage.getItem("WatchList.WatchListSortColumn");
-               const newSortDirection = localStorage.getItem("WatchList.WatchListSortDirection");
-
-               let newVisibleSections = localStorage.getItem("WatchList.VisibleSections");
-
-               if (newVisibleSections !== null && typeof newVisibleSections !== "undefined" && newVisibleSections !== "") {
-                    newVisibleSections = JSON.parse(newVisibleSections);
-               }
-
-               if (newArchivedVisible !== null) {
-                    setArchivedVisible(newArchivedVisible === "true" ? true : false);
-               }
-
-               if (newAutoAdd !== null) {
-                    setAutoAdd(newAutoAdd === "true" ? true : false);
-               }
-
-               if (darkMode !== null) {
-                    setDarkMode(darkMode === "true" ? true : false);
-               }
-
-               if (newSearchCount !== null) {
-                    setSearchCount(parseInt(newSearchCount, 10));
-               }
-
-               if (newShowMissingArtwork !== null) {
-                    setShowMissingArtwork(newShowMissingArtwork === "true" ? true : false);
-               }
-
-               if (newStillWatching !== null) {
-                    setStillWatching(newStillWatching === "true" ? true : false);
-               }
-
-               if (newSourceFilter !== null) {
-                    setSourceFilter(parseInt(newSourceFilter, 10));
-               }
-
-               if (newTypeFilter !== null) {
-                    setTypeFilter(parseInt(newTypeFilter, 10));
-               }
-
-               if (newSortColumn !== null) {
-                    setWatchListSortColumn(newSortColumn);
-               }
-
-               if (newSortDirection !== null) {
-                    setWatchListSortDirection(newSortDirection);
-               }
-
-               if (newVisibleSections !== null) {
-                    setVisibleSections(newVisibleSections);
-               }
-
                if (isLoggedInCheckStarted) {
-                    return;
-               }
-
-               const previousDemoMode = localStorage.getItem("watchlist_demomode");
-
-               if (previousDemoMode === "true") {
-                    setDemoMode(true);
-
-                    const newUserData = require("./demo/index").demoUsers[0];
-
-                    setUserData(newUserData);
-
-                    setIsLoggedIn(true);
-
-                    setActiveRoute("WatchList");
-                    setActiveRouteDisplayName("WatchList");
-
-                    router.push("/WatchList");
-
-                    setIsLoggedInCheckComplete(true);
-
                     return;
                }
 
@@ -546,7 +498,7 @@ const DataProvider = ({ children }) => {
                }
 
                axios.get(`/api/IsLoggedIn${params}`)
-                    .then((res: typeof IUser) => {
+                    .then(async (res: typeof IUser) => {
                          if (res.data[0] === "OK") {
                               const newUserData = Object.assign({}, userData);
                               newUserData.UserID = res.data[1].UserID;
@@ -556,6 +508,8 @@ const DataProvider = ({ children }) => {
 
                               localStorage.setItem("WatchList.Token", res.data[1].Token);
                               localStorage.setItem("WatchList.TokenExpiration", res.data[1].TokenExpiration);
+
+                              await setOptions(res.data[1].Options[0]);
 
                               setUserData(newUserData);
 
@@ -752,17 +706,26 @@ const DataProvider = ({ children }) => {
                return;
           }
 
-          localStorage.setItem("WatchList.ArchivedVisible", archivedVisible);
-          localStorage.setItem("WatchList.AutoAdd", autoAdd);
-          localStorage.setItem("WatchList.DarkMode", darkMode);
-          localStorage.setItem("WatchList.SearchCount", searchCount);
-          localStorage.setItem("WatchList.ShowMissingArtwork", showMissingArtwork);
-          localStorage.setItem("WatchList.SourceFilter", sourceFilter);
-          localStorage.setItem("WatchList.StillWatching", stillWatching);
-          localStorage.setItem("WatchList.TypeFilter", typeFilter);
-          localStorage.setItem("WatchList.VisibleSections", JSON.stringify(visibleSections));
-          localStorage.setItem("WatchList.WatchListSortColumn", watchListSortColumn);
-          localStorage.setItem("WatchList.WatchListSortDirection", watchListSortDirection);
+          const options = {
+               "ArchivedVisible": archivedVisible ? 1 : 0,
+               "AutoAdd": autoAdd ? 1 : 0,
+               "DarkMode": darkMode ? 1 : 0,
+               "SearchCount": searchCount,
+               "ShowMissingArtwork": showMissingArtwork ? 1 : 0,
+               "SourceFilter": sourceFilter,
+               "StillWatching": stillWatching ? 1 : 0,
+               "TypeFilter": typeFilter,
+               "VisibleSections": JSON.stringify(visibleSections),
+               "WatchListSortColumn": watchListSortColumn,
+               "WatchListSortDirection": watchListSortDirection
+          }
+
+          axios.get(`/api/UpdateOptions?Options=${JSON.stringify(options)}`)
+               .catch((err: Error) => {
+                    setErrorMessage("Failed to update option with the error " + err.message);
+                    setIsError(true);
+               });
+
 
           //setWatchListSortingComplete(false);
           //setWatchListItemsSortingComplete(false);
@@ -824,7 +787,7 @@ const DataProvider = ({ children }) => {
                     } else if (currentPath === "/BugLog") {
                          setBugLogVisible(true);
 
-                         newRoute="BugLog";
+                         newRoute = "BugLog";
                     }
                } else if (activeRoute !== "") {
                     const findRouteByName = Object.keys(routeList).filter((routeName) => routeList[routeName].Name === activeRoute);
@@ -841,7 +804,7 @@ const DataProvider = ({ children }) => {
                     } else if (activeRoute === "BugLog") {
                          setBugLogVisible(true);
 
-                         newRoute="BugLog";
+                         newRoute = "BugLog";
                     }
                } else {
                     newRoute = defaultRoute;
@@ -1018,6 +981,7 @@ const DataProvider = ({ children }) => {
           setErrorMessage,
           setIsLoggedIn: setIsLoggedIn,
           setIsLoggedInCheckComplete: setIsLoggedInCheckComplete,
+          setOptions: setOptions,
           setSearchCount: setSearchCount,
           setSearchTerm: setSearchTerm,
           setSearchVisible: setSearchVisible,
@@ -1086,3 +1050,47 @@ DataProvider.propTypes = {
 }
 
 export { DataContext, DataProvider };
+
+/*axios.get(`/api/GetOptions`)
+                    .then((res: typeof IUser) => {
+                         if (res.data[0] !== "OK") {
+                              alert(res.data[1]);
+                         } else {
+                              const options = res.data[1][0];
+
+                              const newArchivedVisible = typeof options.ArchivedVisible !== "undefined" && options.ArchivedVisible === 1 ? true : false;
+                              setArchivedVisible(newArchivedVisible);
+
+                              const newAutoAdd = typeof options.AutoAdd !== "undefined" && options.AutoAdd === 1 ? true : false;
+                              setAutoAdd(newAutoAdd);
+
+                              const darkMode = typeof options.DarkMode !== "undefined" && options.DarkMode === 1 ? true : false;
+                              setDarkMode(darkMode);
+
+                              const newSearchCount = typeof options.SearchCount !== "undefined" && !isNaN(options.SearchCount) ? parseInt(options.SearchCount, 10) : 5;
+                              setSearchCount(newSearchCount);
+
+                              const newStillWatching = typeof options.StillWatching !== "undefined" && options.StillWatching === 1 ? true : false;
+                              setStillWatching(newStillWatching);
+
+                              const newShowMissingArtwork = typeof options.ShowMissingArtwork !== "undefined" && options.ShowMissingArtwork === 1 ? true : false;
+                              setShowMissingArtwork(newShowMissingArtwork);
+
+                              const newSourceFilter = typeof options.SourceFilter !== "undefined" && !isNaN(options.SourceFilter) ? parseInt(options.SourceFilter, 10) : 5;
+                              setSourceFilter(newSourceFilter);
+
+                              const newTypeFilter = typeof options.TypeFilter !== "undefined" && !isNaN(options.TypeFilter) ? parseInt(options.TypeFilter, 10) : 5;
+                              setTypeFilter(newTypeFilter);
+
+                              const newSortColumn = typeof options.WatchListSortColumn !== "undefined" ? options.WatchListSortColumn : "Name";
+                              setWatchListSortColumn(newSortColumn);
+
+                              const newSortDirection = typeof options.WatchListSortDirection !== "undefined" ? options.WatchListSortDirection : "Name";
+                              setWatchListSortDirection(newSortDirection);
+
+                              const newVisibleSections = typeof options.VisibleSections !== "undefined" ? JSON.parse(options.VisibleSections) : [{ name: 'Stats', id: 2 }];
+                              setVisibleSections(newVisibleSections);
+                         }
+                    })
+                    .catch((err: Error) => {
+                    });*/

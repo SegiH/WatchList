@@ -25,6 +25,8 @@ export const watchListSourcesSQL = "CREATE TABLE WatchListSources (WatchListSour
 export const watchListTypesSQL = "CREATE TABLE WatchListTypes (WatchListTypeID INTEGER PRIMARY KEY, WatchListTypeName VARCHAR(80) NOT NULL);";
 export const usersSQL = "CREATE TABLE Users (UserID INTEGER PRIMARY KEY, Username BLOB NOT NULL, Realname BLOB NOT NULL, Password BLOB NOT NULL, Admin BIT NULL DEFAULT 0, Enabled NULL DEFAULT 0, Token TEXT NULL, TokenExpiration INTEGER NULL);";
 export const bugLogsSQL = "CREATE TABLE BugLogs (WLBugID INTEGER PRIMARY KEY, WLBugName TEXT NOT NULL, AddDate TEXT NOT NULL,CompletedDate TEXT NULL, ResolutionNotes TEXT NULL);";
+export const optionsSQL = "CREATE TABLE Options (`OptionID` INTEGER PRIMARY KEY, UserID INT, ArchivedVisible TINYINT(1), AutoAdd TINYINT(1), DarkMode TINYINT(1), SearchCount INT, StillWatching TINYINT(1), ShowMissingArtwork TINYINT(1), SourceFilter INT, TypeFilter INT, WatchListSortColumn VARCHAR(100), WatchListSortDirection VARCHAR(100), VisibleSections VARCHAR(1000));"
+export const visibleSectionsSQL = "CREATE TABLE VisibleSections (id INTEGER PRIMARY KEY, name VARCHAR(100));"
 
 export const defaultSources = ['Amazon', 'Hulu', 'Movie Theatre', 'Netflix', 'Plex', 'Prime', 'Web'];
 export const defaultTypes = ['Movie', 'Other', 'Special', 'TV'];
@@ -161,9 +163,9 @@ export async function fetchData(options) {
      try {
           const response = await axios(options);
           return response.data;
-      } catch (error) {
+     } catch (error) {
           throw error;
-      }
+     }
      /*
      const request = require("request");
 
@@ -192,7 +194,7 @@ export async function getIMDBDetails(imdb_id: string) {
           },
      };
 
-     const result :any = await fetchData(options);
+     const result: any = await fetchData(options);
 
      return result;
 }
@@ -224,6 +226,26 @@ export async function getUserID(req: NextRequest) {
      } else {
           return null;
      }
+}
+
+export async function getUserOptions(userID: number, isAdmin: number) {
+     // Get Users' options
+     const getOptionsSQL = `SELECT * FROM Options WHERE UserID=?`;
+     const params = [userID];
+
+     // There may be no options the first time ever getting the options
+     let userOptions = await execSelect(getOptionsSQL, params);
+
+     if (userOptions.length === 0) {
+          const visibleSectionsChoicesResult = await execSelect(`SELECT * FROM VisibleSections ${isAdmin === 0 ? " WHERE name != 'Admin'" : ""}`, []);
+          const visibleSectionsChoices = JSON.stringify(visibleSectionsChoicesResult);
+
+          await execInsert("INSERT INTO Options (UserID, ArchivedVisible, AutoAdd, DarkMode, DemoMode, SearchCount, StillWatching, ShowMissingArtwork, SourceFilter, TypeFilter, WatchListSortColumn, WatchListSortDirection, VisibleSections) VALUES (" + userID + ", false, true, true, false, 5, true, false, -1, -1,\"Name\", \"ASC\",'" + visibleSectionsChoices + "');", []);
+     }
+
+     userOptions = await execSelect(getOptionsSQL, params);
+
+     return userOptions;
 }
 
 export async function getUserSession(req: NextRequest) {
@@ -295,20 +317,27 @@ export async function loginSuccessfullActions(currentUser: IUser, results: any) 
      const tokenSQL = "UPDATE Users SET Token=?, TokenExpiration=? WHERE UserID=?";
      const tokenParams: any = [token, tokenExpiration, currentUser[0].UserID];
 
-     await execUpdateDelete(tokenSQL, tokenParams);
+     try {
+          await execUpdateDelete(tokenSQL, tokenParams);
 
-     const userData = {
-          UserID: currentUser[0].UserID,
-          Username: decrypt(currentUser[0].Username),
-          Realname: decrypt(currentUser[0].Realname),
-          Admin: results[0]["Admin"],
-          Token: `${currentUser[0].Username}${tokenSeparator}${token}`,
-          Timeout: timeout
+          const userOptions = await getUserOptions(currentUser[0].UserID, results[0]["Admin"]);
+
+          const userData = {
+               UserID: currentUser[0].UserID,
+               Username: decrypt(currentUser[0].Username),
+               Realname: decrypt(currentUser[0].Realname),
+               Admin: results[0]["Admin"],
+               Token: `${currentUser[0].Username}${tokenSeparator}${token}`,
+               Timeout: timeout,
+               Options: userOptions
+          }
+
+          cookies().set('userData', JSON.stringify(userData));
+
+          return Response.json(["OK", userData]);
+     } catch (e) {
+          return Response.json(["ERROR", `An error occurred getting the options with the error ${e.message}`]);
      }
-
-     cookies().set('userData', JSON.stringify(userData));
-
-     return Response.json(["OK", userData]);
 }
 
 const openDB = async () => {

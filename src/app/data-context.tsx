@@ -509,7 +509,9 @@ const DataProvider = ({ children }) => {
                               localStorage.setItem("WatchList.Token", res.data[1].Token);
                               localStorage.setItem("WatchList.TokenExpiration", res.data[1].TokenExpiration);
 
-                              await setOptions(res.data[1].Options[0]);
+                              if (typeof res.data[1].Options !== "undefined" && res.data[1].Options.length === 1) {
+                                   await setOptions(res.data[1].Options[0]);
+                              }
 
                               setUserData(newUserData);
 

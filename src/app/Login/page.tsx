@@ -139,7 +139,9 @@ export default function Login() {
                setActiveRouteDisplayName(defaultRoute);
                setUserData(newUserData);
 
-               setOptions(response.Options[0]);
+               if (typeof response.Options !== "undefined" && response.Options.length === 1) {
+                    setOptions(response.Options[0]);
+               }
 
                setIsLoggedIn(true);
                setIsLoggedInCheckComplete(true);

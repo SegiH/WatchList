@@ -240,7 +240,7 @@ export async function getUserOptions(userID: number, isAdmin: number) {
           const visibleSectionsChoicesResult = await execSelect(`SELECT * FROM VisibleSections ${isAdmin === 0 ? " WHERE name != 'Admin'" : ""}`, []);
           const visibleSectionsChoices = JSON.stringify(visibleSectionsChoicesResult);
 
-          await execInsert("INSERT INTO Options (UserID, ArchivedVisible, AutoAdd, DarkMode, DemoMode, SearchCount, StillWatching, ShowMissingArtwork, SourceFilter, TypeFilter, WatchListSortColumn, WatchListSortDirection, VisibleSections) VALUES (" + userID + ", false, true, true, false, 5, true, false, -1, -1,\"Name\", \"ASC\",'" + visibleSectionsChoices + "');", []);
+          await execInsert("INSERT INTO Options (UserID, ArchivedVisible, AutoAdd, DarkMode, SearchCount, StillWatching, ShowMissingArtwork, SourceFilter, TypeFilter, WatchListSortColumn, WatchListSortDirection, VisibleSections) VALUES (" + userID + ", false, true, false, 5, true, false, -1, -1,\"Name\", \"ASC\",'" + visibleSectionsChoices + "');", []);
      }
 
      userOptions = await execSelect(getOptionsSQL, params);

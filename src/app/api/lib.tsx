@@ -235,15 +235,22 @@ export async function getUserOptions(userID: number, isAdmin: number) {
 
      // There may be no options the first time ever getting the options
      let userOptions = await execSelect(getOptionsSQL, params);
+     // TODO: Remove me later!
+console.log("first attempt");
+console.log(userOptions);
 
      if (userOptions.length === 0) {
           const visibleSectionsChoicesResult = await execSelect(`SELECT * FROM VisibleSections ${isAdmin === 0 ? " WHERE name != 'Admin'" : ""}`, []);
           const visibleSectionsChoices = JSON.stringify(visibleSectionsChoicesResult);
 
+          console.log("executing insert into options");
           await execInsert("INSERT INTO Options (UserID, ArchivedVisible, AutoAdd, DarkMode, SearchCount, StillWatching, ShowMissingArtwork, SourceFilter, TypeFilter, WatchListSortColumn, WatchListSortDirection, VisibleSections) VALUES (" + userID + ", false, true, false, 5, true, false, -1, -1,\"Name\", \"ASC\",'" + visibleSectionsChoices + "');", []);
      }
 
      userOptions = await execSelect(getOptionsSQL, params);
+
+     console.log("second attempt");
+console.log(userOptions);
 
      return userOptions;
 }

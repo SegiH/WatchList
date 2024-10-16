@@ -245,9 +245,6 @@ export async function getUserOptions(userID: number, isAdmin: number) {
 
      userOptions = await execSelect(getOptionsSQL, params);
 
-     console.log("second attempt");
-console.log(userOptions);
-
      return userOptions;
 }
 

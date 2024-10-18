@@ -1,0 +1,6 @@
+Add to transpilePackages in next.config.js
+  "swagger-client",
+  "swagger-ui-react",
+  
+Copy lib folder to src/
+

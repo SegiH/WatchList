@@ -35,13 +35,11 @@
     "next": "^14.2.3",
     "next-pwa": "^5.6.0",
     "next-session": "^4.0.5",
-    "next-swagger-doc": "^0.4.0",
     "prop-types-exact": "^1.2.0",
     "react": "^18",
     "react-dom": "^18",
     "sqlite": "^5.1.1",
     "sqlite3": "^5.1.7",
-    "swagger-ui-react": "^5.17.4",
     "tedious": "^18.2.3",
     "ts-node": "^10.9.2"
   },

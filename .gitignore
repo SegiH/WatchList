@@ -5,3 +5,5 @@ watchlistdb.sqlite
 wiberSessions
 public/sw.js
 next-env.d.ts
+.next
+public/workbox*.js

@@ -555,7 +555,7 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
                                         <div className={`textLabel ${!darkMode ? " lightMode" : " darkMode"}`}>Notes:&nbsp;</div>
                                    </div>
 
-                                   <div className="narrow card no-width">
+                                   <div className="marqueeText narrow card no-width">
                                         {!isAdding && !isEditing &&
                                              <div className={`${!darkMode ? "lightMode" : "darkMode"}`}>{watchListItemDtl?.ItemNotes}</div>
                                         }

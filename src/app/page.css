@@ -319,6 +319,12 @@ input:checked+.slider:before {
      z-index: 1;
 }
 
+.marqueeText {
+     margin: 0 auto;
+     white-space: nowrap;
+     overflow: scroll;
+     max-width: 200px;
+}  
 .menuBar {
      align-items: center;
      border-radius: 15px;

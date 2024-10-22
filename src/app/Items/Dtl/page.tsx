@@ -419,9 +419,9 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
                                    <div className="narrow card">
                                         {!isAdding &&
                                              <>
-                                                  {watchListItemDtl?.IMDB_Poster !== null && watchListItemDtl?.IMDB_Poster_Error !== true && <Image alt={addWatchListItemDtl?.WatchListItemName} className="poster-detail" width="175" height="200" src={watchListItemDtl?.IMDB_Poster} onError={() => showDefaultSrc()} />}
+                                                  {typeof watchListItemDtl?.IMDB_Poster !== "undefined" && watchListItemDtl?.IMDB_Poster_Error !== true && typeof watchListItemDtl?.WatchListItemName !== "undefined" && <Image alt={watchListItemDtl?.WatchListItemName} className="poster-detail" width="175" height="200" src={watchListItemDtl?.IMDB_Poster} onError={() => showDefaultSrc()} />}
 
-                                                  {(watchListItemDtl?.IMDB_Poster === null || watchListItemDtl?.IMDB_Poster_Error === true) && <>{BrokenImageIconComponent}</>}
+                                                  {(typeof watchListItemDtl?.IMDB_Poster === "undefined" || watchListItemDtl?.IMDB_Poster_Error === true || typeof watchListItemDtl?.WatchListItemName === "undefined") && <>{BrokenImageIconComponent}</>}
                                              </>
                                         }
 

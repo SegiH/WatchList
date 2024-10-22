@@ -115,7 +115,7 @@ export default function WatchListItems() {
 
      return (
           <span className="topMarginContent">
-               <ul className={`clickable show-list${!darkMode ? " lightMode" : " darkMode"}`}>
+               <ul className={`show-list${!darkMode ? " lightMode" : " darkMode"}`}>
                     {watchListItems?.filter(
                          (currentWatchListItem: typeof IWatchListItem) =>
                               ((currentWatchListItem?.Archived === 1 && archivedVisible === true) || (currentWatchListItem?.Archived === 0 && archivedVisible === false))

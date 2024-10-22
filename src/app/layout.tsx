@@ -26,13 +26,13 @@ export default function RootLayout({
 
                     <link rel="manifest" href="/manifest.json" crossOrigin="use-credentials"></link>
                </head>
-                    <body>
-                         <DataProvider>
-                              <SharedLayout />
-                              {children}
-                              <Tabs />
-                         </DataProvider>
-                    </body>
+               <body>
+                    <DataProvider>
+                         <SharedLayout />
+                         {children}
+                         <Tabs />
+                    </DataProvider>
+               </body>
           </html>
      )
 }

@@ -1,7 +1,6 @@
 const axios = require("axios");
 const config = require("config");
 const fs = require("fs");
-const https = require('https');
 const sqlite3 = require('sqlite3').verbose();
 
 import nextSession from "next-session";
@@ -15,7 +14,7 @@ import { open } from "sqlite";
 
 const Statement = require('sqlite3');
 
-var SQLiteStore = require("connect-sqlite3")(expressSession);
+const SQLiteStore = require("connect-sqlite3")(expressSession);
 
 // Constants
 export const DBFile = "watchlistdb.sqlite";
@@ -35,7 +34,7 @@ const timeout = 604800000; // 1 week in MS
 
 const secretKey = config.get(`Secret`);
 
-export async function logMessage(message) {
+export const logMessage = async (message) => {
      message = new Date().toISOString() + " " + message
      fs.appendFile('app.log', message + '\n', (err) => {
           if (err) {
@@ -44,7 +43,7 @@ export async function logMessage(message) {
      });
 };
 
-export async function addUser(request: NextRequest, isNewInstance = false) {
+export const addUser = async (request: NextRequest, isNewInstance = false) => {
      const searchParams = request.nextUrl.searchParams;
 
      const userName = searchParams.get("wl_username");
@@ -159,7 +158,7 @@ export const execUpdateDelete = async (sql: string, params: Array<string | numbe
      await stmt.run(params);
 }
 
-export async function fetchData(options) {
+export const fetchData = async (options) => {
      try {
           const response = await axios(options);
           return response.data;
@@ -180,7 +179,7 @@ export async function fetchData(options) {
      });*/
 }
 
-export async function getIMDBDetails(imdb_id: string) {
+export const getIMDBDetails = async(imdb_id: string) => {
      const rapidapi_key = config.has("RapidAPIKey") ? config.get("RapidAPIKey") : "";
 
      let options = {
@@ -199,13 +198,13 @@ export async function getIMDBDetails(imdb_id: string) {
      return result;
 }
 
-export async function getRapidAPIKey() {
+export const getRapidAPIKey = async () => {
      const rapidapi_key = config.has("RapidAPIKey") ? config.get("RapidAPIKey") : "";
 
      return rapidapi_key;
 }
 
-export async function getRecommendationsAPIKey() {
+export const getRecommendationsAPIKey = async () => {
      const recommendations_key = config.has("RecommendationsAPIKey") ? config.get("RecommendationsAPIKey") : "";
 
      return recommendations_key;
@@ -218,7 +217,7 @@ export const getSession = nextSession({
      ),
 });
 
-export async function getUserID(req: NextRequest) {
+export const getUserID = async (req: NextRequest) => {
      const userSession = await getUserSession(req);
 
      if (userSession !== null && typeof userSession !== "undefined" && typeof userSession.UserID !== "undefined") {
@@ -228,7 +227,7 @@ export async function getUserID(req: NextRequest) {
      }
 }
 
-export async function getUserOptions(userID: number, isAdmin: number) {
+export const getUserOptions = async (userID: number, isAdmin: number) => {
      // Get Users' options
      const getOptionsSQL = `SELECT * FROM Options WHERE UserID=?`;
      const params = [userID];
@@ -248,7 +247,7 @@ export async function getUserOptions(userID: number, isAdmin: number) {
      return userOptions;
 }
 
-export async function getUserSession(req: NextRequest) {
+export const getUserSession = async (req: NextRequest) => {
      const userData = cookies().get('userData')
 
      if (typeof userData === "undefined") {
@@ -259,7 +258,7 @@ export async function getUserSession(req: NextRequest) {
      }
 }
 
-export async function isLoggedIn(req: NextRequest) {
+export const isLoggedIn = async (req: NextRequest) => {
      const userSession = await getUserSession(req);
 
      if (typeof userSession === "undefined") {
@@ -269,7 +268,7 @@ export async function isLoggedIn(req: NextRequest) {
      }
 }
 
-export async function isUserAdmin(req: NextRequest) {
+export const isUserAdmin = async (req: NextRequest) => {
      const userSession = await getUserSession(req);
 
      if (typeof userSession === "undefined" || (typeof userSession !== "undefined" && userSession.Admin === 0)) {
@@ -281,7 +280,7 @@ export async function isUserAdmin(req: NextRequest) {
      }
 }
 
-export async function login(username: string, password: string) {
+export const login = async (username: string, password: string) => {
      try {
           const SQL = "SELECT UserID,Username,Password,Realname,Admin FROM Users WHERE Enabled=1 LIMIT 1";
 
@@ -307,7 +306,7 @@ export async function login(username: string, password: string) {
      }
 }
 
-export async function loginSuccessfullActions(currentUser: IUser, results: any) {
+export const loginSuccessfullActions = async (currentUser: IUser, results: any) => {
      // Generate token
      const epochTime = new Date().getTime().toString();
      const token = encrypt(btoa(epochTime));
@@ -347,7 +346,7 @@ const openDB = async () => {
      });
 }
 
-export async function validateSettings() {
+export const validateSettings = async () => {
      // Validate config file properties that are required
      if (!config.has(`Secret`)) {
           return `Config file error: Secret property is missing or not set`;

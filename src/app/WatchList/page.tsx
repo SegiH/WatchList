@@ -14,7 +14,6 @@ import "../page.css";
 
 export default function WatchList() {
      const {
-          activeRoute,
           archivedVisible,
           BrokenImageIconComponent,
           darkMode,

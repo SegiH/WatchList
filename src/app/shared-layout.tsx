@@ -2,6 +2,7 @@
 const React = require("react");
 const useContext = require("react").useContext;
 const useEffect = require("react").useEffect;
+const useRouter = require("next/navigation").useRouter;
 const useState = require("react").useState;
 const useCallback = require("react").useCallback;
 
@@ -16,17 +17,25 @@ const SharedLayout = () => {
           activeRoute,
           activeRouteDisplayName,
           AddIconComponent,
+          bugLogVisible,
           darkMode,
           demoMode,
+          getDisplayName,
+          hideTabs,
+          isAdmin,
           isError,
           isLoggedIn,
+          isVisible,
           openDetailClickHandler,
+          routeList,
           SearchIconComponent,
           searchVisible,
+          setActiveRouteDisplayName,
           setSourceFilter,
           setStillWatching,
           SettingsIconComponent,
           settingsVisible,
+          setActiveRoute,
           setTypeFilter,
           setWatchListSortColumn,
           setWatchListSortDirection,
@@ -47,6 +56,18 @@ const SharedLayout = () => {
      } = useContext(DataContext) as DataContextType
 
      const [isClient, setIsClient] = useState(false);
+
+     const router = useRouter();
+
+     const tabChangeHandler = async (newTab: string) => {
+          setActiveRoute(newTab);
+
+          router.push("/" + newTab);
+
+          const displayName = getDisplayName(newTab);
+
+          setActiveRouteDisplayName(displayName);
+     }
 
      useEffect(() => {
           const newIsClient = !window.location.href.endsWith("api-doc") && !window.location.href.endsWith("api-doc/") ? true : false;
@@ -73,16 +94,47 @@ const SharedLayout = () => {
                                         <span className={`leftMargin menuBarActiveRoute${!darkMode ? " lightMode" : " darkMode"}`}>{activeRouteDisplayName}{demoMode ? " (Demo)" : ""}</span>
 
                                         {(activeRoute === "WatchList" || activeRoute === "Items") &&
-                                        <>
-                                             <span className={`clickable leftMargin50${!darkMode ? " lightMode" : " darkMode"}`} onClick={showSearch}>
-                                                  {SearchIconComponent}
-                                             </span>
-
-                                             { isLoggedIn && !isError && (
-                                                  <span className={`bottomMargin20 clickable customTopMargin leftMargin40 ${!darkMode ? " lightMode" : " darkMode"}`} onClick={() => openDetailClickHandler(-1)}>
-                                                       {AddIconComponent}
+                                             <>
+                                                  <span className={`clickable leftMargin50${!darkMode ? " lightMode" : " darkMode"}`} onClick={showSearch}>
+                                                       {SearchIconComponent}
                                                   </span>
-                                             )}
+
+                                                  {isLoggedIn && !isError && (
+                                                       <span className={`bottomMargin20 clickable customTopMargin leftMargin40 ${!darkMode ? " lightMode" : " darkMode"}`} onClick={() => openDetailClickHandler(-1)}>
+                                                            {AddIconComponent}
+                                                       </span>
+                                                  )}
+                                             </>
+                                        }
+
+                                        {hideTabs &&
+                                             <>
+                                                  <span className="leftMargin">
+                                                       <span className={`stillWatching${!darkMode ? " lightMode" : " darkMode"}`}>Tab</span>
+                                                  </span>
+
+                                                  <span title="Section">
+                                                       <select className="leftMargin selectStyle" value={activeRoute !== null ? activeRoute : ""} onChange={(event) => tabChangeHandler(event.target.value)}>
+                                                            {Object.keys(routeList)
+                                                            .filter((routeName) => {
+                                                                 return routeList[routeName].RequiresAuth === true
+                                                                 && routeName !== "Setup"
+                                                                 && routeName !== "SearchIMDB"
+                                                                 && (routeName !== "Admin" || (routeName === "Admin" && isAdmin() === true && isVisible("Admin")))
+                                                                 && (routeName !== "Items" || (routeName ==="Items" && isVisible("Items")))
+                                                                 && (routeName !== "BugLog" || (routeName ==="BugLog" && bugLogVisible === true && !demoMode))
+                                                                 && (routeName !== "WatchListStats" || (routeName === "WatchListStats" && isVisible("Stats")))
+                                                            }
+                                                            )
+                                                            .sort().map((routeName, index) => {
+                                                                 return (
+                                                                      <option key={index} value={routeName}>
+                                                                           {routeList[routeName].DisplayName}
+                                                                      </option>
+                                                                 );
+                                                            })}
+                                                       </select>
+                                                  </span>
                                              </>
                                         }
 
@@ -149,7 +201,7 @@ const SharedLayout = () => {
                                                   </span>
 
                                                   <span title="Sort by">
-                                                       <select className="selectStyle" value={watchListSortColumn} onChange={(event) => {setWatchListSortColumn(event.target.value); setWatchListSortingComplete(false); }}>
+                                                       <select className="selectStyle" value={watchListSortColumn} onChange={(event) => { setWatchListSortColumn(event.target.value); setWatchListSortingComplete(false); }}>
                                                             {activeRoute === "WatchList" &&
                                                                  Object.keys(watchListSortColumns).filter((sortColumn) => {
                                                                       return sortColumn !== "EndDate" || (sortColumn === "EndDate" && !stillWatching);

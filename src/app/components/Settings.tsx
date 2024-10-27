@@ -16,6 +16,7 @@ const Settings = () => {
           darkMode,
           defaultRoute,
           getDisplayName,
+          hideTabs,
           isLoggedIn,
           LogOutIconComponent,
           setActiveRoute,
@@ -24,6 +25,7 @@ const Settings = () => {
           setAutoAdd,
           setBugLogVisible,
           setDarkMode,
+          setHideTabs,
           setSettingsVisible,
           setShowMissingArtwork,
           setStillWatching,
@@ -52,7 +54,7 @@ const Settings = () => {
                     setActiveRouteDisplayName(displayName);
                }
 
-               router.push("/" + defaultRoute)
+               router.push("/" + defaultRoute);
           }
      }
 
@@ -149,6 +151,19 @@ const Settings = () => {
                                    </span>
                               </li>
                          )}
+
+                         <li className="topMargin">
+                              <span className="firstItem">
+                                   <span>Hide Tabs</span>
+                              </span>
+
+                              <span className="leftMargin" title="Hide bottom tab bar">
+                                   <label className="switch">
+                                        <input type="checkbox" checked={hideTabs} onChange={(event) => setHideTabs(event.target.checked)} />
+                                        <span className="slider round"></span>
+                                   </label>
+                              </span>
+                         </li>
 
                          {(activeRoute === "Items") && (
                               <li className="topMargin">

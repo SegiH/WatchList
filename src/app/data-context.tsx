@@ -94,6 +94,7 @@ export interface DataContextType {
      generateRandomPassword: () => void;
      getDisplayName: (value: string) => string;
      getPath: (value: string) => string;
+     hideTabs: boolean;
      imdbSearchEnabled: boolean;
      isAdding: boolean;
      isAdmin: () => boolean;
@@ -123,6 +124,7 @@ export interface DataContextType {
      setBugLogVisible: (value: boolean) => void;
      setDarkMode: (value: boolean) => void;
      setDemoMode: (value: boolean) => void;
+     setHideTabs: (value: boolean) => void;
      setIsAdding: (value: boolean) => void;
      setIsEditing: (value: boolean) => void;
      setIsError: (value: boolean) => void;
@@ -199,6 +201,7 @@ const DataProvider = ({ children }) => {
      const [bugLogVisible, setBugLogVisible] = useState(false);
      const [darkMode, setDarkMode] = useState(true);
      const [demoMode, setDemoMode] = useState(false);
+     const [hideTabs, setHideTabs] = useState(false);
      const [imdbSearchEnabled, setImdbSearchEnabled] = useState(false);
      const [isAdding, setIsAdding] = useState(false);
      const [isClient, setIsClient] = useState(false);
@@ -348,8 +351,11 @@ const DataProvider = ({ children }) => {
           const newAutoAdd = typeof newOptions.AutoAdd !== "undefined" && newOptions.AutoAdd === 1 ? true : false;
           setAutoAdd(newAutoAdd);
 
-          const darkMode = typeof newOptions.DarkMode !== "undefined" && newOptions.DarkMode === 1 ? true : false;
-          setDarkMode(darkMode);
+          const newDarkMode = typeof newOptions.DarkMode !== "undefined" && newOptions.DarkMode === 1 ? true : false;
+          setDarkMode(newDarkMode);
+
+          const newHideTabs = typeof newOptions.HideTabs !== "undefined" && newOptions.HideTabs === 1 ? true : false;
+          setHideTabs(newHideTabs);
 
           const newSearchCount = typeof newOptions.SearchCount !== "undefined" && !isNaN(newOptions.SearchCount) ? parseInt(newOptions.SearchCount, 10) : 5;
           setSearchCount(newSearchCount);
@@ -712,6 +718,7 @@ const DataProvider = ({ children }) => {
                "ArchivedVisible": archivedVisible ? 1 : 0,
                "AutoAdd": autoAdd ? 1 : 0,
                "DarkMode": darkMode ? 1 : 0,
+               "HideTabs": hideTabs ? 1 : 0,
                "SearchCount": searchCount,
                "ShowMissingArtwork": showMissingArtwork ? 1 : 0,
                "SourceFilter": sourceFilter,
@@ -731,7 +738,7 @@ const DataProvider = ({ children }) => {
 
           //setWatchListSortingComplete(false);
           //setWatchListItemsSortingComplete(false);
-     }, [archivedVisible, autoAdd, darkMode, isLoggedIn, searchCount, showMissingArtwork, stillWatching, sourceFilter, typeFilter, visibleSections, watchListSortColumn, watchListSortDirection]);
+     }, [archivedVisible, autoAdd, darkMode, hideTabs, isLoggedIn, searchCount, showMissingArtwork, stillWatching, sourceFilter, typeFilter, visibleSections, watchListSortColumn, watchListSortDirection]);
 
      /* useEffect that does isClient check */
      useEffect(() => {
@@ -948,6 +955,7 @@ const DataProvider = ({ children }) => {
           generateRandomPassword: generateRandomPassword,
           getDisplayName: getDisplayName,
           getPath: getPath,
+          hideTabs: hideTabs,
           imdbSearchEnabled: imdbSearchEnabled,
           isAdding: isAdding,
           isAdmin: isAdmin,
@@ -977,6 +985,7 @@ const DataProvider = ({ children }) => {
           setBugLogVisible: setBugLogVisible,
           setDarkMode: setDarkMode,
           setDemoMode: setDemoMode,
+          setHideTabs: setHideTabs,
           setIsAdding: setIsAdding,
           setIsEditing: setIsEditing,
           setIsError: setIsError,

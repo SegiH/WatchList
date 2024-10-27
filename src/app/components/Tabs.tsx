@@ -10,12 +10,13 @@ import "./Tabs.css";
 const Tabs = () => {
      const {
           activeRoute,
-          admin,
           bugLogVisible,
           darkMode,
           demoMode,
           getDisplayName,
           getPath,
+          hideTabs,
+          isAdmin,
           isClient,
           isError,
           isLoggedIn,
@@ -44,14 +45,14 @@ const Tabs = () => {
 
      return (
           <>
-               {isClient && isLoggedInCheckComplete && isLoggedIn && !isError && (
+               {isClient && isLoggedInCheckComplete && isLoggedIn && !isError && !hideTabs && (
                     <div className={`tabBar ${!darkMode ? "lightMode" : "darkMode"}`}>
                          {Object.keys(routeList)
                               .filter((routeName) => {
                                    return routeList[routeName].RequiresAuth === true
                                    && routeName !== "Setup"
                                    && routeName !== "SearchIMDB"
-                                   && (routeName !== "Admin" || (routeName === "Admin" && admin === true && isVisible("Admin")))
+                                   && (routeName !== "Admin" || (routeName === "Admin" && isAdmin() === true && isVisible("Admin")))
                                    && (routeName !== "Items" || (routeName ==="Items" && isVisible("Items")))
                                    && (routeName !== "BugLog" || (routeName ==="BugLog" && bugLogVisible === true && !demoMode))
                                    && (routeName !== "WatchListStats" || (routeName === "WatchListStats" && isVisible("Stats")))

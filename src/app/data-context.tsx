@@ -75,7 +75,6 @@ export interface DataContextType {
      activeRoute: string;
      activeRouteDisplayName: string;
      AddIconComponent: React.ReactNode;
-     admin: boolean;
      archivedVisible: boolean;
      autoAdd: boolean;
      bugLogs: typeof IBugLog[]
@@ -936,7 +935,6 @@ const DataProvider = ({ children }) => {
           activeRoute: activeRoute,
           activeRouteDisplayName: activeRouteDisplayName,
           AddIconComponent: AddIconComponent,
-          admin: userData?.Admin,
           archivedVisible: archivedVisible,
           autoAdd: autoAdd,
           BrokenImageIconComponent: BrokenImageIconComponent,

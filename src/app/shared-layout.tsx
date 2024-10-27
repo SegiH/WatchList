@@ -37,6 +37,7 @@ const SharedLayout = () => {
           settingsVisible,
           setActiveRoute,
           setTypeFilter,
+          setWatchListItemsSortingComplete,
           setWatchListSortColumn,
           setWatchListSortDirection,
           setWatchListSortingComplete,
@@ -58,6 +59,14 @@ const SharedLayout = () => {
      const [isClient, setIsClient] = useState(false);
 
      const router = useRouter();
+
+     const resort = () => {
+          if (activeRoute === "WatchList") {
+               setWatchListSortingComplete(false);
+          } else if (activeRoute === "Items") {
+               setWatchListItemsSortingComplete(false);
+          }
+     }
 
      const tabChangeHandler = async (newTab: string) => {
           setActiveRoute(newTab);
@@ -201,7 +210,7 @@ const SharedLayout = () => {
                                                   </span>
 
                                                   <span title="Sort by">
-                                                       <select className="selectStyle" value={watchListSortColumn} onChange={(event) => { setWatchListSortColumn(event.target.value); setWatchListSortingComplete(false); }}>
+                                                       <select className="selectStyle" value={watchListSortColumn} onChange={(event) => { setWatchListSortColumn(event.target.value); resort(); }}>
                                                             {activeRoute === "WatchList" &&
                                                                  Object.keys(watchListSortColumns).filter((sortColumn) => {
                                                                       return sortColumn !== "EndDate" || (sortColumn === "EndDate" && !stillWatching);
@@ -227,7 +236,7 @@ const SharedLayout = () => {
                                                   </span>
 
                                                   <span className="leftMargin" title="Sort direction">
-                                                       <select className="selectStyle" value={watchListSortDirection} onChange={(event) => { setWatchListSortDirection(event.target.value); setWatchListSortingComplete(false); }}>
+                                                       <select className="selectStyle" value={watchListSortDirection} onChange={(event) => { setWatchListSortDirection(event.target.value); resort(); }}>
                                                             <option value="ASC">ASC</option>
                                                             <option value="DESC">DESC</option>
                                                        </select>

@@ -248,7 +248,7 @@ export const getUserOptions = async (userID: number, isAdmin: number) => {
 }
 
 export const getUserSession = async (req: NextRequest) => {
-     const userData = cookies().get('userData')
+     const userData = cookies().get('userData');
 
      if (typeof userData === "undefined") {
           return null;
@@ -331,7 +331,8 @@ export const loginSuccessfullActions = async (currentUser: IUser, results: any) 
                Options: userOptions
           }
 
-          cookies().set('userData', JSON.stringify(userData));
+          const expires = new Date(Date.now() + 3600000);
+          cookies().set('userData', JSON.stringify(userData), {expires: expires});
 
           return Response.json(["OK", userData]);
      } catch (e) {

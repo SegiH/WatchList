@@ -37,16 +37,17 @@ export async function GET(request: NextRequest) {
      }
 
      const userSession = await getUserSession(request);
-     const userOptions = await getUserOptions(userSession.UserID, userSession.Admin);
 
-     if (userSession && userSession.UserID) {
+     const userOptions = await getUserOptions(userSession?.UserID, userSession?.Admin);
+
+     if (userSession && userSession?.UserID) {
           return Response.json([
                "OK",
                {
-                    UserID: userSession.UserID,
-                    Username: userSession.Username,
-                    RealName: userSession.Realname,
-                    Admin: userSession.Admin,
+                    UserID: userSession?.UserID,
+                    Username: userSession?.Username,
+                    RealName: userSession?.Realname,
+                    Admin: userSession?.Admin,
                     Options: userOptions
                }
           ]);

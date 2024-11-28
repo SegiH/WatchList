@@ -21,6 +21,7 @@ export default function SearchIMDB() {
           darkMode,
           imdbSearchEnabled,
           searchCount,
+          SearchIconComponent,
           setIsAdding,
           setSearchCount,
           setSearchVisible,
@@ -159,7 +160,7 @@ export default function SearchIMDB() {
           setWatchListItemsSearchResults(newSearchResults);
      };
 
-     useEffect(() => {
+     const searchIMDB = () => {
           if (searchTerm === "") {
                setIMDBSearchResults([]);
                setWatchListSearchResults([]);
@@ -196,23 +197,21 @@ export default function SearchIMDB() {
 
                     break;
                case searchSectionTypes["IMDB"]: // This may or may not exist
-                    setTimeout(() => {
-                         if (searchTerm === "") {
-                              setSearchLoadingStarted(true);
-                         }
+                    if (searchTerm === "") {
+                         setSearchLoadingStarted(true);
+                    }
 
-                         // Use this to test IMDB search using demo data instead of hitting the API
-                         /*setTimeout(() => {
-                              const demoData = require("../demo/index").demoIMDBSearchResults;
+                    // Use this to test IMDB search using demo data instead of hitting the API
+                    /*setTimeout(() => {
+                         const demoData = require("../demo/index").demoIMDBSearchResults;
 
-                              setIMDBSearchResults(demoData[1]);
-                              setSearchLoadingComplete(true);
-                              setSearchLoadingStarted(false);
-                         }, 5000);*/                         
+                         setIMDBSearchResults(demoData[1]);
+                         setSearchLoadingComplete(true);
+                         setSearchLoadingStarted(false);
+                    }, 5000);*/
 
-                         axios.get(
-                              `/api/SearchIMDB?SearchTerm=${searchTerm}&SearchCount=${searchCount}`
-                         ).then((res: typeof ISearchImdb) => {
+                    axios.get(`/api/SearchIMDB?SearchTerm=${searchTerm}&SearchCount=${searchCount}`)
+                         .then((res: typeof ISearchImdb) => {
                               if (res.data[0] === "ERROR") {
                                    //alert(`The error ${res.data[1]} occurred while searching IMDB`);
                               } else {
@@ -223,11 +222,10 @@ export default function SearchIMDB() {
                          }).catch((err: Error) => {
                               //alert(`The error ${err} occurred while searching IMDB`);
                          });
-                    }, 1000);
 
                     break;
           }
-     }, [searchSection, searchTerm]);
+     }
 
      return (
           <div className={`modal zIndex ${!darkMode ? " lightMode" : " darkMode"}`}>
@@ -255,21 +253,21 @@ export default function SearchIMDB() {
 
                                         <select className="customBorderRadius leftMargin" value={searchSection} onChange={(event: React.ChangeEvent<HTMLSelectElement>) => setSearchSection(event.target.value)}>
                                              {Object.keys(searchSectionTypes)
-                                             .filter((searchSectionType: any, index: number) => {
-                                                  return searchSectionType !== "IMDB" || (searchSectionType === "IMDB" && imdbSearchEnabled)
-                                             })
-                                             .map((searchSectionType: any, index: number) => {
-                                                  return (
-                                                       <option key={index} value={searchSectionType}>
-                                                            {searchSectionTypes[searchSectionType]}
-                                                       </option>
-                                                  );
-                                             })}
+                                                  .filter((searchSectionType: any, index: number) => {
+                                                       return searchSectionType !== "IMDB" || (searchSectionType === "IMDB" && imdbSearchEnabled)
+                                                  })
+                                                  .map((searchSectionType: any, index: number) => {
+                                                       return (
+                                                            <option key={index} value={searchSectionType}>
+                                                                 {searchSectionTypes[searchSectionType]}
+                                                            </option>
+                                                       );
+                                                  })}
                                         </select>
 
                                         <div className="leftMargin searchLabel textLabel">Count</div>
 
-                                        <select className="customBorderRadius leftMargin" value={searchCount} onChange={(event: React.ChangeEvent<HTMLSelectElement>) => setSearchCount(parseInt(event.target.value,10))}>
+                                        <select className="customBorderRadius leftMargin" value={searchCount} onChange={(event: React.ChangeEvent<HTMLSelectElement>) => setSearchCount(parseInt(event.target.value, 10))}>
                                              {Object.keys(searchCountOptions).map((searchCount: any, index: number) => {
                                                   return (
                                                        <option key={index} value={searchCountOptions[searchCount]}>
@@ -286,9 +284,9 @@ export default function SearchIMDB() {
                               {!searchLoadingStarted &&
                                    <>
                                         <div className="card leftMargin searchLabel textLabel">Search</div>
-                                        <div className="card leftMargin searchMarginTop unsetcardwidth">
+                                        <span className="card leftMargin searchMarginTop unsetcardwidth">
                                              {/* Credit to https://codepen.io/menelaosly/pen/rZddyb */}
-                                             <div className="searchContainer">
+                                             <span className="searchContainer">
                                                   <input
                                                        type="search"
                                                        placeholder="e.g. Anchorman or The Office"
@@ -300,9 +298,12 @@ export default function SearchIMDB() {
                                                   {searchTerm === "" &&
                                                        <i className="fa fa-search"></i>
                                                   }
+                                                  <span className={`clickable width50 ${!darkMode ? " darkMode" : " lightMode"}`} onClick={searchIMDB}>
+                                                       {SearchIconComponent}
+                                                  </span>
                                                   <br /><br />
-                                             </div>
-                                        </div>
+                                             </span>
+                                        </span>
 
                                         <div className="card rightAligned customCloseButton searchMarginTop">
                                              <span className="clickable closeButton" onClick={closeSearch}>

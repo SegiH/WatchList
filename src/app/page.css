@@ -477,6 +477,7 @@ input:checked+.slider:before {
 }
 
 .searchContainer {
+     display: inline-flex;
      position: relative;
      top: 65%;
      left: 50%;
@@ -707,6 +708,10 @@ input:checked+.slider:before {
 
 .unsetcardwidth {
      width: unset !important;
+}
+
+.width50 {
+     width: 50px;
 }
 
 .wordWrapLabel {

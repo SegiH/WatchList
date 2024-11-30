@@ -110,6 +110,12 @@ export default function SearchIMDB() {
           setSearchVisible(false);
      };
 
+     const handleKeypress = e => {
+          if (e.keyCode === 13) {
+               searchIMDB();
+          }
+     };
+
      const openWatchListDetailClickHandler = (watchListID: number) => {
           router.push(`/WatchList/Dtl?WatchListID=${watchListID}`);
 
@@ -283,22 +289,23 @@ export default function SearchIMDB() {
                          <div className="cards searchHeader">
                               {!searchLoadingStarted &&
                                    <>
-                                        <div className="card leftMargin searchLabel textLabel">Search</div>
-                                        <span className="card leftMargin searchMarginTop unsetcardwidth">
+                                        <div className={`card leftMargin searchLabel textLabel${!darkMode ? " lightMode" : " darkMode"}`}>Search</div>
+                                        <span className={`card leftMargin searchMarginTop unsetcardwidth${!darkMode ? " lightMode" : " darkMode"}`}>
                                              {/* Credit to https://codepen.io/menelaosly/pen/rZddyb */}
-                                             <span className="searchContainer">
+                                             <span className={`searchContainer`}>
                                                   <input
                                                        type="search"
                                                        placeholder="e.g. Anchorman or The Office"
                                                        value={searchTerm}
                                                        autoFocus
-                                                       className="searchInput"
+                                                       className={`searchInput`}
                                                        onChange={(event) => setSearchTerm(event.target.value)}
+                                                       onKeyUp={handleKeypress}
                                                   />
                                                   {searchTerm === "" &&
                                                        <i className="fa fa-search"></i>
                                                   }
-                                                  <span className={`clickable width50 ${!darkMode ? " darkMode" : " lightMode"}`} onClick={searchIMDB}>
+                                                  <span className={`clickable searchIcon${darkMode ? " lightMode" : " darkMode"}`} onClick={searchIMDB}>
                                                        {SearchIconComponent}
                                                   </span>
                                                   <br /><br />

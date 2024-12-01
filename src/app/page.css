@@ -566,9 +566,7 @@ input:checked+.slider:before {
 }
 
 .searchResultPoster {
-     height: 125px;
      border-color: white;
-     width: 100px !important;
 }
 
 .selectStyle {

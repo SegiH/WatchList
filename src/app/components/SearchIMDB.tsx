@@ -374,11 +374,11 @@ export default function SearchIMDB() {
                                                                            // The poster column
                                                                            <div>
                                                                                 <Image
-                                                                                     className="searchResultPoster"
+                                                                                     //className="searchResultPoster"
                                                                                      src={currentResult?.IMDB_Poster}
                                                                                      alt={currentResult?.IMDB_Poster}
-                                                                                     width="40"
-                                                                                     height="40"
+                                                                                     width="180"
+                                                                                     height="180"
                                                                                      onError={() => showDefaultSrcWatchList(currentResult?.WatchListID)}
                                                                                 />
                                                                            </div>
@@ -418,8 +418,8 @@ export default function SearchIMDB() {
                                                                                      className="searchResultPoster"
                                                                                      src={currentResult.IMDB_Poster}
                                                                                      alt={currentResult.IMDB_Poster}
-                                                                                     width="40"
-                                                                                     height="40"
+                                                                                     width="180"
+                                                                                     height="180"
                                                                                      onError={() => showDefaultSrcWatchListItems(currentResult?.WatchListItemID)}
                                                                                 />
                                                                            </div>

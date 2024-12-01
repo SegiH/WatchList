@@ -264,7 +264,7 @@ export default function SearchIMDB() {
                                                   })
                                                   .map((searchSectionType: any, index: number) => {
                                                        return (
-                                                            <option key={index} value={searchSectionType}>
+                                                            <option key={index} value={searchSectionTypes[searchSectionType]}>
                                                                  {searchSectionTypes[searchSectionType]}
                                                             </option>
                                                        );

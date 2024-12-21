@@ -20,8 +20,6 @@ const IWatchListType = require("./interfaces/IWatchListType");
 
 const React = require("react");
 
-import "./page.css";
-
 const ratingMax = 5;
 
 const AddIcon = require("@mui/icons-material/Add").default;

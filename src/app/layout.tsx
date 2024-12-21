@@ -7,8 +7,6 @@ import Tabs from './components/Tabs';
 
 const inter = Inter({ subsets: ['latin'] })
 
-import "./page.css";
-
 export const metadata: Metadata = {
      title: 'WatchList',
      description: 'Track the movies and shows you watch',

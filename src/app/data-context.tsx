@@ -860,7 +860,9 @@ const DataProvider = ({ children }) => {
           fetch('/build-info.json')
                .then((response) => response.json())
                .then((data) => {
-                    setBuildDate(getFormattedDate(data.buildDate.substring(0, 10), "-"));
+                    //setBuildDate(getFormattedDate(data.buildDate.substring(0, 10), "-"));
+                    const buildDateStr = new Date(data.buildDate).toLocaleString().replace(",", "");
+                    setBuildDate(buildDateStr);
                });
      }, []);
 

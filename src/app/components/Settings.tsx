@@ -196,7 +196,7 @@ const Settings = () => {
                     </ul>
 
                     <span>
-                         <span className="rightAligned small-text">Build Date: {formattedBuildDate}</span>
+                         <span className="rightAligned small-text">Build: {formattedBuildDate}</span>
                     </span>
                </div>
           </div>

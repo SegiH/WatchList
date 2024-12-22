@@ -14,7 +14,7 @@
   "scripts": {
     "dev": "node writeBuildDate.js && next dev",
     "build": "node writeBuildDate.js && next build",
-    "start": "node writeBuildDate.js && next start"
+    "start": "next start"
   },
   "dependencies": {
     "@emotion/react": "^11.11.3",

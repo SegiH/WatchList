@@ -321,6 +321,84 @@ const DataProvider = ({ children }) => {
           return true;
      }, [isLoggedIn, isLoggedInCheckComplete]);
 
+     const isLoggedInApi = () => {
+          let token = localStorage.getItem("WatchList.Token");
+          let tokenExpiration = localStorage.getItem("WatchList.TokenExpiration");
+
+          if (token === 'undefined') {
+               token = null;
+               localStorage.removeItem("WatchList.Token");
+          }
+
+          if (tokenExpiration === 'undefined') {
+               tokenExpiration = null;
+               localStorage.removeItem("WatchList.TokenExpiration");
+          }
+
+          let params = '';
+
+          if (token !== null && tokenExpiration !== null) {
+               // Validation token expiration
+               const currentEpoch = new Date().getTime();
+               const tokenExpirationNum = parseFloat(tokenExpiration);
+
+               if (currentEpoch >= tokenExpirationNum) {
+                    localStorage.removeItem("WatchList.Token");
+                    localStorage.removeItem("WatchList.TokenExpiration");
+               } else {
+                    params = "?Token=" + encodeURIComponent(token);
+               }
+          }
+
+          axios.get(`/api/IsLoggedIn${params}`)
+               .then(async (res: typeof IUser) => {
+                    if (res.data[0] === "OK") {
+                         const newUserData = Object.assign({}, userData);
+                         newUserData.UserID = res.data[1].UserID;
+                         newUserData.Username = res.data[1].Username;
+                         newUserData.RealName = res.data[1].RealName;
+                         newUserData.Admin = res.data[1].Admin === 1 ? true : false;
+
+                         localStorage.setItem("WatchList.Token", res.data[1].Token);
+                         localStorage.setItem("WatchList.TokenExpiration", res.data[1].TokenExpiration);
+
+                         if (typeof res.data[1].Options !== "undefined" && res.data[1].Options.length === 1) {
+                              await setOptions(res.data[1].Options[0]);
+                         }
+
+                         setUserData(newUserData);
+
+                         setIsLoggedIn(true);
+
+                         setActiveRoute("WatchList");
+                         setActiveRouteDisplayName("WatchList");
+
+                         router.push("/WatchList");
+                    } else {
+                         if (res.data[1] === false) {
+                              setActiveRoute("Setup");
+                              setActiveRouteDisplayName("Setup");
+                              router.push("/Setup");
+                              return;
+                         }
+
+                         setIsLoggedIn(false);
+
+                         setActiveRoute("Login");
+                         setActiveRouteDisplayName("Login");
+
+                         router.push("/Login");
+                    }
+
+                    setIsLoggedInCheckComplete(true);
+               })
+               .catch(() => {
+                    setIsLoggedInCheckComplete(true);
+
+                    router.push("/Login");
+               });
+     }
+
      const isVisible = (sectionName: string) => {
           return visibleSections.length > 0 && visibleSections?.filter((section) => section["name"] === sectionName).length > 0 ? true : false;
      }
@@ -472,81 +550,7 @@ const DataProvider = ({ children }) => {
                     return;
                }
 
-               let token = localStorage.getItem("WatchList.Token");
-               let tokenExpiration = localStorage.getItem("WatchList.TokenExpiration");
-
-               if (token === 'undefined') {
-                    token = null;
-                    localStorage.removeItem("WatchList.Token");
-               }
-
-               if (tokenExpiration === 'undefined') {
-                    tokenExpiration = null;
-                    localStorage.removeItem("WatchList.TokenExpiration");
-               }
-
-               let params = '';
-
-               if (token !== null && tokenExpiration !== null) {
-                    // Validation token expiration
-                    const currentEpoch = new Date().getTime();
-                    const tokenExpirationNum = parseFloat(tokenExpiration);
-
-                    if (currentEpoch >= tokenExpirationNum) {
-                         localStorage.removeItem("WatchList.Token");
-                         localStorage.removeItem("WatchList.TokenExpiration");
-                    } else {
-                         params = "?Token=" + encodeURIComponent(token);
-                    }
-               }
-
-               axios.get(`/api/IsLoggedIn${params}`)
-                    .then(async (res: typeof IUser) => {
-                         if (res.data[0] === "OK") {
-                              const newUserData = Object.assign({}, userData);
-                              newUserData.UserID = res.data[1].UserID;
-                              newUserData.Username = res.data[1].Username;
-                              newUserData.RealName = res.data[1].RealName;
-                              newUserData.Admin = res.data[1].Admin === 1 ? true : false;
-
-                              localStorage.setItem("WatchList.Token", res.data[1].Token);
-                              localStorage.setItem("WatchList.TokenExpiration", res.data[1].TokenExpiration);
-
-                              if (typeof res.data[1].Options !== "undefined" && res.data[1].Options.length === 1) {
-                                   await setOptions(res.data[1].Options[0]);
-                              }
-
-                              setUserData(newUserData);
-
-                              setIsLoggedIn(true);
-
-                              setActiveRoute("WatchList");
-                              setActiveRouteDisplayName("WatchList");
-
-                              router.push("/WatchList");
-                         } else {
-                              if (res.data[1] === false) {
-                                   setActiveRoute("Setup");
-                                   setActiveRouteDisplayName("Setup");
-                                   router.push("/Setup");
-                                   return;
-                              }
-
-                              setIsLoggedIn(false);
-
-                              setActiveRoute("Login");
-                              setActiveRouteDisplayName("Login");
-
-                              router.push("/Login");
-                         }
-
-                         setIsLoggedInCheckComplete(true);
-                    })
-                    .catch((err: Error) => {
-                         setIsLoggedInCheckComplete(true);
-
-                         router.push("/Login");
-                    });
+               isLoggedInApi();
           } else if (isLoggedIn) {
                setIsLoggedInCheckComplete(true);
           } else {
@@ -909,6 +913,37 @@ const DataProvider = ({ children }) => {
                RequiresAuth: true
           }
      };
+
+     useEffect(() => {
+          const handleVisibilityChange = () => {
+               if (!document.hidden) {
+                    let token = localStorage.getItem("WatchList.Token");
+                    let tokenExpiration = localStorage.getItem("WatchList.TokenExpiration");
+
+                    if (token === 'undefined') {
+                         token = null;
+                         localStorage.removeItem("WatchList.Token");
+                    }
+
+                    if (tokenExpiration === 'undefined') {
+                         tokenExpiration = null;
+                         localStorage.removeItem("WatchList.TokenExpiration");
+                    }
+
+                    if (token !== null && tokenExpiration !== null) {
+                         isLoggedInApi();
+                    }
+               }
+          };
+
+          // Add event listener for visibility change
+          document.addEventListener('visibilitychange', handleVisibilityChange);
+
+          // Cleanup event listener when the component unmounts
+          return () => {
+               document.removeEventListener('visibilitychange', handleVisibilityChange);
+          };
+     }, []);
 
      // These 2 methods reference routeList and have to be defined after routeList is defined
      const getDisplayName = useCallback((routeName: string) => {

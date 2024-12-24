@@ -282,7 +282,7 @@ export const isUserAdmin = async (req: NextRequest) => {
 
 export const login = async (username: string, password: string) => {
      try {
-          const SQL = "SELECT UserID,Username,Password,Realname,Admin FROM Users WHERE Enabled=1 LIMIT 1";
+          const SQL = "SELECT UserID,Username,Password,Realname,Admin FROM Users WHERE Enabled=1";
 
           const results = await execSelect(SQL, []);
 

@@ -68,11 +68,9 @@ export async function PUT(request: NextRequest) {
           params.push(completedDate);
      }
 
-     if (resolutionNotes !== null) {
-          SQL += ',ResolutionNotes';
-          valuePlaceholder += ",?";
-          params.push(resolutionNotes);
-     }
+     SQL += ',ResolutionNotes';
+     valuePlaceholder += ",?";
+     params.push(resolutionNotes !== null ? resolutionNotes : ""); // Default ResolutionNotes to empty space
 
      SQL += ')';
      valuePlaceholder += ");";

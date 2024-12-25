@@ -88,17 +88,6 @@ input:checked+.slider:before {
      max-width: 350px;
 }
 
-/* Move me later! */
-.lightMode {
-     color: var(--light-mode-foregroundColor) !important;
-     background-color: var(--light-mode-backgroundColor) !important;
-}
-
-.darkMode {
-     color: var(--dark-mode-foregroundColor) !important;
-     background-color: var(--dark-mode-backgroundColor) !important;
-}
-
 .addSearchResultIcon {
      margin-top: 35px;
 }
@@ -109,6 +98,10 @@ input:checked+.slider:before {
      position: relative;
      top: -12px;
      z-index: 999;
+}
+
+.borderRadius15 {
+     border-radius: 15px;
 }
 
 .bottomMargin20 {
@@ -156,7 +149,7 @@ input:checked+.slider:before {
 
 .closeButtonAdjustment {
      top: -24px !important;
-}lightMode
+}
 
 .column {
      margin-right: 75px;
@@ -198,10 +191,19 @@ input:checked+.slider:before {
      height: 30px;
 }
 
+.darkMode {
+     color: var(--dark-mode-foregroundColor) !important;
+     background-color: var(--dark-mode-backgroundColor) !important;
+}
+
 .editsaveCancelButton {
      display: inline-flex;
      transform: scale(1.6);
      top:-8px;
+}
+
+.error {
+     color:rgb(211, 47, 47);
 }
 
 .fa {
@@ -236,6 +238,10 @@ input:checked+.slider:before {
      display: flex;
 }
 
+.fullWidth {
+     width: 100%;
+}
+
 .fontStyle {
      font-family: "Brush Script MT", cursive !important;
 }
@@ -249,12 +255,30 @@ input:checked+.slider:before {
      transform: scale(1.8) !important;
 }
 
+.iconLarge {
+     cursor: pointer;
+     transform: scale(2.0) !important;
+     display: inline-block;
+     width: 1em;
+     position: relative;
+     top: 5px;
+     margin-right: 50px;
+}
+
+.iconLarge:last-of-type {
+     margin-right: 25px;
+}
+
 .image-crop img {
      border-radius: 15px;
      width: 128px;
      height: 187px;
      text-align: center;
      margin-right: 10px;
+}
+
+.inlineFlex {
+     display: inline-flex;
 }
 
 .inputStyle {
@@ -297,6 +321,11 @@ input:checked+.slider:before {
 
 .leftMargin50 { 
      margin-left: 50px;
+}
+
+.lightMode {
+     color: var(--light-mode-foregroundColor) !important;
+     background-color: var(--light-mode-backgroundColor) !important;
 }
 
 .lineChart {
@@ -451,6 +480,10 @@ input:checked+.slider:before {
      position: relative;
      top: 70px;
      margin-top: 20px;
+}
+
+.primary {
+     color: rgb(25, 118, 210)
 }
 
 .rightAligned {
@@ -731,6 +764,10 @@ input:checked+.slider:before {
 
 .width50 {
      width: 50px;
+}
+
+.minWidth150 {
+     min-width: 150px !important;
 }
 
 .wordWrapLabel {

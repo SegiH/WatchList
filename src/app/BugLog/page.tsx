@@ -1,66 +1,30 @@
 "use client"
 
 const axios = require("axios");
+const Button = require("@mui/material/Button").default;
 const IBugLog = require("../interfaces/IBugLog");
-const DataGrid = require("@mui/x-data-grid").DataGrid;
-const EditToolbar = require("../Admin/EditToolbar").default;
-const GridColDef = require("../Admin/EditToolbar").GridColDef;
-const GridEventListener = require("@mui/x-data-grid").GridEventListener;
-const GridActionsCellItem = require("@mui/x-data-grid").GridActionsCellItem;
-const GridRenderEditCellParams = require("@mui/x-data-grid").GridRenderEditCellParams;
-const GridRowModes = require("@mui/x-data-grid").GridRowModes;
 const React = require("react");
 const useContext = require("react").useContext;
 const useEffect = require("react").useEffect;
+const useRouter = require("next/navigation").useRouter;
 const useState = require("react").useState;
 
-import { useGridApiContext } from '@mui/x-data-grid';
 import { DataContext, DataContextType } from "../data-context";
+import TextField from "@mui/material/TextField";
 
+import "../Admin/AdminConsole.css";
 import "../page.css";
-
-// Render custom input with event handler
-function CustomEditComponent(props: typeof GridRenderEditCellParams) {
-     const { id, value, field, hasFocus } = props;
-     const apiRef = useGridApiContext();
-     const ref = React.useRef();
-
-     React.useLayoutEffect(() => {
-          if (hasFocus) {
-               ref.current.focus();
-          }
-     }, [hasFocus]);
-
-     const handleValueChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-          const newValue = event.target.value; // The new value entered by the user
-          apiRef.current.setEditCellValue({ id, field, value: newValue });
-     };
-
-     const cssStyle = {
-          width: "100%",
-          height: "100% !important"
-     };
-
-     const bugNameLength = typeof apiRef.current.getRow(id).WLBugName !== "undefined" ? String(apiRef.current.getRow(id).WLBugName).length : 0;
-     const resolutionNotesLength = typeof apiRef.current.getRow(id).ResolutionNotes !== "undefined" ? String(apiRef.current.getRow(id).ResolutionNotes).length : 0;
-     const rowCount = (bugNameLength > resolutionNotesLength ? bugNameLength : resolutionNotesLength);
-
-     return <textarea ref={ref} readOnly={false} style={cssStyle} value={value} rows={rowCount / 30} onChange={handleValueChange} />;
-}
-
-// Return custom input with custom event handler
-const renderEditInputCell: typeof GridColDef['renderCell'] = (params) => {
-     return <CustomEditComponent {...params} />;
-};
 
 export default function BugLog() {
      const {
           bugLogs,
           CancelIconComponent,
           darkMode,
+          defaultRoute,
           DeleteIconComponent,
           EditIconComponent,
           isAdding,
+          isAdmin,
           isEditing,
           SaveIconComponent,
           setBugLogs,
@@ -70,34 +34,52 @@ export default function BugLog() {
           setIsEditing
      } = useContext(DataContext) as DataContextType;
 
+     const [addingBugLog, setAddingBugLog] = useState(null);
+     const [editingBugLog, setEditingBugLog] = useState(null);
      const [bugLogsLoadingStarted, setBugLogsLoadingStarted] = useState(false);
      const [bugLogsLoadingComplete, setBugLogsLoadingComplete] = useState(false);
-     const [editingId, setEditingId] = useState(null);
-     const [rowModesModel, setRowModesModel] = useState({});
+     const [isMounted, setIsMounted] = useState(false);
      const [showActiveBugLogs, setShowActiveBugLogs] = useState(true);
 
-     const section = "Bug Log";
+     const router = useRouter();
 
-     const cancelRowEditClickHandler = (id: number) => () => {
-          setRowModesModel({
-               ...rowModesModel,
-               [id]: { mode: GridRowModes.View, ignoreModifications: true },
-          });
-
-          const editedRow = bugLogs.find((row: typeof IBugLog) => row.WLBugID === id);
-
-          if (editedRow.isNew) {
-               const editedRowToRemove = bugLogs.filter((row: typeof IBugLog) => row.WLBugID !== id)
-               setBugLogs(editedRowToRemove);
-          }
-
-          setIsAdding(false);
-          setIsEditing(false);
-
-          setEditingId(null);
+     const cssStyle = {
+          width: "100%",
+          height: "100% !important"
      };
 
-     const deleteBugLogHandler = (id: number) => () => {
+     const cancelAddEditModeClickHandler = () => {
+          setIsAdding(false);
+          setIsEditing(false);
+     }
+
+     const calculateRowCount = (bugName: string, resolutionNotes) => {
+          const bugNameLength = typeof bugName !== "undefined" && bugName !== null ? bugName.length : 0;
+          const resolutionNotesLength = typeof resolutionNotes !== "undefined" && resolutionNotes !== null ? resolutionNotes.length : 0;
+
+          let rowCount = (bugNameLength > resolutionNotesLength ? bugNameLength : resolutionNotesLength);
+
+          if (rowCount < 150) {
+               rowCount = 150;
+          }
+
+          return rowCount / 30;
+     }
+
+     const bugLogChangeHandler = (fieldName: string, fieldValue: string) => {
+          const newBugLog = Object.assign({}, isAdding ? addingBugLog : editingBugLog);
+
+          newBugLog[fieldName] = fieldValue;
+          newBugLog.IsModified = true;
+
+          if (isAdding) {
+               setAddingBugLog(newBugLog);
+          } else {
+               setEditingBugLog(newBugLog);
+          }
+     }
+
+     const deleteBugLogHandler = (id: number) => {
           const confirmLeave = confirm(`Are you sure that you want to delete the Bug Log ?`);
 
           if (!confirmLeave) {
@@ -115,8 +97,6 @@ export default function BugLog() {
 
                          setIsAdding(false);
                          setIsEditing(false);
-
-                         setEditingId(null);
                     }
                })
                .catch((err: Error) => {
@@ -124,49 +104,65 @@ export default function BugLog() {
                });
      }
 
-     const enterEditModeClickHandler = (id: number) => () => {
-          setEditingId(id);
-          setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } });
+     const enterAddModeClickHandler = (id: number) => {
+          setAddingBugLog({
+               WLBugID: null,
+               WLBugName: "",
+               AddDate: "",
+               CompletedDate: "",
+               ResolutionNotes: ""
+          })
+
+          setIsAdding(true);
+     }
+
+     const enterEditModeClickHandler = (id: number) => {
+          const newEditBugLog = bugLogs?.filter((bugLog: typeof IBugLog) => bugLog.WLBugID === id);
+
+          if (newEditBugLog.length !== 1) { // This shouldn't ever happen
+               alert("Unable to locate bug log in BugLogs");
+               return;
+          }
+
+          setEditingBugLog(newEditBugLog[0]);
 
           setIsEditing(true);
      };
 
-     const processRowUpdateHandler = (newRow: typeof IBugLog) => {
-          // validate rows
-          if (typeof newRow.WLBugName === "undefined" || newRow.WLBugName === "") {
-               alert("Please enter the bug name");
+     const saveRow = () => {
+          const currentBugLog = Object.assign({}, isAdding ? addingBugLog : editingBugLog);
 
-               setRowModesModel({ ...rowModesModel, [newRow.WLBugID]: { mode: GridRowModes.Edit } });
+          // validate rows
+          if (typeof currentBugLog.WLBugName === "undefined" || currentBugLog.WLBugName === "") {
+               alert("Please enter the bug name");
 
                return;
           }
 
-          if (typeof newRow.AddDate === "undefined" || newRow.AddDate === "") {
+          if (typeof currentBugLog.AddDate === "undefined" || currentBugLog.AddDate === "") {
                alert("Please enter the add date");
-
-               setRowModesModel({ ...rowModesModel, [newRow.WLBugID]: { mode: GridRowModes.Edit } });
 
                return;
           }
 
           let columns = ``;
 
-          if (newRow.isNew !== true) {
-               columns = `?WLBugID=${newRow.WLBugID}`;
+          if (isAdding !== true) {
+               columns = `?WLBugID=${currentBugLog.WLBugID}`;
           }
 
-          columns += (columns === `` ? `?` : `&`) + `WLBugName=${encodeURIComponent(newRow.WLBugName)}`;
-          columns += (columns === `` ? `?` : `&`) + `AddDate=${newRow.AddDate}`;
+          columns += (columns === `` ? `?` : `&`) + `WLBugName=${encodeURIComponent(currentBugLog.WLBugName)}`;
+          columns += (columns === `` ? `?` : `&`) + `AddDate=${currentBugLog.AddDate}`;
 
-          if (typeof newRow.CompletedDate !== "undefined" && newRow.CompletedDate !== null) {
-               columns += (columns === `` ? `?` : `&`) + `CompletedDate=${newRow.CompletedDate}`;
+          if (typeof currentBugLog.CompletedDate !== "undefined" && currentBugLog.CompletedDate !== null) {
+               columns += (columns === `` ? `?` : `&`) + `CompletedDate=${currentBugLog.CompletedDate}`;
           }
 
-          if (typeof newRow.ResolutionNotes !== "undefined") {
-               columns += (columns === `` ? `?` : `&`) + `ResolutionNotes=${encodeURIComponent(newRow.ResolutionNotes)}`;
+          if (typeof currentBugLog.ResolutionNotes !== "undefined") {
+               columns += (columns === `` ? `?` : `&`) + `ResolutionNotes=${encodeURIComponent(currentBugLog.ResolutionNotes)}`;
           }
 
-          const endPoint = (newRow.isNew == true ? `/api/AddBugLog` : `/api/UpdateBugLog`) + columns;
+          const endPoint = (currentBugLog.isNew == true ? `/api/AddBugLog` : `/api/UpdateBugLog`) + columns;
 
           axios.put(endPoint, { withCredentials: true })
                .then((response: typeof IBugLog) => {
@@ -178,10 +174,6 @@ export default function BugLog() {
 
                          setIsAdding(false);
                          setIsEditing(false);
-
-                         setRowModesModel(null);
-
-                         setEditingId(null);
                     } else {
                          alert(response.data[1]);
                     }
@@ -189,102 +181,7 @@ export default function BugLog() {
                .catch((err: Error) => {
                     alert("Failed to update bug log with the error " + err.message);
                });
-
-          return newRow;
-     };
-
-     const processRowUpdateErrorHandler = React.useCallback(() => { }, []);
-
-     const saveRowEditClickHandler = (id: number) => async () => {
-          setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
-     };
-
-     const startRowEditingClickHandler = (params: typeof IBugLog, event: typeof GridEventListener) => {
-          event.defaultMuiPrevented = true;
-     };
-
-     const stopRowEditingClickHandler = (params: typeof IBugLog, event: typeof GridEventListener) => {
-          event.defaultMuiPrevented = true;
-
-          setRowModesModel(null);
-     };
-
-     const columns = [
-          {
-               field: "WLBugID",
-               headerName: "ID",
-               width: 100,
-               editable: false,
-               type: "number",
-               renderCell: (params: typeof GridRenderEditCellParams) => {
-                    return (
-                         <div className={`${!darkMode ? " lightMode" : " darkMode"}`}>{typeof params.value !== "undefined" ? params.value : ""}</div>
-                    )
-               },
-          },
-          {
-               field: "WLBugName",
-               headerName: "Bug name",
-               editable: true,
-               width: 350,
-               renderEditCell: renderEditInputCell,
-               renderCell: (params: typeof GridRenderEditCellParams) => {
-                    return (
-                         <div className={`${!darkMode ? " lightMode" : " darkMode"}`}>{typeof params.value !== "undefined" ? decodeURIComponent(params.value) : ""}</div>
-                    )
-               },
-          },
-          {
-               field: "ResolutionNotes",
-               headerName: "Resolution Notes",
-               editable: true,
-               wrap: true,
-               width: 350,
-               renderEditCell: renderEditInputCell,
-               renderCell: (params: typeof GridRenderEditCellParams) => {
-                    return (
-                         <div className={`${!darkMode ? " lightMode" : " darkMode"}`}>{typeof params.value !== "undefined" ? decodeURIComponent(params.value) : ""}</div>
-                    )
-               },
-          },
-          {
-               field: "AddDate",
-               headerName: "Added On",
-               editable: true,
-               width: 130,
-          },
-          {
-               field: "CompletedDate",
-               headerName: "Completed On",
-               editable: true,
-               width: 130,
-          },
-          {
-               field: "actions",
-               type: "actions",
-               headerName: "Actions",
-               width: 100,
-               cellClassName: "actions",
-               getActions: ({ id }: { id: number }) => {
-                    const newestBugLog = bugLogs?.filter((bugLog: typeof IBugLog) => bugLog.WLBugID === id && bugLog.isNew === true);
-
-                    if (editingId === null && !isAdding && !isEditing) {
-                         return [<GridActionsCellItem key={id} icon={EditIconComponent} label="Edit" className="icon textPrimary" onClick={enterEditModeClickHandler(id)} color="inherit" />];
-                    } else if ((isEditing && editingId === id) || (isAdding && newestBugLog.length === 1)) {
-                         const response = [<GridActionsCellItem key={id} icon={SaveIconComponent} className="icon textPrimary" label="Save" onClick={saveRowEditClickHandler(id)} color="primary" />, <GridActionsCellItem key={id} icon={CancelIconComponent} label="Cancel" className="icon textPrimary" onClick={cancelRowEditClickHandler(id)} color="error" />];
-
-                         // Delete is only visible when editing. You don't delete a bug log you are adding, you cancel it if you dont want to add it
-                         if (!isAdding) {
-                              response.push(<GridActionsCellItem key={id} icon={DeleteIconComponent} label="Delete" className="icon textPrimary" onClick={deleteBugLogHandler(id)} color="primary" />);
-                         }
-
-                         return response;
-                    } else {
-                         return [<></>]
-                    }
-               },
-          }
-     ];
+     }
 
      useEffect(() => {
           if (bugLogsLoadingStarted) {
@@ -293,7 +190,7 @@ export default function BugLog() {
 
           setBugLogsLoadingStarted(true);
 
-          axios.get(`/api/GetBugLogs?GetActiveBugLogs=${showActiveBugLogs}`)
+          axios.get(`/api/GetBugLogs`)
                .then((res) => {
                     if (res.data[0] === "OK") {
                          setBugLogs(res.data[1]);
@@ -309,32 +206,180 @@ export default function BugLog() {
      }, [bugLogsLoadingStarted, bugLogsLoadingComplete]);
 
      useEffect(() => {
-          setBugLogsLoadingStarted(false);
-          setBugLogsLoadingComplete(false);
-     }, [showActiveBugLogs]);
+          // Make sure current user is an admin
+          if (!isAdmin()) {
+               router.push(defaultRoute)
+          }
+
+          setIsMounted(true);
+     }, []);
 
      return (
-          <span className="topMarginContent">
-               <DataGrid
-                    className={`${!darkMode ? " lightMode" : " darkMode"}`}
-                    rows={bugLogs}
-                    columns={columns}
-                    editMode="row"
-                    getRowId={(row: typeof IBugLog) => row.WLBugID}
-                    getRowHeight={(params) => "auto"}
-                    rowModesModel={rowModesModel}
-                    onRowEditStart={startRowEditingClickHandler}
-                    onRowEditStop={stopRowEditingClickHandler}
-                    processRowUpdate={processRowUpdateHandler}
-                    onProcessRowUpdateError={processRowUpdateErrorHandler}
-                    components={{
-                         Toolbar: EditToolbar,
-                    }}
-                    componentsProps={{
-                         toolbar: { section, setRowModesModel, setShowActiveBugLogs, showActiveBugLogs },
-                    }}
-                    experimentalFeatures={{ newEditingApi: true }}
-               />
-          </span>
+          <>
+               {isMounted &&
+                    <span className="topMarginContent">
+                         {bugLogsLoadingComplete &&
+                              <span>
+                                   <Button
+                                        color="primary"
+                                        variant="contained"
+                                        className="borderRadius15 bottomMargin20"
+                                        onClick={enterAddModeClickHandler} >
+                                        Add Bug Log
+                                   </Button>
+
+                                   <span className="leftMargin40">
+                                        Show Active Bug Logs
+                                        <input className={`${!darkMode ? "lightMode" : "darkMode"}`} type="checkbox" checked={showActiveBugLogs} onChange={(event) => setShowActiveBugLogs(event.target.checked)} />
+                                   </span>
+                              </span>
+                         }
+
+                         {bugLogsLoadingComplete && bugLogs.length > 0 &&
+                              <table style={{ borderWidth: "1px", borderStyle: "solid" }} className={`fullWidth ${!darkMode ? "lightMode" : "darkMode"}`}>
+                                   <thead>
+                                        <tr>
+                                             <th>Actions</th>
+
+                                             {!isAdding &&
+                                                  <th>ID</th>
+                                             }
+
+                                             <th>Bug name</th>
+                                             <th>Resolution Notes</th>
+                                             <th>Added On</th>
+                                             <th>Completed On</th>
+
+                                             {!isAdding && !isEditing &&
+                                                  <th>Delete</th>
+                                             }
+                                        </tr>
+                                   </thead>
+
+                                   <tbody>
+                                        {isAdding &&
+                                             <tr>
+                                                  <td>
+                                                       <span className="inlineFlex">
+                                                            <span className={`clickable iconLarge primary`} onClick={saveRow}>
+                                                                 {SaveIconComponent}
+                                                            </span>
+
+                                                            <span className={`clickable iconLarge error`} onClick={() => cancelAddEditModeClickHandler()}>
+                                                                 {CancelIconComponent}
+                                                            </span>
+                                                       </span>
+                                                  </td>
+
+                                                  <td>
+                                                       <textarea readOnly={false} style={cssStyle} value={addingBugLog.WLBugName} rows={calculateRowCount(addingBugLog.WLBugName, addingBugLog.ResolutionNotes)} onChange={(event: any) => bugLogChangeHandler("WLBugName", event.target.value)} />
+                                                  </td>
+
+                                                  <td>
+                                                       <textarea readOnly={false} style={cssStyle} value={addingBugLog.ResolutionNotes} rows={calculateRowCount(addingBugLog.WLBugName, addingBugLog.ResolutionNotes)} onChange={(event: any) => bugLogChangeHandler("ResolutionNotes", event.target.value)} />
+                                                  </td>
+
+                                                  <td>
+                                                       <TextField type="date" className={`lightMode borderRadius15 minWidth150`} margin="dense" id="addedOn" value={addingBugLog.AddDate} fullWidth variant="standard" onChange={(event: any) => bugLogChangeHandler("AddDate", event.target.value)} />
+                                                  </td>
+
+                                                  <td>
+                                                       <TextField type="date" className={`lightMode borderRadius15 minWidth150`} margin="dense" id="completedOn" value={addingBugLog.CompletedDate} fullWidth variant="standard" onChange={(event: any) => bugLogChangeHandler("Completed", event.target.value)} />
+                                                  </td>
+                                             </tr>
+                                        }
+
+                                        {bugLogs
+                                             .filter((bugLog: typeof IBugLog) => {
+                                                  return (
+                                                       ((showActiveBugLogs == 0) || (showActiveBugLogs == 1 && bugLog.CompletedDate === null)) &&
+                                                       ((!isAdding && !isEditing) ||
+                                                            (isEditing && editingBugLog.WLBugID === bugLog.WLBugID))
+                                                  )
+                                             })
+                                             .map((bugLog: typeof IBugLog) => {
+
+                                                  return (
+                                                       <tr key={bugLog.WLBugID}>
+                                                            <td>
+                                                                 {!isEditing &&
+                                                                      <span className={`clickable tabIcon`} onClick={() => enterEditModeClickHandler(bugLog.WLBugID)}>
+                                                                           {EditIconComponent}
+                                                                      </span>
+                                                                 }
+
+                                                                 {isEditing &&
+                                                                      <span className="inlineFlex">
+                                                                           <span className={`clickable iconLarge primary`} onClick={saveRow}>
+                                                                                {SaveIconComponent}
+                                                                           </span>
+
+                                                                           <span className={`clickable iconLarge error`} onClick={() => cancelAddEditModeClickHandler()}>
+                                                                                {CancelIconComponent}
+                                                                           </span>
+                                                                      </span>
+                                                                 }
+                                                            </td>
+
+                                                            <td>
+                                                                 <span>{bugLog.WLBugID}</span>
+                                                            </td>
+
+                                                            <td>
+                                                                 {!isEditing &&
+                                                                      <span className="wordWrapLabel">{bugLog.WLBugName}</span>
+                                                                 }
+
+                                                                 {isEditing &&
+                                                                      <textarea readOnly={false} style={cssStyle} value={editingBugLog.WLBugName} rows={calculateRowCount(editingBugLog.WLBugName, editingBugLog.ResolutionNotes)} onChange={(event: any) => bugLogChangeHandler("WLBugName", event.target.value)} />
+                                                                 }
+                                                            </td>
+
+                                                            <td>
+                                                                 {!isEditing &&
+                                                                      <span className="wordWrapLabel">{bugLog.ResolutionNotes}</span>
+                                                                 }
+
+                                                                 {isEditing &&
+                                                                      <textarea readOnly={false} style={cssStyle} value={editingBugLog.ResolutionNotes} rows={calculateRowCount(editingBugLog.WLBugName, editingBugLog.ResolutionNotes)} onChange={(event: any) => bugLogChangeHandler("ResolutionNotes", event.target.value)} />
+                                                                 }
+                                                            </td>
+
+                                                            <td>
+                                                                 {!isEditing &&
+                                                                      <span>{bugLog.AddDate}</span>
+                                                                 }
+
+                                                                 {isEditing &&
+                                                                      <TextField type="date" className={`lightMode borderRadius15 minWidth150`} margin="dense" id="addedOn" value={editingBugLog.AddDate} fullWidth variant="standard" onChange={(event: any) => bugLogChangeHandler("AddDate", event.target.value)} />
+                                                                 }
+                                                            </td>
+
+                                                            <td>
+                                                                 {!isEditing &&
+                                                                      <span>{bugLog.CompletedDate}</span>
+                                                                 }
+
+                                                                 {isEditing &&
+                                                                      <TextField type="date" className={`lightMode borderRadius15 minWidth150`} margin="dense" id="completedOn" value={editingBugLog.CompletedDate} fullWidth variant="standard" onChange={(event: any) => bugLogChangeHandler("Completed", event.target.value)} />
+                                                                 }
+                                                            </td>
+
+                                                            {!isAdding && !isEditing &&
+                                                                 <td>
+                                                                      <span className={`clickable iconLarge`} onClick={() => deleteBugLogHandler(bugLog.WLBugID)}>
+                                                                           {DeleteIconComponent}
+                                                                      </span>
+                                                                 </td>
+                                                            }
+                                                       </tr>
+                                                  )
+                                             })}
+                                   </tbody>
+                              </table>
+                         }
+                    </span>
+               }
+          </>
      )
 }

@@ -15,7 +15,8 @@ import { cookies } from 'next/headers';
  *            description: '["OK",""] on success'
  */
 export async function GET() {
-     cookies().delete('userData');
+     const currentCookies = await cookies();
+     currentCookies.delete('userData');
 
      return Response.json(["OK"]);
 }

@@ -29,7 +29,7 @@ import { login, validateSettings } from '../lib';
  *            description: '["OK",{userData}] on success, ["ERROR","error message"] on error'
  */
 export async function PUT() {
-     const headersList = headers();
+     const headersList = await headers();
 
      const username = headersList.get("wl_username");
      const password = headersList.get("wl_password");

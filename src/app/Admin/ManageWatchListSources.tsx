@@ -1,16 +1,13 @@
 const axios = require("axios");
-const DataGrid = require("@mui/x-data-grid").DataGrid;
-const EditToolbar = require("./EditToolbar").default;
-const GridActionsCellItem = require("@mui/x-data-grid").GridActionsCellItem;
-const GridEventListener = require("@mui/x-data-grid").GridEventListener;
-const GridRenderEditCellParams = require("@mui/x-data-grid").GridRenderEditCellParams;
-const GridRowModes = require("@mui/x-data-grid").GridRowModes;
+const Button = require("@mui/material/Button").default;
 const IWatchListSource = require("../interfaces/IWatchListSource");
 const React = require("react");
 const useContext = require("react").useContext;
 const useEffect = require("react").useEffect;
 const useRouter = require("next/navigation").useRouter;
 const useState = require("react").useState;
+
+import TextField from "@mui/material/TextField";
 
 import { DataContext, DataContextType } from "../data-context";
 
@@ -28,38 +25,23 @@ const ManageWatchListSources = () => {
           SaveIconComponent,
           setIsAdding,
           setIsEditing,
-          setWatchListSources,
           setWatchListSourcesLoadingComplete,
           setWatchListSourcesLoadingStarted,
-          watchListSources
+          watchListSources,
+          watchListSourcesLoadingComplete
      } = useContext(DataContext) as DataContextType;
 
-     const [editingId, setEditingId] = useState(null);
-     const [rowModesModel, setRowModesModel] = useState({});
-     const section = "Source";
+     const [addingSource, setAddingSource] = useState(null);
+     const [editingSource, setEditingSource] = useState(null);
 
      const router = useRouter();
 
-     const cancelRowEditClickHandler = (id: typeof IWatchListSource) => () => {
-          setRowModesModel({
-               ...rowModesModel,
-               [id]: { mode: GridRowModes.View, ignoreModifications: true },
-          });
-
-          const editedRow = watchListSources.find((row: typeof IWatchListSource) => row.WatchListSourceID === id);
-
-          if (editedRow.isNew) {
-               const editedRowToRemove = watchListSources.filter((row: typeof IWatchListSource) => row.WatchListSourceID !== id);
-               setWatchListSources(editedRowToRemove);
-          }
-
+     const cancelAddEditModeClickHandler = () => {
           setIsAdding(false);
           setIsEditing(false);
+     }
 
-          setEditingId(null);
-     };
-
-     const deleteSourceClickHandler = (id: number, name: string) => () => {
+     const deleteSourceClickHandler = (id: number, name: string) => {
           const confirmLeave = confirm(`Are you sure that you want to delete the WatchList Source ${name} ?`);
 
           if (!confirmLeave) {
@@ -80,38 +62,54 @@ const ManageWatchListSources = () => {
                });
      }
 
-     const enterEditModeClickHandler = (id: number) => () => {
-          setEditingId(id);
+     const enterAddModeClickHandler = (id: number) => {
+          setAddingSource({
+               WatchListSourceID: null,
+               WatchListSourceName: ""
+          })
 
-          setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } });
+          setIsAdding(true);
+     }
+
+     const enterEditModeClickHandler = (id: number) => {
+          const newEditingSourceResult = watchListSources?.filter((watchListSource: typeof IWatchListSource) => {
+               return watchListSource.WatchListSourceID === id;
+          });
+
+          if (newEditingSourceResult.length !== 1) { // This shouldn't ever happen
+               alert("Unable to locate source in Sources");
+               return;
+          }
+
+          setEditingSource(newEditingSourceResult[0]);
 
           setIsEditing(true);
-     };
+     }
 
-     const processRowUpdateHandler = (newRow: typeof IWatchListSource) => {
+     const saveRow = () => {
           if (demoMode) {
                alert("Adding a source is disabled in demo mode");
                return;
           }
 
-          // validate rows
-          if (typeof newRow.WatchListSourceName === "undefined" || newRow.WatchListSourceName === "") {
-               alert("Please enter the source name");
+          const currentSource = Object.assign({}, isAdding ? addingSource : editingSource);
 
-               setRowModesModel({ ...rowModesModel, [newRow.WatchListSourceID]: { mode: GridRowModes.Edit } });
+          // validate rows
+          if (typeof currentSource.WatchListSourceName === "undefined" || currentSource.WatchListSourceName === "") {
+               alert("Please enter the source name");
 
                return;
           }
 
           let columns = ``;
 
-          if (newRow.isNew !== true) {
-               columns = `?WatchListSourceID=${newRow.WatchListSourceID}&WatchListSourceName=${encodeURIComponent(newRow.WatchListSourceName)}`;
+          if (isAdding !== true) {
+               columns = `?WatchListSourceID=${editingSource.WatchListSourceID}&WatchListSourceName=${encodeURIComponent(editingSource.WatchListSourceName)}`;
           } else {
-               columns = `?WatchListSourceName=${encodeURIComponent(newRow.WatchListSourceName)}`;
+               columns = `?WatchListSourceName=${encodeURIComponent(addingSource.WatchListSourceName)}`;
           }
 
-          const endPoint = (newRow.isNew == true ? `/api/AddWatchListSource` : `/api/UpdateWatchListSource`) + columns;
+          const endPoint = (isAdding == true ? `/api/AddWatchListSource` : `/api/UpdateWatchListSource`) + columns;
 
           axios.put(endPoint, { withCredentials: true })
                .then((response: typeof IWatchListSource) => {
@@ -123,10 +121,6 @@ const ManageWatchListSources = () => {
 
                          setIsAdding(false);
                          setIsEditing(false);
-
-                         setRowModesModel(null);
-
-                         setEditingId(null);
                     } else {
                          alert(response.data[1]);
                     }
@@ -134,79 +128,20 @@ const ManageWatchListSources = () => {
                .catch((err: Error) => {
                     alert("Failed to update sources with the error " + err.message);
                });
+     }
 
-          return newRow;
-     };
+     const sourceChangeHandler = (fieldName: string, fieldValue: string) => {
+          const newUser = Object.assign({}, isAdding ? addingSource : editingSource);
 
-     const processRowUpdateErrorHandler = React.useCallback(() => { }, []);
+          newUser[fieldName] = fieldValue;
+          newUser.IsModified = true;
 
-     const saveRowEditClickHandler = (id: number) => async () => {
-          setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
-     };
-
-     const startRowEditingClickHandler = (params: typeof IWatchListSource, event: typeof GridEventListener) => {
-          event.defaultMuiPrevented = true;
-     };
-
-     const stopRowEditingClickHandler = (params: typeof IWatchListSource, event: typeof GridEventListener) => {
-          event.defaultMuiPrevented = true;
-
-          setRowModesModel(null);
-     };
-
-     const columns = [
-          {
-               field: "WatchListSourceID",
-               headerName: "ID",
-               width: 100,
-               renderCell: (params: typeof GridRenderEditCellParams) => {
-                    return (
-                         <div>{params.value}</div>
-                    )
-               },
-          },
-          {
-               field: "WatchListSourceName",
-               headerName: "Source name",
-               editable: true,
-               width: 225,
-          },
-          {
-               field: "editSaveActions",
-               type: "actions",
-               headerName: "Actions",
-               width: 100,
-               cellClassName: "actions",
-               getActions: ({ id }: { id: number }) => {
-                    const newestSource = watchListSources?.filter((watchListSource: typeof IWatchListSource) => watchListSource.WatchListSourceID === id && watchListSource.isNew === true);
-
-                    if (editingId === null && !isAdding && !isEditing) {
-                         return [<GridActionsCellItem key={id} icon={EditIconComponent} label="Edit" className="icon textPrimary" onClick={enterEditModeClickHandler(id)} color="inherit" />];
-                    } else if ((isEditing && editingId === id) || (isAdding && newestSource.length === 1)) {
-                         return [<GridActionsCellItem key={id} icon={SaveIconComponent} className="icon" label="Save" onClick={saveRowEditClickHandler(id)} color="primary" />, <GridActionsCellItem key={id} icon={CancelIconComponent} label="Cancel" className="icon textPrimary" onClick={cancelRowEditClickHandler(id)} color="error" />];
-                    } else {
-                         return [<></>]
-                    }
-               },
-          },
-          {
-               field: "deleteActions",
-               type: "actions",
-               headerName: "Delete",
-               width: 100,
-               cellClassName: "actions",
-               getActions: ({ id }: { id: number }) => {
-                    const currentSource = watchListSources?.filter((watchListSource: typeof IWatchListSource) => watchListSource.WatchListSourceID === id);
-                    const currentSourceName = (currentSource.length === 1 ? currentSource[0].WatchListSourceName : "");
-
-                    if (editingId === null && !isAdding && !isEditing) {
-                         return [<GridActionsCellItem key={id} icon={DeleteIconComponent} label="Delete" className="icon textPrimary" onClick={deleteSourceClickHandler(id, currentSourceName)} color="inherit" />];
-                    } else {
-                         return [<></>]
-                    }
-               },
-          },
-     ];
+          if (isAdding) {
+               setAddingSource(newUser);
+          } else {
+               setEditingSource(newUser);
+          }
+     }
 
      useEffect(() => {
           // Make sure current user is an admin
@@ -216,27 +151,111 @@ const ManageWatchListSources = () => {
      }, []);
 
      return (
-          <DataGrid
-               className={`${!darkMode ? " lightMode" : " darkMode"}`}
-               rows={watchListSources}
-               columns={columns}
-               editMode="row"
-               getRowId={(row: typeof IWatchListSource) => row.WatchListSourceID}
-               rowModesModel={rowModesModel}
-               onRowEditStart={startRowEditingClickHandler}
-               onRowEditStop={stopRowEditingClickHandler}
-               processRowUpdate={processRowUpdateHandler}
-               onProcessRowUpdateError={processRowUpdateErrorHandler}
-               components={{
-                    Toolbar: EditToolbar,
-               }}
-               componentsProps={{
-                    toolbar: { section, setRowModesModel },
-               }}
-               columnVisibilityModel={{
-                    deleteActions: !isAdding && !isEditing
-               }}
-          />
+          <span>
+               {watchListSourcesLoadingComplete &&
+                    <Button
+                         color="primary"
+                         variant="contained"
+                         className="borderRadius15 bottomMargin20 topMargin"
+                         onClick={enterAddModeClickHandler} >
+                         Add Source
+                    </Button>
+               }
+
+               {watchListSources && watchListSources.length > 0 &&
+                    <table style={{ borderWidth: "1px", borderStyle: "solid" }} className={`${!darkMode ? "lightMode" : "darkMode"}`}>
+                         <thead>
+                              <tr>
+                                   <th>Actions</th>
+                                   <th>ID</th>
+                                   <th>Source name</th>
+
+                                   {!isAdding && !isEditing &&
+                                        <th>Delete</th>
+                                   }
+                              </tr>
+                         </thead>
+
+                         <tbody>
+                              {isAdding &&
+                                   <tr>
+                                        <td>
+                                             <span className="inlineFlex">
+                                                  <span className={`clickable iconLarge primary`} onClick={saveRow}>
+                                                       {SaveIconComponent}
+                                                  </span>
+
+                                                  <span className={`clickable iconLarge error`} onClick={() => cancelAddEditModeClickHandler()}>
+                                                       {CancelIconComponent}
+                                                  </span>
+                                             </span>
+                                        </td>
+
+                                        <td>
+                                        </td>
+
+                                        <td>
+                                             <TextField className={`lightMode borderRadius15 minWidth150`} margin="dense" id="sourcename" label="source name" value={addingSource.WatchListSourceName} fullWidth variant="standard" onChange={(event: any) => sourceChangeHandler("WatchListSourceName", event.target.value)} />
+                                        </td>
+                                   </tr>
+                              }
+
+                              {watchListSources
+                                   .filter((watchListSource: typeof IWatchListSource) => {
+                                        return (
+                                             (!isAdding && !isEditing) ||
+                                             (isEditing && editingSource.WatchListSourceID === watchListSource.WatchListSourceID)
+                                        )
+                                   })
+                                   .map((watchListSource: typeof IWatchListSource) => (
+                                        <tr key={watchListSource.WatchListSourceID}>
+                                             <td>
+                                                  {!isEditing &&
+                                                       <span className={`clickable tabIcon`} onClick={() => enterEditModeClickHandler(watchListSource.WatchListSourceID)}>
+                                                            {EditIconComponent}
+                                                       </span>
+                                                  }
+
+                                                  {isEditing &&
+                                                       <span className="inlineFlex">
+                                                            <span className={`clickable iconLarge primary`} onClick={saveRow}>
+                                                                 {SaveIconComponent}
+                                                            </span>
+
+                                                            <span className={`clickable iconLarge error`} onClick={() => cancelAddEditModeClickHandler()}>
+                                                                 {CancelIconComponent}
+                                                            </span>
+                                                       </span>
+                                                  }
+                                             </td>
+
+                                             <td>
+                                                  <span>{watchListSource.WatchListSourceID}</span>
+                                             </td>
+
+                                             <td>
+                                                  {!isEditing &&
+                                                       <span>{watchListSource.WatchListSourceName}</span>
+                                                  }
+
+                                                  {isEditing &&
+                                                       <TextField className={`lightMode borderRadius15 minWidth150`} margin="dense" id="username" label="username" value={editingSource.WatchListSourceName} fullWidth variant="standard" onChange={(event: any) => sourceChangeHandler("WatchListSourceName", event.target.value)} />
+                                                  }
+                                             </td>
+
+                                             {!isAdding && !isEditing &&
+                                                  <td>
+                                                       <span className={`clickable iconLarge`} onClick={() => deleteSourceClickHandler(watchListSource.WatchListSourceID, watchListSource.WatchListSourceName)}>
+                                                            {DeleteIconComponent}
+                                                       </span>
+                                                  </td>
+                                             }
+                                        </tr>
+                                   ))}
+                         </tbody>
+                    </table>
+               }
+          </span>
      );
 };
 

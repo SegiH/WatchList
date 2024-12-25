@@ -16,8 +16,6 @@ import { DataContext, DataContextType } from "../data-context";
 import "./AdminConsole.css";
 import "../page.css";
 
-const CustomTabPanel = require("./CustomTabPanel").default;
-
 export default function Admin() {
      const {
           darkMode,
@@ -27,6 +25,7 @@ export default function Admin() {
           isEditing
      } = useContext(DataContext) as DataContextType
 
+     const [isMounted, setIsMounted] = useState(false);
      const [selectedTab, setSelectedTab] = useState(0);
 
      const router = useRouter();
@@ -66,27 +65,41 @@ export default function Admin() {
                setSelectedTab(parseInt(newSelectedTab));
           }
 
+          setIsMounted(true);
      }, []);
 
      return (
-          <div className={`topMarginContent ${!darkMode ? " lightMode" : " darkMode"}`}>
-               <Tabs value={selectedTab} onChange={tabClickHandler}>
-                    <Tab className={`${!darkMode ? "lightMode" : "darkMode"}`} label="Users" {...tabProps(0)} />
-                    <Tab className={`${!darkMode ? "lightMode" : "darkMode"}`} label="Sources" {...tabProps(1)} />
-                    <Tab className={`${!darkMode ? "lightMode" : "darkMode"}`} label="Types" {...tabProps(2)} />
-               </Tabs>
+          <>
+               {isMounted &&
+                    <div className={`topMarginContent ${!darkMode ? " lightMode" : " darkMode"}`}>
+                         <Tabs value={selectedTab} onChange={tabClickHandler}>
+                              <Tab className={`${!darkMode ? "lightMode" : "darkMode"}`} label="Users" {...tabProps(0)} />
+                              <Tab className={`${!darkMode ? "lightMode" : "darkMode"}`} label="Sources" {...tabProps(1)} />
+                              <Tab className={`${!darkMode ? "lightMode" : "darkMode"}`} label="Types" {...tabProps(2)} />
+                         </Tabs>
 
-               <CustomTabPanel value={selectedTab} index={0}>
-                    <ManageUserAccounts />
-               </CustomTabPanel>
 
-               <CustomTabPanel value={selectedTab} index={1}>
-                    <ManageWatchListSources />
-               </CustomTabPanel>
 
-               <CustomTabPanel value={selectedTab} index={2}>
-                    <ManageWatchListTypes />
-               </CustomTabPanel>
-          </div>
+                         {selectedTab === 0 &&
+                              <ManageUserAccounts />
+                         }
+
+                         {selectedTab === 1 &&
+                              <ManageWatchListSources />
+                         }
+
+                         {selectedTab === 2 &&
+                              <ManageWatchListTypes />
+                         }
+                    </div>
+               }
+          </>
      )
 }
+
+/*
+Using <CustomTabPanel> wrapper causes hydration warnings
+<CustomTabPanel value={selectedTab} index={0}>
+     <ManageUserAccounts />
+</CustomTabPanel>
+*/

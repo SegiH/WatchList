@@ -3,10 +3,7 @@
 const withPWA = require("next-pwa");
 
 const nextConfig = {
-     experimental: {
-          serverComponentsExternalPackages: ['config'],
-          missingSuspenseWithCSRBailout: false,
-     },
+     serverExternalPackages: ['config'],
      images: {
           remotePatterns: [
                {

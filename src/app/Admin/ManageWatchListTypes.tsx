@@ -1,14 +1,13 @@
 const axios = require("axios");
-const DataGrid = require("@mui/x-data-grid").DataGrid;
-const EditToolbar = require("./EditToolbar").default;
-const GridActionsCellItem = require("@mui/x-data-grid").GridActionsCellItem;
-const GridEventListener = require("@mui/x-data-grid").GridEventListener;
-const GridRenderEditCellParams = require("@mui/x-data-grid").GridRenderEditCellParams;
-const GridRowModes = require("@mui/x-data-grid").GridRowModes;
+const Button = require("@mui/material/Button").default;
 const IWatchListType = require("../interfaces/IWatchListType");
 const React = require("react");
+const useEffect = require("react").useEffect;
 const useContext = require("react").useContext;
+const useRouter = require("next/navigation").useRouter;
 const useState = require("react").useState;
+
+import TextField from "@mui/material/TextField";
 
 import { DataContext, DataContextType } from "../data-context";
 
@@ -16,42 +15,40 @@ const ManageWatchListTypes = () => {
      const {
           CancelIconComponent,
           darkMode,
+          defaultRoute,
           DeleteIconComponent,
           demoMode,
           EditIconComponent,
           isAdding,
+          isAdmin,
           isEditing,
           SaveIconComponent,
           setIsAdding,
           setIsEditing,
-          setWatchListTypes,
           setWatchListTypesLoadingComplete,
           setWatchListTypesLoadingStarted,
-          watchListTypes
+          watchListTypes,
+          watchListTypesLoadingComplete
      } = useContext(DataContext) as DataContextType;
 
-     const [editingId, setEditingId] = useState(null);
-     const [rowModesModel, setRowModesModel] = useState({});
-     const section = "Type";
+     const [addingType, setAddingType] = useState(null);
+     const [editingType, setEditingType] = useState(null);
 
-     const cancelRowEditClickHandler = (id: number) => () => {
-          setRowModesModel({
-               ...rowModesModel,
-               [id]: { mode: GridRowModes.View, ignoreModifications: true },
-          });
+     const router = useRouter();
 
-          const editedRow = watchListTypes.find((row: typeof IWatchListType) => row.WatchListTypeID === id);
-
-          if (editedRow.isNew) {
-               const editedRowToRemove = watchListTypes.filter((row: typeof IWatchListType) => row.WatchListTypeID !== id)
-               setWatchListTypes(editedRowToRemove);
-          }
-
+     const cancelAddEditModeClickHandler = () => {
           setIsAdding(false);
           setIsEditing(false);
+     }
 
-          setEditingId(null);
-     };
+     const enterAddModeClickHandler = (id: number) => {
+          setAddingType({
+               WatchListTypeID: null,
+               WatchListTypeName: ""
+          })
+
+          setIsAdding(true);
+     }
 
      const deleteTypeClickHandler = (id: number, name: string) => () => {
           const confirmLeave = confirm(`Are you sure that you want to delete the WatchList Type ${name} ?`);
@@ -74,38 +71,45 @@ const ManageWatchListTypes = () => {
                });
      }
 
-     const enterEditModeClickHandler = (id: number) => () => {
-          setEditingId(id);
+     const enterEditModeClickHandler = (id: number) => {
+          const newEditingTypeResult = watchListTypes?.filter((watchListType: typeof IWatchListType) => {
+               return watchListType.WatchListTypeID === id;
+          });
 
-          setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } });
+          if (newEditingTypeResult.length !== 1) { // This shouldn't ever happen
+               alert("Unable to locatetype in Types");
+               return;
+          }
+
+          setEditingType(newEditingTypeResult[0]);
 
           setIsEditing(true);
-     };
+     }
 
-     const processRowUpdateHandler = (newRow: typeof IWatchListType) => {
+     const saveRow = () => {
           if (demoMode) {
                alert("Adding a type is disabled in demo mode");
                return;
           }
 
-          // validate rows
-          if (typeof newRow.WatchListTypeName === "undefined" || newRow.WatchListTypeName === "") {
-               alert("Please enter the type name");
+          const currentType = Object.assign({}, isAdding ? addingType : editingType);
 
-               setRowModesModel({ ...rowModesModel, [newRow.WatchListTypeID]: { mode: GridRowModes.Edit } });
+          // validate rows
+          if (typeof currentType.WatchListTypeName === "undefined" || currentType.WatchListTypeName === "") {
+               alert("Please enter the type name");
 
                return;
           }
 
           let columns = ``;
 
-          if (newRow.isNew !== true) {
-               columns = `?WatchListTypeID=${newRow.WatchListTypeID}&WatchListTypeName=${encodeURIComponent(newRow.WatchListTypeName)}`;
+          if (isAdding !== true) {
+               columns = `?WatchListTypeID=${editingType.WatchListTypeID}&WatchListTypeName=${encodeURIComponent(editingType.WatchListTypeName)}`;
           } else {
-               columns = `?WatchListTypeName=${encodeURIComponent(newRow.WatchListTypeName)}`;
+               columns = `?WatchListTypeName=${encodeURIComponent(addingType.WatchListTypeName)}`;
           }
 
-          const endPoint = (newRow.isNew == true ? `/api/AddWatchListType` : `/api/UpdateWatchListType`) + columns;
+          const endPoint = (isAdding == true ? `/api/AddWatchListType` : `/api/UpdateWatchListType`) + columns;
 
           axios.put(endPoint, { withCredentials: true })
                .then((response: typeof IWatchListType) => {
@@ -117,10 +121,6 @@ const ManageWatchListTypes = () => {
 
                          setIsAdding(false);
                          setIsEditing(false);
-
-                         setRowModesModel(null);
-
-                         setEditingId(null);
                     } else {
                          alert(response.data[1]);
                     }
@@ -128,102 +128,134 @@ const ManageWatchListTypes = () => {
                .catch((err: Error) => {
                     alert("Failed to update types with the error " + err.message);
                });
+     }
 
-          return newRow;
-     };
+     const typeChangeHandler = (fieldName: string, fieldValue: string) => {
+          const newUser = Object.assign({}, isAdding ? addingType : editingType);
 
-     const processRowUpdateErrorHandler = React.useCallback(() => { }, []);
+          newUser[fieldName] = fieldValue;
+          newUser.IsModified = true;
 
-     const saveRowEditClickHandler = (id: number) => async () => {
-          setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
-     };
+          if (isAdding) {
+               setAddingType(newUser);
+          } else {
+               setEditingType(newUser);
+          }
+     }
 
-     const startRowEditingClickHandler = (params: typeof IWatchListType, event: typeof GridEventListener) => {
-          event.defaultMuiPrevented = true;
-     };
-
-     const stopRowEditingClickHandler = (params: typeof IWatchListType, event: typeof GridEventListener) => {
-          event.defaultMuiPrevented = true;
-
-          setRowModesModel(null);
-     };
-
-     const columns = [
-          {
-               field: "WatchListTypeID",
-               headerName: "ID",
-               width: 100,
-               renderCell: (params: typeof GridRenderEditCellParams) => {
-                    return (
-                    <div>{params.value}</div>
-               )},
-          },
-          {
-               field: "WatchListTypeName",
-               headerName: "Type name",
-               editable: true,
-               width: 150,
-          },
-          {
-               field: "actions",
-               type: "actions",
-               headerName: "Actions",
-               width: 100,
-               cellClassName: "actions",
-               getActions: ({ id }: { id: number }) => {
-                    const newestType = watchListTypes?.filter((watchListType: typeof IWatchListType) => watchListType.WatchListTypeID === id && watchListType.isNew === true);
-
-                    if (editingId === null && !isAdding && !isEditing) {
-                         return [<GridActionsCellItem key={id} icon={EditIconComponent} label="Edit" className="icon textPrimary" onClick={enterEditModeClickHandler(id)} color="inherit" />];
-                    } else if ((isEditing && editingId === id) || (isAdding && newestType.length === 1)) {
-                         return [<GridActionsCellItem key={id} icon={SaveIconComponent} className="icon" label="Save" onClick={saveRowEditClickHandler(id)} color="primary" />, <GridActionsCellItem key={id} icon={CancelIconComponent} label="Cancel" className="icon textPrimary" onClick={cancelRowEditClickHandler(id)} color="error" />];
-                    } else {
-                         return [<></>]
-                    }
-               },
-          },
-          {
-               field: "deleteActions",
-               type: "actions",
-               headerName: "Delete",
-               width: 100,
-               cellClassName: "actions",
-               getActions: ({ id }: { id: number }) => {
-                    const currentType = watchListTypes?.filter((watchListSource: typeof IWatchListType) => watchListSource.WatchListSourceID === id);
-                    const currentTypeName = (currentType.length === 1 ? currentType[0].WatchListSourceName : "");
-
-                    if (editingId === null && !isAdding && !isEditing) {
-                         return [<GridActionsCellItem key={id} icon={DeleteIconComponent} label="Delete" className="icon textPrimary" onClick={deleteTypeClickHandler(id, currentTypeName)} color="inherit" />];
-                    } else {
-                         return [<></>]
-                    }
-               },
-          },
-     ];
+     useEffect(() => {
+          // Make sure current user is an admin
+          if (!isAdmin()) {
+               router.push(defaultRoute)
+          }
+     }, []);
 
      return (
-          <DataGrid
-               className={`${!darkMode ? " lightMode" : " darkMode"}`}
-               rows={watchListTypes}
-               columns={columns}
-               editMode="row"
-               getRowId={(row: typeof IWatchListType) => row.WatchListTypeID}
-               rowModesModel={rowModesModel}
-               onRowEditStart={startRowEditingClickHandler}
-               onRowEditStop={stopRowEditingClickHandler}
-               processRowUpdate={processRowUpdateHandler}
-               onProcessRowUpdateError={processRowUpdateErrorHandler}
-               components={{
-                    Toolbar: EditToolbar,
-               }}
-               componentsProps={{
-                    toolbar: { section, setRowModesModel },
-               }}
-               experimentalFeatures={{ newEditingApi: true }}
-               columnVisibilityModel={{
-                    deleteActions: !isAdding && !isEditing
-               }}
-          />
+          <span>
+               {watchListTypesLoadingComplete &&
+                    <Button
+                         color="primary"
+                         variant="contained"
+                         className="borderRadius15 bottomMargin20 topMargin"
+                         onClick={enterAddModeClickHandler} >
+                         Add Type
+                    </Button>
+               }
+
+               {watchListTypes && watchListTypes.length > 0 &&
+                    <table style={{ borderWidth: "1px", borderStyle: "solid" }} className={`${!darkMode ? "lightMode" : "darkMode"}`}>
+                         <thead>
+                              <tr>
+                                   <th>Actions</th>
+                                   <th>ID</th>
+                                   <th>Type name</th>
+
+                                   {!isAdding && !isEditing &&
+                                        <th>Delete</th>
+                                   }
+                              </tr>
+                         </thead>
+
+                         <tbody>
+                              {isAdding &&
+                                   <tr>
+                                        <td>
+                                             <span className="inlineFlex">
+                                                  <span className={`clickable iconLarge primary`} onClick={saveRow}>
+                                                       {SaveIconComponent}
+                                                  </span>
+
+                                                  <span className={`clickable iconLarge error`} onClick={() => cancelAddEditModeClickHandler()}>
+                                                       {CancelIconComponent}
+                                                  </span>
+                                             </span>
+                                        </td>
+
+                                        <td>
+                                        </td>
+
+                                        <td>
+                                             <TextField className={`lightMode borderRadius15 minWidth150`} margin="dense" id="typename" label="type name" value={addingType.WatchListTypeName} fullWidth variant="standard" onChange={(event: any) => typeChangeHandler("WatchListTypeName", event.target.value)} />
+                                        </td>
+                                   </tr>
+                              }
+
+                              {watchListTypes
+                                   .filter((watchListType: typeof IWatchListType) => {
+                                        return (
+                                             (!isAdding && !isEditing) ||
+                                             (isEditing && editingType.WatchListTypeID === watchListType.WatchListTypeID)
+                                        )
+                                   })
+                                   .map((watchListType: typeof IWatchListType) => (
+                                        <tr key={watchListType.WatchListTypeID}>
+                                             <td>
+                                                  {!isEditing &&
+                                                       <span className={`clickable tabIcon`} onClick={() => enterEditModeClickHandler(watchListType.WatchListTypeID)}>
+                                                            {EditIconComponent}
+                                                       </span>
+                                                  }
+
+                                                  {isEditing &&
+                                                       <span className="inlineFlex">
+                                                            <span className={`clickable iconLarge primary`} onClick={saveRow}>
+                                                                 {SaveIconComponent}
+                                                            </span>
+
+                                                            <span className={`clickable iconLarge error`} onClick={() => cancelAddEditModeClickHandler()}>
+                                                                 {CancelIconComponent}
+                                                            </span>
+                                                       </span>
+                                                  }
+                                             </td>
+
+                                             <td>
+                                                  <span>{watchListType.WatchListTypeID}</span>
+                                             </td>
+
+                                             <td>
+                                                  {!isEditing &&
+                                                       <span>{watchListType.WatchListTypeName}</span>
+                                                  }
+
+                                                  {isEditing &&
+                                                       <TextField className={`lightMode borderRadius15 minWidth150`} margin="dense" id="username" label="username" value={editingType.WatchListTypeName} fullWidth variant="standard" onChange={(event: any) => typeChangeHandler("WatchListTypeName", event.target.value)} />
+                                                  }
+                                             </td>
+
+                                             {!isAdding && !isEditing &&
+                                                  <td>
+                                                       <span className={`clickable iconLarge`} onClick={() => deleteTypeClickHandler(watchListType.WatchListTypeID, watchListType.WatchListTypeName)}>
+                                                            {DeleteIconComponent}
+                                                       </span>
+                                                  </td>
+                                             }
+                                        </tr>
+                                   ))}
+                         </tbody>
+                    </table>
+               }
+          </span>
      );
 };
 

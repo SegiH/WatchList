@@ -24,7 +24,7 @@ export default function RootLayout({
 
                     <link rel="manifest" href="/manifest.json" crossOrigin="use-credentials"></link>
                </head>
-               <body>
+               <body suppressHydrationWarning>
                     <DataProvider>
                          <SharedLayout />
                          {children}

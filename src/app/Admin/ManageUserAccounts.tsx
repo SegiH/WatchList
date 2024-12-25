@@ -2,26 +2,19 @@
 
 const axios = require("axios");
 const Button = require("@mui/material/Button").default;
-const DataGrid = require("@mui/x-data-grid").DataGrid;
 const Dialog = require("@mui/material/Dialog").default;
 const DialogActions = require("@mui/material/DialogActions").default;
 const DialogContent = require("@mui/material/DialogContent").default;
 const DialogContentText = require("@mui/material/DialogContentText").default;
 const DialogTitle = require("@mui/material/DialogTitle").default;
-const EditToolbar = require("./EditToolbar").default;
-const GridEventListener = require("@mui/x-data-grid").GridEventListener;
-const GridParams = require("@mui/x-data-grid").GridParams;
-const GridActionsCellItem = require("@mui/x-data-grid").GridActionsCellItem;
-const GridColumnHeaderParams = require("@mui/x-data-grid").GridColumnHeaderParams;
-const GridRenderEditCellParams = require("@mui/x-data-grid").GridRenderEditCellParams;
-const GridRowModes = require("@mui/x-data-grid").GridRowModes;
 const IUser = require("../interfaces/IUser");
 const React = require("react");
-const TextField = require("@mui/material/TextField").default;
 const useContext = require("react").useContext;
 const useEffect = require("react").useEffect;
 const useRouter = require("next/navigation").useRouter;
 const useState = require("react").useState;
+
+import TextField from "@mui/material/TextField";
 
 import { DataContext, DataContextType } from "../data-context";
 
@@ -48,56 +41,57 @@ const ManageUserAccounts = () => {
           validatePassword
      } = useContext(DataContext) as DataContextType;
 
+     const [addingUser, setAddingUser] = useState(null);
      const [dialogVisible, setDialogVisible] = useState(false);
      const [dialogVisibleParamID, setDialogVisibleParamID] = useState(-1);
-     const [dialogVisibleParamIsNew, setDialogVisibleParamIsNew] = useState(false);
-     const [editingId, setEditingId] = useState(null);
+     const [editingUser, setEditingUser] = useState(null);
      const [isPasswordGenerated, setIsPasswordGenerated] = useState(false);
      const [newPassword, setNewPassword] = useState("");
      const [newConfirmPassword, setNewConfirmPassword] = useState("");
      const [usersLoadingStarted, setUsersLoadingStarted] = useState(false);
      const [usersLoadingComplete, setUsersLoadingComplete] = useState(false);
-     const [rowModesModel, setRowModesModel] = useState({});
-
-     const section = "User";
 
      const router = useRouter();
 
-     const cancelRowEditClickHandler = (id: number) => () => {
-          setRowModesModel({
-               ...rowModesModel,
-               [id]: { mode: GridRowModes.View, ignoreModifications: true },
-          });
-
-          const editedRow = users.find((row: typeof IUser) => row.UserID === id);
-
-          if (editedRow.isNew) {
-               const editedRowToRemove = users.filter((row: typeof IUser) => row.UserID !== id);
-
-               setUsers(editedRowToRemove);
-          }
-
+     const cancelAddEditModeClickHandler = () => {
           setIsAdding(false);
           setIsEditing(false);
-
-          setEditingId(null);
-     };
+     }
 
      const closeDialogClickHandler = () => {
           setNewPassword("");
           setNewConfirmPassword("");
           setDialogVisibleParamID(-1);
-          setDialogVisibleParamIsNew(false);
 
           setDialogVisible(false);
      };
 
-     const enterEditModeClickHandler = (id: number) => () => {
-          setEditingId(id);
-          setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } });
+     const enterAddModeClickHandler = (id: number) => {
+          setAddingUser({
+               UserID: null,
+               Username: "",
+               Realname: "",
+               Password: "",
+               Admin: 0,
+               Enabled: 1
+          })
+          setIsAdding(true);
+     }
+
+     const enterEditModeClickHandler = (id: number) => {
+          const newEditingUserResult = users?.filter((user: typeof IUser) => {
+               return user.UserID === id;
+          });
+
+          if (newEditingUserResult.length !== 1) { // This shouldn't ever happen
+               alert("Unable to locate user in Users");
+               return;
+          }
+
+          setEditingUser(newEditingUserResult[0]);
 
           setIsEditing(true);
-     };
+     }
 
      const generateNewPassword = () => {
           const newRandomPassword = generateRandomPassword();
@@ -108,63 +102,57 @@ const ManageUserAccounts = () => {
           setIsPasswordGenerated(true);
      };
 
-     const processRowUpdateHandler = (newRow: typeof IUser) => {
+     const saveRow = () => {
           if (demoMode) {
                alert("Adding a user is disabled in demo mode");
                return;
           }
 
-          // validate rows
-          if (typeof newRow.Username === "undefined" || newRow.Username === "") {
-               alert("Please enter the username");
+          const currentUser = Object.assign({}, isAdding ? addingUser : editingUser);
 
-               setRowModesModel({ ...rowModesModel, [newRow.UserID]: { mode: GridRowModes.Edit } });
+          // validate rows
+          if (typeof currentUser.Username === "undefined" || currentUser.Username === "") {
+               alert("Please enter the username");
 
                return;
           }
 
           const validateUser = users?.filter((validateCurrentUser: typeof IUser) => {
-               return String(validateCurrentUser.Username) === String(newRow.Username) && String(validateCurrentUser.UserID) !== String(newRow.UserID);
+               return String(validateCurrentUser.Username) === String(currentUser.Username) && String(validateCurrentUser.UserID) !== String(currentUser.UserID);
           });
 
           if (validateUser.length !== 0) {
-               alert(`The username ${newRow.Username} is already in use with the User with ID ${validateUser[0].UserID}`);
-
-               setRowModesModel({ ...rowModesModel, [newRow.UserID]: { mode: GridRowModes.Edit } });
+               alert(`The username ${currentUser.Username} is already in use with the User with ID ${validateUser[0].UserID}`);
 
                return;
           }
 
-          if (typeof newRow.Realname === "undefined" || newRow.Realname === "") {
+          if (typeof currentUser.Realname === "undefined" || currentUser.Realname === "") {
                alert("Please enter the name");
 
-               setRowModesModel({ ...rowModesModel, [newRow.UserID]: { mode: GridRowModes.Edit } });
-
                return;
           }
 
-          if (newRow.isNew === true && (typeof newRow.Password === "undefined" || newRow.Password === "")) {
+          if (isAdding && (typeof currentUser.Password === "undefined" || currentUser.Password === "")) {
                alert("Please set a password");
-
-               setRowModesModel({ ...rowModesModel, [newRow.UserID]: { mode: GridRowModes.Edit } });
 
                return;
           }
 
           let columns = ``;
 
-          if (newRow.isNew !== true) {
-               columns = `?wl_userid=${newRow.UserID}`;
+          if (isAdding !== true) {
+               columns = `?wl_userid=${currentUser.UserID}`;
           } else {
-               columns = `?wl_password=${encodeURIComponent(newRow.Password)}`;
+               columns = `?wl_password=${encodeURIComponent(currentUser.Password)}`;
           }
 
-          columns += `&wl_username=${encodeURIComponent(newRow.Username)}`;
-          columns += `&wl_realname=${encodeURIComponent(newRow.Realname)}`;
-          columns += `&wl_admin=${newRow.Admin}`;
-          columns += `&wl_enabled=${newRow.Enabled}`;
+          columns += `&wl_username=${encodeURIComponent(currentUser.Username)}`;
+          columns += `&wl_realname=${encodeURIComponent(currentUser.Realname)}`;
+          columns += `&wl_admin=${currentUser.Admin === true || currentUser.Admin === 1 ? true : false}`;
+          columns += `&wl_enabled=${currentUser.Enabled === true || currentUser.Enabled === 1 ? true : false}`;
 
-          const endPoint = (newRow.isNew == true ? `/api/AddUser` : `/api/UpdateUser`) + columns;
+          const endPoint = (isAdding ? `/api/AddUser` : `/api/UpdateUser`) + columns;
 
           axios.put(endPoint, { withCredentials: true })
                .then((response: typeof IUser) => {
@@ -176,10 +164,6 @@ const ManageUserAccounts = () => {
 
                          setIsAdding(false);
                          setIsEditing(false);
-
-                         setRowModesModel(null);
-
-                         setEditingId(null);
                     } else {
                          alert(response.data[1]);
                     }
@@ -187,22 +171,11 @@ const ManageUserAccounts = () => {
                .catch((err: Error) => {
                     alert("Failed to update users with the error " + err.message);
                });
-
-          return newRow;
-     };
-
-     const processRowUpdateErrorHandler = React.useCallback(() => { }, []);
+     }
 
      const saveNewPassword = () => {
           if (demoMode) {
                alert("Saving the password is disabled in demo mode");
-               return;
-          }
-
-          const currentRowResult = users.filter((row: typeof IUser) => row.UserID === dialogVisibleParamID);
-
-          if (currentRowResult.length !== 1) {
-               alert("An error occured getting the password");
                return;
           }
 
@@ -218,7 +191,7 @@ const ManageUserAccounts = () => {
                return;
           }
 
-          if (!dialogVisibleParamIsNew) {
+          if (isEditing) {
                axios.put(`/api/UpdateUser?wl_userid=${dialogVisibleParamID}&wl_password=${encodeURIComponent(newPassword)}`, { withCredentials: true })
                     .then((res: typeof IUser) => {
                          setNewPassword("");
@@ -230,7 +203,6 @@ const ManageUserAccounts = () => {
                               setNewPassword("");
                               setNewConfirmPassword("");
                               setDialogVisibleParamID(-1);
-                              setDialogVisibleParamIsNew(false);
 
                               setUsersLoadingStarted(false);
                               setUsersLoadingComplete(false);
@@ -242,136 +214,24 @@ const ManageUserAccounts = () => {
                          alert("Failed to update the password with the error " + err.message);
                     });
           } else {
-               const newRows = Object.assign([], users);
-
-               const newRowResult = newRows.filter((row: typeof IUser) => row.UserID === dialogVisibleParamID);
-
-               if (newRowResult.length !== 1) { // This shouldn't ever happen
-                    alert("Failed to update the password. Unable to find user ID");
-                    return;
-               }
-
-               const newRow = newRowResult[0];
-               newRow.Password = newPassword;
-
-               setUsers(newRows);
+               userChangeHandler("Password", newPassword);
           }
 
           setDialogVisible(false);
      };
 
-     const saveRowEditClickHandler = (id: number) => async () => {
-          setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
-     };
+     const userChangeHandler = (fieldName: string, fieldValue: string) => {
+          const newUser = Object.assign({}, isAdding ? addingUser : editingUser);
 
-     const startRowEditingClickHandler = (params: typeof IUser, event: typeof GridEventListener) => {
-          event.defaultMuiPrevented = true;
-     };
+          newUser[fieldName] = fieldValue;
+          newUser.IsModified = true;
 
-     const stopRowEditingClickHandler = (params: typeof IUser, event: typeof GridEventListener) => {
-          event.defaultMuiPrevented = true;
-
-          setRowModesModel(null);
-     };
-
-     const columns = [
-          {
-               field: "UserID",
-               headerName: "ID",
-               width: 100,
-               editable: false,
-               type: "number",
-               headerClassName: !darkMode ? "lightMode" : "darkMode",
-               renderCell: (params: typeof GridRenderEditCellParams) => {
-                    return (
-                    <div className={`${!darkMode ? "lightMode" : "darkMode"}`}>{params.value}</div>
-               )},
-          },
-          {
-               field: "Username",
-               headerName: "User name",
-               editable: true,
-               width: 150,
-               headerClassName: !darkMode ? "lightMode" : "darkMode",
-               renderCell: (params: typeof GridRenderEditCellParams) => {
-                    return (
-                    <div className={`${!darkMode ? "lightMode" : "darkMode"}`}>{params.value}</div>
-               )},
-          },
-          {
-               field: "Realname",
-               headerName: "Name",
-               editable: true,
-               width: 130,
-          },
-          {
-               field: "Password",
-               headerName: "Password",
-               editable: false,
-               width: 230,
-               headerClassName: !darkMode ? "lightMode" : "darkMode",
-               renderCell: (params: typeof GridParams) => {
-                    return (
-                         <Button
-                              color="secondary"
-                              variant="contained"
-                              onClick={() => {
-                                   setDialogVisibleParamID(params.id);
-
-                                   if (params.row.isNew) {
-                                        setDialogVisibleParamIsNew(true);
-                                   }
-
-                                   setDialogVisible(true);
-                              }}>
-                              Change Password
-                         </Button>
-                    );
-               },
-          },
-          {
-               field: "Admin",
-               headerName: "Admin",
-               editable: true,
-               enabled: false,
-               width: 130,
-               type: "boolean",
-               headerClassName: !darkMode ? "lightMode" : "darkMode",
-               renderCell: (params: typeof GridRenderEditCellParams) => (
-                    <div className={`${!darkMode ? "lightMode" : "darkMode"}`}>{params.value == true ? "Y" : "N"}</div>
-               ),
-          },
-          {
-               field: "Enabled",
-               headerName: "Enabled",
-               editable: true,
-               width: 130,
-               type: "boolean",
-               headerClassName: !darkMode ? "lightMode" : "darkMode",
-               renderCell: (params: typeof GridRenderEditCellParams) => (
-                    <div className={`${!darkMode ? "lightMode" : "darkMode"}`}>{params.value == true ? "Y" : "N"}</div>
-               ),
-          },
-          {
-               field: "actions",
-               type: "actions",
-               headerName: "Actions",
-               width: 100,
-               cellClassName: "actions",
-               headerClassName: !darkMode ? "lightMode" : "darkMode",
-               getActions: ({ id }: { id: number }) => {
-                    const newestUser = users?.filter((user: typeof IUser) => user.UserID === id && user.isNew === true);
-
-                    if (editingId === null && !isAdding && !isEditing) {
-                         return [<GridActionsCellItem key={id} icon={EditIconComponent} label="Edit" className={`icon`} onClick={enterEditModeClickHandler(id)} color="inherit" />];
-                    } else if ((isEditing && editingId === id) || (isAdding && newestUser.length === 1)) {
-                         return [<GridActionsCellItem key={id} icon={SaveIconComponent} className="icon" label="Save" onClick={saveRowEditClickHandler(id)} color="primary" />, <GridActionsCellItem key={id} icon={CancelIconComponent} label="Cancel" className="icon textPrimary" onClick={cancelRowEditClickHandler(id)} color="error" />];
-                    } else {
-                         return [<></>]
-                    }
-               },
-          },
-     ];
+          if (isAdding) {
+               setAddingUser(newUser);
+          } else {
+               setEditingUser(newUser);
+          }
+     }
 
      useEffect(() => {
           // Make sure current user is an admin
@@ -411,26 +271,173 @@ const ManageUserAccounts = () => {
 
      return (
           <>
+               {usersLoadingComplete &&
+                    <Button
+                         color="primary"
+                         variant="contained"
+                         className="borderRadius15 bottomMargin20 topMargin"
+                         onClick={enterAddModeClickHandler} >
+                         Add User
+                    </Button>
+               }
+
                {users && users.length > 0 &&
-                    <DataGrid
-                         className={`${!darkMode ? "lightMode" : "darkMode"}`}
-                         rows={users}
-                         columns={columns}
-                         editMode="row"
-                         getRowId={(row: typeof IUser) => row.UserID}
-                         rowModesModel={rowModesModel}
-                         onRowEditStart={startRowEditingClickHandler}
-                         onRowEditStop={stopRowEditingClickHandler}
-                         processRowUpdate={processRowUpdateHandler}
-                         onProcessRowUpdateError={processRowUpdateErrorHandler}
-                         components={{
-                              Toolbar: EditToolbar,
-                         }}
-                         componentsProps={{
-                              toolbar: { section, setRowModesModel },
-                         }}
-                         experimentalFeatures={{ newEditingApi: true }}
-                    />
+                    <table style={{ borderWidth: "1px", borderStyle: "solid" }} className={`${!darkMode ? "lightMode" : "darkMode"}`}>
+                         <thead>
+                              <tr>
+                                   <th>Actions</th>
+                                   <th>ID</th>
+                                   <th>User name</th>
+                                   <th>Name</th>
+                                   <th>Password</th>
+                                   <th>Admin</th>
+                                   <th>Enabled</th>
+                              </tr>
+                         </thead>
+                         <tbody>
+                              {isAdding &&
+                                   <tr>
+                                        <td>
+                                             <span className="inlineFlex">
+                                                  <span className={`clickable iconLarge primary`} onClick={saveRow}>
+                                                       {SaveIconComponent}
+                                                  </span>
+
+                                                  <span className={`clickable iconLarge error`} onClick={() => cancelAddEditModeClickHandler()}>
+                                                       {CancelIconComponent}
+                                                  </span>
+                                             </span>
+                                        </td>
+
+                                             // User ID column
+                                        <td>
+                                        </td>
+
+                                        <td>
+                                             <TextField className={`lightMode borderRadius15 minWidth150`} margin="dense" id="username" label="username" value={addingUser.Username} fullWidth variant="standard" onChange={(event: any) => userChangeHandler("Username", event.target.value)} />
+                                        </td>
+
+                                        <td>
+                                             <TextField className={`lightMode borderRadius15 minWidth150`} margin="dense" id="name" label="name" value={addingUser.Realname} fullWidth variant="standard" onChange={(event: any) => userChangeHandler("Realname", event.target.value)} />
+                                        </td>
+
+                                        <td>
+                                             <Button
+                                                  color="secondary"
+                                                  variant="contained"
+                                                  className="borderRadius15"
+                                                  onClick={() => {
+                                                       setDialogVisible(true);
+                                                  }}>
+                                                  Change Password
+                                             </Button>
+                                        </td>
+
+                                        <td>
+                                             <input type="checkbox" checked={addingUser.Admin} onChange={(event: any) => userChangeHandler("Admin", event.target.checked)} />
+                                        </td>
+
+                                        <td>
+                                             Y
+                                        </td>
+                                   </tr>
+                              }
+
+
+                              {users
+                                   .filter((user: typeof IUser) => {
+                                        return (
+                                             (!isAdding && !isEditing) ||
+                                             (isEditing && editingUser.UserID === user.UserID)
+                                        )
+                                   })
+                                   .map((user: typeof IUser) => (
+                                        <tr key={user.UserID}>
+                                             <td>
+                                                  {!isEditing &&
+                                                       <span className={`clickable tabIcon`} onClick={() => enterEditModeClickHandler(user.UserID)}>
+                                                            {EditIconComponent}
+                                                       </span>
+                                                  }
+
+                                                  {isEditing &&
+                                                       <span className="inlineFlex">
+                                                            <span className={`clickable iconLarge primary`} onClick={saveRow}>
+                                                                 {SaveIconComponent}
+                                                            </span>
+
+                                                            <span className={`clickable iconLarge error`} onClick={() => cancelAddEditModeClickHandler()}>
+                                                                 {CancelIconComponent}
+                                                            </span>
+                                                       </span>
+                                                  }
+                                             </td>
+
+                                             <td>
+                                                  <span>{user.UserID}</span>
+                                             </td>
+
+                                             <td>
+                                                  {!isEditing &&
+                                                       <span>{user.Username}</span>
+                                                  }
+
+                                                  {isEditing &&
+                                                       <TextField className={`lightMode borderRadius15 minWidth150`} margin="dense" id="username" label="username" value={editingUser.Username} fullWidth variant="standard" onChange={(event: any) => userChangeHandler("Username", event.target.value)} />
+                                                  }
+                                             </td>
+
+                                             <td>
+                                                  {!isEditing &&
+                                                       <span>{user.Realname}</span>
+                                                  }
+
+                                                  {isEditing &&
+                                                       <TextField className={`lightMode borderRadius15 minWidth150`} margin="dense" id="username" label="name" value={editingUser.Realname} fullWidth variant="standard" onChange={(event: any) => userChangeHandler("Realname", event.target.value)} />
+                                                  }
+                                             </td>
+
+                                             <td>
+                                                  <Button
+                                                       color="secondary"
+                                                       variant="contained"
+                                                       className="borderRadius15"
+                                                       onClick={() => {
+                                                            setDialogVisibleParamID(user.UserID);
+
+                                                            setDialogVisible(true);
+                                                       }}>
+                                                       Change Password
+                                                  </Button>
+                                             </td>
+
+                                             <td>
+                                                  {!isEditing &&
+                                                       <span>{user.Admin === 1 ? "Y" : "N"}</span>
+                                                  }
+
+                                                  {isEditing &&
+                                                       <input type="checkbox" checked={editingUser.Admin} onChange={(event: any) => userChangeHandler("Admin", event.target.checked)} />
+                                                  }
+                                             </td>
+
+                                             <td>
+                                                  {!isAdding && !isEditing &&
+                                                       <span>{user.Enabled === 1 ? "Y" : "N"}</span>
+                                                  }
+
+                                                  {isEditing &&
+                                                       <input type="checkbox" checked={editingUser.Enabled} onChange={(event: any) => userChangeHandler("Enabled", event.target.checked)} />
+                                                  }
+
+                                                  {isAdding &&
+                                                       <input type="checkbox" checked={addingUser.Enabled} onChange={(event: any) => userChangeHandler("Enabled", event.target.checked)} />
+                                                  }
+                                             </td>
+                                        </tr>
+                                   ))}
+                         </tbody>
+                    </table>
                }
 
                <Dialog open={dialogVisible} onClose={closeDialogClickHandler}>
@@ -439,9 +446,9 @@ const ManageUserAccounts = () => {
                     <DialogContent>
                          <DialogContentText>Please enter a new password. it must be at least 8 characters long and contain letters and numbers</DialogContentText>
 
-                         <TextField autoFocus margin="dense" id="password" label="Password" type={!isPasswordGenerated ? "password" : "text"} value={newPassword} onChange={(event: typeof GridEventListener) => setNewPassword(event.target.value)} fullWidth variant="standard" />
+                         <TextField autoFocus margin="dense" id="password" label="Password" type={!isPasswordGenerated ? "password" : "text"} value={newPassword} onChange={(event: any) => setNewPassword(event.target.value)} fullWidth variant="standard" />
 
-                         {!isPasswordGenerated && <TextField margin="dense" id="confirm" label="Confirm Password" type="password" fullWidth variant="standard" value={newConfirmPassword} onChange={(event: typeof GridEventListener) => setNewConfirmPassword(event.target.value)} />}
+                         {!isPasswordGenerated && <TextField margin="dense" id="confirm" label="Confirm Password" type="password" fullWidth variant="standard" value={newConfirmPassword} onChange={(event: any) => setNewConfirmPassword(event.target.value)} />}
                     </DialogContent>
 
                     <DialogActions className="dialogActions">
@@ -449,7 +456,7 @@ const ManageUserAccounts = () => {
                               Generate Password
                          </Button>
 
-                         <Button className="changePassword" onClick={() => saveNewPassword()} disabled={dialogVisibleParamID === -1}>
+                         <Button className="changePassword" onClick={() => saveNewPassword()}>
                               Change
                          </Button>
 

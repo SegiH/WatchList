@@ -8,16 +8,16 @@ const React = require("react");
 const Recommendations = require("../../components/Recommendations").default;
 const useContext = require("react").useContext;
 const useRouter = require("next/navigation").useRouter;
-const useSearchParams = require("next/navigation").useSearchParams;
+//const useSearchParams = require("next/navigation").useSearchParams;
 const useState = require("react").useState;
 const useEffect = require("react").useEffect;
 
 import { DataContext, DataContextType } from "../../data-context";
 
 export default function WatchListItemsDtl() {
-     const searchParams = useSearchParams();
+     //const searchParams = useSearchParams();
 
-     const watchListItemDtlID = searchParams.get("WatchListItemID");
+     //const watchListItemDtlID = searchParams.get("WatchListItemID");
 
      const {
           BrokenImageIconComponent,
@@ -48,6 +48,7 @@ export default function WatchListItemsDtl() {
      const [watchListItemDtl, setWatchListItemDtl] = useState(null);
      const [watchListItemDtlLoadingStarted, setWatchListItemDtlLoadingStarted] = useState(false);
      const [watchListItemDtlLoadingComplete, setWatchListItemDtlLoadingComplete] = useState(false);
+     const [watchListItemDtlID, setWatchListItemDtlID] = useState(null);
 
      const router = useRouter();
 
@@ -380,6 +381,19 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
           }
      }, [recommendationName, recommendationType]);
 
+     useEffect(() => {
+          const searchParams = window.location.search.replace("?","&").split("&");
+
+          for (let i=0;i < searchParams.length; i++) {
+               if (searchParams[i] !== "") {
+                    const paramSpl = searchParams[i].split("=");
+
+                    if (paramSpl[0] === "WatchListItemID" && paramSpl[1] !== "") {
+                         setWatchListItemDtlID(paramSpl[1]);
+                    }
+               }
+          }
+     }, []);
      return (
           <div className="modal">
                <div className={`modal-content ${watchListItemDtlID != null ? "fade-in" : "fade-out"}${!darkMode ? " lightMode" : " darkMode"}`}>

@@ -294,6 +294,7 @@ const ManageUserAccounts = () => {
                                    <th>Enabled</th>
                               </tr>
                          </thead>
+
                          <tbody>
                               {isAdding &&
                                    <tr>
@@ -309,7 +310,7 @@ const ManageUserAccounts = () => {
                                              </span>
                                         </td>
 
-                                             // User ID column
+                                        {/* User ID column */}
                                         <td>
                                         </td>
 

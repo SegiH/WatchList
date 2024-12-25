@@ -17,6 +17,8 @@ import { DBFile, execSelect, execUpdateDelete, getUserOptions, getUserSession, l
  *            description: '["OK",""] on success, ["ERROR","error message"] on error'
  */
 export async function GET(request: NextRequest) {
+     const currentCookies = await cookies();
+
      const searchParams = request.nextUrl.searchParams;
 
      const token = typeof searchParams.get("Token") !== "undefined" ? searchParams.get("Token") : null;
@@ -31,7 +33,9 @@ export async function GET(request: NextRequest) {
 
      if (!fs.existsSync(DBFile)) { // If DB file doesn't exist, this is a new WatchList instance
           // Clear session cookie if it existed previously but DB doesn't exist
-          cookies().delete('userData');
+          try {
+               currentCookies.delete('userData');
+          } catch(e) {}
 
           return Response.json(["ERROR", false]);
      }

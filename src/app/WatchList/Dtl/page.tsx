@@ -15,7 +15,6 @@ const TextField = require("@mui/material/TextField").default;
 const useContext = require("react").useContext;
 const useEffect = require("react").useEffect;
 const useRouter = require("next/navigation").useRouter;
-const useSearchParams = require("next/navigation").useSearchParams;
 const useState = require("react").useState;
 
 const EmptyIcon = require("@mui/icons-material/StarBorder").default;
@@ -30,11 +29,6 @@ const HalfIconComponent = <HalfIcon />;
 import { DataContext, DataContextType } from "../../data-context";
 
 export default function WatchListDetail() {
-     const searchParams = useSearchParams();
-
-     const watchListDtlID = searchParams.get("WatchListID");
-     const watchListItemDtlID = searchParams.get("WatchListItemID");
-
      const {
           BrokenImageIconComponent,
           CancelIconComponent,
@@ -72,8 +66,10 @@ export default function WatchListDetail() {
      const [recommendationName, setRecommendationName] = useState("");
      const [recommendationType, setRecommendationType] = useState("");
      const [watchListDtl, setWatchListDtl] = useState(null);
+     const [watchListDtlID, setWatchListDtlID] = useState(null);
      const [watchListDtlLoadingStarted, setWatchListDtlLoadingStarted] = useState(false);
      const [watchListDtlLoadingComplete, setWatchListDtlLoadingComplete] = useState(false);
+     const [watchListItemDtlID, setWatchListItemDtlID] = useState(null);
 
      const router = useRouter();
 
@@ -585,6 +581,22 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
                setRecommendationsVisible(true);
           }
      }, [recommendationName, recommendationType]);
+
+     useEffect(() => {
+          const searchParams = window.location.search.replace("?","&").split("&");
+
+          for (let i=0;i < searchParams.length; i++) {
+               if (searchParams[i] !== "") {
+                    const paramSpl = searchParams[i].split("=");
+
+                    if (paramSpl[0] === "WatchListID" && paramSpl[1] !== "") {
+                         setWatchListDtlID(paramSpl[1]);
+                    } else if (paramSpl[0] === "WatchListItemID" && paramSpl[1] !== "") {
+                         setWatchListItemDtlID(paramSpl[1]);
+                    }
+               }
+          }
+     }, []);
 
      return (
           <div className="modal">

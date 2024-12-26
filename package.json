@@ -13,7 +13,7 @@
   },
   "scripts": {
     "dev": "node writeBuildDate.js && next dev",
-    "build": "node writeBuildDate.js && next build",
+    "build": "next build",
     "start": "next start"
   },
   "dependencies": {

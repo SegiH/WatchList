@@ -4,7 +4,6 @@ const useContext = require("react").useContext;
 const useEffect = require("react").useEffect;
 const useRouter = require("next/navigation").useRouter;
 const useState = require("react").useState;
-const useCallback = require("react").useCallback;
 
 const IWatchListSource = require("./interfaces/IWatchListSource");
 const IWatchListType = require("./interfaces/IWatchListType");

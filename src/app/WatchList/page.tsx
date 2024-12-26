@@ -2,10 +2,8 @@
 
 const React = require("react");
 import Image from 'next/image';
-const useCallback = require("react").useCallback;
 const useContext = require("react").useContext;
 const useEffect = require("react").useEffect;
-const useRouter = require("next/navigation").useRouter;
 const IWatchList = require("../interfaces/IWatchList");
 
 import { DataContext, DataContextType } from "../data-context";

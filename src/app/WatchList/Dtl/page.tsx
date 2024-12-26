@@ -437,6 +437,12 @@ export default function WatchListDetail() {
           setEditModified(true);
      };
 
+     const imdbImage = watchListDtl?.IMDB_Poster !== null && watchListDtl?.IMDB_Poster_Error !== true && watchListDtl?.IMDB_Poster !== "" && watchListDtl?.IMDB_Poster.length > 0
+     ? 
+     <Image className="poster-detail" width="175" height="200" alt="Image Not Available" src={watchListDtl?.IMDB_Poster} onError={() => showDefaultSrc()} />
+     :
+     <>{BrokenImageIconComponent}</>;
+
      useEffect(() => {
           if (!isAdding && !watchListDtlLoadingStarted && !watchListDtlLoadingComplete && watchListDtlID !== null && watchListDtlID !== -1 && !isNaN(watchListDtlID)) {
                setWatchListDtlLoadingStarted(true);
@@ -515,7 +521,7 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
 
                setAddWatchListDtl(newAddWatchListDtl);
           }
-     }, [getLocaleDate, isAdding, watchListDtl, watchListDtlID, watchListDtlLoadingStarted, watchListDtlLoadingComplete]);
+     }, [demoMode, getLocaleDate, isAdding, setErrorMessage, setIsError, watchListDtl, watchListDtlID, watchListDtlLoadingStarted, watchListDtlLoadingComplete, watchListItemDtlID]);
 
      useEffect(() => {
           if (watchListItems.length > 0) {
@@ -659,14 +665,12 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
                                    <div className="narrow card">
                                         {!isAdding &&
                                              <>
-                                                  {watchListDtl?.IMDB_Poster !== null && watchListDtl?.IMDB_Poster_Error !== true && <Image className="poster-detail" width="175" height="200" alt="Image Not Available" src={watchListDtl?.IMDB_Poster} onError={() => showDefaultSrc()} />}
-
-                                                  {(watchListDtl?.IMDB_Poster === null || watchListDtl?.IMDB_Poster_Error === true) && <>{BrokenImageIconComponent}</>}
+                                                  {imdbImage}
                                              </>
                                         }
 
                                         {isAdding && addWatchListDtl && watchListItems?.filter((currentWatchListItem: typeof IWatchListItem) => String(currentWatchListItem?.WatchListItemID) === String(addWatchListDtl?.WatchListItemID)).length === 1 &&
-                                             <span className="column"><Image className="poster-detail" width="175" height="200" alt="Image Not Available" src={watchListItems?.filter((currentWatchListItem: typeof IWatchListItem) => String(currentWatchListItem?.WatchListItemID) === String(addWatchListDtl?.WatchListItemID))[0].IMDB_Poster} /></span>
+                                             <span className="column"><Image className="poster-detail" width="175" height="200" alt="Image Not Available" src={watchListItems?.filter((currentWatchListItem: typeof IWatchListItem) => String(currentWatchListItem?.WatchListItemID) === String(addWatchListDtl?.WatchListItemID))[0].IMDB_Poster ?? ""} /></span>
                                         }
                                    </div>
 

@@ -31,7 +31,7 @@
     "crypto-js": "^4.2.0",
     "json5": "^2.2.3",
     "multiselect-react-dropdown": "^2.0.25",
-    "next": "^15.0.3",
+    "next": "^15.1.0",
     "next-pwa": "^5.6.0",
     "next-session": "^4.0.5",
     "prop-types-exact": "^1.2.0",

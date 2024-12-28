@@ -1,4 +1,6 @@
 export default interface IWatchListSourceDetailSortOption {
-     key: string,
-     value: string
+     WatchListID: string,
+     Name: string,
+     StartDate: string,
+     EndDate: string,
 }

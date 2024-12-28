@@ -1,9 +1,5 @@
-const React = require("react");
-const useContext = require("react").useContext;
-const useEffect = require("react").useEffect;
-const useRouter = require("next/navigation").useRouter;
-const useState = require("react").useState;
-
+import React, { useContext, useEffect, useState } from "react";
+import { useRouter } from 'next/navigation';
 import Multiselect from 'multiselect-react-dropdown';
 import { DataContext, DataContextType } from "../data-context";
 

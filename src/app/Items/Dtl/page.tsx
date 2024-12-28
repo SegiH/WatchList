@@ -1,24 +1,15 @@
 "use client"
 
-const axios = require("axios");
-import Image from 'next/image';
-const IWatchListItem = require("../../interfaces/IWatchListItem");
-const IWatchListType = require("../../interfaces/IWatchListType");
-const React = require("react");
-const Recommendations = require("../../components/Recommendations").default;
-const useContext = require("react").useContext;
-const useRouter = require("next/navigation").useRouter;
-//const useSearchParams = require("next/navigation").useSearchParams;
-const useState = require("react").useState;
-const useEffect = require("react").useEffect;
-
+import axios, { AxiosResponse } from "axios";
+import Image from "next/image";
+import React, { useContext, useEffect, useState } from "react";
+import { useRouter } from 'next/navigation';
+import Recommendations from "../../components/Recommendations";
+import IWatchListItem from "../../interfaces/IWatchListItem";
+import IWatchListType from "../../interfaces/IWatchListType";
 import { DataContext, DataContextType } from "../../data-context";
 
 export default function WatchListItemsDtl() {
-     //const searchParams = useSearchParams();
-
-     //const watchListItemDtlID = searchParams.get("WatchListItemID");
-
      const {
           BrokenImageIconComponent,
           CancelIconComponent,
@@ -38,17 +29,17 @@ export default function WatchListItemsDtl() {
           watchListTypes
      } = useContext(DataContext) as DataContextType
 
-     const [addWatchListItemDtl, setAddWatchListItemDtl] = useState(null);
+     const [addWatchListItemDtl, setAddWatchListItemDtl] = useState<IWatchListItem | null>();
      const [editModified, setEditModified] = useState(false);
      const [addModified, setAddModified] = useState(false);
-     const [originalWatchListItemDtl, setOriginalWatchListItemDtl] = useState(null);
+     const [originalWatchListItemDtl, setOriginalWatchListItemDtl] = useState<IWatchListItem | null>();
      const [recommendationsVisible, setRecommendationsVisible] = useState(false);
-     const [recommendationName, setRecommendationName] = useState("");
+     const [recommendationName, setRecommendationName] = useState<string>("");
      const [recommendationType, setRecommendationType] = useState("");
-     const [watchListItemDtl, setWatchListItemDtl] = useState(null);
+     const [watchListItemDtl, setWatchListItemDtl] = useState<IWatchListItem | null>();
      const [watchListItemDtlLoadingStarted, setWatchListItemDtlLoadingStarted] = useState(false);
      const [watchListItemDtlLoadingComplete, setWatchListItemDtlLoadingComplete] = useState(false);
-     const [watchListItemDtlID, setWatchListItemDtlID] = useState(null);
+     const [watchListItemDtlID, setWatchListItemDtlID] = useState<number>(-1);
 
      const router = useRouter();
 
@@ -118,8 +109,8 @@ export default function WatchListItemsDtl() {
           const name = watchListItemDtl?.WatchListItemName;
 
           if (watchListItemDtl?.WatchListTypeName !== null) {
-               setRecommendationName(name);
-               setRecommendationType(watchListItemDtl?.WatchListTypeName);
+               setRecommendationName(typeof name !== "undefined" ? name : "");
+               setRecommendationType(typeof watchListItemDtl?.WatchListTypeName !== "undefined" ? watchListItemDtl?.WatchListTypeName : "");
           }
      };
 
@@ -134,71 +125,76 @@ export default function WatchListItemsDtl() {
                return;
           }
 
-          if (watchListItemDtl.WatchListItemName === "") {
-               alert("Please enter the name of the Movie or TV Show");
-               return;
-          }
+          if (watchListItemDtl !== null) {
+               if (watchListItemDtl?.WatchListItemName === "") {
+                    alert("Please enter the name of the Movie or TV Show");
+                    return;
+               }
 
-          let queryURL = ``;
+               let queryURL = ``;
 
-          if (watchListItemDtl.WatchListItemNameIsModified === true) {
-               queryURL += `&WatchListItemName=${watchListItemDtl.WatchListItemName}`;
-          }
+               if (watchListItemDtl?.WatchListItemNameIsModified === true) {
+                    queryURL += `&WatchListItemName=${watchListItemDtl.WatchListItemName}`;
+               }
 
-          if (watchListItemDtl.WatchListTypeIDIsModified === true) {
-               queryURL += `&WatchListTypeID=${watchListItemDtl.WatchListTypeID}`;
-          }
+               if (watchListItemDtl?.WatchListTypeIDIsModified === true) {
+                    queryURL += `&WatchListTypeID=${watchListItemDtl.WatchListTypeID}`;
+               }
 
-          if (watchListItemDtl.IMDB_URLIsModified === true) {
-               queryURL += `&IMDB_URL=${watchListItemDtl.IMDB_URL}`;
-          }
+               if (watchListItemDtl?.IMDB_URLIsModified === true) {
+                    queryURL += `&IMDB_URL=${watchListItemDtl.IMDB_URL}`;
+               }
 
-          if (watchListItemDtl.IMDB_PosterIsModified === true) {
-               queryURL += `&IMDB_Poster=${watchListItemDtl.IMDB_Poster}`;
-          }
+               if (watchListItemDtl?.IMDB_PosterIsModified === true) {
+                    queryURL += `&IMDB_Poster=${watchListItemDtl.IMDB_Poster}`;
+               }
 
-          if (watchListItemDtl.ItemNotesIsModified === true) {
-               queryURL += `&ItemNotes=${watchListItemDtl.ItemNotes}`;
-          }
+               if (watchListItemDtl?.ItemNotesIsModified === true) {
+                    queryURL += `&ItemNotes=${watchListItemDtl.ItemNotes}`;
+               }
 
-          if (watchListItemDtl.ArchivedIsModified === true) {
-               queryURL += `&Archived=${watchListItemDtl.Archived}`;
-          }
+               if (watchListItemDtl?.ArchivedIsModified === true) {
+                    queryURL += `&Archived=${watchListItemDtl.Archived}`;
+               }
 
-          if (queryURL != "") {
-               queryURL = `/api/UpdateWatchListItem?WatchListItemID=${watchListItemDtl.WatchListItemID}${queryURL}`;
+               if (queryURL != "") {
+                    queryURL = `/api/UpdateWatchListItem?WatchListItemID=${watchListItemDtl?.WatchListItemID}${queryURL}`;
 
-               axios.put(queryURL)
-                    .then((res: typeof IWatchListItem) => {
-                         if (res.data[0] === "ERROR") {
-                              alert(`The error ${res.data[1]} occurred while updating the item detail`);
-                         } else {
-                              // Update type name if needed
-                              if (watchListItemDtl["WatchListTypeIDIsModified"] === true) {
-                                   const result = watchListTypes?.filter((currentWatchList: typeof IWatchListItem) => {
-                                        return String(currentWatchList.WatchListTypeID) === String(watchListItemDtl["WatchListTypeID"]);
-                                   });
+                    axios.put(queryURL)
+                         .then((res: AxiosResponse<IWatchListItem>) => {
+                              if (res.data[0] === "ERROR") {
+                                   alert(`The error ${res.data[1]} occurred while updating the item detail`);
+                              } else {
+                                   // Update type name if needed
+                                   if (watchListItemDtl?.WatchListTypeIDIsModified === true) {
+                                        const result = watchListTypes?.filter((currentWatchList: IWatchListType) => {
+                                             return String(currentWatchList.WatchListTypeID) === String(watchListItemDtl["WatchListTypeID"]);
+                                        });
 
-                                   if (result.length !== 1) {
-                                        alert("Unable to update type name");
-                                        return;
+                                        if (result.length !== 1) {
+                                             alert("Unable to update type name");
+                                             return;
+                                        }
+
+                                        const newWatchListItemDtl = Object.assign({}, watchListItemDtl);
+
+                                        newWatchListItemDtl["WatchListTypeName"] = result[0].WatchListTypeName;
+
+                                        setWatchListItemDtl(newWatchListItemDtl);
                                    }
 
-                                   const newWatchListItemDtl = Object.assign({}, watchListItemDtl);
+                                   setIsEditing(false);
 
-                                   newWatchListItemDtl["WatchListTypeName"] = result[0].WatchListTypeName;
-
-                                   setWatchListItemDtl(newWatchListItemDtl);
+                                   setEditModified(true);
                               }
-
-                              setIsEditing(false);
-
-                              setEditModified(true);
-                         }
-                    })
-                    .catch((err: Error) => {
-                         alert(`The error ${err.message} occurred while updating the item detail`);
-                    });
+                         })
+                         .catch((err: Error) => {
+                              alert(`The error ${err.message} occurred while updating the item detail`);
+                         });
+               } else {
+                    alert("query params is empty in saveClickHandler()");
+                    return;
+               }
           } else {
                setIsEditing(false);
 
@@ -212,32 +208,32 @@ export default function WatchListItemsDtl() {
                return;
           }
 
-          if (addWatchListItemDtl.WatchListItemName === "") {
+          if (addWatchListItemDtl?.WatchListItemName === "") {
                alert("Please enter the item name");
                return;
           }
 
-          if (addWatchListItemDtl.WatchListTypeID === "-1") {
+          if (addWatchListItemDtl?.WatchListTypeID === -1) {
                alert("Please select the type");
                return;
           }
 
-          if (addWatchListItemDtl.IMDB_URL === "") {
+          if (addWatchListItemDtl?.IMDB_URL === "") {
                alert("Please enter the IMDB URL");
                return;
           }
 
-          let queryURL = `/api/AddWatchListItem?WatchListItemName=${addWatchListItemDtl.WatchListItemName}&WatchListTypeID=${addWatchListItemDtl.WatchListTypeID}&IMDB_URL=${addWatchListItemDtl.IMDB_URL}&Archived=${addWatchListItemDtl.Archived}`;
+          let queryURL = `/api/AddWatchListItem?WatchListItemName=${addWatchListItemDtl?.WatchListItemName}&WatchListTypeID=${addWatchListItemDtl?.WatchListTypeID}&IMDB_URL=${addWatchListItemDtl?.IMDB_URL}&Archived=${addWatchListItemDtl?.Archived}`;
 
-          if (addWatchListItemDtl.IMDB_Poster !== "") {
-               queryURL += `&IMDB_Poster=${addWatchListItemDtl.IMDB_Poster}`;
+          if (addWatchListItemDtl?.IMDB_Poster !== "") {
+               queryURL += `&IMDB_Poster=${addWatchListItemDtl?.IMDB_Poster}`;
           }
 
-          if (addWatchListItemDtl.ItemNotes !== "") {
-               queryURL += `&ItemNotes=${addWatchListItemDtl.ItemNotes}`;
+          if (addWatchListItemDtl?.ItemNotes !== "") {
+               queryURL += `&ItemNotes=${addWatchListItemDtl?.ItemNotes}`;
           }
 
-          axios.put(queryURL).then((res: typeof IWatchListItem) => {
+          axios.put(queryURL).then((res: AxiosResponse<IWatchListItem>) => {
                if (res.data[0] === "ERROR") {
                     alert(`The error ${res.data[1]} occurred while adding the detail`);
                } else if (res.data[0] === "ERROR-ALREADY-EXISTS") {
@@ -284,7 +280,7 @@ export default function WatchListItemsDtl() {
      };
 
      const watchListItemDetailChangeHandler = (fieldName: string, fieldValue: boolean | string) => {
-          const newWatchListItemDtl = Object.assign({}, watchListItemDtl);
+          const newWatchListItemDtl: IWatchListItem = Object.assign({}, watchListItemDtl);
 
           newWatchListItemDtl[fieldName] = fieldValue;
           newWatchListItemDtl[`${fieldName}IsModified`] = true;
@@ -303,7 +299,7 @@ export default function WatchListItemsDtl() {
                if (demoMode) {
                     const demoWatchListItemPayload = require("../../demo/index").demoWatchListItemsPayload;
 
-                    const detailWatchListItem = demoWatchListItemPayload.filter((currentWatchList: typeof IWatchListItem) => {
+                    const detailWatchListItem = demoWatchListItemPayload.filter((currentWatchList: IWatchListItem) => {
                          return String(currentWatchList.WatchListItemID) === String(watchListItemDtlID);
                     });
 
@@ -321,7 +317,7 @@ export default function WatchListItemsDtl() {
                }
 
                axios.get(`/api/GetWatchListItemDtl?WatchListItemID=${watchListItemDtlID}`)
-                    .then((res: typeof IWatchListItem) => {
+                    .then((res: AxiosResponse<IWatchListItem>) => {
                          setWatchListItemDtlLoadingComplete(true);
 
                          if (res.data[0] === "ERROR") {
@@ -364,9 +360,9 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
                          setIsError(true);
                     });
           } else if (isAdding && watchListItemDtlID === -1) {
-               const newAddWatchListItemDtl: typeof IWatchListItem = {};
+               const newAddWatchListItemDtl: IWatchListItem = { WatchListItemID: 0, WatchListItemName: "", WatchListTypeID: -1, WatchListTypeName: "", IMDB_URL: "", IMDB_Poster: "", ItemNotes: "", Archived: 0 };
                newAddWatchListItemDtl.WatchListItemName = "";
-               newAddWatchListItemDtl.WatchListTypeID = "-1";
+               newAddWatchListItemDtl.WatchListTypeID = -1;
                newAddWatchListItemDtl.IMDB_URL = "";
                newAddWatchListItemDtl.IMDB_Poster = "";
                newAddWatchListItemDtl.ItemNotes = "";
@@ -382,14 +378,14 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
      }, [recommendationName, recommendationType]);
 
      useEffect(() => {
-          const searchParams = window.location.search.replace("?","&").split("&");
+          const searchParams = window.location.search.replace("?", "&").split("&");
 
-          for (let i=0;i < searchParams.length; i++) {
+          for (let i = 0; i < searchParams.length; i++) {
                if (searchParams[i] !== "") {
                     const paramSpl = searchParams[i].split("=");
 
                     if (paramSpl[0] === "WatchListItemID" && paramSpl[1] !== "") {
-                         setWatchListItemDtlID(paramSpl[1]);
+                         setWatchListItemDtlID(parseInt(paramSpl[1], 10));
                     }
                }
           }
@@ -439,8 +435,8 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
                                              </>
                                         }
 
-                                        {isAdding && addWatchListItemDtl !== null &&
-                                             <span className="column">{addWatchListItemDtl?.IMDB_Poster !== null && addWatchListItemDtl?.IMDB_Poster_Error !== true && <Image className="poster-detail" width="175" height="200" alt="Image Not Available" src={addWatchListItemDtl?.IMDB_Poster} />}</span>
+                                        {isAdding && addWatchListItemDtl !== null && typeof addWatchListItemDtl !== "undefined" &&
+                                             <span className="column">{addWatchListItemDtl?.IMDB_Poster !== null && addWatchListItemDtl?.IMDB_Poster_Error !== true && <Image className="poster-detail" width="175" height="200" alt="Image Not Available" src={addWatchListItemDtl.IMDB_Poster} />}</span>
                                         }
                                    </div>
 
@@ -461,7 +457,7 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
                                                        </div>
                                                   }
 
-                                                  {watchListItemDtl?.Archived === true ? <span>&nbsp;(A)</span> : <></>}
+                                                  {watchListItemDtl?.Archived === 1 ? <span>&nbsp;(A)</span> : <></>}
                                              </>
                                         }
 
@@ -492,7 +488,7 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
                                                   <select className="selectStyle editing" value={watchListItemDtl?.WatchListTypeID} onChange={(event) => watchListItemDetailChangeHandler("WatchListTypeID", event.target.value)}>
                                                        <option value="-1">Please select</option>
 
-                                                       {watchListTypes?.map((watchListType: typeof IWatchListType, index: number) => {
+                                                       {watchListTypes?.map((watchListType: IWatchListType, index: number) => {
                                                             return (
                                                                  <option key={index} value={watchListType?.WatchListTypeID}>
                                                                       {watchListType?.WatchListTypeName}
@@ -507,7 +503,7 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
                                              <select className="selectStyle" value={addWatchListItemDtl?.WatchListTypeID} onChange={(event: React.ChangeEvent<HTMLSelectElement>) => addWatchListItemDetailChangeHandler("WatchListTypeID", event.target.value)}>
                                                   <option value="-1">Please select</option>
 
-                                                  {watchListTypes?.map((watchListType: typeof IWatchListType, index: number) => {
+                                                  {watchListTypes?.map((watchListType: IWatchListType, index: number) => {
                                                        return (
                                                             <option key={index} value={watchListType?.WatchListTypeID}>
                                                                  {watchListType?.WatchListTypeName}
@@ -601,16 +597,16 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
                                                   <div className={`textLabel ${!darkMode ? " lightMode" : " darkMode"}`}>Archived:&nbsp;</div>
                                              </div>
 
-                                             {isAdding &&
+                                             {isAdding && typeof addWatchListItemDtl !== "undefined" && addWatchListItemDtl !== null &&
                                                   <div className="narrow card">
-                                                       <input className={`lightMode`} type="checkbox" checked={addWatchListItemDtl?.Archived} onChange={(event) => addWatchListItemDetailChangeHandler("Archived", event.target.value)} />
+                                                       <input className={`lightMode`} type="checkbox" checked={addWatchListItemDtl.Archived === 1 ? true : false} onChange={(event) => addWatchListItemDetailChangeHandler("Archived", event.target.value)} />
                                                   </div>
 
                                              }
 
-                                             {isEditing &&
+                                             {isEditing && typeof addWatchListItemDtl !== "undefined" && addWatchListItemDtl !== null &&
                                                   <div className="narrow card">
-                                                       <input className={`lightMode`}  type="checkbox" checked={watchListItemDtl?.Archived} onChange={(event: React.ChangeEvent<HTMLInputElement>) => watchListItemDetailChangeHandler("Archived", event.target.checked)} />
+                                                       <input className={`lightMode`} type="checkbox" checked={watchListItemDtl?.Archived === 1 ? true : false} onChange={(event: React.ChangeEvent<HTMLInputElement>) => watchListItemDetailChangeHandler("Archived", event.target.checked)} />
                                                   </div>
                                              }
                                         </>

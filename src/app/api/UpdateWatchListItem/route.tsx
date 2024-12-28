@@ -77,7 +77,7 @@ export async function PUT(request: NextRequest) {
      }
 
      let columns = "";
-     const values: any = [];
+     const values: string[] = [];
 
      if (name !== null) {
           columns += (columns !== "" ? "," : "") + "WatchListItemName=?";

@@ -72,7 +72,7 @@ export async function PUT(request: NextRequest) {
      }
 
      let columns = "";
-     const values: any = [];
+     const values: (string | number)[] = [];
 
      if (userName !== null) {
           columns += (columns !== "" ? "," : "") + "Username=?";

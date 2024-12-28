@@ -1,0 +1,3 @@
+interface IAutoCompleteOption {
+     name: string;
+}

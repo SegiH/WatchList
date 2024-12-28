@@ -1,4 +1,7 @@
+/* Used for WatchListSortColumns and WatchListItemsSortColumns. WLI Sort columns do not have start and end date so they have to be optional */
 export default interface IWatchListSortColumn {
-     key: string,
-     value: string
+     ID: string,
+     Name: string,
+     StartDate?: string,
+     EndDate?: string
 }

@@ -1,16 +1,12 @@
 "use client"
 
-const axios = require("axios");
-const IUser = require("../interfaces/IUser");
-const React = require("react");
-const useContext = require("react").useContext;
-const useEffect = require("react").useEffect;
-const useRouter = require("next/navigation").useRouter;
-const useState = require("react").useState;
-
+import axios, { AxiosResponse } from "axios";
+import React, { useContext, useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { DataContext, DataContextType } from "../data-context";
 
 import "../Login/Login.css";
+import IUser from "../interfaces/IUser";
 
 export default function Setup() {
      const {
@@ -80,7 +76,7 @@ export default function Setup() {
 
           // First user account created in this WatchList instance is automatically made an admin
           axios.put(`/api/Setup?wl_username=${encodeURIComponent(username)}&wl_realname=${encodeURIComponent(realname)}&wl_password=${encodeURIComponent(password)}&wl_admin=true`, null)
-               .then((res: typeof IUser) => {
+               .then((res: AxiosResponse<IUser>) => {
                     if (res.data[0] === "OK") {
                          alert("User account was successfully created");
 

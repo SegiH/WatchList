@@ -1,5 +1,6 @@
 import { NextRequest } from 'next/server';
 import { execSelect, execUpdateDelete, getUserID } from "../lib";
+import { IUserOption } from '@/app/interfaces/IUser';
 
 /**
  * @swagger
@@ -26,6 +27,10 @@ import { execSelect, execUpdateDelete, getUserID } from "../lib";
  *          200:
  *            description: '["OK",""] on success, ["ERROR","error message"] on error'
  */
+interface OptionColumn {
+    columnName: string;
+}
+
 export async function GET(request: NextRequest) {
     const searchParams = request.nextUrl.searchParams;
 
@@ -41,24 +46,24 @@ export async function GET(request: NextRequest) {
           return Response.json(["ERROR", "Access denied"]);
      }
 
-    const optionsObj : any = JSON.parse(options.toString());
+    const optionsObj : [] = JSON.parse(options.toString());
 
     // Get the columns for Option table
     const optionColumnsSQL = "SELECT m.name as tableName, p.name as columnName,p.type as columnType FROM sqlite_master m left outer join pragma_table_info((m.name)) p on m.name <> p.name where tableName=? order by tableName, columnName";
-    const optionColumnsParams: any = ["Options"];
+    const optionColumnsParams: [string] = ["Options"];
 
     const optionColumnsResults = await execSelect(optionColumnsSQL, optionColumnsParams);
 
-    const optionsColumns : any = [];
+    const optionsColumns: string[][] = [];
 
     // Map Option columns from DB schema to array
-    optionColumnsResults.map((currentOption: any) => {
+    optionColumnsResults.map((currentOption: OptionColumn) => {
         optionsColumns.push([currentOption.columnName]);
     });
 
      // Build SQL from columns in optionsColumns
     let updateSQL = `UPDATE Options SET `;
-    let updateParams : any = [];
+    let updateParams : (string | number)[] = [];
 
     for (let i=0; i < optionsColumns.length; i++) {
         // Skip over these 2 columns

@@ -12,34 +12,30 @@
 
 table {
      width: 100%;
-     border-collapse: collapse; /* Ensures borders are collapsed into one */
      margin: 20px 0;
      font-family: Arial, sans-serif;
      background-color: #f9f9f9;
- }
+     border: 1px solid black;
+     border-collapse: collapse;
+     border-radius: 8px;
+}
  
- th {
+th {
      padding: 12px;
      text-align: left;
      font-size: 16px;
- }
+     border: 1px solid #ddd;
+     border-collapse: collapse;
+}
  
- td {
+td {
      padding: 12px;
      text-align: left;
      border-bottom: 1px solid #ddd;
      font-size: 14px;
- }
- 
- table, th, td {
      border: 1px solid #ddd;
- }
+}
  
- td:first-child {
+td:first-child {
      font-weight: bold;
- }
- 
- table {
-     border-radius: 8px;
-     overflow: hidden;
- }
+} 

@@ -1,6 +1,5 @@
+import axios from "axios";
 import { NextRequest } from 'next/server';
-const axios = require("axios");
-const https = require('https');
 import { getRecommendationsAPIKey, isLoggedIn } from '../lib';
 /**
  * @swagger
@@ -84,8 +83,6 @@ export async function GET(request: NextRequest) {
 }
 
 async function executeAxios(url) {
-     const axios = require("axios");
-
      const recommendations_api_key = await getRecommendationsAPIKey();
 
      return axios

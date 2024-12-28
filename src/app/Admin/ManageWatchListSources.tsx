@@ -1,13 +1,10 @@
-const axios = require("axios");
-const Button = require("@mui/material/Button").default;
-const IWatchListSource = require("../interfaces/IWatchListSource");
-const React = require("react");
-const useContext = require("react").useContext;
-const useEffect = require("react").useEffect;
-const useRouter = require("next/navigation").useRouter;
-const useState = require("react").useState;
-
+import axios, { AxiosResponse } from "axios";
+import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
+
+import React, { useContext, useEffect, useState } from "react";
+import { useRouter } from 'next/navigation';
+import IWatchListSource from "../interfaces/IWatchListSource";
 
 import { DataContext, DataContextType } from "../data-context";
 
@@ -31,8 +28,8 @@ const ManageWatchListSources = () => {
           watchListSourcesLoadingComplete
      } = useContext(DataContext) as DataContextType;
 
-     const [addingSource, setAddingSource] = useState(null);
-     const [editingSource, setEditingSource] = useState(null);
+     const [addingSource, setAddingSource] = useState<IWatchListSource | null>(null);
+     const [editingSource, setEditingSource] = useState<IWatchListSource | null>(null);
 
      const router = useRouter();
 
@@ -49,7 +46,7 @@ const ManageWatchListSources = () => {
           }
 
           axios.put(`/api/DeleteWatchListSource?WatchListSourceID=${id}`, { withCredentials: true })
-               .then((response: typeof IWatchListSource) => {
+               .then((response: AxiosResponse<IWatchListSource>) => {
                     if (response.data[0] === "ERROR") {
                          alert(response.data[1])
                     } else {
@@ -62,17 +59,18 @@ const ManageWatchListSources = () => {
                });
      }
 
-     const enterAddModeClickHandler = (id: number) => {
+     const enterAddModeClickHandler = () => {
           setAddingSource({
-               WatchListSourceID: null,
-               WatchListSourceName: ""
+               WatchListSourceID: -1,
+               WatchListSourceName: "",
+               IsModified: false
           })
 
           setIsAdding(true);
      }
 
      const enterEditModeClickHandler = (id: number) => {
-          const newEditingSourceResult = watchListSources?.filter((watchListSource: typeof IWatchListSource) => {
+          const newEditingSourceResult = watchListSources?.filter((watchListSource: IWatchListSource) => {
                return watchListSource.WatchListSourceID === id;
           });
 
@@ -103,16 +101,24 @@ const ManageWatchListSources = () => {
 
           let columns = ``;
 
-          if (isAdding !== true) {
-               columns = `?WatchListSourceID=${editingSource.WatchListSourceID}&WatchListSourceName=${encodeURIComponent(editingSource.WatchListSourceName)}`;
+          if (isEditing) {
+               if (editingSource !== null) {
+                    columns = `?WatchListSourceID=${editingSource.WatchListSourceID}&WatchListSourceName=${encodeURIComponent(editingSource.WatchListSourceName)}`;
+               } else { // This shouldn't ever happen
+                    alert("Unable to update the source because editingSource is null");
+               }
           } else {
-               columns = `?WatchListSourceName=${encodeURIComponent(addingSource.WatchListSourceName)}`;
+               if (addingSource !== null) {
+                    columns = `?WatchListSourceName=${encodeURIComponent(addingSource.WatchListSourceName)}`;
+               } else { // This shouldn't ever happen
+                    alert("Unable to update the source because addingSource is null");
+               }
           }
 
           const endPoint = (isAdding == true ? `/api/AddWatchListSource` : `/api/UpdateWatchListSource`) + columns;
 
           axios.put(endPoint, { withCredentials: true })
-               .then((response: typeof IWatchListSource) => {
+               .then((response: AxiosResponse<IWatchListSource>) => {
                     if (response !== null && response.data !== null && response.data[0] === "OK") {
                          alert("Saved");
 
@@ -157,7 +163,7 @@ const ManageWatchListSources = () => {
                          color="primary"
                          variant="contained"
                          className="borderRadius15 bottomMargin20 topMargin"
-                         onClick={enterAddModeClickHandler} >
+                         onClick={enterAddModeClickHandler}>
                          Add Source
                     </Button>
                }
@@ -195,19 +201,21 @@ const ManageWatchListSources = () => {
                                         </td>
 
                                         <td>
-                                             <TextField className={`lightMode borderRadius15 minWidth150`} margin="dense" id="sourcename" label="source name" value={addingSource.WatchListSourceName} fullWidth variant="standard" onChange={(event: any) => sourceChangeHandler("WatchListSourceName", event.target.value)} />
+                                             {addingSource !== null &&
+                                                  <TextField className={`lightMode borderRadius15 minWidth150`} margin="dense" id="sourcename" label="source name" value={addingSource.WatchListSourceName} variant="standard" onChange={(event: React.ChangeEvent<HTMLInputElement>) => sourceChangeHandler("WatchListSourceName", event.target.value)} />
+                                             }
                                         </td>
                                    </tr>
                               }
 
                               {watchListSources
-                                   .filter((watchListSource: typeof IWatchListSource) => {
+                                   .filter((watchListSource: IWatchListSource) => {
                                         return (
                                              (!isAdding && !isEditing) ||
-                                             (isEditing && editingSource.WatchListSourceID === watchListSource.WatchListSourceID)
+                                             (isEditing && editingSource && editingSource.WatchListSourceID === watchListSource.WatchListSourceID)
                                         )
                                    })
-                                   .map((watchListSource: typeof IWatchListSource) => (
+                                   .map((watchListSource: IWatchListSource) => (
                                         <tr key={watchListSource.WatchListSourceID}>
                                              <td>
                                                   {!isEditing &&
@@ -238,8 +246,8 @@ const ManageWatchListSources = () => {
                                                        <span>{watchListSource.WatchListSourceName}</span>
                                                   }
 
-                                                  {isEditing &&
-                                                       <TextField className={`lightMode borderRadius15 minWidth150`} margin="dense" id="username" label="username" value={editingSource.WatchListSourceName} fullWidth variant="standard" onChange={(event: any) => sourceChangeHandler("WatchListSourceName", event.target.value)} />
+                                                  {isEditing && editingSource &&
+                                                       <TextField className={`lightMode borderRadius15 minWidth150`} margin="dense" id="username" label="username" value={editingSource.WatchListSourceName} variant="standard" onChange={(event: React.ChangeEvent<HTMLInputElement>) => sourceChangeHandler("WatchListSourceName", event.target.value)} />
                                                   }
                                              </td>
 

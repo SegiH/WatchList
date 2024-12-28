@@ -1,4 +1,5 @@
 export default interface WatchListType {
      WatchListTypeID: number,
-     WatchListTypeName: string
+     WatchListTypeName: string,
+     IsModified: boolean
 }

@@ -1,14 +1,10 @@
 "use client"
 
-const axios = require("axios");
-const IUser = require("../interfaces/IUser");
-const React = require("react");
-const useCallback = require("react").useCallback;
-const useContext = require("react").useContext;
-const useEffect = require("react").useEffect;
-const useRouter = require("next/navigation").useRouter;
-const useState = require("react").useState;
-
+import axios, { AxiosResponse } from "axios";
+import React, { useCallback, useContext, useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import IUser from "../interfaces/IUser";
+import IUserData from "../interfaces/IUserData";
 import { DataContext, DataContextType } from "../data-context";
 
 import "./Login.css";
@@ -60,7 +56,7 @@ export default function Login() {
           if (username === demoUsername && password === demoPassword) {
                setDemoMode(true);
 
-               const newUserData: typeof IUser = require("../demo/index").demoUsers[0];
+               const newUserData: IUser = require("../demo/index").demoUsers[0];
 
                setActiveRoute("WatchList");
                setActiveRouteDisplayName("WatchList");
@@ -79,7 +75,7 @@ export default function Login() {
           axios.defaults.headers.common['wl_password'] = password;
 
           axios.put(`/api/Login`)
-               .then((res: typeof IUser) => {
+               .then((res: AxiosResponse<IUser>) => {
                     if (res.data[0] === "OK") {
                          const timeout = typeof res.data[1].Timeout !== "undefined" && !isNaN(res.data[1].Timeout) ? parseFloat(res.data[1].Timeout) : null;
 
@@ -114,8 +110,8 @@ export default function Login() {
                });
      };
 
-     const loginSuccessfullActions = useCallback(async (response: typeof IUser) => {
-          const newUserData: typeof IUser = [];
+     const loginSuccessfullActions = useCallback(async (response: IUser) => {
+          const newUserData: IUserData = { UserID: 0, Username: "", Admin: false};
 
           try {
                if (typeof response.UserID !== "undefined") {
@@ -130,7 +126,7 @@ export default function Login() {
                     newUserData.Realname = response.Realname;
                }
 
-               newUserData.Admin = response.Admin === 1 ? true : false;
+               newUserData.Admin = response.Admin === true ? true : false;
 
                setUsername("");
                setPassword("");

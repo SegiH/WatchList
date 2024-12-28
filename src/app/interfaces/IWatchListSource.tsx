@@ -1,4 +1,5 @@
 export default interface WatchListSource {
      WatchListSourceID: number,
-     WatchListSourceName: string
+     WatchListSourceName: string,
+     IsModified: boolean
 }

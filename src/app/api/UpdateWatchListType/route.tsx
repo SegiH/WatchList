@@ -35,14 +35,14 @@ export async function PUT(request: NextRequest) {
 
      const watchListTypeID = searchParams.get("WatchListTypeID");
      const watchListTypeName = searchParams.get("WatchListTypeName");
-     
+
      if (watchListTypeID === null) {
           return Response.json(["ERROR", "WatchList Type ID was not provided"]);
      } else if (watchListTypeName === null) {
           return Response.json(["ERROR", "WatchList Type Name was not provided"]);
      }
 
-     const values: any = [watchListTypeName, watchListTypeID];
+     const values: [string, string] = [watchListTypeName, watchListTypeID];
 
      try {
           const sql = `UPDATE WatchListTypes SET WatchListTypeName=? WHERE WatchListTypeID=?`;

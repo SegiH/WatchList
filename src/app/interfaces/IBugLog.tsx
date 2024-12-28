@@ -4,4 +4,6 @@ export default interface BugLog {
     AddDate: string,
     CompletedDate: string,
     ResolutionNotes: string,
+    IsModified: boolean,
+    isNew: boolean
 }

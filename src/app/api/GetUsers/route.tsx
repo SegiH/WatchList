@@ -1,6 +1,7 @@
 import { NextRequest } from 'next/server';
 import { decrypt, execSelect, getUserID, isUserAdmin } from "../lib";
 import User from "../../interfaces/IUser";
+import IUser from '../../interfaces/IUser';
 
 /**
  * @swagger
@@ -46,7 +47,7 @@ export async function GET(request: NextRequest) {
      }
 
      let whereClause = '';
-     const params: any = [];
+     const params: string[] = [];
 
      if (enabled !== null) {
           whereClause = "WHERE Enabled=?";
@@ -64,7 +65,7 @@ export async function GET(request: NextRequest) {
           const results: User[] = await execSelect(SQL, params);
 
           // Decrypt the encrypt values
-          const decryptedUsers = results.map((currentUser: any) => {
+          const decryptedUsers = results.map((currentUser: IUser) => {
                currentUser.Username = decrypt(currentUser.Username);
                currentUser.Realname = decrypt(currentUser.Realname);
                return currentUser;

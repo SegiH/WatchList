@@ -1,15 +1,16 @@
 "use client"
-const React = require("react");
-const useContext = require("react").useContext;
-const useEffect = require("react").useEffect;
-const useRouter = require("next/navigation").useRouter;
-const useState = require("react").useState;
 
-const IWatchListSource = require("./interfaces/IWatchListSource");
-const IWatchListType = require("./interfaces/IWatchListType");
+import React, { useContext, useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+
 import SearchIMDB from "./components/SearchIMDB";
 import Settings from "./components/Settings";
+import IWatchListSource from "./interfaces/IWatchListSource";
+import IWatchListType from "./interfaces/IWatchListType";
+
 import { DataContext, DataContextType } from "./data-context";
+
+import "./page.css";
 
 const SharedLayout = () => {
      const {
@@ -52,7 +53,7 @@ const SharedLayout = () => {
           watchListSources,
           watchListSourcesLoadingComplete,
           watchListTypes,
-          watchListTypesLoadingComplete
+          watchListTypesLoadingComplete,
      } = useContext(DataContext) as DataContextType
 
      const [isClient, setIsClient] = useState(false);
@@ -172,7 +173,7 @@ const SharedLayout = () => {
                                                        <select className="selectStyle" value={sourceFilter} onChange={(event) => setSourceFilter(parseInt(event.target.value, 10))}>
                                                             <option value="-1">Please select</option>
 
-                                                            {watchListSources?.map((watchListSource: typeof IWatchListSource, index: number) => {
+                                                            {watchListSources?.map((watchListSource: IWatchListSource, index: number) => {
                                                                  return (
                                                                       <option key={index} value={watchListSource.WatchListSourceID}>
                                                                            {watchListSource.WatchListSourceName}
@@ -194,7 +195,7 @@ const SharedLayout = () => {
                                                        <select className="selectStyle" value={typeFilter} onChange={(event) => setTypeFilter(parseInt(event.target.value, 10))}>
                                                             <option value="-1">Please select</option>
 
-                                                            {watchListTypes?.map((watchListType: typeof IWatchListType, index: number) => {
+                                                            {watchListTypes?.map((watchListType: IWatchListType, index: number) => {
                                                                  return (
                                                                       <option key={index} value={watchListType.WatchListTypeID}>
                                                                            {watchListType.WatchListTypeName}

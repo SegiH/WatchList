@@ -1,16 +1,12 @@
 "use client"
 
-const ManageWatchListSources = require("./ManageWatchListSources").default;
-const ManageWatchListTypes = require("./ManageWatchListTypes").default;
-const ManageUserAccounts = require("./ManageUserAccounts").default;
-const React = require("react");
-const Tab = require("@mui/material/Tab").default;
-const Tabs = require("@mui/material/Tabs").default;
-const useContext = require("react").useContext;
-const useEffect = require("react").useEffect;
-const useRouter = require("next/navigation").useRouter;
-const useState = require("react").useState;
-
+import React, { useContext, useEffect, useState } from "react";
+import { useRouter } from 'next/navigation';
+import Tab from "@mui/material/Tab";
+import Tabs from "@mui/material/Tabs";
+import ManageUserAccounts from "./ManageUserAccounts";
+import ManageWatchListSources from "./ManageWatchListSources";
+import ManageWatchListTypes from "./ManageWatchListTypes";
 import { DataContext, DataContextType } from "../data-context";
 
 import "./AdminConsole.css";
@@ -26,15 +22,15 @@ export default function Admin() {
      } = useContext(DataContext) as DataContextType
 
      const [isMounted, setIsMounted] = useState(false);
-     const [selectedTab, setSelectedTab] = useState(0);
+     const [selectedTab, setSelectedTab] = useState<number>(0);
 
      const router = useRouter();
 
-     const tabClickHandler = (_event: Event, newValue: string) => {
+     const tabClickHandler = (_event: React.SyntheticEvent, newValue: number) => {
           if (!isAdding && !isEditing) {
                setSelectedTab(newValue);
 
-               localStorage.setItem("WatchList.AdminTab", newValue);
+               localStorage.setItem("WatchList.AdminTab", newValue.toString());
           } else {
                if (isAdding) {
                     alert("You cannot switch tabs while adding an item");
@@ -62,7 +58,7 @@ export default function Admin() {
           const newSelectedTab = localStorage.getItem("WatchList.AdminTab");
 
           if (newSelectedTab !== null) {
-               setSelectedTab(parseInt(newSelectedTab));
+               setSelectedTab(parseInt(newSelectedTab, 10));
           }
 
           setIsMounted(true);

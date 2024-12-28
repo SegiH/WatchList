@@ -1,15 +1,11 @@
-const axios = require("axios");
-const Button = require("@mui/material/Button").default;
-const IWatchListType = require("../interfaces/IWatchListType");
-const React = require("react");
-const useEffect = require("react").useEffect;
-const useContext = require("react").useContext;
-const useRouter = require("next/navigation").useRouter;
-const useState = require("react").useState;
-
+import axios, { AxiosResponse } from "axios";
+import Button from "@mui/material/Button"
 import TextField from "@mui/material/TextField";
+import React, { useContext, useEffect, useState } from "react";
+import { useRouter } from 'next/navigation';
 
 import { DataContext, DataContextType } from "../data-context";
+import IWatchListType from "../interfaces/IWatchListType";
 
 const ManageWatchListTypes = () => {
      const {
@@ -31,8 +27,8 @@ const ManageWatchListTypes = () => {
           watchListTypesLoadingComplete
      } = useContext(DataContext) as DataContextType;
 
-     const [addingType, setAddingType] = useState(null);
-     const [editingType, setEditingType] = useState(null);
+     const [addingType, setAddingType] = useState<IWatchListType | null>(null);
+     const [editingType, setEditingType] = useState<IWatchListType | null>(null);
 
      const router = useRouter();
 
@@ -41,10 +37,11 @@ const ManageWatchListTypes = () => {
           setIsEditing(false);
      }
 
-     const enterAddModeClickHandler = (id: number) => {
+     const enterAddModeClickHandler = () => {
           setAddingType({
-               WatchListTypeID: null,
-               WatchListTypeName: ""
+               WatchListTypeID: -1,
+               WatchListTypeName: "",
+               IsModified: false
           })
 
           setIsAdding(true);
@@ -58,7 +55,7 @@ const ManageWatchListTypes = () => {
           }
 
           axios.put(`/api/DeleteWatchListType?WatchListTypeID=${id}`, { withCredentials: true })
-               .then((response: typeof IWatchListType) => {
+               .then((response: AxiosResponse<IWatchListType>) => {
                     if (response.data[0] === "ERROR") {
                          alert(response.data[1])
                     } else {
@@ -72,7 +69,7 @@ const ManageWatchListTypes = () => {
      }
 
      const enterEditModeClickHandler = (id: number) => {
-          const newEditingTypeResult = watchListTypes?.filter((watchListType: typeof IWatchListType) => {
+          const newEditingTypeResult = watchListTypes?.filter((watchListType: IWatchListType) => {
                return watchListType.WatchListTypeID === id;
           });
 
@@ -103,16 +100,20 @@ const ManageWatchListTypes = () => {
 
           let columns = ``;
 
-          if (isAdding !== true) {
-               columns = `?WatchListTypeID=${editingType.WatchListTypeID}&WatchListTypeName=${encodeURIComponent(editingType.WatchListTypeName)}`;
+          if (isEditing) {
+               if (editingType !== null) {
+                    columns = `?WatchListTypeID=${editingType.WatchListTypeID}&WatchListTypeName=${encodeURIComponent(editingType.WatchListTypeName)}`;
+               }
           } else {
-               columns = `?WatchListTypeName=${encodeURIComponent(addingType.WatchListTypeName)}`;
+               if (addingType !== null) {
+                    columns = `?WatchListTypeName=${encodeURIComponent(addingType.WatchListTypeName)}`;
+               }
           }
 
           const endPoint = (isAdding == true ? `/api/AddWatchListType` : `/api/UpdateWatchListType`) + columns;
 
           axios.put(endPoint, { withCredentials: true })
-               .then((response: typeof IWatchListType) => {
+               .then((response: AxiosResponse<IWatchListType>) => {
                     if (response !== null && response.data !== null && response.data[0] === "OK") {
                          alert("Saved");
 
@@ -195,19 +196,21 @@ const ManageWatchListTypes = () => {
                                         </td>
 
                                         <td>
-                                             <TextField className={`lightMode borderRadius15 minWidth150`} margin="dense" id="typename" label="type name" value={addingType.WatchListTypeName} fullWidth variant="standard" onChange={(event: any) => typeChangeHandler("WatchListTypeName", event.target.value)} />
+                                             {addingType !== null &&
+                                                  <TextField className={`lightMode borderRadius15 minWidth150`} margin="dense" id="typename" label="type name" value={addingType.WatchListTypeName} variant="standard" onChange={(event: React.ChangeEvent<HTMLInputElement>) => typeChangeHandler("WatchListTypeName", event.target.value)} />
+                                             }
                                         </td>
                                    </tr>
                               }
 
                               {watchListTypes
-                                   .filter((watchListType: typeof IWatchListType) => {
+                                   .filter((watchListType: IWatchListType) => {
                                         return (
                                              (!isAdding && !isEditing) ||
-                                             (isEditing && editingType.WatchListTypeID === watchListType.WatchListTypeID)
+                                             (isEditing && editingType && editingType.WatchListTypeID === watchListType.WatchListTypeID)
                                         )
                                    })
-                                   .map((watchListType: typeof IWatchListType) => (
+                                   .map((watchListType: IWatchListType) => (
                                         <tr key={watchListType.WatchListTypeID}>
                                              <td>
                                                   {!isEditing &&
@@ -238,8 +241,8 @@ const ManageWatchListTypes = () => {
                                                        <span>{watchListType.WatchListTypeName}</span>
                                                   }
 
-                                                  {isEditing &&
-                                                       <TextField className={`lightMode borderRadius15 minWidth150`} margin="dense" id="username" label="username" value={editingType.WatchListTypeName} fullWidth variant="standard" onChange={(event: any) => typeChangeHandler("WatchListTypeName", event.target.value)} />
+                                                  {isEditing && editingType !== null &&
+                                                       <TextField className={`lightMode borderRadius15 minWidth150`} margin="dense" id="username" label="username" value={editingType.WatchListTypeName} variant="standard" onChange={(event: React.ChangeEvent<HTMLInputElement>) => typeChangeHandler("WatchListTypeName", event.target.value)} />
                                                   }
                                              </td>
 

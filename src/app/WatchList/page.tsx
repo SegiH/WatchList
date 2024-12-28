@@ -1,11 +1,9 @@
 "use client"
 
-const React = require("react");
-import Image from 'next/image';
-const useContext = require("react").useContext;
-const useEffect = require("react").useEffect;
-const IWatchList = require("../interfaces/IWatchList");
+import React, { useContext, useEffect } from "react";
+import Image from "next/image";
 
+import IWatchList from "../interfaces/IWatchList";
 import { DataContext, DataContextType } from "../data-context";
 
 import "../page.css";
@@ -36,12 +34,11 @@ export default function WatchList() {
      const showDefaultSrc = (watchListID: number) => (): void => {
           const newWatchList = Object.assign([], watchList);
 
-          const currentWatchListResult = newWatchList?.filter((currentWatchList: typeof IWatchList) => {
+          const currentWatchListResult: IWatchList[] = newWatchList?.filter((currentWatchList: IWatchList) => {
                return String(currentWatchList.WatchListID) === String(watchListID);
           });
 
-          if (currentWatchListResult === 0) {
-               // this shouldn't ever happen!
+          if (currentWatchListResult.length === 0) { // this shouldn't ever happen!
                return;
           }
 
@@ -56,10 +53,10 @@ export default function WatchList() {
           if (!watchListSortingComplete && watchListLoadingComplete && watchList.length > 0) {
                const newWatchList = Object.assign([], watchList);
 
-               newWatchList.sort((a: typeof IWatchList, b: typeof IWatchList) => {
+               newWatchList.sort((a: IWatchList, b: IWatchList) => {
                     switch (watchListSortColumn) {
                          case "ID":
-                              return parseInt(a.WatchListID) > parseInt(b.WatchListID) ? (watchListSortDirection === "ASC" ? 1 : -1) : watchListSortDirection === "ASC" ? -1 : 1;
+                              return a.WatchListID > b.WatchListID ? (watchListSortDirection === "ASC" ? 1 : -1) : watchListSortDirection === "ASC" ? -1 : 1;
                          case "Name":
                               const aName = a.WatchListItemName;
                               const bName = b.WatchListItemName;
@@ -69,6 +66,8 @@ export default function WatchList() {
                               return parseFloat(new Date(a.StartDate).valueOf().toString()) > parseFloat(new Date(b.StartDate).valueOf().toString()) ? (watchListSortDirection === "ASC" ? 1 : -1) : watchListSortDirection === "ASC" ? -1 : 1;
                          case "EndDate":
                               return parseFloat(new Date(a.EndDate).valueOf().toString()) > parseFloat(new Date(b.EndDate).valueOf().toString()) ? (watchListSortDirection === "ASC" ? 1 : -1) : watchListSortDirection === "ASC" ? -1 : 1;
+                         default:
+                              return 0;
                     }
                });
 
@@ -88,18 +87,18 @@ export default function WatchList() {
                {watchList.length > 0 &&
                     <ul className={`show-list${!darkMode ? " lightMode" : " darkMode"}`}>
                          {watchList?.filter(
-                              (currentWatchList: typeof IWatchList) =>
+                              (currentWatchList: IWatchList) =>
                                    ((currentWatchList?.Archived === 1 && archivedVisible === true) || (currentWatchList?.Archived === 0 && archivedVisible === false
                                         &&
                                         ((stillWatching === false && currentWatchList?.EndDate !== null) || (stillWatching === true && currentWatchList?.EndDate === null && currentWatchList?.Archived === 0))
                                    ))
                                    &&
-                                   (searchTerm === "" || (searchTerm !== "" && currentWatchList?.WatchListItemName.toLowerCase().includes(searchTerm)))
+                                   (searchTerm === "" || (searchTerm !== "" && currentWatchList?.WatchListItemName?.toLowerCase().includes(searchTerm)))
                                    &&
                                    (sourceFilter === -1 || sourceFilter === null || (sourceFilter !== -1 && sourceFilter !== null && String(currentWatchList?.WatchListSourceID) === String(sourceFilter)))
                                    &&
                                    (typeFilter === -1 || (typeFilter !== -1 && String(currentWatchList?.WatchListTypeID) === String(typeFilter)))
-                         ).map((currentWatchList: typeof IWatchList, index: number) => {
+                         ).map((currentWatchList: IWatchList, index: number) => {
                               const IMDB_JSON = currentWatchList?.IMDB_JSON !== null && typeof currentWatchList?.IMDB_JSON !== "undefined" && currentWatchList?.IMDB_JSON !== "" ? JSON.parse(currentWatchList?.IMDB_JSON) : null;
 
                               return (
@@ -112,7 +111,7 @@ export default function WatchList() {
 
                                                   <a className="clickable image-crop show-link" onClick={() => openDetailClickHandler(currentWatchList?.WatchListID)}>
                                                        <div>
-                                                            {currentWatchList?.IMDB_Poster !== null && currentWatchList?.IMDB_Poster_Error !== true && <Image width="128" height="187" alt={currentWatchList?.WatchListItemName} src={currentWatchList?.IMDB_Poster} onError={() => showDefaultSrc(currentWatchList?.WatchListID)} />}
+                                                            {currentWatchList?.IMDB_Poster !== null && currentWatchList?.IMDB_Poster !== "" && currentWatchList?.IMDB_Poster_Error !== true && <Image width="128" height="187" alt={currentWatchList?.WatchListItemName ?? ""} src={currentWatchList?.IMDB_Poster ?? ""} onError={() => showDefaultSrc(currentWatchList?.WatchListID)} />}
 
                                                             {(currentWatchList?.IMDB_Poster === null || currentWatchList?.IMDB_Poster_Error === true) && <>{BrokenImageIconComponent}</>}
                                                        </div>
@@ -129,7 +128,7 @@ export default function WatchList() {
                                                             </span>
                                                        }
 
-                                                       {currentWatchList?.Archived === true ? <span>&nbsp;(A)</span> : <></>}
+                                                       {currentWatchList?.Archived === 1 ? <span>&nbsp;(A)</span> : <></>}
                                                   </div>
 
                                                   {currentWatchList?.WatchListTypeID === 2 && <div>Season {currentWatchList?.Season}</div>}

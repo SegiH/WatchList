@@ -1,14 +1,10 @@
 "use client"
 
-const axios = require("axios");
-const Button = require("@mui/material/Button").default;
-const IBugLog = require("../interfaces/IBugLog");
-const React = require("react");
-const useContext = require("react").useContext;
-const useEffect = require("react").useEffect;
-const useRouter = require("next/navigation").useRouter;
-const useState = require("react").useState;
-
+import axios, { AxiosResponse } from "axios";
+import Button from "@mui/material/Button";
+import React, { useContext, useEffect, useState } from "react";
+import { useRouter } from 'next/navigation';
+import IBugLog from "../interfaces/IBugLog";
 import { DataContext, DataContextType } from "../data-context";
 import TextField from "@mui/material/TextField";
 
@@ -34,8 +30,8 @@ export default function BugLog() {
           setIsEditing
      } = useContext(DataContext) as DataContextType;
 
-     const [addingBugLog, setAddingBugLog] = useState(null);
-     const [editingBugLog, setEditingBugLog] = useState(null);
+     const [addingBugLog, setAddingBugLog] = useState<IBugLog>({} as IBugLog);
+     const [editingBugLog, setEditingBugLog] = useState<IBugLog>({} as IBugLog);
      const [bugLogsLoadingStarted, setBugLogsLoadingStarted] = useState(false);
      const [bugLogsLoadingComplete, setBugLogsLoadingComplete] = useState(false);
      const [isMounted, setIsMounted] = useState(false);
@@ -87,7 +83,7 @@ export default function BugLog() {
           }
 
           axios.put(`/api/DeleteBugLog?WLBugID=${id}`, { withCredentials: true })
-               .then((response: typeof IBugLog) => {
+               .then((response: AxiosResponse<IBugLog>) => {
                     if (response.data[0] === "ERROR") {
                          alert(response.data[1])
                     } else {
@@ -104,20 +100,22 @@ export default function BugLog() {
                });
      }
 
-     const enterAddModeClickHandler = (id: number) => {
+     const enterAddModeClickHandler = () => {
           setAddingBugLog({
-               WLBugID: null,
+               WLBugID: -1,
                WLBugName: "",
                AddDate: "",
                CompletedDate: "",
-               ResolutionNotes: ""
+               ResolutionNotes: "",
+               IsModified: false,
+               isNew: true
           })
 
           setIsAdding(true);
      }
 
      const enterEditModeClickHandler = (id: number) => {
-          const newEditBugLog = bugLogs?.filter((bugLog: typeof IBugLog) => bugLog.WLBugID === id);
+          const newEditBugLog = bugLogs?.filter((bugLog: IBugLog) => bugLog.WLBugID === id);
 
           if (newEditBugLog.length !== 1) { // This shouldn't ever happen
                alert("Unable to locate bug log in BugLogs");
@@ -165,7 +163,7 @@ export default function BugLog() {
           const endPoint = (currentBugLog.isNew == true ? `/api/AddBugLog` : `/api/UpdateBugLog`) + columns;
 
           axios.put(endPoint, { withCredentials: true })
-               .then((response: typeof IBugLog) => {
+               .then((response: AxiosResponse<IBugLog>) => {
                     if (response !== null && response.data !== null && response.data[0] === "OK") {
                          alert("Saved");
 
@@ -224,7 +222,7 @@ export default function BugLog() {
                                         color="primary"
                                         variant="contained"
                                         className="borderRadius15 bottomMargin20"
-                                        onClick={enterAddModeClickHandler} >
+                                        onClick={() => enterAddModeClickHandler()}>
                                         Add Bug Log
                                    </Button>
 
@@ -272,32 +270,32 @@ export default function BugLog() {
                                                   </td>
 
                                                   <td>
-                                                       <textarea readOnly={false} style={cssStyle} value={addingBugLog.WLBugName} rows={calculateRowCount(addingBugLog.WLBugName, addingBugLog.ResolutionNotes)} onChange={(event: any) => bugLogChangeHandler("WLBugName", event.target.value)} />
+                                                       <textarea readOnly={false} style={cssStyle} value={addingBugLog.WLBugName} rows={calculateRowCount(addingBugLog.WLBugName, addingBugLog.ResolutionNotes)} onChange={(event: React.ChangeEvent<HTMLTextAreaElement>) => bugLogChangeHandler("WLBugName", event.target.value)} />
                                                   </td>
 
                                                   <td>
-                                                       <textarea readOnly={false} style={cssStyle} value={addingBugLog.ResolutionNotes} rows={calculateRowCount(addingBugLog.WLBugName, addingBugLog.ResolutionNotes)} onChange={(event: any) => bugLogChangeHandler("ResolutionNotes", event.target.value)} />
+                                                       <textarea readOnly={false} style={cssStyle} value={addingBugLog.ResolutionNotes} rows={calculateRowCount(addingBugLog.WLBugName, addingBugLog.ResolutionNotes)} onChange={(event: React.ChangeEvent<HTMLTextAreaElement>) => bugLogChangeHandler("ResolutionNotes", event.target.value)} />
                                                   </td>
 
                                                   <td>
-                                                       <TextField type="date" className={`lightMode borderRadius15 minWidth150`} margin="dense" id="addedOn" value={addingBugLog.AddDate} fullWidth variant="standard" onChange={(event: any) => bugLogChangeHandler("AddDate", event.target.value)} />
+                                                       <TextField type="date" className={`lightMode borderRadius15 minWidth150`} margin="dense" id="addedOn" value={addingBugLog.AddDate} variant="standard" onChange={(event: React.ChangeEvent<HTMLTextAreaElement>) => bugLogChangeHandler("AddDate", event.target.value)} />
                                                   </td>
 
                                                   <td>
-                                                       <TextField type="date" className={`lightMode borderRadius15 minWidth150`} margin="dense" id="completedOn" value={addingBugLog.CompletedDate} fullWidth variant="standard" onChange={(event: any) => bugLogChangeHandler("Completed", event.target.value)} />
+                                                       <TextField type="date" className={`lightMode borderRadius15 minWidth150`} margin="dense" id="completedOn" value={addingBugLog.CompletedDate} variant="standard" onChange={(event: React.ChangeEvent<HTMLTextAreaElement>) => bugLogChangeHandler("Completed", event.target.value)} />
                                                   </td>
                                              </tr>
                                         }
 
                                         {bugLogs
-                                             .filter((bugLog: typeof IBugLog) => {
+                                             .filter((bugLog: IBugLog) => {
                                                   return (
-                                                       ((showActiveBugLogs == 0) || (showActiveBugLogs == 1 && bugLog.CompletedDate === null)) &&
+                                                       ((showActiveBugLogs == false) || (showActiveBugLogs == true && bugLog.CompletedDate === null)) &&
                                                        ((!isAdding && !isEditing) ||
                                                             (isEditing && editingBugLog.WLBugID === bugLog.WLBugID))
                                                   )
                                              })
-                                             .map((bugLog: typeof IBugLog) => {
+                                             .map((bugLog: IBugLog) => {
 
                                                   return (
                                                        <tr key={bugLog.WLBugID}>
@@ -331,7 +329,7 @@ export default function BugLog() {
                                                                  }
 
                                                                  {isEditing &&
-                                                                      <textarea readOnly={false} style={cssStyle} value={editingBugLog.WLBugName} rows={calculateRowCount(editingBugLog.WLBugName, editingBugLog.ResolutionNotes)} onChange={(event: any) => bugLogChangeHandler("WLBugName", event.target.value)} />
+                                                                      <textarea readOnly={false} style={cssStyle} value={editingBugLog.WLBugName} rows={calculateRowCount(editingBugLog.WLBugName, editingBugLog.ResolutionNotes)} onChange={(event: React.ChangeEvent<HTMLTextAreaElement>) => bugLogChangeHandler("WLBugName", event.target.value)} />
                                                                  }
                                                             </td>
 
@@ -341,7 +339,7 @@ export default function BugLog() {
                                                                  }
 
                                                                  {isEditing &&
-                                                                      <textarea readOnly={false} style={cssStyle} value={editingBugLog.ResolutionNotes} rows={calculateRowCount(editingBugLog.WLBugName, editingBugLog.ResolutionNotes)} onChange={(event: any) => bugLogChangeHandler("ResolutionNotes", event.target.value)} />
+                                                                      <textarea readOnly={false} style={cssStyle} value={editingBugLog.ResolutionNotes} rows={calculateRowCount(editingBugLog.WLBugName, editingBugLog.ResolutionNotes)} onChange={(event: React.ChangeEvent<HTMLTextAreaElement>) => bugLogChangeHandler("ResolutionNotes", event.target.value)} />
                                                                  }
                                                             </td>
 
@@ -351,7 +349,7 @@ export default function BugLog() {
                                                                  }
 
                                                                  {isEditing &&
-                                                                      <TextField type="date" className={`lightMode borderRadius15 minWidth150`} margin="dense" id="addedOn" value={editingBugLog.AddDate} fullWidth variant="standard" onChange={(event: any) => bugLogChangeHandler("AddDate", event.target.value)} />
+                                                                      <TextField type="date" className={`lightMode borderRadius15 minWidth150`} margin="dense" id="addedOn" value={editingBugLog.AddDate} variant="standard" onChange={(event: React.ChangeEvent<HTMLTextAreaElement>) => bugLogChangeHandler("AddDate", event.target.value)} />
                                                                  }
                                                             </td>
 
@@ -361,7 +359,7 @@ export default function BugLog() {
                                                                  }
 
                                                                  {isEditing &&
-                                                                      <TextField type="date" className={`lightMode borderRadius15 minWidth150`} margin="dense" id="completedOn" value={editingBugLog.CompletedDate} fullWidth variant="standard" onChange={(event: any) => bugLogChangeHandler("Completed", event.target.value)} />
+                                                                      <TextField type="date" className={`lightMode borderRadius15 minWidth150`} margin="dense" id="completedOn" value={editingBugLog.CompletedDate} variant="standard" onChange={(event: React.ChangeEvent<HTMLTextAreaElement>) => bugLogChangeHandler("Completed", event.target.value)} />
                                                                  }
                                                             </td>
 

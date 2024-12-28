@@ -1,6 +1,4 @@
 import { NextRequest } from 'next/server';
-//const axios = require("axios");
-//const https = require('https');
 import { execUpdateDelete, isLoggedIn } from "../lib";
 
 /**

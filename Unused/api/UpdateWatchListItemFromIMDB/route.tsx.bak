@@ -66,7 +66,7 @@ export async function GET(request: NextRequest) {
                return Response.json(["ERROR", `WatchListItemID is not a valid WatchList Item ID`]);
           }
      }
-     const errorResults: any = [];
+     const errorResults: [string] = [""];
 
      for (let i = 0; i < wli.length; i++) {
           if (watchListItemID !== null && wli[i].WatchListItemID.toString() !== watchListItemID.toString()) {

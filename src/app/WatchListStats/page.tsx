@@ -1,30 +1,29 @@
 "use client"
 
-const axios = require("axios");
-const ChevronRightIcon = require("@mui/icons-material/ChevronRight").default;
-const ExpandMoreIcon = require("@mui/icons-material/ExpandMore").default;
-const IWatchListMovieCountStat = require("../interfaces/IWatchListMovieCountStat");
-const IWatchListMovieTop10Stat = require("../interfaces/IWatchListMovieTop10Stat");
-const IWatchListSourceDetailSortOption = require("../interfaces/IWatchListSourceDetailSortOption");
-const IWatchListSourceStat = require("../interfaces/IWatchListSourceStat");
-const IWatchListSourceDtlStat = require("../interfaces/IWatchListSourceDtlStat");
-const IWatchListTopRatedStat = require("../interfaces/IWatchListTopRatedStat");
-const IWatchListTVTop10Stat = require("../interfaces/IWatchListTVTop10Stat");
-const IWatchListTVSeasonsCountStat = require("../interfaces/IWatchListTVSeasonsCountStat");
-const IWatchListTVTotalCountStat = require("../interfaces/IWatchListTVTotalCountStat");
-const IWatchListWeeklyTVStat = require("../interfaces/IWatchListWeeklyTVStat");
-const IWatchListWeeklyMovieStat = require("../interfaces/IWatchListWeeklyMovieStat");
+import axios, { AxiosResponse } from "axios";
+import React, { useContext, useEffect, useState } from "react";
 
-const React = require("react");
 import { LineChart } from '@mui/x-charts/LineChart';
-const TreeItem = require("@mui/lab/TreeItem").default;
-const TreeView = require("@mui/lab/TreeView").default;
-const useContext = require("react").useContext;
-const useEffect = require("react").useEffect;
-const useState = require("react").useState;
+import ChevronRightIcon from "@mui/icons-material/ChevronRight";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import { SimpleTreeView, TreeItem } from "@mui/x-tree-view";
+
+import IWatchListMovieCountStat from "../interfaces/IWatchListMovieCountStat";
+import IWatchListMovieTop10Stat from "../interfaces/IWatchListMovieTop10Stat";
+import IWatchListSourceDetailSortOption from "../interfaces/IWatchListSourceDetailSortOption";
+import IWatchListSourceStat from "../interfaces/IWatchListSourceStat";
+import IWatchListSourceDtlStat from "../interfaces/IWatchListSourceDtlStat";
+import IWatchListTVTop10Stat from "../interfaces/IWatchListTVTop10Stat";
+import IWatchListTopRatedStat from "../interfaces/IWatchListTopRatedStat";
+import IWatchListTVSeasonsCountStat from "../interfaces/IWatchListTVSeasonsCountStat";
+import IWatchListTVTotalCountStat from "../interfaces/IWatchListTVTotalCountStat";
+import IWatchListWeeklyTVStat from "../interfaces/IWatchListWeeklyTVStat";
+import IWatchListWeeklyMovieStat from "../interfaces/IWatchListWeeklyMovieStat";
 
 import { DataContext, DataContextType } from "../data-context";
 
+import "../page.css";
+import "../css/tablestyle.css";
 import "./watchliststats.css";
 
 export default function WatchListStats() {
@@ -36,66 +35,66 @@ export default function WatchListStats() {
           setErrorMessage
      } = useContext(DataContext) as DataContextType
 
-     const [watchListMovieTop10Stats, setWatchListMovieTop10Stats] = useState([]);
+     const [watchListMovieTop10Stats, setWatchListMovieTop10Stats] = useState<IWatchListMovieTop10Stat[]>([]);
      const [watchListMovieTop10StatsLoadingStarted, setWatchListMovieTop10StatsLoadingStarted] = useState(false);
      const [watchListMovieTop10StatsLoadingComplete, setWatchListMovieTop10StatsLoadingComplete] = useState(false);
 
-     const [watchListMovieCountStats, setWatchListMovieCountStats] = useState([]);
+     const [watchListMovieCountStats, setWatchListMovieCountStats] = useState<IWatchListMovieCountStat[]>([]);
      const [watchListMovieCountStatsLoadingStarted, setWatchListMovieCountStatsLoadingStarted] = useState(false);
      const [watchListMovieCountStatsLoadingComplete, setWatchListMovieCountStatsLoadingComplete] = useState(false);
 
-     const [watchListSourceStats, setWatchListSourceStats] = useState([]);
+     const [watchListSourceStats, setWatchListSourceStats] = useState<IWatchListSourceStat[]>([]);
      const [watchListSourceStatsLoadingStarted, setWatchListSourceStatsLoadingStarted] = useState(false);
      const [watchListSourceStatsLoadingComplete, setWatchListSourceStatsLoadingComplete] = useState(false);
 
-     const [watchListTopRatedStats, setWatchListTopRatedStats] = useState([]);
+     const [watchListTopRatedStats, setWatchListTopRatedStats] = useState<IWatchListTopRatedStat[]>([]);
      const [watchListTopRatedStatsLoadingStarted, setWatchListTopRatedStatsLoadingStarted] = useState(false);
      const [watchListTopRatedStatsLoadingComplete, setWatchListTopRatedStatsLoadingComplete] = useState(false);
 
-     const [watchListTVTop10Stats, setWatchListTVTop10Stats] = useState([]);
+     const [watchListTVTop10Stats, setWatchListTVTop10Stats] = useState<IWatchListTVTop10Stat[]>([]);
      const [watchListTVTop10StatsLoadingStarted, setWatchListTVTop10StatsLoadingStarted] = useState(false);
      const [watchListTVTop10StatsLoadingComplete, setWatchListTVTop10StatsLoadingComplete] = useState(false);
 
-     const [watchListTVSeasonsCountStats, setWatchListTVSeasonsCountStats] = useState([]);
+     const [watchListTVSeasonsCountStats, setWatchListTVSeasonsCountStats] = useState<IWatchListTVSeasonsCountStat[]>([]);
      const [watchListTVSeasonsCountStatsLoadingStarted, setWatchListTVSeasonsCountStatsLoadingStarted] = useState(false);
      const [watchListTVSeasonsCountStatsLoadingComplete, setWatchListTVSeasonsCountStatsLoadingComplete] = useState(false);
 
-     const [watchListTVTotalCountStats, setWatchListTVTotalCountStats] = useState([]);
+     const [watchListTVTotalCountStats, setWatchListTVTotalCountStats] = useState<IWatchListTVTotalCountStat[]>([]);
      const [watchListTVTotalCountStatsLoadingStarted, setWatchListTVTotalCountStatsLoadingStarted] = useState(false);
      const [watchListTVTotalCountStatsLoadingComplete, setWatchListTVTotalCountStatsLoadingComplete] = useState(false);
 
-     const [watchListSourceDtlStats, setWatchListSourceDtlStats] = useState([]);
+     const [watchListSourceDtlStats, setWatchListSourceDtlStats] = useState<IWatchListSourceDtlStat[]>([]);
      const [watchListSourceDtlLoadingStarted, setWatchListSourceDtlLoadingStarted] = useState(false);
      const [watchListSourceDtlLoadingComplete, setWatchListSourceDtlLoadingComplete] = useState(false);
 
-     const [watchListWeeklyTVSeasonStats, setWatchListWeeklyTVSeasonStats] = useState([]);
-     const [watchListWeeklyTVSeasonsYearsStats, setWatchListWeeklyTVSeasonsYearsStats] = useState([]);
+     const [watchListWeeklyTVSeasonStats, setWatchListWeeklyTVSeasonStats] = useState<IWatchListWeeklyTVStat[]>([]);
+     const [watchListWeeklyTVSeasonsYearsStats, setWatchListWeeklyTVSeasonsYearsStats] = useState<[]>([]);
      const [watchListWeeklyTVSeasonsMaxWeek, setWatchListWeeklyTVSeasonsMaxWeek] = useState(-1);
      const [watchListWeeklyCurrentTVSeasonsYearStat, setWatchListWeeklyCurrentTVSeasonsYearStat] = useState(-1);
-     const [watchListWeeklyCurrentTVSeasonsWeekGroupingStat, setWatchListWeeklyCurrentTVSeasonsWeekGroupingStat] = useState([]);
+     const [watchListWeeklyCurrentTVSeasonsWeekGroupingStat, setWatchListWeeklyCurrentTVSeasonsWeekGroupingStat] = useState<number[]>([]);
      const [watchListWeeklyTVSeasonsStatsLoadingStarted, setWatchListWeeklyTVSeasonsStatsLoadingStarted] = useState(false);
      const [watchListWeeklyTVSeasonsStatsLoadingComplete, setWatchListWeeklyTVSeasonsStatsLoadingComplete] = useState(false);
 
-     const [watchListWeeklyTVTotalYearsStats, setWatchListWeeklyTVTotalYearsStats] = useState([]);
+     const [watchListWeeklyTVTotalYearsStats, setWatchListWeeklyTVTotalYearsStats] = useState<[]>([]);
      const [watchListWeeklyCurrentTVTotalYearStat, setWatchListWeeklyCurrentTVTotalYearStat] = useState(-1);
-     const [watchListWeeklyTVTotalStats, setWatchListWeeklyTVTotalStats] = useState([]);
+     const [watchListWeeklyTVTotalStats, setWatchListWeeklyTVTotalStats] = useState<IWatchListWeeklyTVStat[]>([]);
      const [watchListWeeklyTVTotalStatsLoadingStarted, setWatchListWeeklyTVTotalStatsLoadingStarted] = useState(false);
      const [watchListWeeklyTVTotalStatsLoadingComplete, setWatchListWeeklyTVTotalStatsLoadingComplete] = useState(false);
      const [watchListWeeklyTVTotalMaxWeek, setWatchListWeeklyTVTotalMaxWeek] = useState(-1);
-     const [watchListWeeklyCurrentTVTotalWeekGroupingStat, setWatchListWeeklyCurrentTVTotalWeekGroupingStat] = useState([]);
+     const [watchListWeeklyCurrentTVTotalWeekGroupingStat, setWatchListWeeklyCurrentTVTotalWeekGroupingStat] = useState<number[]>([]);
 
-     const [watchListWeeklyMovieStats, setWatchListWeeklyMovieStats] = useState([]);
-     const [watchListWeeklyMovieYearsStats, setWatchListWeeklyMovieYearsStats] = useState([]);
+     const [watchListWeeklyMovieStats, setWatchListWeeklyMovieStats] = useState<IWatchListWeeklyMovieStat[]>([]);
+     const [watchListWeeklyMovieYearsStats, setWatchListWeeklyMovieYearsStats] = useState<[]>([]);
      const [watchListWeeklyMovieMaxWeek, setWatchListWeeklyMovieMaxWeek] = useState(-1);
      const [watchListWeeklyCurrentMovieYearStat, setWatchListWeeklyCurrentMovieYearStat] = useState(-1);
-     const [watchListWeeklyCurrentMovieWeekGroupingStat, setWatchListWeeklyCurrentMovieWeekGroupingStat] = useState(-1);
+     const [watchListWeeklyCurrentMovieWeekGroupingStat, setWatchListWeeklyCurrentMovieWeekGroupingStat] = useState<number[]>([]);
 
      const [watchListWeeklyMovieStatsLoadingStarted, setWatchListWeeklyMovieStatsLoadingStarted] = useState(false);
      const [watchListWeeklyMovieStatsLoadingComplete, setWatchListWeeklyMovieStatsLoadingComplete] = useState(false);
 
      const [watchListSourceStatsFilter, setWatchListSourceStatsFilter] = useState("StartDate");
 
-     const watchListSourceDetailSortOptions: typeof IWatchListSourceDetailSortOption = {
+     const watchListSourceDetailSortOptions: IWatchListSourceDetailSortOption = {
           WatchListID: "ID",
           Name: "Name",
           StartDate: "Start Date",
@@ -133,7 +132,7 @@ export default function WatchListStats() {
      useEffect(() => {
           if (watchListMovieTop10StatsLoadingStarted && !watchListMovieTop10StatsLoadingComplete) {
                axios.get(`/api/GetWatchListMovieTop10Stats`, { withCredentials: true })
-                    .then((res: typeof IWatchListMovieTop10Stat) => {
+                    .then((res: AxiosResponse<IWatchListMovieTop10Stat>) => {
                          if (res.data[0] === "OK") {
                               setWatchListMovieTop10Stats(res.data[1]);
                               setWatchListMovieTop10StatsLoadingComplete(true);
@@ -168,7 +167,7 @@ export default function WatchListStats() {
      useEffect(() => {
           if (watchListMovieCountStatsLoadingStarted && !watchListMovieCountStatsLoadingComplete) {
                axios.get(`/api/GetWatchListMovieCountStats`, { withCredentials: true })
-                    .then((res: typeof IWatchListMovieCountStat) => {
+                    .then((res: AxiosResponse<IWatchListMovieCountStat>) => {
                          if (res.data[0] === "OK") {
                               setWatchListMovieCountStats(res.data[1]);
                               setWatchListMovieCountStatsLoadingComplete(true);
@@ -218,7 +217,7 @@ export default function WatchListStats() {
      useEffect(() => {
           if (watchListSourceDtlLoadingStarted && !watchListSourceDtlLoadingComplete) {
                axios.get(`/api/GetWatchListSourceStats?GetDetail=true`)
-                    .then((res: typeof IWatchListSourceDtlStat) => {
+                    .then((res: AxiosResponse<IWatchListSourceStat>) => {
                          if (res.data[0] === "OK") {
                               setWatchListSourceDtlStats(res.data[1]);
                               setWatchListSourceDtlLoadingComplete(true);
@@ -238,7 +237,7 @@ export default function WatchListStats() {
      useEffect(() => {
           if (watchListSourceStatsLoadingStarted && !watchListSourceStatsLoadingComplete) {
                axios.get(`/api/GetWatchListSourceStats`, { withCredentials: true })
-                    .then((res: typeof IWatchListSourceStat) => {
+                    .then((res: AxiosResponse<IWatchListSourceStat>) => {
                          if (res.data[0] === "OK") {
                               setWatchListSourceStats(res.data[1]);
                               setWatchListSourceStatsLoadingComplete(true);
@@ -273,7 +272,7 @@ export default function WatchListStats() {
      useEffect(() => {
           if (watchListTopRatedStatsLoadingStarted && !watchListTopRatedStatsLoadingComplete) {
                axios.get(`/api/GetWatchListTopRatedStats`, { withCredentials: true })
-                    .then((res: typeof IWatchListTopRatedStat) => {
+                    .then((res: AxiosResponse<IWatchListTopRatedStat>) => {
                          if (res.data[0] === "OK") {
                               setWatchListTopRatedStats(res.data[1]);
                               setWatchListTopRatedStatsLoadingComplete(true);
@@ -308,7 +307,7 @@ export default function WatchListStats() {
      useEffect(() => {
           if (watchListTVTop10StatsLoadingStarted && !watchListTVTop10StatsLoadingComplete) {
                axios.get(`/api/GetWatchListTVTop10Stats`, { withCredentials: true })
-                    .then((res: typeof IWatchListTVTop10Stat) => {
+                    .then((res: AxiosResponse<IWatchListTVTop10Stat>) => {
                          if (res.data[0] === "OK") {
                               setWatchListTVTop10Stats(res.data[1]);
                               setWatchListTVTop10StatsLoadingComplete(true);
@@ -343,7 +342,7 @@ export default function WatchListStats() {
      useEffect(() => {
           if (watchListTVSeasonsCountStatsLoadingStarted && !watchListTVSeasonsCountStatsLoadingComplete) {
                axios.get(`/api/GetWatchListTVSeasonsCountStats`, { withCredentials: true })
-                    .then((res: typeof IWatchListTVSeasonsCountStat) => {
+                    .then((res: AxiosResponse<IWatchListTVSeasonsCountStat>) => {
                          if (res.data[0] === "OK") {
                               setWatchListTVSeasonsCountStats(res.data[1]);
                               setWatchListTVSeasonsCountStatsLoadingComplete(true);
@@ -378,7 +377,7 @@ export default function WatchListStats() {
      useEffect(() => {
           if (watchListTVTotalCountStatsLoadingStarted && !watchListTVTotalCountStatsLoadingComplete) {
                axios.get(`/api/GetWatchListTVTotalCountStats`, { withCredentials: true })
-                    .then((res: typeof IWatchListTVTotalCountStat) => {
+                    .then((res: AxiosResponse<IWatchListTVTotalCountStat>) => {
                          if (res.data[0] === "OK") {
                               setWatchListTVTotalCountStats(res.data[1]);
                               setWatchListTVTotalCountStatsLoadingComplete(true);
@@ -399,19 +398,19 @@ export default function WatchListStats() {
           if (demoMode) {
                const demoWatchListWeeklyBreakDown = require("../demo/index").demoWatchListWeeklyBreakDown;
 
-               const uniqueTVSeasonsYears = demoWatchListWeeklyBreakDown[1].map((item: typeof IWatchListWeeklyTVStat) => item.Year).filter((value: string, index: number, current_value: [string]) => { return current_value.indexOf(value) === index }).sort();
+               const uniqueTVSeasonsYears = demoWatchListWeeklyBreakDown[1].map((item: IWatchListWeeklyTVStat) => item.Year).filter((value: string, index: number, current_value: [string]) => { return current_value.indexOf(value) === index }).sort();
                setWatchListWeeklyTVSeasonsYearsStats(uniqueTVSeasonsYears);
                setWatchListWeeklyCurrentTVSeasonsYearStat(new Date().getFullYear());
                setWatchListWeeklyTVSeasonStats(demoWatchListWeeklyBreakDown[1]);
                setWatchListWeeklyTVSeasonsStatsLoadingComplete(true);
 
-               const uniqueTVTotalYears = demoWatchListWeeklyBreakDown[3].map((item: typeof IWatchListWeeklyTVStat) => item.Year).filter((value: string, index: number, current_value: [string]) => { return current_value.indexOf(value) === index }).sort();
+               const uniqueTVTotalYears = demoWatchListWeeklyBreakDown[3].map((item: IWatchListWeeklyTVStat) => item.Year).filter((value: string, index: number, current_value: [string]) => { return current_value.indexOf(value) === index }).sort();
                setWatchListWeeklyTVTotalYearsStats(uniqueTVTotalYears);
                setWatchListWeeklyCurrentTVTotalYearStat(new Date().getFullYear());
                setWatchListWeeklyTVTotalStats(demoWatchListWeeklyBreakDown[3]);
                setWatchListWeeklyTVTotalStatsLoadingComplete(true);
 
-               const uniqueMovieYears = demoWatchListWeeklyBreakDown[2].map((item: typeof IWatchListWeeklyMovieStat) => item.Year).filter((value: string, index: number, current_value: [string]) => { return current_value.indexOf(value) === index }).sort();
+               const uniqueMovieYears = demoWatchListWeeklyBreakDown[2].map((item: IWatchListWeeklyMovieStat) => item.Year).filter((value: string, index: number, current_value: [string]) => { return current_value.indexOf(value) === index }).sort();
                setWatchListWeeklyMovieYearsStats(uniqueMovieYears);
                setWatchListWeeklyCurrentMovieYearStat(new Date().getFullYear());
                setWatchListWeeklyMovieStats(demoWatchListWeeklyBreakDown[2]);
@@ -430,21 +429,21 @@ export default function WatchListStats() {
      useEffect(() => {
           if (watchListWeeklyTVSeasonsStatsLoadingStarted && !watchListWeeklyTVSeasonsStatsLoadingComplete && watchListWeeklyTVTotalStatsLoadingStarted && !watchListWeeklyTVTotalStatsLoadingComplete && watchListWeeklyMovieStatsLoadingStarted && !watchListWeeklyMovieStatsLoadingComplete) {
                axios.get(`/api/GetWatchListWeeklyBreakdown`, { withCredentials: true })
-                    .then((res: typeof IWatchListWeeklyTVStat | typeof IWatchListWeeklyMovieStat) => {
+                    .then((res: AxiosResponse<IWatchListWeeklyMovieStat>) => {
                          if (res.data[0] === "OK") {
-                              const uniqueTVSeasonsYears = res.data[1].map((item: typeof IWatchListWeeklyTVStat) => item.Year).filter((value: string, index: number, current_value: [string]) => { return current_value.indexOf(value) === index }).sort();
+                              const uniqueTVSeasonsYears = res.data[1].map((item: IWatchListWeeklyTVStat) => item.Year).filter((value: string, index: number, current_value: [string]) => { return current_value.indexOf(value) === index }).sort();
                               setWatchListWeeklyTVSeasonsYearsStats(uniqueTVSeasonsYears);
                               setWatchListWeeklyCurrentTVSeasonsYearStat(new Date().getFullYear());
                               setWatchListWeeklyTVSeasonStats(res.data[1]);
                               setWatchListWeeklyTVSeasonsStatsLoadingComplete(true);
 
-                              const uniqueMovieYears = res.data[2].map((item: typeof IWatchListWeeklyMovieStat) => item.Year).filter((value: string, index: number, current_value: [string]) => { return current_value.indexOf(value) === index }).sort();
+                              const uniqueMovieYears = res.data[2].map((item: IWatchListWeeklyMovieStat) => item.Year).filter((value: string, index: number, current_value: [string]) => { return current_value.indexOf(value) === index }).sort();
                               setWatchListWeeklyMovieYearsStats(uniqueMovieYears);
                               setWatchListWeeklyCurrentMovieYearStat(new Date().getFullYear());
                               setWatchListWeeklyMovieStats(res.data[2]);
                               setWatchListWeeklyMovieStatsLoadingComplete(true);
 
-                              const uniqueTVTotalYears = res.data[3].map((item: typeof IWatchListWeeklyTVStat) => item.Year).filter((value: string, index: number, current_value: [string]) => { return current_value.indexOf(value) === index }).sort();
+                              const uniqueTVTotalYears = res.data[3].map((item: IWatchListWeeklyTVStat) => item.Year).filter((value: string, index: number, current_value: [string]) => { return current_value.indexOf(value) === index }).sort();
                               setWatchListWeeklyTVTotalYearsStats(uniqueTVTotalYears);
                               setWatchListWeeklyCurrentTVTotalYearStat(new Date().getFullYear());
                               setWatchListWeeklyTVTotalStats(res.data[3]);
@@ -467,14 +466,14 @@ export default function WatchListStats() {
                return;
           }
 
-          const movieWeekGrouping: any = [];
+          const movieWeekGrouping: number[] = [];
 
           const lastIndex = watchListWeeklyCurrentMovieYearStat === new Date().getFullYear() ? getWeek() : 52;
           setWatchListWeeklyMovieMaxWeek(lastIndex);
 
           for (let i = 1; i <= lastIndex; i++) {
-               const currentWeek = watchListWeeklyMovieStats.filter((currentWatchListWeeklyMovieStat: typeof IWatchListWeeklyMovieStat) => {
-                    return currentWatchListWeeklyMovieStat.Year === watchListWeeklyCurrentMovieYearStat.toString() && currentWatchListWeeklyMovieStat.WeekNum === String(i).padStart(2, "0");
+               const currentWeek: IWatchListWeeklyMovieStat[] = watchListWeeklyMovieStats.filter((currentWatchListWeeklyMovieStat: IWatchListWeeklyMovieStat) => {
+                    return currentWatchListWeeklyMovieStat.Year.toString() === watchListWeeklyCurrentMovieYearStat.toString() && currentWatchListWeeklyMovieStat.WeekNum.toString() === String(i).padStart(2, "0");
                });
 
                if (currentWeek.length === 1) {
@@ -493,14 +492,14 @@ export default function WatchListStats() {
                return;
           }
 
-          const tvWeekGrouping: any = [];
+          const tvWeekGrouping: number[] = [];
 
           const lastIndex = watchListWeeklyCurrentTVSeasonsYearStat === new Date().getFullYear() ? getWeek() : 52;
           setWatchListWeeklyTVSeasonsMaxWeek(lastIndex);
 
           for (let i = 1; i <= lastIndex; i++) {
-               const currentWeek = watchListWeeklyTVSeasonStats.filter((currentWatchListWeeklyTVStat: typeof IWatchListWeeklyTVStat) => {
-                    return currentWatchListWeeklyTVStat.Year === watchListWeeklyCurrentTVSeasonsYearStat.toString() && currentWatchListWeeklyTVStat.WeekNum === String(i).padStart(2, "0");
+               const currentWeek: IWatchListWeeklyTVStat[] = watchListWeeklyTVSeasonStats.filter((currentWatchListWeeklyTVStat: IWatchListWeeklyTVStat) => {
+                    return currentWatchListWeeklyTVStat.Year.toString() === watchListWeeklyCurrentTVSeasonsYearStat.toString() && currentWatchListWeeklyTVStat.WeekNum.toString() === String(i).padStart(2, "0");
                });
 
                if (currentWeek.length === 1) {
@@ -519,14 +518,14 @@ export default function WatchListStats() {
                return;
           }
 
-          const tvWeekGrouping: any = [];
+          const tvWeekGrouping: number[] = [];
 
           const lastIndex = watchListWeeklyCurrentTVTotalYearStat === new Date().getFullYear() ? getWeek() : 52;
           setWatchListWeeklyTVTotalMaxWeek(lastIndex);
 
           for (let i = 1; i <= lastIndex; i++) {
-               const currentWeek = watchListWeeklyTVTotalStats.filter((currentWatchListWeeklyTVStat: typeof IWatchListWeeklyTVStat) => {
-                    return currentWatchListWeeklyTVStat.Year === watchListWeeklyCurrentTVTotalYearStat.toString() && currentWatchListWeeklyTVStat.WeekNum === String(i).padStart(2, "0");
+               const currentWeek: IWatchListWeeklyTVStat[] = watchListWeeklyTVTotalStats.filter((currentWatchListWeeklyTVStat: IWatchListWeeklyTVStat) => {
+                    return currentWatchListWeeklyTVStat.Year.toString() === watchListWeeklyCurrentTVTotalYearStat.toString() && currentWatchListWeeklyTVStat.WeekNum.toString() === String(i).padStart(2, "0");
                });
 
                if (currentWeek.length === 1) {
@@ -541,7 +540,7 @@ export default function WatchListStats() {
 
      const movieTop10Stats = (
           <>
-               {watchListMovieTop10Stats && watchListMovieTop10Stats?.map((currentWatchListMovieStat: typeof IWatchListMovieTop10Stat, index: number) => {
+               {watchListMovieTop10Stats && watchListMovieTop10Stats?.map((currentWatchListMovieStat: IWatchListMovieTop10Stat, index: number) => {
                     return (
                          <table key={index} className="datagrid">
                               <tbody className="data">
@@ -574,7 +573,7 @@ export default function WatchListStats() {
 
      const sourceStats = (
           <>
-               {watchListSourceStats && watchListSourceStats?.map((currentWatchListSourceStat: typeof IWatchListSourceStat, index: number) => {
+               {watchListSourceStats && watchListSourceStats?.map((currentWatchListSourceStat: IWatchListSourceStat, index: number) => {
                     return (
                          <table key={index} className={`datagrid ${!darkMode ? " lightMode" : " darkMode"}`}>
                               <tbody className="data">
@@ -585,11 +584,11 @@ export default function WatchListStats() {
                                                   {currentWatchListSourceStat.WatchListSourceName} watched {
                                                        currentWatchListSourceStat.SourceCount
                                                        -
-                                                       parseInt(watchListSourceDtlStats.filter((currentWatchListSourceDtlStat: typeof IWatchListSourceDtlStat, index: number) => { return String(currentWatchListSourceDtlStat.WatchListSourceID) === String(currentWatchListSourceStat.WatchListSourceID) && (currentWatchListSourceDtlStat.StartDate === null) }).length)
+                                                       parseInt(watchListSourceDtlStats.filter((currentWatchListSourceDtlStat: IWatchListSourceDtlStat, index: number) => { return String(currentWatchListSourceDtlStat.WatchListSourceID) === String(currentWatchListSourceStat.WatchListSourceID) && (currentWatchListSourceDtlStat.StartDate === null) }).length.toString())
                                                   } time(s)
 
-                                                  <TreeView aria-label="file system navigator" defaultCollapseIcon={<ExpandMoreIcon />} defaultExpandIcon={<ChevronRightIcon />} sx={{ flexGrow: 1, overflowY: "auto" }}>
-                                                       <TreeItem nodeId="1" label="Details">
+                                                  <SimpleTreeView aria-label="file system navigator" slots={{ collapseIcon: ExpandMoreIcon, expandIcon: ChevronRightIcon }} sx={{ flexGrow: 1, overflowY: "auto" }}>
+                                                       <TreeItem itemId="1" label="Details">
                                                             <span>
                                                                  <span className="sortBy">Sort By</span>
                                                                  <select className="selectStyle" value={watchListSourceStatsFilter} onChange={(event) => setWatchListSourceStatsFilter(event.target.value)}>
@@ -604,15 +603,15 @@ export default function WatchListStats() {
                                                             </span>
 
                                                             <ul className="noBulletPoints">
-                                                                 {watchListSourceDtlStats?.filter((currentWatchListSourceDtlStat: typeof IWatchListSourceDtlStat, index: number) => {
+                                                                 {watchListSourceDtlStats?.filter((currentWatchListSourceDtlStat: IWatchListSourceDtlStat, index: number) => {
                                                                       return (
                                                                            String(currentWatchListSourceDtlStat.WatchListSourceID) === String(currentWatchListSourceStat.WatchListSourceID) && currentWatchListSourceDtlStat.StartDate !== null
                                                                       )
                                                                  })
-                                                                      .sort((a: typeof IWatchListSourceStat, b: typeof IWatchListSourceStat) => {
+                                                                      .sort((a: IWatchListSourceDtlStat, b: IWatchListSourceDtlStat) => {
                                                                            switch (watchListSourceStatsFilter) {
                                                                                 case "WatchListID":
-                                                                                     return parseInt(a.WatchListID) > parseInt(b.WatchListID) ? 1 : -1;
+                                                                                     return a.WatchListID > b.WatchListID ? 1 : -1;
                                                                                 case "Name":
                                                                                      const aName = a.WatchListItemName;
                                                                                      const bName = b.WatchListItemName;
@@ -622,9 +621,11 @@ export default function WatchListStats() {
                                                                                      return parseFloat(new Date(a.StartDate).valueOf().toString()) > parseFloat(new Date(b.StartDate).valueOf().toString()) ? 1 : -1;
                                                                                 case "EndDate":
                                                                                      return parseFloat(new Date(a.EndDate).valueOf().toString()) > parseFloat(new Date(b.EndDate).valueOf().toString()) ? 1 : -1;
+                                                                                default:
+                                                                                     return 0;
                                                                            }
                                                                       })
-                                                                      .map((currentWatchListSourceDtlStat: typeof IWatchListSourceDtlStat, index: number) => {
+                                                                      .map((currentWatchListSourceDtlStat: IWatchListSourceDtlStat, index: number) => {
                                                                            return (
                                                                                 <li key={index}>
                                                                                      {currentWatchListSourceDtlStat.WatchListItemName} {currentWatchListSourceDtlStat.Season !== null ? ` (Season ${currentWatchListSourceDtlStat.Season})` : ``} {currentWatchListSourceDtlStat.StartDate !== null ? `watched` : ``}{" "}
@@ -634,7 +635,7 @@ export default function WatchListStats() {
                                                                       })}
                                                             </ul>
                                                        </TreeItem>
-                                                  </TreeView>
+                                                  </SimpleTreeView>
                                              </div>
                                         </td>
                                    </tr>
@@ -647,7 +648,7 @@ export default function WatchListStats() {
 
      const topRated = (
           <>
-               {watchListTopRatedStats && watchListTopRatedStats?.map((currentWatchListTopRatedStat: typeof IWatchListTopRatedStat, index: number) => {
+               {watchListTopRatedStats && watchListTopRatedStats?.map((currentWatchListTopRatedStat: IWatchListTopRatedStat, index: number) => {
                     return (
                          <table key={index} className="datagrid">
                               <tbody className="data">
@@ -674,7 +675,7 @@ export default function WatchListStats() {
 
      const tvTop10Stats = (
           <>
-               {watchListTVTop10Stats && watchListTVTop10Stats?.map((currentWatchListTVStat: typeof IWatchListTVTop10Stat, index: number) => {
+               {watchListTVTop10Stats && watchListTVTop10Stats?.map((currentWatchListTVStat: IWatchListTVTop10Stat, index: number) => {
                     return (
                          <table key={index} className="datagrid">
                               <tbody className="data">

@@ -1,8 +1,8 @@
 "use client"
 
-const React = require("react");
-const useContext = require("react").useContext;
-const useRouter = require("next/navigation").useRouter;
+import React, { useContext } from "react";
+import { useRouter } from 'next/navigation';
+
 import { DataContext, DataContextType } from "../data-context";
 
 import "./Tabs.css";

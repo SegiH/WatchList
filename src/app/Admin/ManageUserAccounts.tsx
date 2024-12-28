@@ -1,24 +1,20 @@
 "use client"
 
-const axios = require("axios");
-const Button = require("@mui/material/Button").default;
-const Dialog = require("@mui/material/Dialog").default;
-const DialogActions = require("@mui/material/DialogActions").default;
-const DialogContent = require("@mui/material/DialogContent").default;
-const DialogContentText = require("@mui/material/DialogContentText").default;
-const DialogTitle = require("@mui/material/DialogTitle").default;
-const IUser = require("../interfaces/IUser");
-const React = require("react");
-const useContext = require("react").useContext;
-const useEffect = require("react").useEffect;
-const useRouter = require("next/navigation").useRouter;
-const useState = require("react").useState;
-
-import TextField from "@mui/material/TextField";
-
+import axios, { AxiosResponse } from "axios";
+import React, { useContext, useEffect, useState } from "react";
 import { DataContext, DataContextType } from "../data-context";
+import Button from "@mui/material/Button";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
+import TextField from "@mui/material/TextField";
+import { useRouter } from 'next/navigation';
+import IUser from "../interfaces/IUser";
 
 import "../page.css";
+import "./AdminConsole.css";
 
 const ManageUserAccounts = () => {
      const {
@@ -41,12 +37,12 @@ const ManageUserAccounts = () => {
           validatePassword
      } = useContext(DataContext) as DataContextType;
 
-     const [addingUser, setAddingUser] = useState(null);
+     const [addingUser, setAddingUser] = useState<IUser>({} as IUser);
      const [dialogVisible, setDialogVisible] = useState(false);
      const [dialogVisibleParamID, setDialogVisibleParamID] = useState(-1);
-     const [editingUser, setEditingUser] = useState(null);
+     const [editingUser, setEditingUser] = useState<IUser>({} as IUser);
      const [isPasswordGenerated, setIsPasswordGenerated] = useState(false);
-     const [newPassword, setNewPassword] = useState("");
+     const [newPassword, setNewPassword] = useState<string>("");
      const [newConfirmPassword, setNewConfirmPassword] = useState("");
      const [usersLoadingStarted, setUsersLoadingStarted] = useState(false);
      const [usersLoadingComplete, setUsersLoadingComplete] = useState(false);
@@ -66,20 +62,21 @@ const ManageUserAccounts = () => {
           setDialogVisible(false);
      };
 
-     const enterAddModeClickHandler = (id: number) => {
+     const enterAddModeClickHandler = () => {
           setAddingUser({
-               UserID: null,
+               UserID: 0,
                Username: "",
                Realname: "",
                Password: "",
-               Admin: 0,
-               Enabled: 1
-          })
+               Admin: false,
+               Enabled: true
+          });
+
           setIsAdding(true);
      }
 
      const enterEditModeClickHandler = (id: number) => {
-          const newEditingUserResult = users?.filter((user: typeof IUser) => {
+          const newEditingUserResult = users?.filter((user: IUser) => {
                return user.UserID === id;
           });
 
@@ -94,7 +91,7 @@ const ManageUserAccounts = () => {
      }
 
      const generateNewPassword = () => {
-          const newRandomPassword = generateRandomPassword();
+          const newRandomPassword: string = generateRandomPassword();
 
           setNewPassword(newRandomPassword);
           setNewConfirmPassword(newRandomPassword);
@@ -108,7 +105,7 @@ const ManageUserAccounts = () => {
                return;
           }
 
-          const currentUser = Object.assign({}, isAdding ? addingUser : editingUser);
+          const currentUser = Object.assign({}, isAdding ? addingUser : editingUser) as IUser;
 
           // validate rows
           if (typeof currentUser.Username === "undefined" || currentUser.Username === "") {
@@ -117,7 +114,7 @@ const ManageUserAccounts = () => {
                return;
           }
 
-          const validateUser = users?.filter((validateCurrentUser: typeof IUser) => {
+          const validateUser = users?.filter((validateCurrentUser: IUser) => {
                return String(validateCurrentUser.Username) === String(currentUser.Username) && String(validateCurrentUser.UserID) !== String(currentUser.UserID);
           });
 
@@ -149,13 +146,13 @@ const ManageUserAccounts = () => {
 
           columns += `&wl_username=${encodeURIComponent(currentUser.Username)}`;
           columns += `&wl_realname=${encodeURIComponent(currentUser.Realname)}`;
-          columns += `&wl_admin=${currentUser.Admin === true || currentUser.Admin === 1 ? true : false}`;
-          columns += `&wl_enabled=${currentUser.Enabled === true || currentUser.Enabled === 1 ? true : false}`;
+          columns += `&wl_admin=${currentUser.Admin === true ? true : false}`;
+          columns += `&wl_enabled=${currentUser.Enabled === true ? true : false}`;
 
           const endPoint = (isAdding ? `/api/AddUser` : `/api/UpdateUser`) + columns;
 
           axios.put(endPoint, { withCredentials: true })
-               .then((response: typeof IUser) => {
+               .then((response: AxiosResponse<IUser>) => {
                     if (response !== null && response.data !== null && response.data[0] === "OK") {
                          alert("Saved");
 
@@ -193,7 +190,7 @@ const ManageUserAccounts = () => {
 
           if (isEditing) {
                axios.put(`/api/UpdateUser?wl_userid=${dialogVisibleParamID}&wl_password=${encodeURIComponent(newPassword)}`, { withCredentials: true })
-                    .then((res: typeof IUser) => {
+                    .then((res: AxiosResponse<IUser>) => {
                          setNewPassword("");
                          setNewConfirmPassword("");
 
@@ -221,7 +218,7 @@ const ManageUserAccounts = () => {
      };
 
      const userChangeHandler = (fieldName: string, fieldValue: string) => {
-          const newUser = Object.assign({}, isAdding ? addingUser : editingUser);
+          const newUser: IUser = Object.assign({}, isAdding ? addingUser : editingUser) as IUser;
 
           newUser[fieldName] = fieldValue;
           newUser.IsModified = true;
@@ -240,7 +237,7 @@ const ManageUserAccounts = () => {
           }
 
           if (demoMode) {
-               const newUserData: typeof IUser = require("../demo/index").demoUsers;
+               const newUserData: IUser[] = require("../demo/index").demoUsers;
 
                setUsers(newUserData);
                setUsersLoadingStarted(true);
@@ -252,7 +249,7 @@ const ManageUserAccounts = () => {
                setUsersLoadingStarted(true);
 
                axios.get(`/api/GetUsers`, { withCredentials: true })
-                    .then((res: typeof IUser) => {
+                    .then((res: AxiosResponse<IUser>) => {
                          if (res.data[0] === "OK") {
                               setUsers(res.data[1]);
                          } else {
@@ -276,7 +273,7 @@ const ManageUserAccounts = () => {
                          color="primary"
                          variant="contained"
                          className="borderRadius15 bottomMargin20 topMargin"
-                         onClick={enterAddModeClickHandler} >
+                         onClick={() => enterAddModeClickHandler()}>
                          Add User
                     </Button>
                }
@@ -315,11 +312,11 @@ const ManageUserAccounts = () => {
                                         </td>
 
                                         <td>
-                                             <TextField className={`lightMode borderRadius15 minWidth150`} margin="dense" id="username" label="username" value={addingUser.Username} fullWidth variant="standard" onChange={(event: any) => userChangeHandler("Username", event.target.value)} />
+                                             <TextField className={`lightMode borderRadius15 minWidth150`} margin="dense" id="username" label="username" value={addingUser.Username} variant="standard" onChange={(event: React.ChangeEvent<HTMLInputElement>) => userChangeHandler("Username", event.target.value)} />
                                         </td>
 
                                         <td>
-                                             <TextField className={`lightMode borderRadius15 minWidth150`} margin="dense" id="name" label="name" value={addingUser.Realname} fullWidth variant="standard" onChange={(event: any) => userChangeHandler("Realname", event.target.value)} />
+                                             <TextField className={`lightMode borderRadius15 minWidth150`} margin="dense" id="name" label="name" value={addingUser.Realname} variant="standard" onChange={(event: React.ChangeEvent<HTMLInputElement>) => userChangeHandler("Realname", event.target.value)} />
                                         </td>
 
                                         <td>
@@ -335,7 +332,7 @@ const ManageUserAccounts = () => {
                                         </td>
 
                                         <td>
-                                             <input type="checkbox" checked={addingUser.Admin} onChange={(event: any) => userChangeHandler("Admin", event.target.checked)} />
+                                             <input type="checkbox" checked={addingUser.Admin} onChange={(event: React.ChangeEvent<HTMLInputElement>) => userChangeHandler("Admin", event.target.checked.toString())} />
                                         </td>
 
                                         <td>
@@ -346,13 +343,13 @@ const ManageUserAccounts = () => {
 
 
                               {users
-                                   .filter((user: typeof IUser) => {
+                                   .filter((user: IUser) => {
                                         return (
                                              (!isAdding && !isEditing) ||
                                              (isEditing && editingUser.UserID === user.UserID)
                                         )
                                    })
-                                   .map((user: typeof IUser) => (
+                                   .map((user: IUser) => (
                                         <tr key={user.UserID}>
                                              <td>
                                                   {!isEditing &&
@@ -384,7 +381,7 @@ const ManageUserAccounts = () => {
                                                   }
 
                                                   {isEditing &&
-                                                       <TextField className={`lightMode borderRadius15 minWidth150`} margin="dense" id="username" label="username" value={editingUser.Username} fullWidth variant="standard" onChange={(event: any) => userChangeHandler("Username", event.target.value)} />
+                                                       <TextField className={`lightMode borderRadius15 minWidth150`} margin="dense" id="username" label="username" value={editingUser.Username}  variant="standard" onChange={(event: React.ChangeEvent<HTMLInputElement>) => userChangeHandler("Username", event.target.value)} />
                                                   }
                                              </td>
 
@@ -394,7 +391,7 @@ const ManageUserAccounts = () => {
                                                   }
 
                                                   {isEditing &&
-                                                       <TextField className={`lightMode borderRadius15 minWidth150`} margin="dense" id="username" label="name" value={editingUser.Realname} fullWidth variant="standard" onChange={(event: any) => userChangeHandler("Realname", event.target.value)} />
+                                                       <TextField className={`lightMode borderRadius15 minWidth150`} margin="dense" id="username" label="name" value={editingUser.Realname} variant="standard" onChange={(event: React.ChangeEvent<HTMLInputElement>) => userChangeHandler("Realname", event.target.value)} />
                                                   }
                                              </td>
 
@@ -414,25 +411,25 @@ const ManageUserAccounts = () => {
 
                                              <td>
                                                   {!isEditing &&
-                                                       <span>{user.Admin === 1 ? "Y" : "N"}</span>
+                                                       <span>{user.Admin === true ? "Y" : "N"}</span>
                                                   }
 
                                                   {isEditing &&
-                                                       <input type="checkbox" checked={editingUser.Admin} onChange={(event: any) => userChangeHandler("Admin", event.target.checked)} />
+                                                       <input type="checkbox" checked={editingUser.Admin} onChange={(event: React.ChangeEvent<HTMLInputElement>) => userChangeHandler("Admin", event.target.checked.toString())} />
                                                   }
                                              </td>
 
                                              <td>
                                                   {!isAdding && !isEditing &&
-                                                       <span>{user.Enabled === 1 ? "Y" : "N"}</span>
+                                                       <span>{user.Enabled === true ? "Y" : "N"}</span>
                                                   }
 
                                                   {isEditing &&
-                                                       <input type="checkbox" checked={editingUser.Enabled} onChange={(event: any) => userChangeHandler("Enabled", event.target.checked)} />
+                                                       <input type="checkbox" checked={editingUser.Enabled} onChange={(event: React.ChangeEvent<HTMLInputElement>) => userChangeHandler("Enabled", event.target.checked.toString())} />
                                                   }
 
                                                   {isAdding &&
-                                                       <input type="checkbox" checked={addingUser.Enabled} onChange={(event: any) => userChangeHandler("Enabled", event.target.checked)} />
+                                                       <input type="checkbox" checked={addingUser.Enabled} onChange={(event: React.ChangeEvent<HTMLInputElement>) => userChangeHandler("Enabled", event.target.checked.toString())} />
                                                   }
                                              </td>
                                         </tr>
@@ -447,9 +444,9 @@ const ManageUserAccounts = () => {
                     <DialogContent>
                          <DialogContentText>Please enter a new password. it must be at least 8 characters long and contain letters and numbers</DialogContentText>
 
-                         <TextField autoFocus margin="dense" id="password" label="Password" type={!isPasswordGenerated ? "password" : "text"} value={newPassword} onChange={(event: any) => setNewPassword(event.target.value)} fullWidth variant="standard" />
+                         <TextField autoFocus margin="dense" id="password" label="Password" type={!isPasswordGenerated ? "password" : "text"} value={newPassword} onChange={(event: React.ChangeEvent<HTMLInputElement>) => setNewPassword(event.target.value)} variant="standard" />
 
-                         {!isPasswordGenerated && <TextField margin="dense" id="confirm" label="Confirm Password" type="password" fullWidth variant="standard" value={newConfirmPassword} onChange={(event: any) => setNewConfirmPassword(event.target.value)} />}
+                         {!isPasswordGenerated && <TextField margin="dense" id="confirm" label="Confirm Password" type="password" variant="standard" value={newConfirmPassword} onChange={(event: React.ChangeEvent<HTMLInputElement>) => setNewConfirmPassword(event.target.value)} />}
                     </DialogContent>
 
                     <DialogActions className="dialogActions">

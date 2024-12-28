@@ -42,7 +42,7 @@ export async function PUT(request: NextRequest) {
           return Response.json(["ERROR", "WatchList Source Name was not provided"]);
      }
 
-     const values: any = [watchListSourceName, watchListSourceID];
+     const values: [string, string] = [watchListSourceName, watchListSourceID];
 
      try {
           const sql = `UPDATE WatchListSources SET WatchListSourceName=? WHERE WatchListSourceID=?`;

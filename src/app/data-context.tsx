@@ -1,73 +1,70 @@
 "use client"
 // NOTE: If you run this script in VS Code in Docker, you HAVE to run the web app on port 8080 or websocket will stop working which breaks hot reloading
 //
+import axios, { AxiosResponse } from "axios";
+import React, { createContext, useCallback, useEffect, useMemo, useState } from "react";
 import PropTypes from 'prop-types';
+import { useRouter } from 'next/navigation';
 
-const axios = require("axios");
-const createContext = require("react").createContext;
-const useCallback = require("react").useCallback;
-const useEffect = require("react").useEffect;
-const useMemo = require("react").useMemo;
-const useRouter = require("next/navigation").useRouter;
-const useState = require("react").useState;
-const IBugLog = require("./interfaces/IBugLog");
-const IRoute = require("./interfaces/IRoute");
-const IUser = require("./interfaces/IUser");
-const IWatchList = require("./interfaces/IWatchList");
-const IWatchListItem = require("./interfaces/IWatchListItem");
-const IWatchListSource = require("./interfaces/IWatchListSource");
-const IWatchListType = require("./interfaces/IWatchListType");
-
-const React = require("react");
+import IBugLog from "./interfaces/IBugLog";
+import IRouteList from "./interfaces/IRoute";
+import IUser, { IUserOption } from "./interfaces/IUser";
+import IWatchList from "./interfaces/IWatchList";
+import IWatchListItem from "./interfaces/IWatchListItem";
+import IWatchListSource from "./interfaces/IWatchListSource";
+import IWatchListType from "./interfaces/IWatchListType";
+import SectionChoice from "./interfaces/SectionChoice";
+import IWatchListSortColumn from './interfaces/IWatchListSortColumn';
+import IUserData from './interfaces/IUserData';
 
 const ratingMax = 5;
 
-const AddIcon = require("@mui/icons-material/Add").default;
+import AddIcon from "@mui/icons-material/Add";
 const AddIconComponent = <AddIcon className="icon" />;
 
-const AdminConsoleIcon = require("@mui/icons-material/AdminPanelSettings").default;
+import AdminConsoleIcon from "@mui/icons-material/AdminPanelSettings";
 const AdminConsoleIconComponent = <AdminConsoleIcon />;
 
-const BrokenImageIcon = require("@mui/icons-material/BrokenImage").default;
+import BrokenImageIcon from "@mui/icons-material/BrokenImage";
 const BrokenImageIconComponent = <BrokenImageIcon className="brokenImage" />;
 
-const BugReport = require("@mui/icons-material/BugReport").default;
+import BugReport from "@mui/icons-material/BugReport";
 const BugReportIconComponent = <BugReport className="icon" />;
 
-const CancelIcon = require("@mui/icons-material/Cancel").default;
+import CancelIcon from "@mui/icons-material/Cancel";
 const CancelIconComponent = <CancelIcon />;
 
-const DeleteIcon = require("@mui/icons-material/Delete").default;
+import DeleteIcon from "@mui/icons-material/Delete";
 const DeleteIconComponent = <DeleteIcon />;
 
-const EditIcon = require("@mui/icons-material/Edit").default;
+import EditIcon from "@mui/icons-material/Edit";
 const EditIconComponent = <EditIcon />;
 
-const LogOutIcon = require("@mui/icons-material/Logout").default;
+import LogOutIcon from "@mui/icons-material/Logout";
 const LogOutIconComponent = <LogOutIcon className="icon" />;
 
-const RemoveIcon = require("@mui/icons-material/Remove").default;
+import RemoveIcon from "@mui/icons-material/Remove";
 const RemoveIconComponent = <RemoveIcon className="icon" />;
 
-const SaveIcon = require("@mui/icons-material/Save").default;
+import SaveIcon from "@mui/icons-material/Save";
 const SaveIconComponent = <SaveIcon />;
 
-const SearchIcon = require("@mui/icons-material/Search").default;
+import SearchIcon from "@mui/icons-material/Search";
 const SearchIconComponent = <SearchIcon className="icon" />;
 
-const SettingsIcon = require("@mui/icons-material/Settings").default;
+import SettingsIcon from "@mui/icons-material/Settings";
 const SettingsIconComponent = <SettingsIcon className="icon" />;
 
-const StatsIcon = require("@mui/icons-material/BarChart").default;
+import StatsIcon from "@mui/icons-material/BarChart";
 const StatsIconComponent = <StatsIcon className="icon" />;
 
-const WatchListIcon = require("@mui/icons-material/Movie").default;
+import WatchListIcon from "@mui/icons-material/Movie";
 const WatchListIconComponent = <WatchListIcon className="icon" />;
 
-const WatchListItemsIcon = require("@mui/icons-material/SmartDisplay").default;
+import WatchListItemsIcon from "@mui/icons-material/SmartDisplay";
+import ISearchImdb from "./interfaces/ISearchImdb";
+import IRecommendation from "./interfaces/IRecommendation";
 const WatchListItemsIconComponent = <WatchListItemsIcon className="icon" />;
-
-const DataContext = createContext({});
 
 export interface DataContextType {
      activeRoute: string;
@@ -75,7 +72,7 @@ export interface DataContextType {
      AddIconComponent: React.ReactNode;
      archivedVisible: boolean;
      autoAdd: boolean;
-     bugLogs: typeof IBugLog[]
+     bugLogs: IBugLog[]
      bugLogVisible: boolean;
      buildDate: string;
      BrokenImageIconComponent: React.ReactNode;
@@ -88,7 +85,7 @@ export interface DataContextType {
      demoUsername: string;
      EditIconComponent: React.ReactNode;
      getFormattedDate: (value: string | null, separator: string | null) => string;
-     generateRandomPassword: () => void;
+     generateRandomPassword: () => string;
      getDisplayName: (value: string) => string;
      getPath: (value: string) => string;
      hideTabs: boolean;
@@ -101,13 +98,13 @@ export interface DataContextType {
      errorMessage: string;
      isLoggedIn: boolean;
      isLoggedInCheckComplete: boolean;
-     isVisible: (value: string) => string;
+     isVisible: (value: string) => boolean;
      LogOutIconComponent: React.ReactNode;
      openDetailClickHandler: (value: number) => void;
      ratingMax: number;
      recommendationsEnabled: boolean,
      RemoveIconComponent: React.ReactNode;
-     routeList: typeof IRoute;
+     routeList: IRouteList;
      SaveIconComponent: React.ReactNode;
      searchCount: number;
      SearchIconComponent: React.ReactNode;
@@ -117,7 +114,7 @@ export interface DataContextType {
      setActiveRouteDisplayName: (value: string) => void;
      setArchivedVisible: (value: boolean) => void;
      setAutoAdd: (value: boolean) => void;
-     setBugLogs: (value: typeof IBugLog) => void;
+     setBugLogs: React.Dispatch<React.SetStateAction<IBugLog[]>>;
      setBugLogVisible: (value: boolean) => void;
      setDarkMode: (value: boolean) => void;
      setDemoMode: (value: boolean) => void;
@@ -128,7 +125,7 @@ export interface DataContextType {
      setErrorMessage: (value: string) => void;
      setIsLoggedIn: (value: boolean) => void;
      setIsLoggedInCheckComplete: (value: boolean) => void;
-     setOptions: (value: []) => void;
+     setOptions: (value: IUserOption) => void;
      setShowMissingArtwork: (value: boolean) => void;
      setSearchCount: (value: number) => void;
      setSearchTerm: (value: string) => void;
@@ -139,12 +136,11 @@ export interface DataContextType {
      setTypeFilter: (value: number) => void;
      SettingsIconComponent: React.ReactNode;
      settingsVisible: boolean;
-     setupVisible: boolean;
-     setUserData: (value: typeof IUser) => void;
-     setUsers: (value: typeof IUser) => void;
+     setUserData: React.Dispatch<React.SetStateAction<IUserData>>;
+     setUsers: React.Dispatch<React.SetStateAction<IUser[]>>;
      setVisibleSections: (value: []) => void;
-     setWatchList: (value: typeof IWatchList) => void;
-     setWatchListItems: (value: typeof IWatchListItem) => void;
+     setWatchList: React.Dispatch<React.SetStateAction<IWatchList[]>>;
+     setWatchListItems: React.Dispatch<React.SetStateAction<IWatchListItem[]>>;
      setWatchListItemsLoadingStarted: (value: boolean) => void;
      setWatchListItemsLoadingComplete: (value: boolean) => void;
      setWatchListItemsSortingComplete: (value: boolean) => void;
@@ -153,10 +149,10 @@ export interface DataContextType {
      setWatchListSortColumn: (value: string) => void;
      setWatchListSortDirection: (value: string) => void;
      setWatchListSortingComplete: (value: boolean) => void;
-     setWatchListSources: (value: typeof IWatchListSource) => void;
+     setWatchListSources: React.Dispatch<React.SetStateAction<IWatchListSource[]>>;
      setWatchListSourcesLoadingStarted: (value: boolean) => void;
      setWatchListSourcesLoadingComplete: (value: boolean) => void;
-     setWatchListTypes: (value: typeof IWatchListType) => void;
+     setWatchListTypes: React.Dispatch<React.SetStateAction<IWatchListType[]>>;
      setWatchListTypesLoadingStarted: (value: boolean) => void;
      setWatchListTypesLoadingComplete: (value: boolean) => void;
      showMissingArtwork: boolean;
@@ -166,27 +162,28 @@ export interface DataContextType {
      sourceFilter: number;
      stillWatching: boolean;
      typeFilter: number;
-     users: typeof IUser,
-     userData: typeof IUser;
+     users: IUser[],
+     userData: IUserData;
      validatePassword: (value: string) => boolean;
-     visibleSectionChoices: [],
-     visibleSections: [],
-     watchList: typeof IWatchList;
-     watchListItems: typeof IWatchListItem;
+     visibleSectionChoices: SectionChoice[],
+     visibleSections: { name:string; id:number;}[],
+     watchList: IWatchList[];
+     watchListItems: IWatchListItem[];
      watchListItemsLoadingStarted: boolean;
      watchListItemsLoadingComplete: boolean;
-     watchListItemsSortColumns: string;
+     watchListItemsSortColumns: IWatchListSortColumn;
      watchListItemsSortingComplete: boolean;
      watchListLoadingComplete: boolean;
      watchListSortColumn: string;
-     watchListSortColumns: string;
+     watchListSortColumns: IWatchListSortColumn;
      watchListSortDirection: string;
      watchListSortingComplete: boolean;
-     watchListSources: typeof IWatchListSource;
-     watchListTypes: typeof IWatchListType;
+     watchListSources: IWatchListSource[];
+     watchListTypes: IWatchListType[];
      watchListSourcesLoadingComplete: boolean;
      watchListTypesLoadingComplete: boolean;
 }
+const DataContext = createContext({} as DataContextType);
 
 const DataProvider = ({ children }) => {
      const [activeRoute, setActiveRoute] = useState("");
@@ -194,7 +191,7 @@ const DataProvider = ({ children }) => {
      const [archivedVisible, setArchivedVisible] = useState(false);
      const [autoAdd, setAutoAdd] = useState(true);
      const [buildDate, setBuildDate] = useState('');
-     const [bugLogs, setBugLogs] = useState([]);
+     const [bugLogs, setBugLogs] = useState<IBugLog[]>([]);
      const [bugLogVisible, setBugLogVisible] = useState(false);
      const [darkMode, setDarkMode] = useState(true);
      const [demoMode, setDemoMode] = useState(false);
@@ -218,23 +215,23 @@ const DataProvider = ({ children }) => {
      const [stillWatching, setStillWatching] = useState(true);
      const [sourceFilter, setSourceFilter] = useState(-1);
      const [typeFilter, setTypeFilter] = useState(-1);
-     const [users, setUsers] = useState([]);
+     const [users, setUsers] = useState<IUser[]>([]);
      const [userData, setUserData] = useState({ UserID: 0, Username: "", RealName: "", Admin: false }); // cannot use iUserEmpty() here
-     const [watchList, setWatchList] = useState([]);
+     const [watchList, setWatchList] = useState<IWatchList[]>([]);
      const [watchListLoadingStarted, setWatchListLoadingStarted] = useState(false);
      const [watchListLoadingComplete, setWatchListLoadingComplete] = useState(false);
      const [watchListSortingComplete, setWatchListSortingComplete] = useState(false);
 
-     const [watchListItems, setWatchListItems] = useState([]);
+     const [watchListItems, setWatchListItems] = useState<IWatchListItem[]>([]);
      const [watchListItemsLoadingStarted, setWatchListItemsLoadingStarted] = useState(false);
      const [watchListItemsLoadingComplete, setWatchListItemsLoadingComplete] = useState(false);
      const [watchListItemsSortingComplete, setWatchListItemsSortingComplete] = useState(false);
 
-     const [watchListSources, setWatchListSources] = useState([]);
+     const [watchListSources, setWatchListSources] = useState<IWatchListSource[]>([]);
      const [watchListSourcesLoadingStarted, setWatchListSourcesLoadingStarted] = useState(false);
      const [watchListSourcesLoadingComplete, setWatchListSourcesLoadingComplete] = useState(false);
 
-     const [watchListTypes, setWatchListTypes] = useState([]);
+     const [watchListTypes, setWatchListTypes] = useState<IWatchListType[]>([]);
      const [watchListTypesLoadingStarted, setWatchListTypesLoadingStarted] = useState(false);
      const [watchListTypesLoadingComplete, setWatchListTypesLoadingComplete] = useState(false);
 
@@ -351,7 +348,7 @@ const DataProvider = ({ children }) => {
           }
 
           axios.get(`/api/IsLoggedIn${params}`)
-               .then(async (res: typeof IUser) => {
+               .then(async (res: AxiosResponse<IUser>) => {
                     if (res.data[0] === "OK") {
                          const newUserData = Object.assign({}, userData);
                          newUserData.UserID = res.data[1].UserID;
@@ -419,7 +416,7 @@ const DataProvider = ({ children }) => {
           }
      }, [activeRoute, setIsAdding]);
 
-     const setOptions = async (newOptions: any) => {
+     const setOptions = async (newOptions: IUserOption) => {
           const newArchivedVisible = typeof newOptions.ArchivedVisible !== "undefined" && newOptions.ArchivedVisible === 1 ? true : false;
           setArchivedVisible(newArchivedVisible);
 
@@ -432,7 +429,7 @@ const DataProvider = ({ children }) => {
           const newHideTabs = typeof newOptions.HideTabs !== "undefined" && newOptions.HideTabs === 1 ? true : false;
           setHideTabs(newHideTabs);
 
-          const newSearchCount = typeof newOptions.SearchCount !== "undefined" && !isNaN(newOptions.SearchCount) ? parseInt(newOptions.SearchCount, 10) : 5;
+          const newSearchCount = typeof newOptions.SearchCount !== "undefined" && !isNaN(newOptions.SearchCount) ? newOptions.SearchCount : 5;
           setSearchCount(newSearchCount);
 
           const newStillWatching = typeof newOptions.StillWatching !== "undefined" && newOptions.StillWatching === 1 ? true : false;
@@ -441,10 +438,10 @@ const DataProvider = ({ children }) => {
           const newShowMissingArtwork = typeof newOptions.ShowMissingArtwork !== "undefined" && newOptions.ShowMissingArtwork === 1 ? true : false;
           setShowMissingArtwork(newShowMissingArtwork);
 
-          const newSourceFilter = typeof newOptions.SourceFilter !== "undefined" && !isNaN(newOptions.SourceFilter) ? parseInt(newOptions.SourceFilter, 10) : 5;
+          const newSourceFilter = typeof newOptions.SourceFilter !== "undefined" && !isNaN(newOptions.SourceFilter) ? newOptions.SourceFilter : 5;
           setSourceFilter(newSourceFilter);
 
-          const newTypeFilter = typeof newOptions.TypeFilter !== "undefined" && !isNaN(newOptions.TypeFilter) ? parseInt(newOptions.TypeFilter, 10) : 5;
+          const newTypeFilter = typeof newOptions.TypeFilter !== "undefined" && !isNaN(newOptions.TypeFilter) ? newOptions.TypeFilter : 5;
           setTypeFilter(newTypeFilter);
 
           const newSortColumn = typeof newOptions.WatchListSortColumn !== "undefined" ? newOptions.WatchListSortColumn : "Name";
@@ -472,7 +469,7 @@ const DataProvider = ({ children }) => {
           }
 
           axios.get(`/api/SignOut`)
-               .then((res: typeof IUser) => {
+               .then((res: AxiosResponse<IUser>) => {
                     if (res.data[0] === "OK") {
                          signOutActions();
                     } else {
@@ -486,7 +483,7 @@ const DataProvider = ({ children }) => {
 
      const signOutActions = () => {
           const newUserData = Object.assign({}, userData);
-          newUserData.UserID = "";
+          newUserData.UserID = 0;
           newUserData.Username = "";
           newUserData.RealName = "";
 
@@ -576,7 +573,7 @@ const DataProvider = ({ children }) => {
                setWatchListLoadingStarted(true);
 
                axios.get(`/api/GetWatchList?SortColumn=${watchListSortColumn}&SortDirection=${watchListSortDirection}`, { withCredentials: true })
-                    .then((res: typeof IWatchList) => {
+                    .then((res: AxiosResponse<IWatchList>) => {
                          if (res.data[0] !== "OK") {
                               setErrorMessage("Failed to get WatchList with the error " + res.data[1])
                               setIsError(true);
@@ -611,7 +608,7 @@ const DataProvider = ({ children }) => {
                setWatchListItemsLoadingStarted(true);
 
                axios.get(`/api/GetWatchListItems${Object.keys(watchListItemsSortColumns).includes(watchListSortColumn) ? `?SortColumn=${watchListSortColumn}&SortDirection=${watchListSortDirection}` : ``}`, { withCredentials: true })
-                    .then((res: typeof IWatchListItem) => {
+                    .then((res: AxiosResponse<IWatchListItem>) => {
                          if (res.data[0] !== "OK") {
                               setErrorMessage("Failed to get WatchList Items with the error " + res.data[1]);
                               setIsError(true);
@@ -648,7 +645,7 @@ const DataProvider = ({ children }) => {
                setWatchListSourcesLoadingStarted(true);
 
                axios.get(`/api/GetWatchListSources`, { withCredentials: true })
-                    .then((res: typeof IWatchListSource) => {
+                    .then((res: AxiosResponse<IWatchListSource>) => {
                          if (res.data[0] !== "OK") {
                               setErrorMessage("Failed to get WatchList Sources with the error " + res.data[1]);
                               setIsError(true);
@@ -657,7 +654,7 @@ const DataProvider = ({ children }) => {
 
                          const wls = res.data[1];
 
-                         wls.sort((a: typeof IWatchListSource, b: typeof IWatchListSource) => {
+                         wls.sort((a: IWatchListSource, b: IWatchListSource) => {
                               const aName = a.WatchListSourceName;
                               const bName = b.WatchListSourceName;
 
@@ -692,7 +689,7 @@ const DataProvider = ({ children }) => {
                setWatchListTypesLoadingStarted(true);
 
                axios.get(`/api/GetWatchListTypes`, { withCredentials: true })
-                    .then((res: typeof IWatchListType) => {
+                    .then((res: AxiosResponse<IWatchListType>) => {
                          if (res.data[0] !== "OK") {
                               setErrorMessage("Failed to get WatchList Types with the error " + res.data[1]);
                               setIsError(true);
@@ -837,7 +834,7 @@ const DataProvider = ({ children }) => {
      /* UseEffect that checks if IMDB search is enabled */
      useEffect(() => {
           axios.get(`/api/IsIMDBSearchEnabled`)
-               .then((res: any) => {
+               .then((res: AxiosResponse<ISearchImdb>) => {
                     if (res.data[0] === "OK") {
                          setImdbSearchEnabled(true);
                     }
@@ -849,7 +846,7 @@ const DataProvider = ({ children }) => {
      /* UseEffect that checks if Recommendations is enabled */
      useEffect(() => {
           axios.get(`/api/IsRecommendationsEnabled`)
-               .then((res: any) => {
+               .then((res: AxiosResponse<IRecommendation>) => {
                     if (res.data[0] === "OK") {
                          setRecommendationsEnabled(true);
                     }
@@ -868,6 +865,37 @@ const DataProvider = ({ children }) => {
                     const buildDateStr = new Date(data.buildDate).toLocaleString().replace(",", "");
                     setBuildDate(buildDateStr);
                });
+     }, []);
+
+     useEffect(() => {
+          const handleVisibilityChange = () => {
+               if (!document.hidden) {
+                    let token = localStorage.getItem("WatchList.Token");
+                    let tokenExpiration = localStorage.getItem("WatchList.TokenExpiration");
+
+                    if (token === 'undefined') {
+                         token = null;
+                         localStorage.removeItem("WatchList.Token");
+                    }
+
+                    if (tokenExpiration === 'undefined') {
+                         tokenExpiration = null;
+                         localStorage.removeItem("WatchList.TokenExpiration");
+                    }
+
+                    if (token !== null && tokenExpiration !== null) {
+                         isLoggedInApi();
+                    }
+               }
+          };
+
+          // Add event listener for visibility change
+          document.addEventListener('visibilitychange', handleVisibilityChange);
+
+          // Cleanup event listener when the component unmounts
+          return () => {
+               document.removeEventListener('visibilitychange', handleVisibilityChange);
+          };
      }, []);
 
      const routeList = {
@@ -903,6 +931,7 @@ const DataProvider = ({ children }) => {
                Name: "Login",
                DisplayName: "Login",
                Path: "/Login",
+               Icon: null,
                RequiresAuth: false
           },
           BugLog: {
@@ -913,37 +942,6 @@ const DataProvider = ({ children }) => {
                RequiresAuth: true
           }
      };
-
-     useEffect(() => {
-          const handleVisibilityChange = () => {
-               if (!document.hidden) {
-                    let token = localStorage.getItem("WatchList.Token");
-                    let tokenExpiration = localStorage.getItem("WatchList.TokenExpiration");
-
-                    if (token === 'undefined') {
-                         token = null;
-                         localStorage.removeItem("WatchList.Token");
-                    }
-
-                    if (tokenExpiration === 'undefined') {
-                         tokenExpiration = null;
-                         localStorage.removeItem("WatchList.TokenExpiration");
-                    }
-
-                    if (token !== null && tokenExpiration !== null) {
-                         isLoggedInApi();
-                    }
-               }
-          };
-
-          // Add event listener for visibility change
-          document.addEventListener('visibilitychange', handleVisibilityChange);
-
-          // Cleanup event listener when the component unmounts
-          return () => {
-               document.removeEventListener('visibilitychange', handleVisibilityChange);
-          };
-     }, []);
 
      // These 2 methods reference routeList and have to be defined after routeList is defined
      const getDisplayName = useCallback((routeName: string) => {

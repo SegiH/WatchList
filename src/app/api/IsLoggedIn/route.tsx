@@ -3,6 +3,7 @@ import { NextRequest } from 'next/server';
 import fs from 'fs';
 import { cookies } from 'next/headers';
 import { DBFile, execSelect, execUpdateDelete, getUserOptions, getUserSession, loginSuccessfullActions, tokenSeparator, validateSettings } from "../lib";
+import IUser from '@/app/interfaces/IUser';
 
 /**
  * @swagger
@@ -23,9 +24,9 @@ export async function GET(request: NextRequest) {
 
      const token = typeof searchParams.get("Token") !== "undefined" ? searchParams.get("Token") : null;
 
-     const validationResult: any = await validateSettings();
+     const validationResult = await validateSettings();
 
-     if (validationResult === false) {
+     if (validationResult !== "") {
           return Response.json(["ERROR", false]);
      } else if (validationResult != "") {
           return Response.json(["ERROR", validationResult]);
@@ -73,7 +74,7 @@ export async function GET(request: NextRequest) {
                }
 
                // Since the encryption is done in the API, we have to get the username and password and decrypt it in this endpoint
-               const currentUser = results.filter((currentUser: any) => {
+               const currentUser = results.filter((currentUser: IUser) => {
                     return username === currentUser.Username && token === currentUser.Token
                });
 
@@ -87,14 +88,14 @@ export async function GET(request: NextRequest) {
 
                if (currentEpoch >= tokenExpirationNum) {
                     const tokenSQL = "UPDATE Users SET Token=NULL, TokenExpiration=NULL WHERE UserID=?";
-                    const tokenParams: any = [currentUser[0].UserID];
+                    const tokenParams = [currentUser[0].UserID];
 
                     await execUpdateDelete(tokenSQL, tokenParams);
 
                     return Response.json(["ERROR", ""]);
                }
 
-               return loginSuccessfullActions(currentUser, results);
+               return loginSuccessfullActions(currentUser);
           }
      } else {
           return Response.json(["ERROR", ""]);

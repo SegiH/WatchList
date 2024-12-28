@@ -1,12 +1,8 @@
 "use client"
 
-import Image from 'next/image';
-const IWatchListItem = require("../interfaces/IWatchListItem");
-const IWatchListSortColumn = require("../interfaces/IWatchListSortColumn");
-const React = require("react");
-const useContext = require("react").useContext;
-const useEffect = require("react").useEffect;
-const useRouter = require("next/navigation").useRouter;
+import React, { useContext, useEffect } from "react";
+import Image from "next/image";
+import IWatchListItem from "../interfaces/IWatchListItem";
 
 import { DataContext, DataContextType } from "../data-context";
 
@@ -39,13 +35,13 @@ export default function WatchListItems() {
      const watchListCount = watchList.length;
 
      const setImageLoaded = (watchListItemID: number) => (): void => {
-          const newWatchListItems: typeof IWatchListItem = Object.assign(typeof WatchListItems, watchListItems);
+          const newWatchListItems: IWatchListItem[] = Object.assign(typeof WatchListItems, watchListItems);
 
-          const currentWatchListItemsResult = newWatchListItems?.filter((currentWatchListItems: typeof IWatchListItem) => {
+          const currentWatchListItemsResult: IWatchListItem[] = newWatchListItems?.filter((currentWatchListItems: IWatchListItem) => {
                return String(currentWatchListItems.WatchListItemID) === String(watchListItemID);
           });
 
-          if (currentWatchListItemsResult === 0) {
+          if (currentWatchListItemsResult.length === 0) {
                // this shouldn't ever happen!
                return;
           }
@@ -58,13 +54,13 @@ export default function WatchListItems() {
      };
 
      const showDefaultSrc = (watchListItemID: number) => (): void => {
-          const newWatchListItems = Object.assign([], watchListItems);
+          const newWatchListItems: IWatchListItem[] = Object.assign([], watchListItems);
 
-          const currentWatchListItemsResult = newWatchListItems?.filter((currentWatchListItems: typeof IWatchListItem) => {
+          const currentWatchListItemsResult: IWatchListItem[] = newWatchListItems?.filter((currentWatchListItems: IWatchListItem) => {
                return String(currentWatchListItems.WatchListItemID) === String(watchListItemID);
           });
 
-          if (currentWatchListItemsResult === 0) {
+          if (currentWatchListItemsResult.length === 0) {
                // this shouldn't ever happen!
                return;
           }
@@ -78,14 +74,18 @@ export default function WatchListItems() {
 
      useEffect(() => {
           if (!watchListItemsSortingComplete && watchListItemsLoadingComplete) {
-               const newWatchListItems = Object.assign([], watchListItems);
+               const newWatchListItems: IWatchListItem[] = Object.assign([], watchListItems);
 
-               newWatchListItems.sort((a: typeof IWatchListSortColumn, b: typeof IWatchListSortColumn) => {
+               newWatchListItems.sort((a: IWatchListItem, b: IWatchListItem) => {
                     switch (watchListSortColumn) {
                          case "ID":
-                              return parseInt(a.WatchListItemID) > parseInt(b.WatchListItemID) ? (watchListSortDirection === "ASC" ? 1 : -1) : watchListSortDirection === "ASC" ? -1 : 1;
+                              return a.WatchListItemID > b.WatchListItemID
+                                   ? (watchListSortDirection === "ASC" ? 1 : -1)
+                                   : watchListSortDirection === "ASC" ? -1 : 1;
                          case "Name":
                               return String(a.WatchListItemName) > String(b.WatchListItemName) ? (watchListSortDirection === "ASC" ? 1 : -1) : watchListSortDirection === "ASC" ? -1 : 1;
+                         default:
+                              return 0;
                     }
                });
 
@@ -117,13 +117,13 @@ export default function WatchListItems() {
           <span className="topMarginContent">
                <ul className={`show-list${!darkMode ? " lightMode" : " darkMode"}`}>
                     {watchListItems?.filter(
-                         (currentWatchListItem: typeof IWatchListItem) =>
+                         (currentWatchListItem: IWatchListItem) =>
                               ((currentWatchListItem?.Archived === 1 && archivedVisible === true) || (currentWatchListItem?.Archived === 0 && archivedVisible === false))
                               &&
                               (searchTerm === "" || (searchTerm !== "" && (String(currentWatchListItem.WatchListItemName).toLowerCase().includes(searchTerm) || String(currentWatchListItem.IMDB_URL) == searchTerm || String(currentWatchListItem.IMDB_Poster) == searchTerm))) &&
                               (typeFilter === -1 || (typeFilter !== -1 && String(currentWatchListItem.WatchListTypeID) === String(typeFilter)))
                               && (showMissingArtwork === false || (showMissingArtwork === true && (currentWatchListItem.IMDB_Poster_Error === true || currentWatchListItem.IMDB_Poster === null)))
-                    ).map((currentWatchListItem: typeof IWatchListItem, index: number) => {
+                    ).map((currentWatchListItem: IWatchListItem, index: number) => {
                               const IMDB_JSON =  currentWatchListItem?.IMDB_JSON !== null && typeof currentWatchListItem?.IMDB_JSON !== "undefined" && currentWatchListItem?.IMDB_JSON !== "" ? JSON.parse(currentWatchListItem?.IMDB_JSON) : null;
 
                               return (
@@ -153,7 +153,7 @@ export default function WatchListItems() {
                                                             </div>
                                                        }
 
-                                                       {currentWatchListItem?.Archived === true ? <span className={`${!darkMode ? "lightMode" : "darkMode"}`}>&nbsp;(A)</span> : <></>}
+                                                       {currentWatchListItem?.Archived === 1 ? <span className={`${!darkMode ? "lightMode" : "darkMode"}`}>&nbsp;(A)</span> : <></>}
                                                   </div>
 
                                                   <span className={`${!darkMode ? "lightMode" : "darkMode"}`}>

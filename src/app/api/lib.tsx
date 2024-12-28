@@ -1,20 +1,12 @@
-const axios = require("axios");
-const config = require("config");
-const fs = require("fs");
-const sqlite3 = require('sqlite3').verbose();
-
-import nextSession from "next-session";
-import { expressSession, promisifyStore } from "next-session/lib/compat";
+import axios from "axios";
+import config from "config";
+import fs from "fs";
 import { cookies } from 'next/headers';
 import * as CryptoJS from 'crypto-js';
 import { NextRequest } from 'next/server';
 import IUser from "../interfaces/IUser";
-
-import { open } from "sqlite";
-
-const Statement = require('sqlite3');
-
-const SQLiteStore = require("connect-sqlite3")(expressSession);
+import { open } from 'sqlite'
+import sqlite3 from "sqlite3";
 
 // Constants
 export const DBFile = "watchlistdb.sqlite";
@@ -78,23 +70,6 @@ export const addUser = async (request: NextRequest, isNewInstance = false) => {
      return Response.json(["OK", newID]);
 }
 
-// Since Replit uses a primitive key/value pair, convert Replit BugLogs to format that matches what this app expects
-export const getBugLogModel = (data: object) => {
-     const newData: any = [];
-
-     Object.keys(data).forEach(async (element) => {
-          newData.push({
-               "WLBugID": element,
-               "WLBugName": data[element].WLBugName,
-               "AddDate": data[element].AddDate,
-               "CompletedDate": data[element].CompletedDate !== null ? data[element].CompletedDate : "",
-               "ResolutionNotes": data[element].ResolutionNotes !== null ? data[element].ResolutionNotes : ""
-          });
-     });
-
-     return newData;
-};
-
 export const decrypt = (cipherText: string) => {
      const bytes = CryptoJS.AES.decrypt(cipherText, secretKey)
      const plainText = bytes.toString(CryptoJS.enc.Utf8)
@@ -109,53 +84,51 @@ export const encrypt = (plainText: string) => {
 export const execInsert = async (sql: string, params: Array<string | number | null>) => {
      const db = await openDB();
 
-     let stmt: typeof Statement;
-
      try {
-          stmt = await db.prepare(sql);
+          const stmt = await db.prepare(sql);
+
+          return await stmt.run(params);
      } catch (e) {
           return e;
      }
-
-     return await stmt.run(params);
 }
 
 export const execSelect = async (sql: string, params: Array<string | number>) => {
      const db = await openDB();
 
-     let stmt: typeof Statement;
+     interface Row {
+          [key: string]: unknown;  // Use `unknown` if row structure is dynamic, or define more specific properties
+     }
 
      try {
-          stmt = await db.prepare(sql);
+          const stmt = await db.prepare(sql);
+
+          const results: Row[] = [];
+
+          await stmt.each(params, function (_err: unknown, row: Row) {
+               results.push(row);
+          });
+
+          stmt.finalize();
+
+          db.close();
+
+          return results;
      } catch (e) {
           return e;
      }
-
-     const results: any = [];
-
-     await stmt.each(params, function (_err: unknown, row: any) {
-          results.push(row);
-     });
-
-     stmt.finalize();
-
-     db.close();
-
-     return results;
 }
 
 export const execUpdateDelete = async (sql: string, params: Array<string | number>) => {
      const db = await openDB();
 
-     let stmt: typeof Statement;
-
      try {
-          stmt = await db.prepare(sql);
+          const stmt = await db.prepare(sql);
+
+          await stmt.run(params);
      } catch (e) {
           return e;
      }
-
-     await stmt.run(params);
 }
 
 export const fetchData = async (options) => {
@@ -165,21 +138,9 @@ export const fetchData = async (options) => {
      } catch (error) {
           throw error;
      }
-     /*
-     const request = require("request");
-
-     return new Promise((resolve, reject) => {
-          request(options, function (error, response, body) {
-               if (error) {
-                    reject(error);
-               } else {
-                    resolve(body);
-               }
-          });
-     });*/
 }
 
-export const getIMDBDetails = async(imdb_id: string) => {
+export const getIMDBDetails = async (imdb_id: string) => {
      const rapidapi_key = config.has("RapidAPIKey") ? config.get("RapidAPIKey") : "";
 
      let options = {
@@ -193,7 +154,7 @@ export const getIMDBDetails = async(imdb_id: string) => {
           },
      };
 
-     const result: any = await fetchData(options);
+     const result = await fetchData(options);
 
      return result;
 }
@@ -210,13 +171,6 @@ export const getRecommendationsAPIKey = async () => {
      return recommendations_key;
 }
 
-export const getSession = nextSession({
-     name: "WIB_SESSION",
-     store: promisifyStore(
-          new SQLiteStore({ dir: "./", table: "wiberSessions" })
-     ),
-});
-
 export const getUserID = async (req: NextRequest) => {
      const userSession = await getUserSession(req);
 
@@ -227,7 +181,7 @@ export const getUserID = async (req: NextRequest) => {
      }
 }
 
-export const getUserOptions = async (userID: number, isAdmin: number) => {
+export const getUserOptions = async (userID: number, isAdmin: boolean) => {
      // Get Users' options
      const getOptionsSQL = `SELECT * FROM Options WHERE UserID=?`;
      const params = [userID];
@@ -236,7 +190,7 @@ export const getUserOptions = async (userID: number, isAdmin: number) => {
      let userOptions = await execSelect(getOptionsSQL, params);
 
      if (userOptions.length === 0) {
-          const visibleSectionsChoicesResult = await execSelect(`SELECT * FROM VisibleSections ${isAdmin === 0 ? " WHERE name != 'Admin'" : ""}`, []);
+          const visibleSectionsChoicesResult = await execSelect(`SELECT * FROM VisibleSections ${isAdmin === false ? " WHERE name != 'Admin'" : ""}`, []);
           const visibleSectionsChoices = JSON.stringify(visibleSectionsChoicesResult);
 
           await execInsert("INSERT INTO Options (UserID, ArchivedVisible, AutoAdd, DarkMode, HideTabs, SearchCount, StillWatching, ShowMissingArtwork, SourceFilter, TypeFilter, WatchListSortColumn, WatchListSortDirection, VisibleSections) VALUES (" + userID + ", false, true, true, false, 5, true, false, -1, -1,\"Name\", \"ASC\",'" + visibleSectionsChoices + "');", []);
@@ -292,7 +246,7 @@ export const login = async (username: string, password: string) => {
           }
 
           // Since the encryption is done in the API, we have to get the username and password and decrypt it in this endpoint
-          const currentUser = results.filter((currentUser: any) => {
+          const currentUser = results.filter((currentUser: IUser) => {
                return username === decrypt(currentUser.Username) && password === decrypt(currentUser.Password)
           });
 
@@ -300,14 +254,14 @@ export const login = async (username: string, password: string) => {
                return Response.json(["ERROR", "Invalid username or password"]);
           }
 
-          return loginSuccessfullActions(currentUser, results);
+          return loginSuccessfullActions(currentUser);
 
      } catch (err: any) {
           return Response.json(["ERROR", `The error ${err.message} occurred logging in`]);
      }
 }
 
-export const loginSuccessfullActions = async (currentUser: IUser, results: any) => {
+export const loginSuccessfullActions = async (currentUser: IUser) => {
      // Generate token
      const epochTime = new Date().getTime().toString();
      const token = encrypt(btoa(epochTime));
@@ -315,18 +269,18 @@ export const loginSuccessfullActions = async (currentUser: IUser, results: any) 
      const tokenExpiration = new Date().getTime() + timeout;
 
      const tokenSQL = "UPDATE Users SET Token=?, TokenExpiration=? WHERE UserID=?";
-     const tokenParams: any = [token, tokenExpiration, currentUser[0].UserID];
+     const tokenParams = [token, tokenExpiration, currentUser[0].UserID];
 
      try {
           await execUpdateDelete(tokenSQL, tokenParams);
 
-          const userOptions = await getUserOptions(currentUser[0].UserID, results[0]["Admin"]);
+          const userOptions = await getUserOptions(currentUser[0].UserID, currentUser[0].Admin === 1 ? true : false);
 
           const userData = {
                UserID: currentUser[0].UserID,
                Username: decrypt(currentUser[0].Username),
                Realname: decrypt(currentUser[0].Realname),
-               Admin: results[0]["Admin"],
+               Admin: currentUser[0].Admin,
                Token: `${currentUser[0].Username}${tokenSeparator}${token}`,
                Timeout: timeout,
                Options: userOptions
@@ -336,7 +290,7 @@ export const loginSuccessfullActions = async (currentUser: IUser, results: any) 
 
           const currentCookies = await cookies();
 
-          currentCookies.set('userData', JSON.stringify(userData), {expires: expires});
+          currentCookies.set('userData', JSON.stringify(userData), { expires: expires });
 
           return Response.json(["OK", userData]);
      } catch (e) {
@@ -356,18 +310,6 @@ export const validateSettings = async () => {
      if (!config.has(`Secret`)) {
           return `Config file error: Secret property is missing or not set`;
      }
-
-     /*if (!config.has(`SQLite.username`) || (config.has(`SQLite.username`) && config.get(`SQLite.username`) === "")) {
-          return `Config file error: SQLite.username property is missing or not set`;
-     }
-
-     if (!config.has(`SQLite.password`) || (config.has(`SQLite.password`) && config.get(`SQLite.password`) === "")) {
-          return `Config file error: SQLite.password property is missing or not set`;
-     }
-
-     if (!config.has(`SQLite.database`) || (config.has(`SQLite.database`) && config.get(`SQLite.database`) === "")) {
-          return `Config file error: SQLite.database property is missing or not set`;
-     }*/
 
      return "";
 }

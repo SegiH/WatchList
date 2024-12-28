@@ -1,32 +1,36 @@
 "use client"
 
-import { useCallback } from "react";
+import axios, { AxiosResponse } from "axios";
+import Image from "next/image";
 
-const Autocomplete = require("@mui/material/Autocomplete").default;
-const axios = require("axios");
-import Image from 'next/image';
-const IWatchList = require("../../interfaces/IWatchList");
-const IWatchListItem = require("../../interfaces/IWatchListItem");
-const IWatchListSource = require("../../interfaces/IWatchListSource");
-const React = require("react");
-const ReactNode = require("react").ReactNode;
-const Recommendations = require("../../components/Recommendations").default;
-const TextField = require("@mui/material/TextField").default;
-const useContext = require("react").useContext;
-const useEffect = require("react").useEffect;
-const useRouter = require("next/navigation").useRouter;
-const useState = require("react").useState;
+import React, { useCallback, useContext, useEffect, useState } from "react";
+import { Autocomplete } from "@mui/material";
+import Recommendations from "../../components/Recommendations";
+import { useRouter } from "next/navigation";
+import TextField, { TextFieldProps } from "@mui/material/TextField";
 
-const EmptyIcon = require("@mui/icons-material/StarBorder").default;
+import EmptyIcon from "@mui/icons-material/StarBorder";
 const EmptyIconComponent = <EmptyIcon />;
 
-const FullIcon = require("@mui/icons-material/Grade").default;
+import FullIcon from "@mui/icons-material/Grade";
 const FullIconComponent = <FullIcon />;
 
-const HalfIcon = require("@mui/icons-material/StarHalf").default;
+import HalfIcon from "@mui/icons-material/StarHalf";
 const HalfIconComponent = <HalfIcon />;
 
+import IWatchList from "../../interfaces/IWatchList";
+import IWatchListItem from "../../interfaces/IWatchListItem";
+import IWatchListSource from "../../interfaces/IWatchListSource";
+
+import "../../page.css";
+
 import { DataContext, DataContextType } from "../../data-context";
+
+// I have a very specific use case here where I'm using a custom type that only has these 2 properties so the interface is created here
+interface AutoCompleteWatchListItem {
+     WatchListItemID: number; // Adjust the type as necessary (e.g., string, number)
+     WatchListItemName: string;
+}
 
 export default function WatchListDetail() {
      const {
@@ -56,31 +60,31 @@ export default function WatchListDetail() {
      const currentDate = new Date().toLocaleDateString();
 
      const [addModified, setAddModified] = useState(false);
-     const [addWatchListDtl, setAddWatchListDtl] = useState(null);
-     const [autoComplete, setAutoComplete] = useState(null);
-     const [formattedNames, setFormattedNames] = useState(null);
-     const [formattedNamesWithId, setFormattedNamesWithId] = useState(null);
+     const [addWatchListDtl, setAddWatchListDtl] = useState<IWatchList | null>(null);
+     const [autoComplete, setAutoComplete] = useState<IAutoCompleteOption | null>(null);
+     const [formattedNames, setFormattedNames] = useState<IAutoCompleteOption[]>([]);
+     const [formattedNamesWithId, setFormattedNamesWithId] = useState<AutoCompleteWatchListItem[]>([]);
      const [editModified, setEditModified] = useState(false);
-     const [originalWatchListDtl, setOriginalWatchListDtl] = useState(null);
+     const [originalWatchListDtl, setOriginalWatchListDtl] = useState<IWatchList | null>(null); (null);
      const [recommendationsVisible, setRecommendationsVisible] = useState(false);
-     const [recommendationName, setRecommendationName] = useState("");
-     const [recommendationType, setRecommendationType] = useState("");
-     const [watchListDtl, setWatchListDtl] = useState(null);
-     const [watchListDtlID, setWatchListDtlID] = useState(null);
+     const [recommendationName, setRecommendationName] = useState<string>("");
+     const [recommendationType, setRecommendationType] = useState<string>("");
+     const [watchListDtl, setWatchListDtl] = useState<IWatchList | null>(null);
+     const [watchListDtlID, setWatchListDtlID] = useState<number>(-1);
      const [watchListDtlLoadingStarted, setWatchListDtlLoadingStarted] = useState(false);
      const [watchListDtlLoadingComplete, setWatchListDtlLoadingComplete] = useState(false);
-     const [watchListItemDtlID, setWatchListItemDtlID] = useState(null);
+     const [watchListItemDtlID, setWatchListItemDtlID] = useState<number>(0);
 
      const router = useRouter();
 
      const defaultProps = {
           options: formattedNames,
-          getOptionLabel: (option: typeof ReactNode) => option.toString(),
+          getOptionLabel: (option: IAutoCompleteOption) => option?.name.toString(),
      };
 
      // When you go to add a WL, if you forgot to add the WLI, the Add Link will show the search so you can add it immediately. This only applies to adding a WL, not editing one.
      const addNewChangeHandler = () => {
-          if (addModified && (addWatchListDtl.WatchListItemID !== "-1" || addWatchListDtl.StartDate !== getLocaleDate() || addWatchListDtl.EndDate !== "" || addWatchListDtl.WatchListSourceID !== "-1" || addWatchListDtl.Season !== "" || addWatchListDtl.Rating !== "0" || addWatchListDtl.Notes !== "")) {
+          if (addModified && (addWatchListDtl?.WatchListItemID !== -1 || addWatchListDtl.StartDate !== getLocaleDate() || addWatchListDtl.EndDate !== "" || addWatchListDtl.WatchListSourceID !== -1 || addWatchListDtl.Season !== 0 || addWatchListDtl.Rating !== 0 || addWatchListDtl.Notes !== "")) {
                const confirmLeave = confirm("You have started to add a record. Are you sure you weant to leave ?");
 
                if (!confirmLeave) {
@@ -99,7 +103,7 @@ export default function WatchListDetail() {
           showSearch();
      };
 
-     const addWatchListDetailChangeHandler = (fieldName: string, fieldValue: string) => {
+     const addWatchListDetailChangeHandler = (fieldName: string, fieldValue: string | number) => {
           const newAddWatchListDtl = Object.assign({}, addWatchListDtl);
 
           newAddWatchListDtl[fieldName] = fieldValue;
@@ -115,13 +119,13 @@ export default function WatchListDetail() {
                return;
           }
 
-          const watchListItem = watchListItems.filter((watchListItem: typeof IWatchListItem) => {
+          const watchListItem = watchListItems.filter((watchListItem: IWatchListItem) => {
                const IMDB_JSON = watchListItem?.IMDB_JSON !== null && typeof watchListItem?.IMDB_JSON !== "undefined" ? JSON.parse(watchListItem?.IMDB_JSON) : null;
 
                let itemName = watchListItem.WatchListItemName + (IMDB_JSON !== null && IMDB_JSON.Year !== null ? ` (${IMDB_JSON.Year})` : ``);
 
 
-               if (watchListItems?.filter((watchListItemDupe: typeof IWatchListItem) => {
+               if (watchListItems?.filter((watchListItemDupe: IWatchListItem) => {
                     return String(watchListItemDupe.WatchListItemName) === String(watchListItem.WatchListItemName);
                }).length > 1) {
                     itemName += ` (${watchListItem.WatchListTypeName})`;
@@ -146,7 +150,7 @@ export default function WatchListDetail() {
                     setEditModified(true);
                }
 
-               setAutoComplete("");
+               setAutoComplete(null);
           }
      };
 
@@ -180,31 +184,43 @@ export default function WatchListDetail() {
           } else { // Date is in format dd/mm/yyyy
                try {
                     return `${dateSpl[2]}-${dateSpl[1].padStart(2, '0')}-${dateSpl[0].padStart(2, '0')}`;
-               } catch (e) { }
+               } catch (e) {
+                    return "";
+               }
           }
      }, [currentDate]);
 
      const getRatingIcon = (index: number) => {
-          if (isAdding)
+          if (addWatchListDtl === null) {
+               return EmptyIconComponent;
+          } else if (isAdding)
                return addWatchListDtl?.Rating > index + 0.5 ? FullIconComponent : addWatchListDtl?.Rating === index + 0.5 ? HalfIconComponent : EmptyIconComponent;
-          else
+          else if (watchListDtl === null) {
+               return EmptyIconComponent;
+          }
+          else {
                return watchListDtl?.Rating > index + 0.5 ? FullIconComponent : watchListDtl?.Rating === index + 0.5 ? HalfIconComponent : EmptyIconComponent;
+          }
      };
 
      const getWatchListTypeID = (watchListItemID: number) => {
-          const results = watchListItems?.filter((watchListItem: typeof IWatchListItem) => {
+          const results = watchListItems?.filter((watchListItem: IWatchListItem) => {
                return String(watchListItem.WatchListItemID) === String(watchListItemID);
           });
 
           if (results.length === 1) {
                return results[0].WatchListTypeID;
           } else {
-               return null;
+               return -1;
           }
      };
 
      const ratingClickHandler = (index: number) => {
           if (!isAdding && !isEditing) return true;
+
+          if (addWatchListDtl === null) {
+               return;
+          }
 
           if (isAdding) {
                if (String(addWatchListDtl?.Rating + ".0") === String(index + ".0")) {
@@ -219,25 +235,32 @@ export default function WatchListDetail() {
 
                return;
           } else {
-               const newWatchListDtl = Object.assign({}, watchListDtl);
+               if (watchListDtl !== null) {
+                    const newWatchListDtl = Object.assign({}, watchListDtl);
 
-               if (newWatchListDtl.Rating === null) watchListDtl.Rating = 0;
+                    if (newWatchListDtl.Rating === null) watchListDtl.Rating = 0;
 
-               if (String(watchListDtl.Rating + ".0") === String(index + ".0")) {
-                    watchListDtl.Rating = index + 0.5;
-               } else if (String(watchListDtl.Rating) === String(index + ".5")) {
-                    watchListDtl.Rating = parseFloat((index + 1).toFixed(1));
-               } else {
-                    watchListDtl.Rating = parseFloat(index.toFixed(1));
+                    if (String(watchListDtl.Rating + ".0") === String(index + ".0")) {
+                         watchListDtl.Rating = index + 0.5;
+                    } else if (String(watchListDtl.Rating) === String(index + ".5")) {
+                         watchListDtl.Rating = parseFloat((index + 1).toFixed(1));
+                    } else {
+                         watchListDtl.Rating = parseFloat(index.toFixed(1));
+                    }
+
+                    watchListDetailChangeHandler("Rating", watchListDtl.Rating.toString());
+               } else { // This shouldn't ever happen
+                    console.log("watchListDtl is null in dtl for id" + watchListDtlID);
+                    return;
                }
-
-               watchListDetailChangeHandler("Rating", watchListDtl.Rating);
           }
      };
 
      const recommendationsClickHandler = () => {
-          setRecommendationName(watchListDtl?.WatchListItemName);
-          setRecommendationType(watchListDtl?.WatchListTypeName);
+          if (watchListDtl !== null) {
+               setRecommendationName(watchListDtl.WatchListItemName);
+               setRecommendationType(watchListDtl.WatchListTypeName);
+          }
      };
 
      const saveClickHandler = async () => {
@@ -255,53 +278,57 @@ export default function WatchListDetail() {
                return;
           }
 
-          if (addWatchListDtl.WatchListItemID === "-1") {
-               alert("Please select the Movie or TV Show");
-               return;
-          }
-
-          if (addWatchListDtl.StartDate === "") {
-               alert("Please enter the start date");
-               return;
-          }
-
-          if (addWatchListDtl.WatchListSourceID === "-1") {
-               alert("Please select the source");
-               return;
-          }
-
-          let queryURL = `/api/AddWatchList?WatchListItemID=${addWatchListDtl.WatchListItemID}&StartDate=${addWatchListDtl.StartDate.substring(0, 10)}&WatchListSourceID=${addWatchListDtl.WatchListSourceID}&Archived=${addWatchListDtl.Archived}`;
-
-          if (addWatchListDtl.EndDate !== "") {
-               queryURL += `&EndDate=${addWatchListDtl.EndDate.substring(0, 10)}`;
-          }
-
-          if (addWatchListDtl.Season !== "") {
-               queryURL += `&Season=${addWatchListDtl.Season}`;
-          }
-
-          if (addWatchListDtl.Rating != "0") {
-               queryURL += `&Rating=${addWatchListDtl.Rating}`;
-          }
-
-          if (addWatchListDtl.Notes !== "") {
-               queryURL += `&Notes=${addWatchListDtl.Notes}`;
-          }
-
-          axios.put(queryURL).then((res: typeof IWatchListItem) => {
-               if (res.data[0] === "ERROR") {
-                    alert(`The error ${res.data[1]} occurred while adding the detail`);
-               } else {
-                    setIsAdding(false);
-                    setWatchListLoadingStarted(false);
-                    setWatchListLoadingComplete(false);
-                    setWatchListSortingComplete(false);
-
-                    router.push("/WatchList");
+          if (addWatchListDtl !== null) {
+               if (addWatchListDtl.WatchListItemID === -1) {
+                    alert("Please select the Movie or TV Show");
+                    return;
                }
-          }).catch((err: Error) => {
-               alert(`The error ${err.message} occurred while adding the detail`);
-          });
+
+               if (addWatchListDtl.StartDate === "") {
+                    alert("Please enter the start date");
+                    return;
+               }
+
+               if (addWatchListDtl.WatchListSourceID === -1) {
+                    alert("Please select the source");
+                    return;
+               }
+
+               let queryURL = `/api/AddWatchList?WatchListItemID=${addWatchListDtl.WatchListItemID}&StartDate=${addWatchListDtl.StartDate.substring(0, 10)}&WatchListSourceID=${addWatchListDtl.WatchListSourceID}&Archived=${addWatchListDtl.Archived}`;
+
+               if (addWatchListDtl.EndDate !== "") {
+                    queryURL += `&EndDate=${addWatchListDtl.EndDate.substring(0, 10)}`;
+               }
+
+               if (addWatchListDtl.Season !== 0) {
+                    queryURL += `&Season=${addWatchListDtl.Season}`;
+               }
+
+               if (addWatchListDtl.Rating != 0) {
+                    queryURL += `&Rating=${addWatchListDtl.Rating}`;
+               }
+
+               if (addWatchListDtl.Notes !== "") {
+                    queryURL += `&Notes=${addWatchListDtl.Notes}`;
+               }
+
+               axios.put(queryURL).then((res: AxiosResponse<IWatchList>) => {
+                    if (res.data[0] === "ERROR") {
+                         alert(`The error ${res.data[1]} occurred while adding the detail`);
+                    } else {
+                         setIsAdding(false);
+                         setWatchListLoadingStarted(false);
+                         setWatchListLoadingComplete(false);
+                         setWatchListSortingComplete(false);
+
+                         router.push("/WatchList");
+                    }
+               }).catch((err: Error) => {
+                    alert(`The error ${err.message} occurred while adding the detail`);
+               });
+          } else { // This shouldn't ever happen
+               alert("Unable to save new record. addWatchListDtl is null!");
+          }
      };
 
      const startEditing = () => {
@@ -326,81 +353,83 @@ export default function WatchListDetail() {
      };
 
      const updateWatchList = (silent: boolean) => {
-          if (watchListDtl.WatchListItemID === "-1") {
-               alert("Please select the Movie or TV Show");
-               return;
-          }
-
-          if (watchListDtl.StartDate === "") {
-               alert("Please enter the start date");
-               return;
-          }
-
-          if (watchListDtl.WatchListSourceID === "-1") {
-               alert("Please select the source");
-               return;
-          }
-
-          let queryURL = ``;
-
-          if (watchListDtl.WatchListItemIDIsModified === true) {
-               queryURL += `&WatchListItemID=${watchListDtl.WatchListItemID}`;
-          }
-
-          if (watchListDtl.WatchListSourceIDIsModified === true) {
-               queryURL += `&WatchListSourceID=${watchListDtl.WatchListSourceID}`;
-          }
-
-          if (watchListDtl.StartDateIsModified === true) {
-               // Fix start date formatting
-               if (watchListDtl.StartDate.toString().indexOf("-") === -1) {
-                    watchListDtl.StartDate = `${watchListDtl.StartDate.substring(0, 4)}-${watchListDtl.StartDate.substring(4, 6)}-${watchListDtl.StartDate.substring(6, 8)}`;
+          if (watchListDtl !== null) {
+               if (watchListDtl.WatchListItemID === -1) {
+                    alert("Please select the Movie or TV Show");
+                    return;
                }
 
-               queryURL += `&StartDate=${watchListDtl.StartDate}`;
-          }
-
-          if (watchListDtl.EndDateIsModified === true) {
-               // Fix end date formatting
-               if (watchListDtl.EndDate.toString().indexOf("-") === -1) {
-                    watchListDtl.EndDate = `${watchListDtl.EndDate.substring(0, 4)}-${watchListDtl.EndDate.substring(4, 6)}-${watchListDtl.EndDate.substring(6, 8)}`;
+               if (watchListDtl.StartDate === "") {
+                    alert("Please enter the start date");
+                    return;
                }
 
-               queryURL += `&EndDate=${watchListDtl.EndDate.substring(0, 10)}`;
-          }
+               if (watchListDtl.WatchListSourceID === -1) {
+                    alert("Please select the source");
+                    return;
+               }
 
-          if (watchListDtl.SeasonIsModified === true) {
-               queryURL += `&Season=${watchListDtl.Season}`;
-          }
+               let queryURL = ``;
 
-          if (watchListDtl.ArchivedIsModified === true) {
-               queryURL += `&Archived=${watchListDtl.Archived}`;
-          }
+               if (watchListDtl.WatchListItemIDIsModified === true) {
+                    queryURL += `&WatchListItemID=${watchListDtl.WatchListItemID}`;
+               }
 
-          if (watchListDtl.RatingIsModified === true) {
-               queryURL += `&Rating=${watchListDtl.Rating}`;
-          }
+               if (watchListDtl.WatchListSourceIDIsModified === true) {
+                    queryURL += `&WatchListSourceID=${watchListDtl.WatchListSourceID}`;
+               }
 
-          if (watchListDtl.NotesIsModified === true) {
-               queryURL += `&Notes=${watchListDtl.Notes}`;
-          }
-
-          if (queryURL != "") {
-               queryURL = `/api/UpdateWatchList?WatchListID=${watchListDtl.WatchListID}${queryURL}`;
-
-               axios.put(queryURL).then((res: typeof IWatchListItem) => {
-                    if (res.data[0] === "ERROR") {
-                         alert(`The error ${res.data[1]} occurred while updating the detail`);
-                    } else {
-                         setIsEditing(false);
+               if (watchListDtl.StartDateIsModified === true) {
+                    // Fix start date formatting
+                    if (watchListDtl.StartDate.toString().indexOf("-") === -1) {
+                         watchListDtl.StartDate = `${watchListDtl.StartDate.substring(0, 4)}-${watchListDtl.StartDate.substring(4, 6)}-${watchListDtl.StartDate.substring(6, 8)}`;
                     }
-               }).catch((err: Error) => {
-                    if (!silent) {
-                         alert(`The error ${err.message} occurred while updating the detail`);
+
+                    queryURL += `&StartDate=${watchListDtl.StartDate}`;
+               }
+
+               if (watchListDtl.EndDateIsModified === true) {
+                    // Fix end date formatting
+                    if (watchListDtl.EndDate.toString().indexOf("-") === -1) {
+                         watchListDtl.EndDate = `${watchListDtl.EndDate.substring(0, 4)}-${watchListDtl.EndDate.substring(4, 6)}-${watchListDtl.EndDate.substring(6, 8)}`;
                     }
-               });
-          } else {
-               setIsEditing(false);
+
+                    queryURL += `&EndDate=${watchListDtl.EndDate.substring(0, 10)}`;
+               }
+
+               if (watchListDtl.SeasonIsModified === true) {
+                    queryURL += `&Season=${watchListDtl.Season}`;
+               }
+
+               if (watchListDtl.ArchivedIsModified === true) {
+                    queryURL += `&Archived=${watchListDtl.Archived}`;
+               }
+
+               if (watchListDtl.RatingIsModified === true) {
+                    queryURL += `&Rating=${watchListDtl.Rating}`;
+               }
+
+               if (watchListDtl.NotesIsModified === true) {
+                    queryURL += `&Notes=${watchListDtl.Notes}`;
+               }
+
+               if (queryURL != "") {
+                    queryURL = `/api/UpdateWatchList?WatchListID=${watchListDtl.WatchListID}${queryURL}`;
+
+                    axios.put(queryURL).then((res: AxiosResponse<IWatchList>) => {
+                         if (res.data[0] === "ERROR") {
+                              alert(`The error ${res.data[1]} occurred while updating the detail`);
+                         } else {
+                              setIsEditing(false);
+                         }
+                    }).catch((err: Error) => {
+                         if (!silent) {
+                              alert(`The error ${err.message} occurred while updating the detail`);
+                         }
+                    });
+               } else {
+                    setIsEditing(false);
+               }
           }
      }
 
@@ -414,7 +443,7 @@ export default function WatchListDetail() {
                if (demoMode) {
                     const demoWatchListItemsPayload = require("../../demo/index").demoWatchListItemsPayload;
 
-                    const demoWatchListItem = demoWatchListItemsPayload.filter((watchListItem: typeof IWatchListItem) => {
+                    const demoWatchListItem = demoWatchListItemsPayload.filter((watchListItem: IWatchListItem) => {
                          return String(watchListItem.WatchListItemID) === String(fieldValue);
                     });
 
@@ -422,7 +451,7 @@ export default function WatchListDetail() {
                          newWatchListDtl["WatchListItem"] = demoWatchListItem[0];
                     }
                } else {
-                    const watchListItem = watchListItems?.filter((watchListItem: typeof IWatchListItem) => {
+                    const watchListItem = watchListItems?.filter((watchListItem: IWatchListItem) => {
                          return String(watchListItem.WatchListItemID) === String(fieldValue);
                     });
 
@@ -437,20 +466,20 @@ export default function WatchListDetail() {
           setEditModified(true);
      };
 
-     const imdbImage = watchListDtl?.IMDB_Poster !== null && watchListDtl?.IMDB_Poster_Error !== true && watchListDtl?.IMDB_Poster !== "" && watchListDtl?.IMDB_Poster.length > 0
-     ? 
-     <Image className="poster-detail" width="175" height="200" alt="Image Not Available" src={watchListDtl?.IMDB_Poster} onError={() => showDefaultSrc()} />
-     :
-     <>{BrokenImageIconComponent}</>;
+     const imdbImage = typeof watchListDtl?.IMDB_Poster !== "undefined" && watchListDtl?.IMDB_Poster !== null && watchListDtl?.IMDB_Poster_Error !== true && watchListDtl?.IMDB_Poster !== "" && watchListDtl?.IMDB_Poster.length > 0
+          ?
+          <Image className="poster-detail" width="175" height="200" alt="Image Not Available" src={watchListDtl?.IMDB_Poster} onError={() => showDefaultSrc()} />
+          :
+          <>{BrokenImageIconComponent}</>;
 
      useEffect(() => {
-          if (!isAdding && !watchListDtlLoadingStarted && !watchListDtlLoadingComplete && watchListDtlID !== null && watchListDtlID !== -1 && !isNaN(watchListDtlID)) {
+          if (!isAdding && !watchListDtlLoadingStarted && !watchListDtlLoadingComplete && watchListDtlID !== -1 && watchListDtlID !== -1 && !isNaN(watchListDtlID)) {
                setWatchListDtlLoadingStarted(true);
 
-               if (demoMode && watchListDtlID !== null) {
+               if (demoMode && watchListDtlID !== -1) {
                     const demoWatchListPayload = require("../../demo/index").demoWatchListPayload;
 
-                    const detailWatchList = demoWatchListPayload.filter((currentWatchList: typeof IWatchList) => {
+                    const detailWatchList = demoWatchListPayload.filter((currentWatchList: IWatchList) => {
                          return String(currentWatchList.WatchListID) === String(watchListDtlID);
                     });
 
@@ -468,7 +497,7 @@ export default function WatchListDetail() {
                }
 
                axios.get(`/api/GetWatchListDtl?WatchListID=${watchListDtlID}`)
-                    .then((res: typeof IWatchList) => {
+                    .then((res: AxiosResponse<IWatchList>) => {
                          if (res.data[0] === "ERROR") {
                               setErrorMessage(`The error ${res.data[1]} occurred while getting the detail`);
                               setIsError(true);
@@ -510,13 +539,13 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
                          setIsError(true);
                     });
           } else if (isAdding) {
-               const newAddWatchListDtl: typeof IWatchList = {};
-               newAddWatchListDtl.WatchListItemID = watchListItemDtlID !== null ? watchListItemDtlID : "-1";
+               const newAddWatchListDtl: IWatchList = {} as IWatchList;
+               newAddWatchListDtl.WatchListItemID = watchListItemDtlID !== null ? watchListItemDtlID : -1;
                newAddWatchListDtl.StartDate = getLocaleDate();
                newAddWatchListDtl.EndDate = "";
-               newAddWatchListDtl.WatchListSourceID = "-1";
-               newAddWatchListDtl.Season = "";
-               newAddWatchListDtl.Rating = "0";
+               newAddWatchListDtl.WatchListSourceID = -1;
+               newAddWatchListDtl.Season = 0;
+               newAddWatchListDtl.Rating = 0;
                newAddWatchListDtl.Notes = "";
 
                setAddWatchListDtl(newAddWatchListDtl);
@@ -526,45 +555,46 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
      useEffect(() => {
           if (watchListItems.length > 0) {
                // Generate names for auto complete
-               const namesOnlyItems = watchListItems.map((watchListItem: typeof IWatchListItem) => {
+               const namesOnlyItems: IAutoCompleteOption[] = watchListItems.map((watchListItem: IWatchListItem) => {
                     const IMDB_JSON = watchListItem?.IMDB_JSON !== null && typeof watchListItem?.IMDB_JSON !== "undefined" ? JSON.parse(watchListItem?.IMDB_JSON) : null;
 
                     let itemName = watchListItem.WatchListItemName + (IMDB_JSON !== null && IMDB_JSON.Year !== null ? ` (${IMDB_JSON.Year})` : ``);
 
 
-                    if (watchListItems?.filter((watchListItemDupe: typeof IWatchListItem) => {
+                    if (watchListItems?.filter((watchListItemDupe: IWatchListItem) => {
                          return String(watchListItemDupe.WatchListItemName) === String(watchListItem.WatchListItemName);
                     }).length > 1) {
                          itemName += ` (${watchListItem.WatchListTypeName})`;
                     }
 
-                    return itemName;
+                    return { name: itemName };
                });
 
                const namesWithIdSorted = namesOnlyItems.sort();
 
                setFormattedNames(namesWithIdSorted);
 
-               const namesWithIdItems = watchListItems.map((watchListItem: typeof IWatchListItem) => {
+               const namesWithIdItems = watchListItems.map((watchListItem: IWatchListItem) => {
                     let itemName = watchListItem.WatchListItemName
 
-                    if (watchListItems?.filter((watchListItemDupe: typeof IWatchListItem) => {
+                    if (watchListItems?.filter((watchListItemDupe: IWatchListItem) => {
                          return String(watchListItemDupe.WatchListItemName) === String(watchListItem.WatchListItemName);
                     }).length > 1) {
                          itemName += " (" + watchListItem.WatchListTypeName + ")"
                     }
 
-                    let newItem: any = [];
-                    newItem.WatchListItemID = watchListItem.WatchListItemID;
-                    newItem.WatchListItemName = itemName;
+                    let newItem: AutoCompleteWatchListItem = {
+                         WatchListItemID: watchListItem.WatchListItemID,
+                         WatchListItemName: itemName
+                    }
 
                     return newItem;
                });
 
-               const namesWithIdItemsSorted = namesWithIdItems.sort((a: typeof IWatchListItem, b: typeof IWatchListItem) => {
+               const namesWithIdItemsSorted = namesWithIdItems.sort((a: IWatchListItem, b: IWatchListItem) => {
                     // Convert names to lowercase for case-insensitive sorting
-                    const nameA = a.WatchListItemName.toLowerCase();
-                    const nameB = b.WatchListItemName.toLowerCase();
+                    const nameA = a.WatchListItemName.toLowerCase().trim();
+                    const nameB = b.WatchListItemName.toLowerCase().trim();
 
                     // Compare the names
                     if (nameA < nameB) {
@@ -589,16 +619,16 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
      }, [recommendationName, recommendationType]);
 
      useEffect(() => {
-          const searchParams = window.location.search.replace("?","&").split("&");
+          const searchParams = window.location.search.replace("?", "&").split("&");
 
-          for (let i=0;i < searchParams.length; i++) {
+          for (let i = 0; i < searchParams.length; i++) {
                if (searchParams[i] !== "") {
                     const paramSpl = searchParams[i].split("=");
 
                     if (paramSpl[0] === "WatchListID" && paramSpl[1] !== "") {
-                         setWatchListDtlID(paramSpl[1]);
+                         setWatchListDtlID(parseInt(paramSpl[1], 10));
                     } else if (paramSpl[0] === "WatchListItemID" && paramSpl[1] !== "") {
-                         setWatchListItemDtlID(paramSpl[1]);
+                         setWatchListItemDtlID(parseInt(paramSpl[1], 10));
                     }
                }
           }
@@ -637,13 +667,13 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
                                                        </div>
                                                   }
 
-                                                  {watchListDtl?.Archived === true ? <span className={`${!darkMode ? "lightMode" : "darkMode"}`}>&nbsp;(A)</span> : <></>}
+                                                  {watchListDtl?.Archived === 1 ? <span className={`${!darkMode ? "lightMode" : "darkMode"}`}>&nbsp;(A)</span> : <></>}
                                              </>
                                         }
 
                                         {(isEditing || isAdding) && formattedNames &&
                                              <div className="narrow card">
-                                                  <Autocomplete id="wl_autocomplete" className={`labelWidth lightMode`} size="small" sx={{ width: 250, height: 40 }} {...defaultProps} options={formattedNames} value={autoComplete} onChange={(event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => autoCompleteChangeHandler(event)} renderInput={(params: typeof ReactNode) => <TextField {...params} label="Search" />} />
+                                                  <Autocomplete id="wl_autocomplete" className={`labelWidth lightMode`} size="small" sx={{ width: 250, height: 40 }} {...defaultProps} options={formattedNames} value={autoComplete} onChange={(event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => autoCompleteChangeHandler(event)} renderInput={(params: TextFieldProps) => <TextField {...params} label="Search" />} />
                                              </div>
                                         }
                                    </div>
@@ -669,8 +699,8 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
                                              </>
                                         }
 
-                                        {isAdding && addWatchListDtl && watchListItems?.filter((currentWatchListItem: typeof IWatchListItem) => String(currentWatchListItem?.WatchListItemID) === String(addWatchListDtl?.WatchListItemID)).length === 1 &&
-                                             <span className="column"><Image className="poster-detail" width="175" height="200" alt="Image Not Available" src={watchListItems?.filter((currentWatchListItem: typeof IWatchListItem) => String(currentWatchListItem?.WatchListItemID) === String(addWatchListDtl?.WatchListItemID))[0].IMDB_Poster ?? ""} /></span>
+                                        {isAdding && addWatchListDtl && watchListItems?.filter((currentWatchListItem: IWatchListItem) => String(currentWatchListItem?.WatchListItemID) === String(addWatchListDtl?.WatchListItemID)).length === 1 &&
+                                             <span className="column"><Image className="poster-detail" width="175" height="200" alt="Image Not Available" src={watchListItems?.filter((currentWatchListItem: IWatchListItem) => String(currentWatchListItem?.WatchListItemID) === String(addWatchListDtl?.WatchListItemID))[0].IMDB_Poster ?? ""} /></span>
                                         }
                                    </div>
 
@@ -686,7 +716,7 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
                                              <select className="selectStyle editing" autoFocus value={addWatchListDtl?.WatchListItemID} onChange={(event) => addWatchListDetailChangeHandler("WatchListItemID", event.target.value)}>
                                                   <option value="-1">Please select</option>
 
-                                                  {formattedNamesWithId && formattedNamesWithId.map((watchListItem: typeof IWatchListItem, index: number) => {
+                                                  {formattedNamesWithId && formattedNamesWithId.map((watchListItem: IWatchListItem, index: number) => {
                                                        return (
                                                             <option key={index} value={watchListItem?.WatchListItemID}>
                                                                  {watchListItem?.WatchListItemName}
@@ -702,9 +732,9 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
                                              <select className="selectStyle editing" autoFocus value={watchListDtl?.WatchListItemID} onChange={(event) => watchListDetailChangeHandler("WatchListItemID", event.target.value)}>
                                                   <option value="-1">Please select</option>
 
-                                                  {watchListItems?.sort((a: typeof IWatchListItem, b: typeof IWatchListItem) => {
+                                                  {watchListItems?.sort((a: IWatchListItem, b: IWatchListItem) => {
                                                        return String(a.WatchListItemName) > String(b.WatchListItemName) ? (watchListSortDirection === "ASC" ? 1 : -1) : watchListSortDirection === "ASC" ? -1 : 1;
-                                                  }).map((watchListItem: typeof IWatchListItem, index: number) => {
+                                                  }).map((watchListItem: IWatchListItem, index: number) => {
                                                        return (
                                                             <option key={index} value={watchListItem.WatchListItemID}>
                                                                  {watchListItem.WatchListItemName}
@@ -778,7 +808,7 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
                                              <select className="selectStyle" value={watchListDtl?.WatchListSourceID} onChange={(event) => watchListDetailChangeHandler("WatchListSourceID", event.target.value)}>
                                                   <option value="-1">Please select</option>
 
-                                                  {watchListSources?.map((watchListSource: typeof IWatchListSource, index: number) => {
+                                                  {watchListSources?.map((watchListSource: IWatchListSource, index: number) => {
                                                        return (
                                                             <option key={index} value={watchListSource?.WatchListSourceID}>
                                                                  {watchListSource?.WatchListSourceName}
@@ -792,7 +822,7 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
                                              <select className="selectStyle" value={addWatchListDtl?.WatchListSourceID} onChange={(event) => addWatchListDetailChangeHandler("WatchListSourceID", event.target.value)}>
                                                   <option value="-1">Please select</option>
 
-                                                  {watchListSources?.map((watchListSource: typeof IWatchListSource, index: number) => {
+                                                  {watchListSources?.map((watchListSource: IWatchListSource, index: number) => {
                                                        return (
                                                             <option key={index} value={watchListSource?.WatchListSourceID}>
                                                                  {watchListSource?.WatchListSourceName}
@@ -803,7 +833,7 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
                                         }
                                    </div>
 
-                                   {((isAdding && addWatchListDtl?.WatchListItemID !== "-1" && getWatchListTypeID(addWatchListDtl?.WatchListItemID) === 2) || (!isAdding && watchListDtl?.WatchListTypeID === 2)) &&
+                                   {((isAdding && addWatchListDtl !== null && addWatchListDtl?.WatchListItemID !== -1 && getWatchListTypeID(addWatchListDtl.WatchListItemID) === 2) || (!isAdding && watchListDtl?.WatchListTypeID === 2)) &&
                                         <>
                                              <div className="narrow card"></div>
 
@@ -833,7 +863,7 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
                                         <div className={`textLabel ${!darkMode ? " lightMode" : "darkMode"}`}>Notes:</div>
                                    </div>
 
-                                   <div className="marqueeText narrow card no-width">
+                                   <div className="narrow card no-width">
                                         {!isAdding && !isEditing &&
                                              <div className={`${!darkMode ? "lightMode" : "darkMode"}`}>{watchListDtl?.Notes}</div>
                                         }
@@ -905,14 +935,14 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
 
                                              {isAdding &&
                                                   <div className="narrow card">
-                                                       <input className={`lightMode`} type="checkbox" checked={addWatchListDtl?.Archived} onChange={(event) => addWatchListDetailChangeHandler("Archived", event.target.value)} />
+                                                       <input className={`lightMode`} type="checkbox" checked={addWatchListDtl?.Archived === 1 ? true : false} onChange={(event) => addWatchListDetailChangeHandler("Archived", event.target.value)} />
                                                   </div>
 
                                              }
 
                                              {isEditing &&
                                                   <div className="narrow card">
-                                                       <input className={`lightMode`} type="checkbox" checked={watchListDtl?.Archived} onChange={(event: React.ChangeEvent<HTMLInputElement>) => watchListDetailChangeHandler("Archived", event.target.checked)} />
+                                                       <input className={`lightMode`} type="checkbox" checked={watchListDtl?.Archived === 1 ? true : false} onChange={(event: React.ChangeEvent<HTMLInputElement>) => watchListDetailChangeHandler("Archived", event.target.checked)} />
                                                   </div>
                                              }
                                         </>

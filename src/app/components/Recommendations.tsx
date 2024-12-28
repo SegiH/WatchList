@@ -1,15 +1,10 @@
-const axios = require("axios");
-const exact = require("prop-types-exact");
+import axios, { AxiosResponse } from "axios";
+import React, { useContext, useEffect, useState } from "react";
+import exact from "prop-types-exact";
 import Image from 'next/image';
-const IRecommendation = require("../interfaces/IRecommendation");
-const MuiIcon = require("@mui/icons-material").MuiIcon;
-const PropTypes = require("prop-types");
-const React = require("react");
-const useContext = require("react").useContext;
-const useEffect = require("react").useEffect;
-const useState = require("react").useState;
-
+import PropTypes from 'prop-types';
 import { DataContext, DataContextType } from "../data-context";
+import IRecommendation from "../interfaces/IRecommendation";
 
 const Recommendations = ({ queryTerm, setRecommendationName, setRecommendationType, setRecommendationsVisible, type }:
      {
@@ -24,7 +19,7 @@ const Recommendations = ({ queryTerm, setRecommendationName, setRecommendationTy
           darkMode
      } = useContext(DataContext) as DataContextType
 
-     const [recommendations, setRecommendations] = useState([]);
+     const [recommendations, setRecommendations] = useState<IRecommendation[]>([]);
      const [recommendationsError, setRecommendationsError] = useState(false);
      const [recommendationsLoadingStarted, setRecommendationsLoadingStarted] = useState(false);
      const [recommendationsLoadingComplete, setRecommendationsLoadingComplete] = useState(false);
@@ -36,9 +31,9 @@ const Recommendations = ({ queryTerm, setRecommendationName, setRecommendationTy
      }
 
      const showDefaultSrc = (id: number) => (): void => {
-          const newRecommendations = Object.assign([], recommendations);
+          const newRecommendations: IRecommendation[] = Object.assign([], recommendations);
 
-          newRecommendations.filter((currentRecommendation: typeof IRecommendation) => {
+          newRecommendations.filter((currentRecommendation: IRecommendation) => {
                return String(currentRecommendation.id) === String(id);
           });
 
@@ -49,7 +44,7 @@ const Recommendations = ({ queryTerm, setRecommendationName, setRecommendationTy
 
           newRecommendations[0]["Image_Error"] = true;
 
-          setRecommendationName(newRecommendations);
+          setRecommendations(newRecommendations);
      }
 
      useEffect(() => {
@@ -58,7 +53,7 @@ const Recommendations = ({ queryTerm, setRecommendationName, setRecommendationTy
 
                const url = `/api/Recommendations?SearchTerm=${encodeURIComponent(queryTerm)}&Type=${type}`;
 
-               axios.get(url).then((res: typeof IRecommendation) => {
+               axios.get(url).then((res: AxiosResponse<IRecommendation>) => {
                     setRecommendationsLoadingComplete(true);
 
                     if (res.data[0] === "OK") {
@@ -93,14 +88,14 @@ const Recommendations = ({ queryTerm, setRecommendationName, setRecommendationTy
                          </>
                     }
 
-                    {recommendationsLoadingComplete && recommendations && recommendations.length > 0 && recommendations.map((recommendation: typeof IRecommendation, index: number) => {
+                    {recommendationsLoadingComplete && recommendations && recommendations.length > 0 && recommendations.map((recommendation: IRecommendation, index: number) => {
                          return (
                               <li className="show-item" key={index}>
                                    <span>
                                         {typeof recommendation.name !== "undefined"
                                              ? recommendation.name
-                                             : typeof recommendation.title !== "undefined"
-                                                  ? recommendation.title
+                                             : typeof recommendation.Title !== "undefined"
+                                                  ? recommendation.Title
                                                   : ""
                                         }
                                    </span>

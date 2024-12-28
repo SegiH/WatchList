@@ -1,6 +1,4 @@
 import { NextRequest } from 'next/server';
-const axios = require("axios");
-const https = require('https');
 import { fetchData, getRapidAPIKey, isLoggedIn } from '../lib';
 /**
  * @swagger
@@ -48,7 +46,7 @@ export async function GET(request: NextRequest) {
           return Response.json(["ERROR", "API key is not set"]);
      }
 
-     const results: any = [];
+     const results: [{}] = [{}];
 
      try {
           for (let i = 0; i < parseInt(searchCount !== null ? searchCount : "10", 10); i++) {
@@ -63,13 +61,12 @@ export async function GET(request: NextRequest) {
                     },
                };
 
-
-               const result: any = await fetchData(options);
+               const result = await fetchData(options);
 
                if (typeof result.Search !== "undefined") {
                     try {
-                    results.push(...result.Search);
-                    } catch(e) {}
+                         results.push(...result.Search);
+                    } catch (e) { }
                }
           }
 

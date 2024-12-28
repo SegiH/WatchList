@@ -1,8 +1,7 @@
 import { NextRequest } from 'next/server';
 import { addUser, bugLogsSQL, DBFile, defaultSources, defaultTypes, execSelect, optionsSQL, watchListSQL, watchListItemsSQL, watchListSourcesSQL, watchListTypesSQL, usersSQL } from "../lib";
 import fs from 'fs';
-
-const sqlite3 = require('sqlite3').verbose();
+import sqlite3 from "sqlite3";
 
 /**
  * @swagger
@@ -48,7 +47,7 @@ export async function PUT(request: NextRequest) {
      }
 
      // Create new WatchList DB
-     const dbResult: any = await new Promise((resolve, reject) => {
+     const dbResult: string[] = await new Promise((resolve, reject) => {
           new sqlite3.Database(DBFile, sqlite3.OPEN_READWRITE | sqlite3.OPEN_CREATE, (err) => {
               if (err) {
                   reject(new Error(`An error occurred creating a new database with the error ${err.message}`));

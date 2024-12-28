@@ -62,7 +62,7 @@ export async function PUT(request: NextRequest) {
     }
 
     let SQL = "UPDATE BugLogs SET ";
-    let params: any = [];
+    let params: string[] = [];
 
     if (bugLogName !== null) {
         SQL += "WLBugName=?";

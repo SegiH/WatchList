@@ -1,6 +1,7 @@
 "use client"
-const useContext = require("react").useContext;
-const useRouter = require("next/navigation").useRouter;
+
+import { useContext } from "react";
+import { useRouter } from 'next/navigation';
 
 import { DataContext, DataContextType } from "../data-context";
 

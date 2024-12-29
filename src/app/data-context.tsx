@@ -861,9 +861,19 @@ const DataProvider = ({ children }) => {
           fetch('/build-info.json')
                .then((response) => response.json())
                .then((data) => {
-                    //setBuildDate(getFormattedDate(data.buildDate.substring(0, 10), "-"));
-                    const buildDateStr = new Date(data.buildDate).toLocaleString().replace(",", "");
-                    setBuildDate(buildDateStr);
+                    const language = typeof navigator.languages != undefined ? navigator.languages[0] : "en-us";
+                    const options: Intl.DateTimeFormatOptions = {
+                         year: '2-digit',
+                         month: '2-digit',
+                         day: '2-digit',
+                         hour: '2-digit',
+                         minute: '2-digit',
+                         hour12: true
+                    };
+
+                    const newBuildDate = new Date(data.buildDate).toLocaleDateString(language, options).replace(",", "");
+
+                    setBuildDate(newBuildDate);
                });
      }, []);
 

@@ -54,6 +54,7 @@ export default function SearchIMDB() {
      const router = useRouter();
 
      const addIMDBSearchResultClickHandler = (index: number) => {
+          debugger
           let itemType = 0; ``
 
           if (imdbSearchResults[index].Type === "movie") {
@@ -72,7 +73,7 @@ export default function SearchIMDB() {
 
           let paramStr = `/api/AddWatchListItem?WatchListItemName=${imdbSearchResults[index].Title}&WatchListTypeID=${itemType}`;
 
-          paramStr += `&IMDB_URL=https://www.imdb.com/title/${imdbSearchResults[index].ImdbID}/`;
+          paramStr += `&IMDB_URL=https://www.imdb.com/title/${imdbSearchResults[index].imdbID}/`;
 
           paramStr += `&IMDB_Poster=${imdbSearchResults[index].Poster}`;
 

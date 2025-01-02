@@ -103,10 +103,15 @@ export default function WatchListDetail() {
           showSearch();
      };
 
-     const addWatchListDetailChangeHandler = (fieldName: string, fieldValue: string | number) => {
+     const addWatchListDetailChangeHandler = (fieldName: string, fieldValue: string | number | boolean) => {
           const newAddWatchListDtl = Object.assign({}, addWatchListDtl);
 
-          newAddWatchListDtl[fieldName] = fieldValue;
+          if (fieldName === "Archived") {
+               newAddWatchListDtl[fieldName] = fieldValue === true ? 1 : 0;
+          } else {
+               newAddWatchListDtl[fieldName] = fieldValue;
+          }
+
           newAddWatchListDtl.IsModified = true;
 
           setAddWatchListDtl(newAddWatchListDtl);
@@ -191,14 +196,17 @@ export default function WatchListDetail() {
      }, [currentDate]);
 
      const getRatingIcon = (index: number) => {
-          if (addWatchListDtl === null) {
-               return EmptyIconComponent;
-          } else if (isAdding)
-               return addWatchListDtl?.Rating > index + 0.5 ? FullIconComponent : addWatchListDtl?.Rating === index + 0.5 ? HalfIconComponent : EmptyIconComponent;
-          else if (watchListDtl === null) {
-               return EmptyIconComponent;
-          }
+          if (isAdding)
+               if (addWatchListDtl === null) {
+                    return EmptyIconComponent;
+               } else {
+                    return addWatchListDtl?.Rating > index + 0.5 ? FullIconComponent : addWatchListDtl?.Rating === index + 0.5 ? HalfIconComponent : EmptyIconComponent;
+               }
           else {
+               if (watchListDtl === null) {
+                    return EmptyIconComponent;
+               }
+
                return watchListDtl?.Rating > index + 0.5 ? FullIconComponent : watchListDtl?.Rating === index + 0.5 ? HalfIconComponent : EmptyIconComponent;
           }
      };
@@ -218,11 +226,11 @@ export default function WatchListDetail() {
      const ratingClickHandler = (index: number) => {
           if (!isAdding && !isEditing) return true;
 
-          if (addWatchListDtl === null) {
-               return;
-          }
-
           if (isAdding) {
+               if (addWatchListDtl === null) {
+                    return;
+               }
+
                if (String(addWatchListDtl?.Rating + ".0") === String(index + ".0")) {
                     addWatchListDtl.Rating = index + 0.5;
                } else if (String(addWatchListDtl?.Rating) === String(index + ".5")) {
@@ -232,8 +240,6 @@ export default function WatchListDetail() {
                }
 
                addWatchListDetailChangeHandler("Rating", addWatchListDtl.Rating);
-
-               return;
           } else {
                if (watchListDtl !== null) {
                     const newWatchListDtl = Object.assign({}, watchListDtl);
@@ -250,7 +256,7 @@ export default function WatchListDetail() {
 
                     watchListDetailChangeHandler("Rating", watchListDtl.Rating.toString());
                } else { // This shouldn't ever happen
-                    console.log("watchListDtl is null in dtl for id" + watchListDtlID);
+                    alert("watchListDtl is null in dtl for id" + watchListDtlID);
                     return;
                }
           }
@@ -433,10 +439,15 @@ export default function WatchListDetail() {
           }
      }
 
-     const watchListDetailChangeHandler = (fieldName: string, fieldValue: boolean | string) => {
+     const watchListDetailChangeHandler = (fieldName: string, fieldValue: boolean | string | boolean) => {
           const newWatchListDtl = Object.assign({}, watchListDtl);
 
-          newWatchListDtl[fieldName] = fieldValue;
+          if (fieldName === "Archived") {
+               newWatchListDtl[fieldName] = fieldValue === true ? 1 : 0;
+          } else {
+               newWatchListDtl[fieldName] = fieldValue;
+          }
+
           newWatchListDtl[`${fieldName}IsModified`] = true;
 
           if (fieldName === "WatchListItemID") {
@@ -935,7 +946,7 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
 
                                              {isAdding &&
                                                   <div className="narrow card">
-                                                       <input className={`lightMode`} type="checkbox" checked={addWatchListDtl?.Archived === 1 ? true : false} onChange={(event) => addWatchListDetailChangeHandler("Archived", event.target.value)} />
+                                                       <input className={`lightMode`} type="checkbox" checked={addWatchListDtl?.Archived === 1 ? true : false} onChange={(event) => addWatchListDetailChangeHandler("Archived", event.target.checked)} />
                                                   </div>
 
                                              }

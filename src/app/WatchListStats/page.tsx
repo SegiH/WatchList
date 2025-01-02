@@ -22,7 +22,6 @@ import IWatchListWeeklyMovieStat from "../interfaces/IWatchListWeeklyMovieStat";
 
 import { DataContext, DataContextType } from "../data-context";
 
-import "../page.css";
 import "../css/tablestyle.css";
 import "./watchliststats.css";
 

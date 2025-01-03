@@ -581,7 +581,22 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
                     return { name: itemName };
                });
 
-               const namesWithIdSorted = namesOnlyItems.sort();
+               const namesWithIdSorted = namesOnlyItems.sort((a: any, b: any) => {
+                    // Convert names to lowercase for case-insensitive sorting
+                    const nameA = a.name.toLowerCase().trim();
+                    const nameB = b.name.toLowerCase().trim();
+
+                    // Compare the names
+                    if (nameA < nameB) {
+                         return -1;
+                    }
+                    if (nameA > nameB) {
+                         return 1;
+                    }
+
+                    // Names are equal
+                    return 0;
+               });
 
                setFormattedNames(namesWithIdSorted);
 

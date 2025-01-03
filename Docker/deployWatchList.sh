@@ -1,7 +1,7 @@
 #!/bin/bash 
  
  # If you have a zip file named watchlist.zip in the same location as this script, this script will use that.
- # If you have a Directory named WatchList but do not have watchlist.zip in the same location as this script, you can use the parameter --use-existing to redeploy WatchList using the WatchList directory.
+ # If you have a directory named WatchList but do not have watchlist.zip in the same location as this script, you can use the parameter --use-existing to redeploy WatchList using the existing WatchList directory.
  # If you do not have a zip file named watchlist.zip and do not have a directory named WatchList in the current directory, the latest code will be pulled from Github and used to build this app
  COMPOSE_SCRIPT=/home/JohnDoe/secure-files/WatchList/docker-compose.yml
  CONFIG_FILE=/home/JohnDoe/WatchList/config/default.json
@@ -31,7 +31,7 @@
       exit 1
  fi
  
- # The only command line parameter allowed is in USE_EXISTING_PARAM
+ # The only command line parameter allowed is USE_EXISTING_PARAM
  if [[ "$1" != "" ]] && [[ "$1" != "$USE_EXISTING_PARAM" ]]; then
       echo "An invalid parameter was provided"
       exit 1

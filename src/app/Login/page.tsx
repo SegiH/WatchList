@@ -1,7 +1,7 @@
 "use client"
 
 import axios, { AxiosResponse } from "axios";
-import React, { useCallback, useContext, useEffect, useState } from "react";
+import React, { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import IUser from "../interfaces/IUser";
 import IUserData from "../interfaces/IUserData";
@@ -30,6 +30,9 @@ export default function Login() {
      const [password, setPassword] = useState("");
      const [username, setUsername] = useState("");
      const [loginSubmitted, setLoginSubmitted] = useState(false);
+     const [userNameNeedsFocus, setUserNameNeedsFocus] = useState(false);
+
+     const usernameRef: any = useRef(null)
 
      const router = useRouter();
 
@@ -40,7 +43,11 @@ export default function Login() {
           }
      }
 
-     const login = () => {
+     const login = (e?: any) => {
+          if (e !== null) {
+               e.preventDefault();
+          }
+
           if (username === null || username === "") {
                alert("Please enter the username");
                return;
@@ -94,6 +101,7 @@ export default function Login() {
                     } else {
                          alert(res.data[1]);
                          setLoginSubmitted(false);
+                         setUserNameNeedsFocus(true);
                     }
                })
                .catch((err: Error) => {
@@ -111,7 +119,7 @@ export default function Login() {
      };
 
      const loginSuccessfullActions = useCallback(async (response: IUser) => {
-          const newUserData: IUserData = { UserID: 0, Username: "", Admin: false};
+          const newUserData: IUserData = { UserID: 0, Username: "", Admin: false };
 
           try {
                if (typeof response.UserID !== "undefined") {
@@ -154,18 +162,24 @@ export default function Login() {
           }
      }, []);
 
+     useEffect(() => {
+          if (userNameNeedsFocus && usernameRef.current) {
+               usernameRef.current.focus();
+          }
+     }, [userNameNeedsFocus]);
+
      return (
           <>
                {isLoggedInCheckComplete &&
                     <div className={`login-page`}>
                          <div className="form">
-                              <form className="login-form">
+                              <form className="login-form" onSubmit={login}>
                                    <span className={`login-label ${!darkMode ? " lightMode" : " darkMode"}`}>WatchList Login</span>
-                                   <input type="text" autoFocus disabled={loginSubmitted} value={username} placeholder="username" required onChange={(event) => setUsername(event.target.value)} onKeyUp={handleKeyUp} />
+                                   <input type="text" autoFocus disabled={loginSubmitted} value={username} placeholder="username" required onChange={(event) => setUsername(event.target.value)} onKeyUp={handleKeyUp} ref={usernameRef} />
                                    <input type="password" disabled={loginSubmitted} value={password} placeholder="password" required onChange={(event) => setPassword(event.target.value)} onKeyUp={handleKeyUp} />
 
                                    {!loginSubmitted &&
-                                        <button type="button" onClick={login}>
+                                        <button type="submit">
                                              Login
                                         </button>
                                    }

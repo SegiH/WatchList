@@ -107,11 +107,11 @@ export default function Setup() {
                               <span className={`login-label ${!darkMode ? " lightMode" : " darkMode"}`}>WatchList Setup</span>
 
                               <input type="text" autoFocus disabled={submitClicked} value={realname} placeholder="Name" required onChange={(event) => setRealname(event.target.value)} onKeyUp={handleKeyUp} />
-                              <input type="text" autoFocus disabled={submitClicked} value={username} placeholder="Username" required onChange={(event) => setUsername(event.target.value)} onKeyUp={handleKeyUp} />
+                              <input type="text" disabled={submitClicked} value={username} placeholder="Username" required onChange={(event) => setUsername(event.target.value)} onKeyUp={handleKeyUp} />
 
-                              <input type="password" autoFocus disabled={submitClicked} value={password} placeholder="Password" required onChange={(event) => setPassword(event.target.value)} onKeyUp={handleKeyUp} />
+                              <input type="password" disabled={submitClicked} value={password} placeholder="Password" required onChange={(event) => setPassword(event.target.value)} onKeyUp={handleKeyUp} />
 
-                              <input type="password" autoFocus disabled={submitClicked} value={confirmPassword} placeholder="Confirm password" required onChange={(event) => setConfirmPassword(event.target.value)} onKeyUp={handleKeyUp} />
+                              <input type="password" disabled={submitClicked} value={confirmPassword} placeholder="Confirm password" required onChange={(event) => setConfirmPassword(event.target.value)} onKeyUp={handleKeyUp} />
 
                               {!submitClicked &&
                                    <button type="button" onClick={setupClickHandler}>

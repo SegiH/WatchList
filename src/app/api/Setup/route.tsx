@@ -1,5 +1,5 @@
 import { NextRequest } from 'next/server';
-import { addUser, bugLogsSQL, DBFile, defaultSources, defaultTypes, execSelect, optionsSQL, watchListSQL, watchListItemsSQL, watchListSourcesSQL, watchListTypesSQL, usersSQL } from "../lib";
+import { addUser, bugLogsSQL, DBFile, defaultSources, defaultTypes, execSelect, optionsSQL, visibleSectionsSQL, watchListSQL, watchListItemsSQL, watchListSourcesSQL, watchListTypesSQL, usersSQL } from "../lib";
 import fs from 'fs';
 import sqlite3 from "sqlite3";
 
@@ -69,6 +69,7 @@ export async function PUT(request: NextRequest) {
           await execSelect(usersSQL, []);
           await execSelect(bugLogsSQL, []);
           await execSelect(optionsSQL, []);
+          await execSelect(visibleSectionsSQL, []);
 
           defaultSources.forEach(async (element) => {
                const SQL = "INSERT INTO WatchListSources (WatchListSourceName) VALUES (?)";

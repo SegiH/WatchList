@@ -14,7 +14,9 @@
   "scripts": {
     "dev": "node writeBuildDate.js && next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "prod-windows":  "mkdir .next/standalone/config && copy config\\default.json .next\\standalone\\config && xcopy /e /i public .next/standalone && xcopy /e /i .next/static .next/standalone/.next",
+    "prod-unix": "mkdir .next/standalone/config && cp config/default.json .next/standalone/config/ && cp -r public/ .next/standalone && cp -r .next/static .next/standalone/.next"
   },
   "dependencies": {
     "@emotion/react": "^11.11.3",

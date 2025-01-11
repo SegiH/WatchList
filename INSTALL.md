@@ -1,22 +1,41 @@
-WatchList can be set up to run as a regular web application or a Progressive Web Application (PWA). It can also be run as a Docker container.
+WatchList can be run as a regular web application, a Progressive Web Application (PWA) or in a Docker container.
 
-Requirements: Node 20.7.0+
+Requirements: Node 18.19.1 or higher
 
-## Setup WatchList as a web app
+# Installation
+1. Download the latest release from the releases and extract the zip
+1. Edit config\default.json and fill in the secret. It needs to be a long, secure password that will be used to encrypt your database. If you lose this secret, there is no way to recover it and you will not be able to use your WatchList database.
+1. Run `node server.js` to start the server
+1. See "Setup up user account for first time user" below.
+
+# Build from source
 1. Check out the source from Github and go to the root directory of the project.
 1. If you are setting up WatchList for the first time, make sure you do not already have a file in the root of your project named watchlistdb.sqlite. If it does exist, delete or rename it.
-1. Edit config\default.json and fill in the following values:
-   - Secret: Create a long and secure password that will be used to encrypt your database. If you lose this password, you may not be able to use your WatchList database.
+1. Edit config\default.json and fill in the secret. It needs to be a long, secure password that will be used to encrypt your database. If you lose this secret, there is no way to recover it and you will not be able to use your WatchList database.
 1. Run `npm install`
 1. Run `npm run build`
-1. Run `npm run start`
-1. Visit http://localhost:3000 in your browser. You should see the Setup page to set up a new account. This account will automatically be a WatchList admin account.
+1. If you use Windows run `npm run prod-windows`, otherwise run `npm run prod-unix`
+1. Go to the standalone directory `cd .next/standalone`
+1. Run `node server.js`
+1. See "Setup up user account for first time user" below.
+
+# Docker
+1. Make sure you have watchlistdb.sqlite in the root of WatchList directory. If not, see "Setup up user account for first time user" below.
+1. If you downloaded WatchList from the releases section of GitHub, download [Docker/Dockerfile](https://github.com/SegiH/WatchList/blob/main/Docker/Dockerfile) from the [WatchList repo](https://github.com/SegiH/WatchList).
+1. Build the Docker image using the Dockerfile: `docker buildx build . -t watchlist`
+1. If you downloaded WatchList from the releases section of GitHub, download [docker-compose.yml](https://github.com/SegiH/WatchList/blob/main/Docker/docker-compose.yml) from the [WatchList repo](https://github.com/SegiH/WatchList).
+1. Edit docker-compose.yml and update the volume path to watchlistdb.sqlite as needed and your network name to match your Docker network. You can create a docker network if you haven't done so already with the command `docker network create YourNetworkName`.
+1. Build the Docker container: `docker-compose up -d`.
+
+# Setup up user account for first time user
+1. Visit [http://localhost:3000](http://localhost:3000) in your browser. You should see the Setup page to set up a new account. This account will automatically be a WatchList admin account.
 1. Enter the following fields:
-   - Name: Name of the new admin
+   - Name: Name of the new admin account holder
    - Username: New user name
    - Password: Password that is complex. The password requirements are: 1 lowercase alphabetical character, 1 uppercase alphabetical character, 1 numeric, 1 special char, 8 chars long minimum.
 1. Once you click on "Create the new account", you should see a message that says that the account creation was successfull. You should now be redirected back to the Login page at /Login.
 1. Login using the credentials that you created above.
+1. After completing this setup up, you should have a file name watchlistdb.sqlite. This is your watchlist database.
 
 ## Searching IMDB
 WatchList will allow you to search for a movie or tv show on IMDB.com. To do this, you need to create a free RAPIDAPI Key. 
@@ -31,7 +50,7 @@ Note: RapidAPI allows you 1000 free searches per month. In order for this API to
 1. On the next page, enter a short description and click on Save
 1. Click on the down arrow next to your application name and select Security underneath the sub menu
 1. Click on the eye icon to show your API key and copy it to the clipboard.
-1. Paste the API key into the config\default.json file for "RapidAPIKey".
+1. Edit config\default.json file and paste the API key into the "RapidAPIKey" key.
 
 ## Recommendations
 You can get recommendations from a movie or TV show. This requires an api key from themoviedb.com which is completely free and does not require you to add a credit card.
@@ -40,33 +59,7 @@ You can get recommendations from a movie or TV show. This requires an api key fr
 1. Click on the avatar icon at the top right and go to settings
 1. Click on API
 1. Copy the "API Read Access Token"
-1. Paste the API key into the config\default.json file for "RecommendationsAPIKey".
-
-## First time Docker setup
-1. Follow the instructions above but do not log in at the last step`.
-1. If you ran the command `npm run start` above and it is still running, stop npm.
-1. Make sure that you have a file named watchlistdb.sqlite in the root of your project. If you don't, you did not complete the setup properly.
-1. Follow the Manual Docker Build instructions when setting up WatchList for the first time.
-
-## Automated Docker Build
-Once WatchList has been set up in Docker fir the first time, you can easily upgrade it using a bash script for Linux/Mac or a PowerShell script for Windows that can automatically build and deploy WatchList as a Docker container.
-
-You will need to have 3 files stored somewhere on your host where the script can access these files and complete this preparation once.
-
-COMPOSE_SCRIPT - The path to the file docker-compose.yml (See the example in the Docker folder).
-CONFIG_FILE - A copy of the file default.json that you edited above when setting up WatchList.
-DB_FILE - A copy of the file watchlistdb.sqlite which should have been created automatically when setting up WatchList for the first time.
-
-Linux: Edit `deployWatchList.sh` and make sure that the variables are configured and point to their respective files: COMPOSE_SCRIPT, CONFIG_FILE and DB_FILE point to their respective files.
-
-Windows: Edit `deployWatchList.ps1` and make sure that the variables are configured and point to their respective files: $COMPOSE_SCRIPT, $CONFIG_FILE and $DB_FILE point to their respective files.
-
-Once this is done, run `./deployWatchList.sh` in Linux or `powershell -file deployWatchList.ps1` in Windows
-
-## Manual Docker Build 
-1. Build the Docker image: `docker buildx build . -t watchlist`.
-1. Edit docker-compose.yml and update the volume path to watchlistdb.sqlite as needed and your network name to match your Docker network. You can create a docker network if you haven't done so already with the command `docker network create YourNetworkName`.
-1. Build the Docker container: `docker-compose up -d`.
+1. Edit config\default.json file and paste the API key into the "RecommendationsAPIKey" key
 
 ## Progressive Web Application (PWA).
 WatchList can be used as a desktop application by installing it as a PWA.
@@ -86,4 +79,4 @@ If you cannot log into WatchList with the admin account, you can reset the passw
 
 ## Known Issues:
 
-If you search for a movie or show that is pretty new, you may not be able to find it when searching and have to add a WatchList Item manually.
+If you search for a movie or show that is pretty new, you may not be able to find it when searching and have to add a WatchList Item manually. This happens because RapidAPI does not have the media in their database right away.

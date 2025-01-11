@@ -1,11 +1,18 @@
-FROM node
+FROM node:18.19.1-alpine
 
-COPY . /app
+RUN apk add --no-cache libc6-compat
 
 WORKDIR /app
 
-RUN npm install
+COPY . .
 
-RUN npm run build
+RUN npm i sqlite3
 
-CMD [ "npm", "run", "start" ]
+ENV NODE_ENV=production
+ENV NEXT_TELEMETRY_DISABLED=1
+
+EXPOSE 3000
+
+ENV PORT=3000
+
+CMD HOSTNAME="0.0.0.0" node server.js

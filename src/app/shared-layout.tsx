@@ -22,7 +22,9 @@ const SharedLayout = () => {
           demoMode,
           getDisplayName,
           hideTabs,
+          isAdding,
           isAdmin,
+          isEditing,
           isError,
           isLoggedIn,
           isVisible,
@@ -94,7 +96,7 @@ const SharedLayout = () => {
      }
 
      return (
-          <span>
+          <span className={`${isAdding || isEditing ? "no-pull-to-refresh" : ""}`}>
                {!isError &&
                     <>
                          {isLoggedIn && watchListSourcesLoadingComplete && watchListTypesLoadingComplete &&

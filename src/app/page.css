@@ -199,11 +199,11 @@ input:checked+.slider:before {
 .editsaveCancelButton {
      display: inline-flex;
      transform: scale(1.6);
-     top:-8px;
+     top: -8px;
 }
 
 .error {
-     color:rgb(211, 47, 47);
+     color: rgb(211, 47, 47);
 }
 
 .fa {
@@ -319,7 +319,7 @@ input:checked+.slider:before {
      margin-left: 40px;
 }
 
-.leftMargin50 { 
+.leftMargin50 {
      margin-left: 50px;
 }
 
@@ -351,7 +351,8 @@ input:checked+.slider:before {
      white-space: nowrap;
      overflow: scroll;
      max-width: 200px;
-}  
+}
+
 .menuBar {
      align-items: center;
      border-radius: 15px;
@@ -456,6 +457,11 @@ input:checked+.slider:before {
      font-family: none !important;
 }
 
+.no-pull-to-refresh {
+     overflow: hidden;
+     overscroll-behavior: none;
+}
+
 .no-width {
      width: unset;
 }
@@ -549,14 +555,14 @@ input:checked+.slider:before {
      max-height: 33px;
 }
 
-.searchIcon.darkMode > svg {
+.searchIcon.darkMode>svg {
      color: black !important;
      background-color: white !important;
      border-top-right-radius: 10px !important;
      border-bottom-right-radius: 10px !important;
 }
 
-.searchIcon.lightMode > svg {
+.searchIcon.lightMode>svg {
      background-color: white !important;
      border-top-right-radius: 10px !important;
      border-bottom-right-radius: 10px !important;

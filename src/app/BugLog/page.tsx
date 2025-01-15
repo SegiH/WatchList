@@ -152,7 +152,7 @@ export default function BugLog() {
           columns += (columns === `` ? `?` : `&`) + `WLBugName=${encodeURIComponent(currentBugLog.WLBugName)}`;
           columns += (columns === `` ? `?` : `&`) + `AddDate=${currentBugLog.AddDate}`;
 
-          if (typeof currentBugLog.CompletedDate !== "undefined" && currentBugLog.CompletedDate !== null) {
+          if (typeof currentBugLog.CompletedDate !== "undefined" && currentBugLog.CompletedDate !== null && currentBugLog.CompletedDate !== '') {
                columns += (columns === `` ? `?` : `&`) + `CompletedDate=${currentBugLog.CompletedDate}`;
           }
 
@@ -218,18 +218,23 @@ export default function BugLog() {
                     <span className="topMarginContent">
                          {bugLogsLoadingComplete &&
                               <span>
-                                   <Button
-                                        color="primary"
-                                        variant="contained"
-                                        className="borderRadius15 bottomMargin20"
-                                        onClick={() => enterAddModeClickHandler()}>
-                                        Add Bug Log
-                                   </Button>
+                                   {!isAdding && !isEditing &&
+                                        <>
+                                             <Button
+                                                  color="primary"
+                                                  variant="contained"
+                                                  className="borderRadius15 bottomMargin20"
+                                                  onClick={() => enterAddModeClickHandler()}>
+                                                  Add Bug Log
+                                             </Button>
 
-                                   <span className="leftMargin40">
-                                        Show Active Bug Logs
-                                        <input className={`${!darkMode ? "lightMode" : "darkMode"}`} type="checkbox" checked={showActiveBugLogs} onChange={(event) => setShowActiveBugLogs(event.target.checked)} />
-                                   </span>
+
+                                             <span className="leftMargin40">
+                                                  Show Active Bug Logs
+                                                  <input className={`${!darkMode ? "lightMode" : "darkMode"}`} type="checkbox" checked={showActiveBugLogs} onChange={(event) => setShowActiveBugLogs(event.target.checked)} />
+                                             </span>
+                                        </>
+                                   }
                               </span>
                          }
 
@@ -282,7 +287,7 @@ export default function BugLog() {
                                                   </td>
 
                                                   <td>
-                                                       <TextField type="date" className={`lightMode borderRadius15 minWidth150`} margin="dense" id="completedOn" value={addingBugLog.CompletedDate} variant="standard" onChange={(event: React.ChangeEvent<HTMLTextAreaElement>) => bugLogChangeHandler("Completed", event.target.value)} />
+                                                       <TextField type="date" className={`lightMode borderRadius15 minWidth150`} margin="dense" id="completedOn" value={addingBugLog.CompletedDate} variant="standard" onChange={(event: React.ChangeEvent<HTMLTextAreaElement>) => bugLogChangeHandler("CompletedDate", event.target.value)} />
                                                   </td>
                                              </tr>
                                         }
@@ -329,7 +334,7 @@ export default function BugLog() {
                                                                  }
 
                                                                  {isEditing &&
-                                                                      <textarea readOnly={false} style={cssStyle} value={editingBugLog.WLBugName} rows={calculateRowCount(editingBugLog.WLBugName, editingBugLog.ResolutionNotes)} onChange={(event: React.ChangeEvent<HTMLTextAreaElement>) => bugLogChangeHandler("WLBugName", event.target.value)} />
+                                                                      <textarea readOnly={false} style={cssStyle} value={typeof editingBugLog.WLBugName !== "undefined" ? editingBugLog.WLBugName : ""} rows={calculateRowCount(editingBugLog.WLBugName, editingBugLog.ResolutionNotes)} onChange={(event: React.ChangeEvent<HTMLTextAreaElement>) => bugLogChangeHandler("WLBugName", event.target.value)} />
                                                                  }
                                                             </td>
 
@@ -339,7 +344,7 @@ export default function BugLog() {
                                                                  }
 
                                                                  {isEditing &&
-                                                                      <textarea readOnly={false} style={cssStyle} value={editingBugLog.ResolutionNotes} rows={calculateRowCount(editingBugLog.WLBugName, editingBugLog.ResolutionNotes)} onChange={(event: React.ChangeEvent<HTMLTextAreaElement>) => bugLogChangeHandler("ResolutionNotes", event.target.value)} />
+                                                                      <textarea readOnly={false} style={cssStyle} value={typeof editingBugLog.ResolutionNotes !== "undefined" ? editingBugLog.ResolutionNotes : ""} rows={calculateRowCount(editingBugLog.WLBugName, editingBugLog.ResolutionNotes)} onChange={(event: React.ChangeEvent<HTMLTextAreaElement>) => bugLogChangeHandler("ResolutionNotes", event.target.value)} />
                                                                  }
                                                             </td>
 
@@ -349,7 +354,7 @@ export default function BugLog() {
                                                                  }
 
                                                                  {isEditing &&
-                                                                      <TextField type="date" className={`lightMode borderRadius15 minWidth150`} margin="dense" id="addedOn" value={editingBugLog.AddDate} variant="standard" onChange={(event: React.ChangeEvent<HTMLTextAreaElement>) => bugLogChangeHandler("AddDate", event.target.value)} />
+                                                                      <TextField type="date" className={`lightMode borderRadius15 minWidth150`} margin="dense" id="addedOn" value={typeof editingBugLog.AddDate !== "undefined" ? editingBugLog.AddDate : ""} variant="standard" onChange={(event: React.ChangeEvent<HTMLTextAreaElement>) => bugLogChangeHandler("AddDate", event.target.value)} />
                                                                  }
                                                             </td>
 
@@ -359,7 +364,10 @@ export default function BugLog() {
                                                                  }
 
                                                                  {isEditing &&
-                                                                      <TextField type="date" className={`lightMode borderRadius15 minWidth150`} margin="dense" id="completedOn" value={editingBugLog.CompletedDate} variant="standard" onChange={(event: React.ChangeEvent<HTMLTextAreaElement>) => bugLogChangeHandler("Completed", event.target.value)} />
+                                                                      <>
+                                                                           {editingBugLog.CompletedDate}
+                                                                           <TextField type="date" className={`lightMode borderRadius15 minWidth150`} margin="dense" id="completedOn" value={typeof editingBugLog.CompletedDate !== "undefined" ? editingBugLog.CompletedDate : ""} variant="standard" onChange={(event: React.ChangeEvent<HTMLTextAreaElement>) => bugLogChangeHandler("CompletedDate", event.target.value)} />
+                                                                      </>
                                                                  }
                                                             </td>
 

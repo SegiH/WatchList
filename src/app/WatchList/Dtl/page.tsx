@@ -688,9 +688,11 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
                                                   }
 
                                                   {typeof watchListDtl?.IMDB_URL === "undefined" &&
-                                                       <div title={watchListDtl?.Tooltip} className={`${!darkMode ? "lightMode" : "darkMode"}`}>
-                                                            {watchListDtl?.WatchListItemName}
-                                                       </div>
+                                                       <>
+                                                            <div title={watchListDtl?.Tooltip} className={`${!darkMode ? "lightMode" : "darkMode"}`}>
+                                                                 {watchListDtl?.WatchListItemName}
+                                                            </div>
+                                                       </>
                                                   }
 
                                                   {watchListDtl?.Archived === 1 ? <span className={`${!darkMode ? "lightMode" : "darkMode"}`}>&nbsp;(A)</span> : <></>}
@@ -705,6 +707,8 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
                                    </div>
 
                                    <div className="narrow card rightAligned">
+                                        <div>ID: {watchListDtl?.WatchListID}</div>
+
                                         {!isAdding && !isEditing &&
                                              <span className={`clickable closeButton ${!darkMode ? " lightMode" : "darkMode"}`} onClick={closeDetail}>
                                                   X

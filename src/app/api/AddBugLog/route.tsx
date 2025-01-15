@@ -58,14 +58,15 @@ export async function PUT(request: NextRequest) {
           return Response.json({ "ERROR": "AddDate was not provided" });
      }
 
-     let SQL = `INSERT INTO BugLogs (WLBugName,AddDate`;
+     let SQL = `INSERT INTO BugLogs (WLBugName,AddDate,CompletedDate`;
      let valuePlaceholder = ' VALUES (?,?';
      let params = [bugLogName, addDate];
 
      if (completedDate !== null) {
-          SQL += ',CompletedDate';
           valuePlaceholder += ",?";
           params.push(completedDate);
+     } else {
+          valuePlaceholder += ", NULL"
      }
 
      SQL += ',ResolutionNotes';

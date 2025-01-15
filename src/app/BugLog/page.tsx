@@ -101,10 +101,14 @@ export default function BugLog() {
      }
 
      const enterAddModeClickHandler = () => {
+          const dateObj = new Date();
+
+          const newFormattedDate = `${dateObj.getFullYear()}-${String(dateObj.getMonth()+1).padStart(2, "0")}-${String(dateObj.getDate()).padStart(2, "0")}`
+
           setAddingBugLog({
                WLBugID: -1,
                WLBugName: "",
-               AddDate: "",
+               AddDate: newFormattedDate,
                CompletedDate: "",
                ResolutionNotes: "",
                IsModified: false,
@@ -364,10 +368,7 @@ export default function BugLog() {
                                                                  }
 
                                                                  {isEditing &&
-                                                                      <>
-                                                                           {editingBugLog.CompletedDate}
-                                                                           <TextField type="date" className={`lightMode borderRadius15 minWidth150`} margin="dense" id="completedOn" value={typeof editingBugLog.CompletedDate !== "undefined" ? editingBugLog.CompletedDate : ""} variant="standard" onChange={(event: React.ChangeEvent<HTMLTextAreaElement>) => bugLogChangeHandler("CompletedDate", event.target.value)} />
-                                                                      </>
+                                                                      <TextField type="date" className={`lightMode borderRadius15 minWidth150`} margin="dense" id="completedOn" value={typeof editingBugLog.CompletedDate !== "undefined" ? editingBugLog.CompletedDate : ""} variant="standard" onChange={(event: React.ChangeEvent<HTMLTextAreaElement>) => bugLogChangeHandler("CompletedDate", event.target.value)} />
                                                                  }
                                                             </td>
 

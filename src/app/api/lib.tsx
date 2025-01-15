@@ -280,7 +280,7 @@ export const loginSuccessfullActions = async (currentUser: IUser) => {
                UserID: currentUser[0].UserID,
                Username: decrypt(currentUser[0].Username),
                Realname: decrypt(currentUser[0].Realname),
-               Admin: currentUser[0].Admin,
+               Admin: currentUser[0].Admin === 1 ? true : false,
                Token: `${currentUser[0].Username}${tokenSeparator}${token}`,
                Timeout: timeout,
                Options: userOptions

@@ -52,6 +52,7 @@ export default function WatchListDetail() {
           setWatchListLoadingComplete,
           setWatchListSortingComplete,
           showSearch,
+          pullToRefreshEnabled,
           watchListItems,
           watchListSortDirection,
           watchListSources
@@ -177,6 +178,8 @@ export default function WatchListDetail() {
                setWatchListLoadingComplete(false);
                setWatchListSortingComplete(false);
           }
+
+          pullToRefreshEnabled(true);
 
           router.push("/WatchList");
      };
@@ -707,7 +710,9 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
                                    </div>
 
                                    <div className="narrow card rightAligned">
-                                        <div>ID: {watchListDtl?.WatchListID}</div>
+                                        {!isAdding &&
+                                             <div>ID: {watchListDtl?.WatchListID}</div>
+                                        }
 
                                         {!isAdding && !isEditing &&
                                              <span className={`clickable closeButton ${!darkMode ? " lightMode" : "darkMode"}`} onClick={closeDetail}>

@@ -26,6 +26,7 @@ export default function WatchListItemsDtl() {
           setErrorMessage,
           setWatchListItemsLoadingStarted,
           setWatchListItemsLoadingComplete,
+          pullToRefreshEnabled,
           watchListTypes
      } = useContext(DataContext) as DataContextType
 
@@ -81,6 +82,8 @@ export default function WatchListItemsDtl() {
                setWatchListItemsLoadingStarted(false);
                setWatchListItemsLoadingComplete(false);
           }
+
+          pullToRefreshEnabled(true);
 
           if (isVisible("Items")) {
                router.push("/Items");
@@ -411,7 +414,9 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
                                         }
                                    </div>
 
-                                   <div className="narrow card"><div>ID: {watchListItemDtl?.WatchListItemID}</div></div>
+                                   {!isAdding &&
+                                        <div className="narrow card"><div>ID: {watchListItemDtl?.WatchListItemID}</div></div>
+                                   }
 
                                    <div className="narrow card rightAligned">
                                         {!isAdding && !isEditing &&

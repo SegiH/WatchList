@@ -228,7 +228,7 @@ export const isUserAdmin = async (req: NextRequest) => {
 
      if (typeof userSession === "undefined" || (typeof userSession !== "undefined" && userSession.Admin === 0)) {
           return false;
-     } else if (userSession.Admin === 1) {
+     } else if (userSession.Admin === true) {
           return true;
      } else {
           return false;

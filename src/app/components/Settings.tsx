@@ -15,6 +15,7 @@ const Settings = () => {
           hideTabs,
           isLoggedIn,
           LogOutIconComponent,
+          pullToRefreshEnabled,
           setActiveRoute,
           setActiveRouteDisplayName,
           setArchivedVisible,
@@ -55,6 +56,8 @@ const Settings = () => {
      }
 
      const closeDetail = async () => {
+          pullToRefreshEnabled(true);
+
           setSettingsVisible(false);
      };
 

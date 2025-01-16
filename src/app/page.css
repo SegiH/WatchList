@@ -57,6 +57,11 @@
      }
 }
 
+html.no-pull-to-refresh {
+     overflow: hidden;
+     overscroll-behavior: none;
+}
+
 #multiselectContainerReact.lightMode .optionListContainer {
      color: var(--light-mode-foregroundColor) !important;
      background-color: var(--light-mode-backgroundColor) !important;
@@ -455,11 +460,6 @@ input:checked+.slider:before {
 
 .no-font {
      font-family: none !important;
-}
-
-.no-pull-to-refresh {
-     overflow: hidden;
-     overscroll-behavior: none;
 }
 
 .no-width {

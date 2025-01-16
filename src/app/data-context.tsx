@@ -161,6 +161,7 @@ export interface DataContextType {
      signOut: () => void;
      sourceFilter: number;
      stillWatching: boolean;
+     pullToRefreshEnabled: (value: boolean) => void;
      typeFilter: number;
      users: IUser[],
      userData: IUserData;
@@ -183,6 +184,7 @@ export interface DataContextType {
      watchListSourcesLoadingComplete: boolean;
      watchListTypesLoadingComplete: boolean;
 }
+
 const DataContext = createContext({} as DataContextType);
 
 const DataProvider = ({ children }) => {
@@ -350,11 +352,13 @@ const DataProvider = ({ children }) => {
           axios.get(`/api/IsLoggedIn${params}`)
                .then(async (res: AxiosResponse<IUser>) => {
                     if (res.data[0] === "OK") {
+                         pullToRefreshEnabled(true);
+
                          const newUserData = Object.assign({}, userData);
                          newUserData.UserID = res.data[1].UserID;
                          newUserData.Username = res.data[1].Username;
                          newUserData.RealName = res.data[1].RealName;
-                         newUserData.Admin = res.data[1].Admin === 1 ? true : false;
+                         newUserData.Admin = res.data[1].Admin;
 
                          localStorage.setItem("WatchList.Token", res.data[1].Token);
                          localStorage.setItem("WatchList.TokenExpiration", res.data[1].TokenExpiration);
@@ -372,6 +376,8 @@ const DataProvider = ({ children }) => {
 
                          router.push("/WatchList");
                     } else {
+                         pullToRefreshEnabled(false);
+
                          if (res.data[1] === false) {
                               setActiveRoute("Setup");
                               setActiveRouteDisplayName("Setup");
@@ -401,6 +407,9 @@ const DataProvider = ({ children }) => {
      }
 
      const openDetailClickHandler = useCallback((Id: number) => {
+          // Disable pull to refresh
+          pullToRefreshEnabled(false);
+
           if (activeRoute === "WatchList" && Id !== null) {
                if (Id === -1) {
                     setIsAdding(true);
@@ -459,6 +468,8 @@ const DataProvider = ({ children }) => {
      };
 
      const showSettings = () => {
+          pullToRefreshEnabled(false);
+
           setSettingsVisible(true);
      };
 
@@ -521,6 +532,14 @@ const DataProvider = ({ children }) => {
           setActiveRoute("Login");
 
           router.push("/Login");
+     }
+
+     const pullToRefreshEnabled = (enabled: boolean) => {
+          if (enabled) {
+               document.getElementsByTagName("html")[0].classList.remove("no-pull-to-refresh");
+          } else {
+               document.getElementsByTagName("html")[0].classList.add("no-pull-to-refresh");
+          }
      }
 
      const validatePassword = (value: string) => {
@@ -769,12 +788,16 @@ const DataProvider = ({ children }) => {
           let newRoute = "";
 
           if (!isLoggedIn) {
+               pullToRefreshEnabled(false);
+
                if (activeRoute === "Setup" || activeRoute === "Login") {
                     newRoute = activeRoute;
                } else {
                     newRoute = "Login";
                }
           } else {
+               pullToRefreshEnabled(true);
+
                const currentPath = location.pathname !== "" ? location.pathname : "";
 
                if (currentPath === routeList["Login"].Path && isLoggedIn) {
@@ -907,6 +930,14 @@ const DataProvider = ({ children }) => {
                document.removeEventListener('visibilitychange', handleVisibilityChange);
           };
      }, []);
+
+     useEffect(() => {
+          if (isAdding || isEditing) {
+               pullToRefreshEnabled(false);
+          } else {
+               pullToRefreshEnabled(true);
+          }
+     }, [isAdding, isEditing]);
 
      const routeList = {
           WatchList: {
@@ -1069,6 +1100,7 @@ const DataProvider = ({ children }) => {
           signOut: signOut,
           sourceFilter: sourceFilter,
           stillWatching: stillWatching,
+          pullToRefreshEnabled: pullToRefreshEnabled,
           typeFilter: typeFilter,
           users: users,
           userData: userData,

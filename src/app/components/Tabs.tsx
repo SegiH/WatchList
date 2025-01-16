@@ -22,6 +22,7 @@ const Tabs = () => {
           isLoggedIn,
           isLoggedInCheckComplete,
           isVisible,
+          pullToRefreshEnabled,
           routeList,
           setActiveRoute,
           setActiveRouteDisplayName,
@@ -33,6 +34,12 @@ const Tabs = () => {
           setActiveRoute(tabClicked);
 
           const path = getPath(tabClicked.replace("/", ""));
+
+          if (tabClicked === "Admin") {
+               pullToRefreshEnabled(false);
+          } else {
+               pullToRefreshEnabled(true);
+          }
 
           router.push(path);
 

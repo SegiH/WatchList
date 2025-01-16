@@ -256,6 +256,7 @@ const ManageUserAccounts = () => {
                          if (res.data[0] === "OK") {
                               setUsers(res.data[1]);
                          } else {
+                              alert(res.data[1])
                               setErrorMessage(res.data[1]);
                               setIsError(true);
                          }

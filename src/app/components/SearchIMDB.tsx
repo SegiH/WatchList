@@ -54,7 +54,6 @@ export default function SearchIMDB() {
      const router = useRouter();
 
      const addIMDBSearchResultClickHandler = (index: number) => {
-          debugger
           let itemType = 0; ``
 
           if (imdbSearchResults[index].Type === "movie") {

@@ -5,8 +5,9 @@ Requirements: Node 18.19.1 or higher
 # Installation
 1. Download the latest release from the releases and extract the zip
 1. Edit config\default.json and fill in the secret. It needs to be a long, secure password that will be used to encrypt your database. If you lose this secret, there is no way to recover it and you will not be able to use your WatchList database.
-1. Run `node server.js` to start the server
-1. See "Setup up user account for first time user" below.
+1. Optionally, see "Searching IMDB" to enable searching IMDB or "Recommendations" to get movie & TV show recommendations.
+1. Run `node server.js` to start the server.
+1. See "Setup up admin user account" below.
 
 # Build from source
 1. Check out the source from Github and go to the root directory of the project.
@@ -17,18 +18,18 @@ Requirements: Node 18.19.1 or higher
 1. If you use Windows run `npm run prod-windows`, otherwise run `npm run prod-unix`
 1. Go to the standalone directory `cd .next/standalone`
 1. Run `node server.js`
-1. See "Setup up user account for first time user" below.
+1. See "Setup up admin user account" below.
 
 # Docker
-1. Make sure you have watchlistdb.sqlite in the root of WatchList directory. If not, see "Setup up user account for first time user" below.
+1. Make sure you have watchlistdb.sqlite in the root of WatchList directory. If not, see "Setup up admin user account" below.
 1. If you downloaded WatchList from the releases section of GitHub, download [Docker/Dockerfile](https://github.com/SegiH/WatchList/blob/main/Docker/Dockerfile) from the [WatchList repo](https://github.com/SegiH/WatchList).
 1. Build the Docker image using the Dockerfile: `docker buildx build . -t watchlist`
 1. If you downloaded WatchList from the releases section of GitHub, download [docker-compose.yml](https://github.com/SegiH/WatchList/blob/main/Docker/docker-compose.yml) from the [WatchList repo](https://github.com/SegiH/WatchList).
 1. Edit docker-compose.yml and update the volume path to watchlistdb.sqlite as needed and your network name to match your Docker network. You can create a docker network if you haven't done so already with the command `docker network create YourNetworkName`.
 1. Build the Docker container: `docker-compose up -d`.
 
-# Setup up user account for first time user
-1. Visit [http://localhost:3000](http://localhost:3000) in your browser. You should see the Setup page to set up a new account. This account will automatically be a WatchList admin account.
+# Setup up admin user account
+1. Visit [http://localhost:3000](http://localhost:3000) in your browser. You should see the Setup page to set up a new account. This account will automatically be created as a WatchList admin account.
 1. Enter the following fields:
    - Name: Name of the new admin account holder
    - Username: New user name

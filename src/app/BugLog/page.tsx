@@ -103,7 +103,7 @@ export default function BugLog() {
      const enterAddModeClickHandler = () => {
           const dateObj = new Date();
 
-          const newFormattedDate = `${dateObj.getFullYear()}-${String(dateObj.getMonth()+1).padStart(2, "0")}-${String(dateObj.getDate()).padStart(2, "0")}`
+          const newFormattedDate = `${dateObj.getFullYear()}-${String(dateObj.getMonth() + 1).padStart(2, "0")}-${String(dateObj.getDate()).padStart(2, "0")}`
 
           setAddingBugLog({
                WLBugID: -1,
@@ -195,6 +195,14 @@ export default function BugLog() {
           axios.get(`/api/GetBugLogs`)
                .then((res) => {
                     if (res.data[0] === "OK") {
+                         res.data[1].forEach(async (element: IBugLog) => {
+                              element.AddDate = String(element.AddDate).trim();
+
+                              if (element.CompletedDate !== null) {
+                                   element.CompletedDate = String(element.CompletedDate).trim();
+                              }
+                         });
+
                          setBugLogs(res.data[1]);
                          setBugLogsLoadingComplete(true);
                     } else {

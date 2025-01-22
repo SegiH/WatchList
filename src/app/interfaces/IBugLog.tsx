@@ -1,6 +1,6 @@
 export default interface BugLog {
-    WLBugID: number,
-    WLBugName: string,
+    BugLogId: number,
+    BugName: string,
     AddDate: string,
     CompletedDate: string,
     ResolutionNotes: string,

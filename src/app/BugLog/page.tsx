@@ -82,17 +82,16 @@ export default function BugLog() {
                return;
           }
 
-          axios.put(`/api/DeleteBugLog?WLBugID=${id}`, { withCredentials: true })
+          axios.put(`/api/DeleteBugLog?BugLogId=${id}`, { withCredentials: true })
                .then((response: AxiosResponse<IBugLog>) => {
                     if (response.data[0] === "ERROR") {
                          alert(response.data[1])
                     } else {
                          alert("The bug log has been deleted");
-                         setBugLogsLoadingStarted(false);
-                         setBugLogsLoadingComplete(false);
 
-                         setIsAdding(false);
-                         setIsEditing(false);
+                         const newBugLogs = bugLogs?.filter((bugLog: IBugLog) => bugLog.BugLogId !== id);
+
+                         setBugLogs(newBugLogs);
                     }
                })
                .catch((err: Error) => {
@@ -103,11 +102,11 @@ export default function BugLog() {
      const enterAddModeClickHandler = () => {
           const dateObj = new Date();
 
-          const newFormattedDate = `${dateObj.getFullYear()}-${String(dateObj.getMonth()+1).padStart(2, "0")}-${String(dateObj.getDate()).padStart(2, "0")}`
+          const newFormattedDate = `${dateObj.getFullYear()}-${String(dateObj.getMonth() + 1).padStart(2, "0")}-${String(dateObj.getDate()).padStart(2, "0")}`
 
           setAddingBugLog({
-               WLBugID: -1,
-               WLBugName: "",
+               BugLogId: -1,
+               BugName: "",
                AddDate: newFormattedDate,
                CompletedDate: "",
                ResolutionNotes: "",
@@ -119,7 +118,7 @@ export default function BugLog() {
      }
 
      const enterEditModeClickHandler = (id: number) => {
-          const newEditBugLog = bugLogs?.filter((bugLog: IBugLog) => bugLog.WLBugID === id);
+          const newEditBugLog = bugLogs?.filter((bugLog: IBugLog) => bugLog.BugLogId === id);
 
           if (newEditBugLog.length !== 1) { // This shouldn't ever happen
                alert("Unable to locate bug log in BugLogs");
@@ -135,7 +134,7 @@ export default function BugLog() {
           const currentBugLog = Object.assign({}, isAdding ? addingBugLog : editingBugLog);
 
           // validate rows
-          if (typeof currentBugLog.WLBugName === "undefined" || currentBugLog.WLBugName === "") {
+          if (typeof currentBugLog.BugName === "undefined" || currentBugLog.BugName === "") {
                alert("Please enter the bug name");
 
                return;
@@ -150,10 +149,10 @@ export default function BugLog() {
           let columns = ``;
 
           if (isAdding !== true) {
-               columns = `?WLBugID=${currentBugLog.WLBugID}`;
+               columns = `?BugLogId=${currentBugLog.BugLogId}`;
           }
 
-          columns += (columns === `` ? `?` : `&`) + `WLBugName=${encodeURIComponent(currentBugLog.WLBugName)}`;
+          columns += (columns === `` ? `?` : `&`) + `BugName=${encodeURIComponent(currentBugLog.BugName)}`;
           columns += (columns === `` ? `?` : `&`) + `AddDate=${currentBugLog.AddDate}`;
 
           if (typeof currentBugLog.CompletedDate !== "undefined" && currentBugLog.CompletedDate !== null && currentBugLog.CompletedDate !== '') {
@@ -195,6 +194,14 @@ export default function BugLog() {
           axios.get(`/api/GetBugLogs`)
                .then((res) => {
                     if (res.data[0] === "OK") {
+                         res.data[1].forEach(async (element: IBugLog) => {
+                              element.AddDate = String(element.AddDate).trim();
+
+                              if (element.CompletedDate !== null) {
+                                   element.CompletedDate = String(element.CompletedDate).trim();
+                              }
+                         });
+
                          setBugLogs(res.data[1]);
                          setBugLogsLoadingComplete(true);
                     } else {
@@ -279,11 +286,11 @@ export default function BugLog() {
                                                   </td>
 
                                                   <td>
-                                                       <textarea readOnly={false} style={cssStyle} value={addingBugLog.WLBugName} rows={calculateRowCount(addingBugLog.WLBugName, addingBugLog.ResolutionNotes)} onChange={(event: React.ChangeEvent<HTMLTextAreaElement>) => bugLogChangeHandler("WLBugName", event.target.value)} />
+                                                       <textarea readOnly={false} style={cssStyle} value={addingBugLog.BugName} rows={calculateRowCount(addingBugLog.BugName, addingBugLog.ResolutionNotes)} onChange={(event: React.ChangeEvent<HTMLTextAreaElement>) => bugLogChangeHandler("BugName", event.target.value)} />
                                                   </td>
 
                                                   <td>
-                                                       <textarea readOnly={false} style={cssStyle} value={addingBugLog.ResolutionNotes} rows={calculateRowCount(addingBugLog.WLBugName, addingBugLog.ResolutionNotes)} onChange={(event: React.ChangeEvent<HTMLTextAreaElement>) => bugLogChangeHandler("ResolutionNotes", event.target.value)} />
+                                                       <textarea readOnly={false} style={cssStyle} value={addingBugLog.ResolutionNotes} rows={calculateRowCount(addingBugLog.BugName, addingBugLog.ResolutionNotes)} onChange={(event: React.ChangeEvent<HTMLTextAreaElement>) => bugLogChangeHandler("ResolutionNotes", event.target.value)} />
                                                   </td>
 
                                                   <td>
@@ -301,16 +308,16 @@ export default function BugLog() {
                                                   return (
                                                        ((showActiveBugLogs == false) || (showActiveBugLogs == true && bugLog.CompletedDate === null)) &&
                                                        ((!isAdding && !isEditing) ||
-                                                            (isEditing && editingBugLog.WLBugID === bugLog.WLBugID))
+                                                            (isEditing && editingBugLog.BugLogId === bugLog.BugLogId))
                                                   )
                                              })
                                              .map((bugLog: IBugLog) => {
 
                                                   return (
-                                                       <tr key={bugLog.WLBugID}>
+                                                       <tr key={bugLog.BugLogId}>
                                                             <td>
                                                                  {!isEditing &&
-                                                                      <span className={`clickable tabIcon`} onClick={() => enterEditModeClickHandler(bugLog.WLBugID)}>
+                                                                      <span className={`clickable tabIcon`} onClick={() => enterEditModeClickHandler(bugLog.BugLogId)}>
                                                                            {EditIconComponent}
                                                                       </span>
                                                                  }
@@ -329,16 +336,16 @@ export default function BugLog() {
                                                             </td>
 
                                                             <td>
-                                                                 <span>{bugLog.WLBugID}</span>
+                                                                 <span>{bugLog.BugLogId}</span>
                                                             </td>
 
                                                             <td>
                                                                  {!isEditing &&
-                                                                      <span className="wordWrapLabel">{bugLog.WLBugName}</span>
+                                                                      <span className="wordWrapLabel">{bugLog.BugName}</span>
                                                                  }
 
                                                                  {isEditing &&
-                                                                      <textarea readOnly={false} style={cssStyle} value={typeof editingBugLog.WLBugName !== "undefined" ? editingBugLog.WLBugName : ""} rows={calculateRowCount(editingBugLog.WLBugName, editingBugLog.ResolutionNotes)} onChange={(event: React.ChangeEvent<HTMLTextAreaElement>) => bugLogChangeHandler("WLBugName", event.target.value)} />
+                                                                      <textarea readOnly={false} style={cssStyle} value={typeof editingBugLog.BugName !== "undefined" ? editingBugLog.BugName : ""} rows={calculateRowCount(editingBugLog.BugName, editingBugLog.ResolutionNotes)} onChange={(event: React.ChangeEvent<HTMLTextAreaElement>) => bugLogChangeHandler("BugName", event.target.value)} />
                                                                  }
                                                             </td>
 
@@ -348,7 +355,7 @@ export default function BugLog() {
                                                                  }
 
                                                                  {isEditing &&
-                                                                      <textarea readOnly={false} style={cssStyle} value={typeof editingBugLog.ResolutionNotes !== "undefined" ? editingBugLog.ResolutionNotes : ""} rows={calculateRowCount(editingBugLog.WLBugName, editingBugLog.ResolutionNotes)} onChange={(event: React.ChangeEvent<HTMLTextAreaElement>) => bugLogChangeHandler("ResolutionNotes", event.target.value)} />
+                                                                      <textarea readOnly={false} style={cssStyle} value={typeof editingBugLog.ResolutionNotes !== "undefined" ? editingBugLog.ResolutionNotes : ""} rows={calculateRowCount(editingBugLog.BugName, editingBugLog.ResolutionNotes)} onChange={(event: React.ChangeEvent<HTMLTextAreaElement>) => bugLogChangeHandler("ResolutionNotes", event.target.value)} />
                                                                  }
                                                             </td>
 
@@ -368,13 +375,13 @@ export default function BugLog() {
                                                                  }
 
                                                                  {isEditing &&
-                                                                      <TextField type="date" className={`lightMode borderRadius15 minWidth150`} margin="dense" id="completedOn" value={typeof editingBugLog.CompletedDate !== "undefined" ? editingBugLog.CompletedDate : ""} variant="standard" onChange={(event: React.ChangeEvent<HTMLTextAreaElement>) => bugLogChangeHandler("CompletedDate", event.target.value)} />
+                                                                      <TextField type="date" className={`lightMode borderRadius15 minWidth150`} margin="dense" id="completedOn" value={typeof editingBugLog.CompletedDate !== "undefined" && editingBugLog.CompletedDate !== null ? editingBugLog.CompletedDate : ""} variant="standard" onChange={(event: React.ChangeEvent<HTMLTextAreaElement>) => bugLogChangeHandler("CompletedDate", event.target.value)} />
                                                                  }
                                                             </td>
 
                                                             {!isAdding && !isEditing &&
                                                                  <td>
-                                                                      <span className={`clickable iconLarge`} onClick={() => deleteBugLogHandler(bugLog.WLBugID)}>
+                                                                      <span className={`clickable iconLarge`} onClick={() => deleteBugLogHandler(bugLog.BugLogId)}>
                                                                            {DeleteIconComponent}
                                                                       </span>
                                                                  </td>

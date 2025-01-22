@@ -30,7 +30,7 @@ const Recommendations = ({ queryTerm, setRecommendationName, setRecommendationTy
           setRecommendationsVisible(false);
      }
 
-     const showDefaultSrc = (id: number) => (): void => {
+     const showDefaultSrc = (id: number): void => {
           const newRecommendations: IRecommendation[] = Object.assign([], recommendations);
 
           newRecommendations.filter((currentRecommendation: IRecommendation) => {

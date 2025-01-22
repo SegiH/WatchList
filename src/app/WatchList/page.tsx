@@ -31,7 +31,7 @@ export default function WatchList() {
           watchListSortingComplete
      } = useContext(DataContext) as DataContextType;
 
-     const showDefaultSrc = (watchListID: number) => (): void => {
+     const showDefaultSrc = (watchListID: number): void => {
           const newWatchList = Object.assign([], watchList);
 
           const currentWatchListResult: IWatchList[] = newWatchList?.filter((currentWatchList: IWatchList) => {

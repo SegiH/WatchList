@@ -34,7 +34,7 @@ export default function WatchListItems() {
 
      const watchListCount = watchList.length;
 
-     const setImageLoaded = (watchListItemID: number) => (): void => {
+     const setImageLoaded = (watchListItemID: number): void => {
           const newWatchListItems: IWatchListItem[] = Object.assign(typeof WatchListItems, watchListItems);
 
           const currentWatchListItemsResult: IWatchListItem[] = newWatchListItems?.filter((currentWatchListItems: IWatchListItem) => {
@@ -53,7 +53,7 @@ export default function WatchListItems() {
           setWatchListItems(newWatchListItems);
      };
 
-     const showDefaultSrc = (watchListItemID: number) => (): void => {
+     const showDefaultSrc = (watchListItemID: number): void => {
           const newWatchListItems: IWatchListItem[] = Object.assign([], watchListItems);
 
           const currentWatchListItemsResult: IWatchListItem[] = newWatchListItems?.filter((currentWatchListItems: IWatchListItem) => {

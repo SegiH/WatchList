@@ -126,7 +126,7 @@ export default function SearchIMDB() {
           closeSearch();
      }
 
-     const showDefaultSrcWatchList = (watchListID: number) => (): void => {
+     const showDefaultSrcWatchList = (watchListID: number): void => {
           const newSearchResults = Object.assign([], watchList);
 
           const currentSearchResultsResult: ISearchImdb[] = newSearchResults?.filter((currentWatchList: IWatchList) => {
@@ -145,7 +145,7 @@ export default function SearchIMDB() {
           setWatchListSearchResults(newSearchResults);
      };
 
-     const showDefaultSrcWatchListItems = (watchListItemID: number) => (): void => {
+     const showDefaultSrcWatchListItems = (watchListItemID: number): void => {
           const newSearchResults = Object.assign([], watchListItems);
 
           const currentSearchResultsResult = newSearchResults?.filter((currentWatchListItem: IWatchListItem) => {

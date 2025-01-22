@@ -10,13 +10,13 @@ import { execUpdateDelete, isLoggedIn } from '../lib';
  *        summary: Update a bug log
  *        description: Update a bug log
  *        parameters:
- *           - name: WLBugID
+ *           - name: BugLogId
  *             in: query
  *             description: ID of the bug
  *             required: true
  *             schema:
  *                  type: number
- *           - name: WLBugName
+ *           - name: BugName
  *             in: query
  *             description: Description of the bug
  *             required: true
@@ -51,13 +51,13 @@ export async function PUT(request: NextRequest) {
 
     const searchParams = request.nextUrl.searchParams;
 
-    const bugLogID = searchParams.get("WLBugID");
-    const bugLogName = searchParams.get("WLBugName");
+    const BugLogId = searchParams.get("BugLogId");
+    const bugLogName = searchParams.get("BugName");
     const addDate = searchParams.get("AddDate");
     const completedDate = searchParams.get("CompletedDate");
     const resolutionNotes = searchParams.get("ResolutionNotes");
 
-    if (bugLogID === null) {
+    if (BugLogId === null) {
         return Response.json({ "ERROR": "Bug log ID is not set" });
     }
 
@@ -65,7 +65,7 @@ export async function PUT(request: NextRequest) {
     let params: string[] = [];
 
     if (bugLogName !== null) {
-        SQL += "WLBugName=?";
+        SQL += "BugName=?";
         params.push(bugLogName); // Client already encodes this. Do not encode it again or it will cause issues!
     }
 
@@ -91,8 +91,8 @@ export async function PUT(request: NextRequest) {
         return Response.json(["ERROR", `No parameters were passed`]);
     }
 
-    SQL += " WHERE WLBugID=?";
-    params.push(bugLogID);
+    SQL += " WHERE BugLogId=?";
+    params.push(BugLogId);
 
     await execUpdateDelete(SQL, params);
 

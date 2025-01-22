@@ -10,7 +10,7 @@ import { execInsert, isLoggedIn } from "../lib";
  *        summary: Add a bug log
  *        description: Add a bug log
  *        parameters:
- *           - name: WLBugName
+ *           - name: BugName
  *             in: query
  *             description: Description of the bug
  *             required: true
@@ -45,7 +45,7 @@ export async function PUT(request: NextRequest) {
           return Response.json(["ERROR", "Error. Not signed in"]);
      }
 
-     const bugLogName = searchParams.get("WLBugName");
+     const bugLogName = searchParams.get("BugName");
      const addDate = searchParams.get("AddDate");
      const completedDate = searchParams.get("CompletedDate");
      const resolutionNotes = searchParams.get("ResolutionNotes");
@@ -58,7 +58,7 @@ export async function PUT(request: NextRequest) {
           return Response.json({ "ERROR": "AddDate was not provided" });
      }
 
-     let SQL = `INSERT INTO BugLogs (WLBugName,AddDate,CompletedDate`;
+     let SQL = `INSERT INTO BugLogs (BugName,AddDate,CompletedDate`;
      let valuePlaceholder = ' VALUES (?,?';
      let params = [bugLogName, addDate];
 

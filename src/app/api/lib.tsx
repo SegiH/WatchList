@@ -15,7 +15,7 @@ export const watchListItemsSQL = "CREATE TABLE WatchListItems(WatchListItemID IN
 export const watchListSourcesSQL = "CREATE TABLE WatchListSources (WatchListSourceID INTEGER PRIMARY KEY, WatchListSourceName VARCHAR(80) NOT NULL);";
 export const watchListTypesSQL = "CREATE TABLE WatchListTypes (WatchListTypeID INTEGER PRIMARY KEY, WatchListTypeName VARCHAR(80) NOT NULL);";
 export const usersSQL = "CREATE TABLE Users (UserID INTEGER PRIMARY KEY, Username BLOB NOT NULL, Realname BLOB NOT NULL, Password BLOB NOT NULL, Admin BIT NULL DEFAULT 0, Enabled NULL DEFAULT 0, Token TEXT NULL, TokenExpiration INTEGER NULL);";
-export const bugLogsSQL = "CREATE TABLE BugLogs (WLBugID INTEGER PRIMARY KEY, WLBugName TEXT NOT NULL, AddDate TEXT NOT NULL,CompletedDate TEXT NULL, ResolutionNotes TEXT NULL);";
+export const bugLogsSQL = "CREATE TABLE BugLogs (BugLogId INTEGER PRIMARY KEY, BugName TEXT NOT NULL, AddDate TEXT NOT NULL,CompletedDate TEXT NULL, ResolutionNotes TEXT NULL);";
 export const optionsSQL = "CREATE TABLE Options (`OptionID` INTEGER PRIMARY KEY, UserID INT, ArchivedVisible TINYINT(1), AutoAdd TINYINT(1), DarkMode TINYINT(1), HideTabs TINYINT(1), SearchCount INT, StillWatching TINYINT(1), ShowMissingArtwork TINYINT(1), SourceFilter INT, TypeFilter INT, WatchListSortColumn VARCHAR(100), WatchListSortDirection VARCHAR(100), VisibleSections VARCHAR(1000));"
 export const visibleSectionsSQL = "CREATE TABLE VisibleSections (id INTEGER PRIMARY KEY, name VARCHAR(100));"
 

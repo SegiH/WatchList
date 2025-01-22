@@ -10,7 +10,7 @@ import { execUpdateDelete, isLoggedIn } from "../lib";
  *        summary: Delete a bug log
  *        description: Delete a bug log
  *        parameters:
- *           - name: WLBugID
+ *           - name: BugLogId
  *             in: query
  *             description: ID of the bug
  *             required: true
@@ -22,18 +22,18 @@ import { execUpdateDelete, isLoggedIn } from "../lib";
  */
 export async function PUT(request: NextRequest) {
      const searchParams = request.nextUrl.searchParams;
-     const wlBugID = searchParams.get("WLBugID");
+     const BugLogId = searchParams.get("BugLogId");
 
      if (!isLoggedIn(request)) {
           return Response.json(["ERROR", "Error. Not signed in"]);
      }
 
-     if (wlBugID === null) {
+     if (BugLogId === null) {
         return Response.json(["ERROR", "ID was not provided"])
    }
 
-     const SQL = `DELETE FROM BugLogs WHERE WLBugID=?`;
-     let params = [wlBugID];
+     const SQL = `DELETE FROM BugLogs WHERE BugLogId=?`;
+     let params = [BugLogId];
 
      await execUpdateDelete(SQL, params);
 

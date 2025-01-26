@@ -35,7 +35,7 @@ export default function WatchListItems() {
      const watchListCount = watchList.length;
 
      const setImageLoaded = (watchListItemID: number): void => {
-          const newWatchListItems: IWatchListItem[] = Object.assign(typeof WatchListItems, watchListItems);
+          const newWatchListItems: IWatchListItem[] = Object.assign([] as IWatchListItem[], watchListItems);
 
           const currentWatchListItemsResult: IWatchListItem[] = newWatchListItems?.filter((currentWatchListItems: IWatchListItem) => {
                return String(currentWatchListItems.WatchListItemID) === String(watchListItemID);
@@ -124,46 +124,48 @@ export default function WatchListItems() {
                               (typeFilter === -1 || (typeFilter !== -1 && String(currentWatchListItem.WatchListTypeID) === String(typeFilter)))
                               && (showMissingArtwork === false || (showMissingArtwork === true && (currentWatchListItem.IMDB_Poster_Error === true || currentWatchListItem.IMDB_Poster === null)))
                     ).map((currentWatchListItem: IWatchListItem, index: number) => {
-                              const IMDB_JSON =  currentWatchListItem?.IMDB_JSON !== null && typeof currentWatchListItem?.IMDB_JSON !== "undefined" && currentWatchListItem?.IMDB_JSON !== "" ? JSON.parse(currentWatchListItem?.IMDB_JSON) : null;
+                         const IMDB_JSON = currentWatchListItem?.IMDB_JSON !== null && typeof currentWatchListItem?.IMDB_JSON !== "undefined" && currentWatchListItem?.IMDB_JSON !== "" ? JSON.parse(currentWatchListItem?.IMDB_JSON) : null;
 
-                              return (
-                                   <div key={index} className={`${!darkMode ? "lightMode" : "darkMode"}`}>
-                                        {watchListItemsSortingComplete && (
-                                             <li className="show-item">
-                                                  <span className="item-id" onClick={() => openDetailClickHandler(currentWatchListItem?.WatchListItemID)}>
-                                                       <div>{currentWatchListItem?.WatchListItemID}</div>
-                                                  </span>
+                         return (
+                              <div key={index} className={`${!darkMode ? "lightMode" : "darkMode"}`}>
+                                   {watchListItemsSortingComplete && (
+                                        <li className="show-item">
+                                             <span className="item-id" onClick={() => openDetailClickHandler(currentWatchListItem?.WatchListItemID)}>
+                                                  <div>{currentWatchListItem?.WatchListItemID}</div>
+                                             </span>
 
-                                                  <a className="show-link" onClick={() => openDetailClickHandler(currentWatchListItem?.WatchListItemID)}>
-                                                       <div className="clickable image-crop">
-                                                            {currentWatchListItem?.IMDB_Poster !== null && currentWatchListItem?.IMDB_Poster_Error !== true && <Image width="128" height="187" alt={currentWatchListItem?.WatchListItemName} src={currentWatchListItem?.IMDB_Poster} onLoad={() => setImageLoaded(currentWatchListItem?.WatchListItemID)} onError={() => showDefaultSrc(currentWatchListItem?.WatchListItemID)} />}
-
-                                                            {(currentWatchListItem?.IMDB_Poster === null || currentWatchListItem?.IMDB_Poster_Error === true) && <>{BrokenImageIconComponent}</>}
-                                                       </div>
-                                                  </a>
-
-                                                  <div>
-                                                       {typeof currentWatchListItem?.IMDB_URL !== "undefined" &&
-                                                            <a  className={`${!darkMode ? "lightMode" : "darkMode"}`} href={currentWatchListItem?.IMDB_URL} target='_blank'>{currentWatchListItem?.WatchListItemName}{IMDB_JSON !== null && IMDB_JSON.Year !== null ? ` (${IMDB_JSON.Year})` : ""}</a>
+                                             <a className="show-link" onClick={() => openDetailClickHandler(currentWatchListItem?.WatchListItemID)}>
+                                                  <div className="clickable image-crop">
+                                                       {currentWatchListItem?.IMDB_Poster !== null && currentWatchListItem?.IMDB_Poster_Error !== true &&
+                                                            <Image width="128" height="187" alt={currentWatchListItem?.WatchListItemName} src={currentWatchListItem?.IMDB_Poster} onLoad={() => setImageLoaded(currentWatchListItem?.WatchListItemID)} onError={() => showDefaultSrc(currentWatchListItem?.WatchListItemID)} />
                                                        }
 
-                                                       {typeof currentWatchListItem?.IMDB_URL === "undefined" &&
-                                                            <div className={`${!darkMode ? "lightMode" : "darkMode"}`}>
-                                                                 {currentWatchListItem?.WatchListItemName}{IMDB_JSON !== null && IMDB_JSON.Year !== null ? ` (${IMDB_JSON.Year})` : ""}
-                                                            </div>
-                                                       }
-
-                                                       {currentWatchListItem?.Archived === 1 ? <span className={`${!darkMode ? "lightMode" : "darkMode"}`}>&nbsp;(A)</span> : <></>}
+                                                       {(currentWatchListItem?.IMDB_Poster === null || currentWatchListItem?.IMDB_Poster_Error === true) && <>{BrokenImageIconComponent}</>}
                                                   </div>
+                                             </a>
 
-                                                  <span className={`${!darkMode ? "lightMode" : "darkMode"}`}>
-                                                       <div>{currentWatchListItem?.WatchListTypeName}</div>
-                                                  </span>
-                                             </li>
-                                        )}
-                                   </div>
-                              );
-                         })}
+                                             <div>
+                                                  {typeof currentWatchListItem?.IMDB_URL !== "undefined" &&
+                                                       <a className={`${!darkMode ? "lightMode" : "darkMode"}`} href={currentWatchListItem?.IMDB_URL} target='_blank'>{currentWatchListItem?.WatchListItemName}{IMDB_JSON !== null && IMDB_JSON.Year !== null ? ` (${IMDB_JSON.Year})` : ""}</a>
+                                                  }
+
+                                                  {typeof currentWatchListItem?.IMDB_URL === "undefined" &&
+                                                       <div className={`${!darkMode ? "lightMode" : "darkMode"}`}>
+                                                            {currentWatchListItem?.WatchListItemName}{IMDB_JSON !== null && IMDB_JSON.Year !== null ? ` (${IMDB_JSON.Year})` : ""}
+                                                       </div>
+                                                  }
+
+                                                  {currentWatchListItem?.Archived === 1 ? <span className={`${!darkMode ? "lightMode" : "darkMode"}`}>&nbsp;(A)</span> : <></>}
+                                             </div>
+
+                                             <span className={`${!darkMode ? "lightMode" : "darkMode"}`}>
+                                                  <div>{currentWatchListItem?.WatchListTypeName}</div>
+                                             </span>
+                                        </li>
+                                   )}
+                              </div>
+                         );
+                    })}
                </ul>
           </span>
      )

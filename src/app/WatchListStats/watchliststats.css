@@ -28,5 +28,5 @@
 }
 
 :nth-last-child(1 of .flex-container) {
-    margin-bottom: 100px !important;
+    margin-bottom: 120px !important;
 }

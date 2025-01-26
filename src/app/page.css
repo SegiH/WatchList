@@ -334,6 +334,7 @@ input:checked+.slider:before {
 }
 
 .lineChart {
+     max-width: min-content;
      border-width: 1px;
      border-style: solid;
 }

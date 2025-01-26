@@ -290,9 +290,13 @@ const ManageUserAccounts = () => {
                                    <th>ID</th>
                                    <th>User name</th>
                                    <th>Name</th>
-                                   <th>Password</th>
-                                   <th>Admin</th>
-                                   <th>Enabled</th>
+                                   {(isAdding || isEditing) &&
+                                        <>
+                                             <th>Password</th>
+                                             <th>Admin</th>
+                                             <th>Enabled</th>
+                                        </>
+                                   }
                               </tr>
                          </thead>
 
@@ -385,7 +389,7 @@ const ManageUserAccounts = () => {
                                                   }
 
                                                   {isEditing &&
-                                                       <TextField className={`lightMode borderRadius15 minWidth150`} margin="dense" id="username" label="username" value={editingUser.Username}  variant="standard" onChange={(event: React.ChangeEvent<HTMLInputElement>) => userChangeHandler("Username", event.target.value)} />
+                                                       <TextField className={`lightMode borderRadius15 minWidth150`} margin="dense" id="username" label="username" value={editingUser.Username} variant="standard" onChange={(event: React.ChangeEvent<HTMLInputElement>) => userChangeHandler("Username", event.target.value)} />
                                                   }
                                              </td>
 
@@ -399,43 +403,47 @@ const ManageUserAccounts = () => {
                                                   }
                                              </td>
 
-                                             <td>
-                                                  <Button
-                                                       color="secondary"
-                                                       variant="contained"
-                                                       className="borderRadius15"
-                                                       onClick={() => {
-                                                            setDialogVisibleParamID(user.UserID);
+                                             {(isAdding || isEditing) &&
+                                                  <>
+                                                       <td>
+                                                            <Button
+                                                                 color="secondary"
+                                                                 variant="contained"
+                                                                 className="borderRadius15"
+                                                                 onClick={() => {
+                                                                      setDialogVisibleParamID(user.UserID);
 
-                                                            setDialogVisible(true);
-                                                       }}>
-                                                       Change Password
-                                                  </Button>
-                                             </td>
+                                                                      setDialogVisible(true);
+                                                                 }}>
+                                                                 Change Password
+                                                            </Button>
+                                                       </td>
 
-                                             <td>
-                                                  {!isEditing &&
-                                                       <span>{user.Admin === true ? "Y" : "N"}</span>
-                                                  }
+                                                       <td>
+                                                            {!isEditing &&
+                                                                 <span>{user.Admin === true ? "Y" : "N"}</span>
+                                                            }
 
-                                                  {isEditing &&
-                                                       <input type="checkbox" checked={editingUser.Admin} onChange={(event: React.ChangeEvent<HTMLInputElement>) => userChangeHandler("Admin", event.target.checked.toString())} />
-                                                  }
-                                             </td>
+                                                            {isEditing &&
+                                                                 <input type="checkbox" checked={editingUser.Admin} onChange={(event: React.ChangeEvent<HTMLInputElement>) => userChangeHandler("Admin", event.target.checked.toString())} />
+                                                            }
+                                                       </td>
 
-                                             <td>
-                                                  {!isAdding && !isEditing &&
-                                                       <span>{user.Enabled === true ? "Y" : "N"}</span>
-                                                  }
+                                                       <td>
+                                                            {!isAdding && !isEditing &&
+                                                                 <span>{user.Enabled === true ? "Y" : "N"}</span>
+                                                            }
 
-                                                  {isEditing &&
-                                                       <input type="checkbox" checked={editingUser.Enabled} onChange={(event: React.ChangeEvent<HTMLInputElement>) => userChangeHandler("Enabled", event.target.checked.toString())} />
-                                                  }
+                                                            {isEditing &&
+                                                                 <input type="checkbox" checked={editingUser.Enabled} onChange={(event: React.ChangeEvent<HTMLInputElement>) => userChangeHandler("Enabled", event.target.checked.toString())} />
+                                                            }
 
-                                                  {isAdding &&
-                                                       <input type="checkbox" checked={addingUser.Enabled} onChange={(event: React.ChangeEvent<HTMLInputElement>) => userChangeHandler("Enabled", event.target.checked.toString())} />
-                                                  }
-                                             </td>
+                                                            {isAdding &&
+                                                                 <input type="checkbox" checked={addingUser.Enabled} onChange={(event: React.ChangeEvent<HTMLInputElement>) => userChangeHandler("Enabled", event.target.checked.toString())} />
+                                                            }
+                                                       </td>
+                                                  </>
+                                             }
                                         </tr>
                                    ))}
                          </tbody>

@@ -23,7 +23,5 @@ export default interface IUser {
      Admin: boolean,
      Enabled: boolean,
      IsModified?: boolean,
-     Options: IUserOption[],
-     Token: string,
-     TokenExpiration: string
+     Options: IUserOption[]
 }

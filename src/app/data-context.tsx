@@ -167,7 +167,7 @@ export interface DataContextType {
      userData: IUserData;
      validatePassword: (value: string) => boolean;
      visibleSectionChoices: SectionChoice[],
-     visibleSections: { name:string; id:number;}[],
+     visibleSections: { name: string; id: number; }[],
      watchList: IWatchList[];
      watchListItems: IWatchListItem[];
      watchListItemsLoadingStarted: boolean;
@@ -321,33 +321,7 @@ const DataProvider = ({ children }) => {
      }, [isLoggedIn, isLoggedInCheckComplete]);
 
      const isLoggedInApi = () => {
-          let token = localStorage.getItem("WatchList.Token");
-          let tokenExpiration = localStorage.getItem("WatchList.TokenExpiration");
-
-          if (token === 'undefined') {
-               token = null;
-               localStorage.removeItem("WatchList.Token");
-          }
-
-          if (tokenExpiration === 'undefined') {
-               tokenExpiration = null;
-               localStorage.removeItem("WatchList.TokenExpiration");
-          }
-
           let params = '';
-
-          if (token !== null && tokenExpiration !== null) {
-               // Validation token expiration
-               const currentEpoch = new Date().getTime();
-               const tokenExpirationNum = parseFloat(tokenExpiration);
-
-               if (currentEpoch >= tokenExpirationNum) {
-                    localStorage.removeItem("WatchList.Token");
-                    localStorage.removeItem("WatchList.TokenExpiration");
-               } else {
-                    params = "?Token=" + encodeURIComponent(token);
-               }
-          }
 
           axios.get(`/api/IsLoggedIn${params}`)
                .then(async (res: AxiosResponse<IUser>) => {
@@ -359,9 +333,6 @@ const DataProvider = ({ children }) => {
                          newUserData.Username = res.data[1].Username;
                          newUserData.RealName = res.data[1].RealName;
                          newUserData.Admin = res.data[1].Admin;
-
-                         localStorage.setItem("WatchList.Token", res.data[1].Token);
-                         localStorage.setItem("WatchList.TokenExpiration", res.data[1].TokenExpiration);
 
                          if (typeof res.data[1].Options !== "undefined" && res.data[1].Options.length === 1) {
                               await setOptions(res.data[1].Options[0]);
@@ -903,22 +874,7 @@ const DataProvider = ({ children }) => {
      useEffect(() => {
           const handleVisibilityChange = () => {
                if (!document.hidden) {
-                    let token = localStorage.getItem("WatchList.Token");
-                    let tokenExpiration = localStorage.getItem("WatchList.TokenExpiration");
-
-                    if (token === 'undefined') {
-                         token = null;
-                         localStorage.removeItem("WatchList.Token");
-                    }
-
-                    if (tokenExpiration === 'undefined') {
-                         tokenExpiration = null;
-                         localStorage.removeItem("WatchList.TokenExpiration");
-                    }
-
-                    if (token !== null && tokenExpiration !== null) {
-                         isLoggedInApi();
-                    }
+                    isLoggedInApi();
                }
           };
 

@@ -70,9 +70,7 @@ const ManageUserAccounts = () => {
                Password: "",
                Admin: false,
                Enabled: true,
-               Options: [],
-               Token: "",
-               TokenExpiration: ""
+               Options: []
           });
 
           setIsAdding(true);

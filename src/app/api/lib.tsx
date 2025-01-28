@@ -21,8 +21,6 @@ export const visibleSectionsSQL = "CREATE TABLE VisibleSections (id INTEGER PRIM
 
 export const defaultSources = ['Amazon', 'Hulu', 'Movie Theatre', 'Netflix', 'Plex', 'Prime', 'Web'];
 export const defaultTypes = ['Movie', 'Other', 'Special', 'TV'];
-export const tokenSeparator = "*****";
-const timeout = 604800000; // 1 week in MS
 
 const secretKey = config.get(`Secret`);
 
@@ -262,18 +260,7 @@ export const login = async (username: string, password: string) => {
 }
 
 export const loginSuccessfullActions = async (currentUser: IUser) => {
-     // Generate token
-     const epochTime = new Date().getTime().toString();
-     const token = encrypt(btoa(epochTime));
-
-     const tokenExpiration = new Date().getTime() + timeout;
-
-     const tokenSQL = "UPDATE Users SET Token=?, TokenExpiration=? WHERE UserID=?";
-     const tokenParams = [token, tokenExpiration, currentUser[0].UserID];
-
      try {
-          await execUpdateDelete(tokenSQL, tokenParams);
-
           const userOptions = await getUserOptions(currentUser[0].UserID, currentUser[0].Admin === 1 ? true : false);
 
           const userData = {
@@ -281,8 +268,6 @@ export const loginSuccessfullActions = async (currentUser: IUser) => {
                Username: decrypt(currentUser[0].Username),
                Realname: decrypt(currentUser[0].Realname),
                Admin: currentUser[0].Admin === 1 ? true : false,
-               Token: `${currentUser[0].Username}${tokenSeparator}${token}`,
-               Timeout: timeout,
                Options: userOptions
           }
 

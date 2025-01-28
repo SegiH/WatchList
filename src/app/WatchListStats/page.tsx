@@ -399,19 +399,19 @@ export default function WatchListStats() {
 
                const uniqueTVSeasonsYears = demoWatchListWeeklyBreakDown[1].map((item: IWatchListWeeklyTVStat) => item.Year).filter((value: string, index: number, current_value: [string]) => { return current_value.indexOf(value) === index }).sort();
                setWatchListWeeklyTVSeasonsYearsStats(uniqueTVSeasonsYears);
-               setWatchListWeeklyCurrentTVSeasonsYearStat(new Date().getFullYear());
+               //setWatchListWeeklyCurrentTVSeasonsYearStat(new Date().getFullYear());
                setWatchListWeeklyTVSeasonStats(demoWatchListWeeklyBreakDown[1]);
                setWatchListWeeklyTVSeasonsStatsLoadingComplete(true);
 
                const uniqueTVTotalYears = demoWatchListWeeklyBreakDown[3].map((item: IWatchListWeeklyTVStat) => item.Year).filter((value: string, index: number, current_value: [string]) => { return current_value.indexOf(value) === index }).sort();
                setWatchListWeeklyTVTotalYearsStats(uniqueTVTotalYears);
-               setWatchListWeeklyCurrentTVTotalYearStat(new Date().getFullYear());
+               //setWatchListWeeklyCurrentTVTotalYearStat(new Date().getFullYear());
                setWatchListWeeklyTVTotalStats(demoWatchListWeeklyBreakDown[3]);
                setWatchListWeeklyTVTotalStatsLoadingComplete(true);
 
                const uniqueMovieYears = demoWatchListWeeklyBreakDown[2].map((item: IWatchListWeeklyMovieStat) => item.Year).filter((value: string, index: number, current_value: [string]) => { return current_value.indexOf(value) === index }).sort();
                setWatchListWeeklyMovieYearsStats(uniqueMovieYears);
-               setWatchListWeeklyCurrentMovieYearStat(new Date().getFullYear());
+               //setWatchListWeeklyCurrentMovieYearStat(new Date().getFullYear());
                setWatchListWeeklyMovieStats(demoWatchListWeeklyBreakDown[2]);
                setWatchListWeeklyMovieStatsLoadingComplete(true);
                return;
@@ -432,19 +432,19 @@ export default function WatchListStats() {
                          if (res.data[0] === "OK") {
                               const uniqueTVSeasonsYears = res.data[1].map((item: IWatchListWeeklyTVStat) => item.Year).filter((value: string, index: number, current_value: [string]) => { return current_value.indexOf(value) === index }).sort();
                               setWatchListWeeklyTVSeasonsYearsStats(uniqueTVSeasonsYears);
-                              setWatchListWeeklyCurrentTVSeasonsYearStat(new Date().getFullYear());
+                              //setWatchListWeeklyCurrentTVSeasonsYearStat(new Date().getFullYear());
                               setWatchListWeeklyTVSeasonStats(res.data[1]);
                               setWatchListWeeklyTVSeasonsStatsLoadingComplete(true);
 
                               const uniqueMovieYears = res.data[2].map((item: IWatchListWeeklyMovieStat) => item.Year).filter((value: string, index: number, current_value: [string]) => { return current_value.indexOf(value) === index }).sort();
                               setWatchListWeeklyMovieYearsStats(uniqueMovieYears);
-                              setWatchListWeeklyCurrentMovieYearStat(new Date().getFullYear());
+                              //setWatchListWeeklyCurrentMovieYearStat(new Date().getFullYear());
                               setWatchListWeeklyMovieStats(res.data[2]);
                               setWatchListWeeklyMovieStatsLoadingComplete(true);
 
                               const uniqueTVTotalYears = res.data[3].map((item: IWatchListWeeklyTVStat) => item.Year).filter((value: string, index: number, current_value: [string]) => { return current_value.indexOf(value) === index }).sort();
                               setWatchListWeeklyTVTotalYearsStats(uniqueTVTotalYears);
-                              setWatchListWeeklyCurrentTVTotalYearStat(new Date().getFullYear());
+                              //setWatchListWeeklyCurrentTVTotalYearStat(new Date().getFullYear());
                               setWatchListWeeklyTVTotalStats(res.data[3]);
                               setWatchListWeeklyTVTotalStatsLoadingComplete(true);
                          } else {
@@ -753,7 +753,7 @@ export default function WatchListStats() {
 
                <div className={`flex-container textLabel ${!darkMode ? " lightMode" : " darkMode"}`}>
                     <div className="col-4">
-                         {watchListMovieCountStats?.length > 0 && watchListWeeklyCurrentMovieWeekGroupingStat.length === watchListWeeklyMovieMaxWeek &&
+                         {watchListMovieCountStats?.length > 0 && //watchListWeeklyCurrentMovieWeekGroupingStat.length === watchListWeeklyMovieMaxWeek &&
                               <>
                                    <h1>Total Movies Watched</h1>
                                    <div>{watchListMovieCountStats[0].MovieCount}</div>

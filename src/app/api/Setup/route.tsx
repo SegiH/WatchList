@@ -86,6 +86,7 @@ export async function PUT(request: NextRequest) {
           await execSelect("INSERT INTO VisibleSections (name) VALUES(?);", ['Items']);
           await execSelect("INSERT INTO VisibleSections (name) VALUES(?);", ['Stats']);
           await execSelect("INSERT INTO VisibleSections (name) VALUES(?);", ['Admin']);
+          await execSelect("INSERT INTO VisibleSections (name) VALUES(?);", ['BugLogs']);
 
           return await addUser(request, true);
      } catch (e) {

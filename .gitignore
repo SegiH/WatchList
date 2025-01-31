@@ -1,6 +1,5 @@
 node_modules
 build
-config/default.json
 watchlistdb.sqlite
 wiberSessions
 public/sw.js

@@ -10,7 +10,6 @@ import "./Tabs.css";
 const Tabs = () => {
      const {
           activeRoute,
-          bugLogVisible,
           darkMode,
           demoMode,
           getDisplayName,
@@ -18,10 +17,10 @@ const Tabs = () => {
           hideTabs,
           isAdmin,
           isClient,
+          isEnabled,
           isError,
           isLoggedIn,
           isLoggedInCheckComplete,
-          isVisible,
           pullToRefreshEnabled,
           routeList,
           setActiveRoute,
@@ -59,10 +58,10 @@ const Tabs = () => {
                                    return routeList[routeName].RequiresAuth === true
                                    && routeName !== "Setup"
                                    && routeName !== "SearchIMDB"
-                                   && (routeName !== "Admin" || (routeName === "Admin" && isAdmin() === true && isVisible("Admin")))
-                                   && (routeName !== "Items" || (routeName ==="Items" && isVisible("Items")))
-                                   && (routeName !== "BugLog" || (routeName ==="BugLog" && bugLogVisible === true && !demoMode))
-                                   && (routeName !== "WatchListStats" || (routeName === "WatchListStats" && isVisible("Stats")))
+                                   && (routeName !== "Admin" || (routeName === "Admin" && isAdmin() === true && isEnabled("Admin")))
+                                   && (routeName !== "Items" || (routeName ==="Items" && isEnabled("Items")))
+                                   && (routeName !== "BugLogs" || (routeName ==="BugLogs" && isEnabled("BugLogs") && !demoMode))
+                                   && (routeName !== "WatchListStats" || (routeName === "WatchListStats" && isEnabled("Stats")))
                               }
                               )
                               .map((routeName, index) => {

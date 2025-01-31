@@ -17,8 +17,8 @@ export default function WatchListItemsDtl() {
           demoMode,
           EditIconComponent,
           isAdding,
+          isEnabled,
           isEditing,
-          isVisible,
           SaveIconComponent,
           setIsAdding,
           setIsEditing,
@@ -85,7 +85,7 @@ export default function WatchListItemsDtl() {
 
           pullToRefreshEnabled(true);
 
-          if (isVisible("Items")) {
+          if (isEnabled("Items")) {
                router.push("/Items");
           } else {
                router.push("/WatchList");

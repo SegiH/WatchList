@@ -785,7 +785,7 @@ const DataProvider = ({ children }) => {
                if (currentPath === routeList["Login"].Path && isLoggedIn) {
                     newRoute = defaultRoute;
                } else if (currentPath !== "") {
-                    const findRouteByPath = Object.keys(routeList).filter((routeName) => routeList[routeName].Path === currentPath);
+                    const findRouteByPath = Object.keys(routeList).filter((routeName) => routeList[routeName].Path === "/" + currentPath);
 
                     if (findRouteByPath.length !== 1) { // Path wasn't found so use default route
                          newRoute = defaultRoute;
@@ -914,9 +914,9 @@ const DataProvider = ({ children }) => {
                Enabled: true
           },
           Stats: {
-               Name: "WatchListStats",
+               Name: "Stats",
                DisplayName: "Stats",
-               Path: "/WatchListStats",
+               Path: "/Stats",
                Icon: StatsIconComponent,
                RequiresAuth: true,
                Enabled: true

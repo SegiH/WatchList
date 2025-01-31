@@ -61,7 +61,7 @@ const Tabs = () => {
                                    && (routeName !== "Admin" || (routeName === "Admin" && isAdmin() === true && isEnabled("Admin")))
                                    && (routeName !== "Items" || (routeName ==="Items" && isEnabled("Items")))
                                    && (routeName !== "BugLogs" || (routeName ==="BugLogs" && isEnabled("BugLogs") && !demoMode))
-                                   && (routeName !== "WatchListStats" || (routeName === "WatchListStats" && isEnabled("Stats")))
+                                   && (routeName !== "Stats" || (routeName === "Stats" && isEnabled("Stats")))
                               }
                               )
                               .map((routeName, index) => {

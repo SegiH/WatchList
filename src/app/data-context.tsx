@@ -780,7 +780,7 @@ const DataProvider = ({ children }) => {
           } else {
                pullToRefreshEnabled(true);
 
-               const currentPath = location.pathname !== "" ? location.pathname : "";
+               const currentPath = location.pathname !== "" ? location.pathname.replace("/","") : "";
 
                if (currentPath === routeList["Login"].Path && isLoggedIn) {
                     newRoute = defaultRoute;

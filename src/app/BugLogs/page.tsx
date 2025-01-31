@@ -44,6 +44,19 @@ export default function BugLog() {
           height: "100% !important"
      };
 
+     const bugLogChangeHandler = (fieldName: string, fieldValue: string) => {
+          const newBugLog = Object.assign({}, isAdding ? addingBugLog : editingBugLog);
+
+          newBugLog[fieldName] = fieldValue;
+          newBugLog.IsModified = true;
+
+          if (isAdding) {
+               setAddingBugLog(newBugLog);
+          } else {
+               setEditingBugLog(newBugLog);
+          }
+     }
+
      const cancelAddEditModeClickHandler = () => {
           setIsAdding(false);
           setIsEditing(false);
@@ -60,19 +73,6 @@ export default function BugLog() {
           }
 
           return rowCount / 30;
-     }
-
-     const bugLogChangeHandler = (fieldName: string, fieldValue: string) => {
-          const newBugLog = Object.assign({}, isAdding ? addingBugLog : editingBugLog);
-
-          newBugLog[fieldName] = fieldValue;
-          newBugLog.IsModified = true;
-
-          if (isAdding) {
-               setAddingBugLog(newBugLog);
-          } else {
-               setEditingBugLog(newBugLog);
-          }
      }
 
      const deleteBugLogHandler = (id: number) => {
@@ -250,7 +250,7 @@ export default function BugLog() {
                          }
 
                          {bugLogsLoadingComplete && bugLogs.length > 0 &&
-                              <table style={{ borderWidth: "1px", borderStyle: "solid" }} className={`fullWidth ${!darkMode ? "lightMode" : "darkMode"}`}>
+                              <table style={{ borderWidth: "1px", borderStyle: "solid" }} className={`bugLogs fullWidth ${!darkMode ? "lightMode" : "darkMode"}`}>
                                    <thead>
                                         <tr>
                                              <th>Actions</th>

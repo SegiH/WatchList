@@ -1,5 +1,4 @@
 import axios from "axios";
-import config from "config";
 import fs from "fs";
 import { cookies } from 'next/headers';
 import * as CryptoJS from 'crypto-js';
@@ -22,7 +21,7 @@ export const visibleSectionsSQL = "CREATE TABLE VisibleSections (id INTEGER PRIM
 export const defaultSources = ['Amazon', 'Hulu', 'Movie Theatre', 'Netflix', 'Plex', 'Prime', 'Web'];
 export const defaultTypes = ['Movie', 'Other', 'Special', 'TV'];
 
-const secretKey = config.get(`Secret`);
+const secretKey = String(process.env.SECRET);
 
 export const logMessage = async (message) => {
      message = new Date().toISOString() + " " + message
@@ -139,7 +138,7 @@ export const fetchData = async (options) => {
 }
 
 export const getIMDBDetails = async (imdb_id: string) => {
-     const rapidapi_key = config.has("RapidAPIKey") ? config.get("RapidAPIKey") : "";
+     const rapidapi_key = process.env.RAPIDAPIKEY;
 
      let options = {
           method: "GET",
@@ -158,13 +157,13 @@ export const getIMDBDetails = async (imdb_id: string) => {
 }
 
 export const getRapidAPIKey = async () => {
-     const rapidapi_key = config.has("RapidAPIKey") ? config.get("RapidAPIKey") : "";
+     const rapidapi_key = process.env.RAPIDAPIKEY;
 
      return rapidapi_key;
 }
 
 export const getRecommendationsAPIKey = async () => {
-     const recommendations_key = config.has("RecommendationsAPIKey") ? config.get("RecommendationsAPIKey") : "";
+     const recommendations_key = process.env.RECOMMENDATIONSAPIKEY;
 
      return recommendations_key;
 }
@@ -291,9 +290,9 @@ const openDB = async () => {
 }
 
 export const validateSettings = async () => {
-     // Validate config file properties that are required
-     if (!config.has(`Secret`)) {
-          return `Config file error: Secret property is missing or not set`;
+     // Validate .env properties that are required
+     if (process.env.SECRET === null || process.env.SECRET === "") {
+          return `ENV error: Secret property is missing or not set`;
      }
 
      return "";

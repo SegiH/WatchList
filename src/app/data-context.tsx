@@ -72,9 +72,8 @@ export interface DataContextType {
      AddIconComponent: React.ReactNode;
      archivedVisible: boolean;
      autoAdd: boolean;
-     bugLogs: IBugLog[]
-     bugLogVisible: boolean;
      buildDate: string;
+     bugLogs: IBugLog[];
      BrokenImageIconComponent: React.ReactNode;
      CancelIconComponent: React.ReactNode;
      darkMode: boolean;
@@ -93,12 +92,12 @@ export interface DataContextType {
      isAdding: boolean;
      isAdmin: () => boolean;
      isClient: boolean;
+     isEnabled: (value: string) => boolean;
      isEditing: boolean;
      isError: boolean;
      errorMessage: string;
      isLoggedIn: boolean;
      isLoggedInCheckComplete: boolean;
-     isVisible: (value: string) => boolean;
      LogOutIconComponent: React.ReactNode;
      openDetailClickHandler: (value: number) => void;
      ratingMax: number;
@@ -115,7 +114,6 @@ export interface DataContextType {
      setArchivedVisible: (value: boolean) => void;
      setAutoAdd: (value: boolean) => void;
      setBugLogs: React.Dispatch<React.SetStateAction<IBugLog[]>>;
-     setBugLogVisible: (value: boolean) => void;
      setDarkMode: (value: boolean) => void;
      setDemoMode: (value: boolean) => void;
      setHideTabs: (value: boolean) => void;
@@ -194,7 +192,6 @@ const DataProvider = ({ children }) => {
      const [autoAdd, setAutoAdd] = useState(true);
      const [buildDate, setBuildDate] = useState('');
      const [bugLogs, setBugLogs] = useState<IBugLog[]>([]);
-     const [bugLogVisible, setBugLogVisible] = useState(false);
      const [darkMode, setDarkMode] = useState(true);
      const [demoMode, setDemoMode] = useState(false);
      const [hideTabs, setHideTabs] = useState(false);
@@ -247,6 +244,10 @@ const DataProvider = ({ children }) => {
      const demoPassword = "demo";
 
      const visibleSectionChoices = [{ name: 'Items', id: 1 }, { name: 'Stats', id: 2 }, { name: 'Admin', id: 3 }];
+
+     if (String(process.env.NEXT_PUBLIC_ENABLE_BUGLOGS) === "true") {
+          visibleSectionChoices.push({ name: 'BugLogs', id: 4 });
+     }
 
      const router = useRouter();
 
@@ -373,8 +374,18 @@ const DataProvider = ({ children }) => {
                });
      }
 
-     const isVisible = (sectionName: string) => {
-          return visibleSections.length > 0 && visibleSections?.filter((section) => section["name"] === sectionName).length > 0 ? true : false;
+     const isEnabled = (sectionName: string) => {
+          if (visibleSections.length === 0) {
+               return false;
+          }
+
+          const visibleResult = visibleSections?.filter((section) => section["name"] === sectionName);
+
+          if (visibleResult.length === 1) {
+               return true;
+          } else {
+               return false;
+          }
      }
 
      const openDetailClickHandler = useCallback((Id: number) => {
@@ -779,16 +790,12 @@ const DataProvider = ({ children }) => {
                     if (findRouteByPath.length !== 1) { // Path wasn't found so use default route
                          newRoute = defaultRoute;
                     } else if (
-                         (currentPath === "/WatchList") ||
-                         (currentPath === "/WatchListStats" && isVisible("Stats")) ||
-                         (currentPath === "/Items" && isVisible("Items")) ||
-                         (currentPath === "/Admin" && isVisible("Admin"))
+                         (currentPath === "WatchList") ||
+                         (currentPath !== "WatchList" && isEnabled(currentPath))
                     ) {
                          newRoute = currentPath.replace("/", "").replace("\\", "");
-                    } else if (currentPath === "/BugLog") {
-                         setBugLogVisible(true);
-
-                         newRoute = "BugLog";
+                    } else if (currentPath === "/BugLogs") {
+                         newRoute = "BugLogs";
                     }
                } else if (activeRoute !== "") {
                     const findRouteByName = Object.keys(routeList).filter((routeName) => routeList[routeName].Name === activeRoute);
@@ -796,16 +803,10 @@ const DataProvider = ({ children }) => {
                     if (findRouteByName.length !== 1) { // Path wasn't found so use default route
                          newRoute = defaultRoute;
                     } else if (
-                         (activeRoute === "/WatchList") ||
-                         (activeRoute === "WatchListStats" && isVisible("Stats")) ||
-                         (activeRoute === "Items" && isVisible("Items")) ||
-                         (activeRoute === "Admin" && isVisible("Admin"))
+                         (activeRoute === "WatchList") ||
+                         (activeRoute !== "WatchList" && isEnabled(activeRoute))
                     ) {
                          newRoute = activeRoute.replace("/", "").replace("\\", "");
-                    } else if (activeRoute === "BugLog") {
-                         setBugLogVisible(true);
-
-                         newRoute = "BugLog";
                     }
                } else {
                     newRoute = defaultRoute;
@@ -901,42 +902,48 @@ const DataProvider = ({ children }) => {
                DisplayName: "WatchList",
                Path: "/WatchList",
                Icon: WatchListIconComponent,
-               RequiresAuth: true
+               RequiresAuth: true,
+               Enabled: true
           },
           Items: {
                Name: "Items",
                DisplayName: "Items",
                Path: "/Items",
                Icon: WatchListItemsIconComponent,
-               RequiresAuth: true
+               RequiresAuth: true,
+               Enabled: true
           },
-          WatchListStats: {
+          Stats: {
                Name: "WatchListStats",
                DisplayName: "Stats",
                Path: "/WatchListStats",
                Icon: StatsIconComponent,
-               RequiresAuth: true
+               RequiresAuth: true,
+               Enabled: true
           },
           Admin: {
                Name: "Admin",
                DisplayName: "Admin",
                Path: "/Admin",
                Icon: AdminConsoleIconComponent,
-               RequiresAuth: true
+               RequiresAuth: true,
+               Enabled: true
           },
           Login: {
                Name: "Login",
                DisplayName: "Login",
                Path: "/Login",
                Icon: null,
-               RequiresAuth: false
+               RequiresAuth: false,
+               Enabled: true
           },
-          BugLog: {
-               Name: "BugLog",
-               DisplayName: "Bug Log",
-               Path: "/BugLog",
+          BugLogs: {
+               Name: "BugLogs",
+               DisplayName: "Bug Logs",
+               Path: "/BugLogs",
                Icon: BugReportIconComponent,
-               RequiresAuth: true
+               RequiresAuth: true,
+               Enabled: String(process.env.NEXT_PUBLIC_ENABLE_BUGLOGS) === "true" ? true : false
           }
      };
 
@@ -969,7 +976,6 @@ const DataProvider = ({ children }) => {
           autoAdd: autoAdd,
           BrokenImageIconComponent: BrokenImageIconComponent,
           bugLogs: bugLogs,
-          bugLogVisible: bugLogVisible,
           buildDate: buildDate,
           CancelIconComponent: CancelIconComponent,
           darkMode: darkMode,
@@ -989,8 +995,8 @@ const DataProvider = ({ children }) => {
           isAdmin: isAdmin,
           isClient: isClient,
           isEditing: isEditing,
+          isEnabled: isEnabled,
           isError: isError,
-          isVisible: isVisible,
           errorMessage: errorMessage,
           isLoggedIn: isLoggedIn,
           isLoggedInCheckComplete: isLoggedInCheckComplete,
@@ -1010,7 +1016,6 @@ const DataProvider = ({ children }) => {
           setArchivedVisible: setArchivedVisible,
           setAutoAdd: setAutoAdd,
           setBugLogs: setBugLogs,
-          setBugLogVisible: setBugLogVisible,
           setDarkMode: setDarkMode,
           setDemoMode: setDemoMode,
           setHideTabs: setHideTabs,

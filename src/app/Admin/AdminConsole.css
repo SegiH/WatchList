@@ -38,4 +38,9 @@ td {
  
 td:first-child {
      font-weight: bold;
-} 
+}
+
+/* This prevents the last buglog from being cut off due to the bottom nav bar */
+table.bugLogs {
+     margin-bottom: 120px !important;
+ }

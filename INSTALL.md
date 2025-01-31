@@ -4,7 +4,7 @@ Requirements: Node 18.19.1 or higher
 
 # Installation
 1. Download the latest release from the releases and extract the zip
-1. Edit config\default.json and fill in the secret. It needs to be a long, secure password that will be used to encrypt your database. If you lose this secret, there is no way to recover it and you will not be able to use your WatchList database.
+1. Edit .env and set SECRET. It needs to be a long, secure password that will be used to encrypt your database. If you lose this secret, there is no way to recover it and you will not be able to use your WatchList database.
 1. Optionally, see "Searching IMDB" to enable searching IMDB or "Recommendations" to get movie & TV show recommendations.
 1. Run `node server.js` to start the server.
 1. See "Setup up admin user account" below.
@@ -12,10 +12,10 @@ Requirements: Node 18.19.1 or higher
 # Build from source
 1. Check out the source from Github and go to the root directory of the project.
 1. If you are setting up WatchList for the first time, make sure you do not already have a file in the root of your project named watchlistdb.sqlite. If it does exist, delete or rename it.
-1. Edit config\default.json and fill in the secret. It needs to be a long, secure password that will be used to encrypt your database. If you lose this secret, there is no way to recover it and you will not be able to use your WatchList database.
+1. Edit .env and set SECRET. It needs to be a long, secure password that will be used to encrypt your database. If you lose this secret, there is no way to recover it and you will not be able to use your WatchList database.
 1. Run `npm install`
 1. Run `npm run build`
-1. If you use Windows run `npm run prod-windows`, otherwise run `npm run prod-unix`
+1. If you use Windows run `npm run deploy-windows`, otherwise run `npm run deploy-unix`
 1. Go to the standalone directory `cd .next/standalone`
 1. Run `node server.js`
 1. See "Setup up admin user account" below.
@@ -51,7 +51,7 @@ Note: RapidAPI allows you 1000 free searches per month. In order for this API to
 1. On the next page, enter a short description and click on Save
 1. Click on the down arrow next to your application name and select Security underneath the sub menu
 1. Click on the eye icon to show your API key and copy it to the clipboard.
-1. Edit config\default.json file and paste the API key into the "RapidAPIKey" key.
+1. Edit .env and set RAPIDAPIKEY with this API key.
 
 ## Recommendations
 You can get recommendations from a movie or TV show. This requires an api key from themoviedb.com which is completely free and does not require you to add a credit card.
@@ -60,7 +60,7 @@ You can get recommendations from a movie or TV show. This requires an api key fr
 1. Click on the avatar icon at the top right and go to settings
 1. Click on API
 1. Copy the "API Read Access Token"
-1. Edit config\default.json file and paste the API key into the "RecommendationsAPIKey" key
+1. Edit .env and set RECOMMENDATIONSAPIKEY with this API key.
 
 ## Progressive Web Application (PWA).
 WatchList can be used as a desktop application by installing it as a PWA.

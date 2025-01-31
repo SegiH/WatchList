@@ -16,11 +16,11 @@ const Settings = () => {
           isLoggedIn,
           LogOutIconComponent,
           pullToRefreshEnabled,
+          routeList,
           setActiveRoute,
           setActiveRouteDisplayName,
           setArchivedVisible,
           setAutoAdd,
-          setBugLogVisible,
           setDarkMode,
           setHideTabs,
           setSettingsVisible,
@@ -34,7 +34,6 @@ const Settings = () => {
      } = useContext(DataContext) as DataContextType
 
      const [formattedBuildDate, setFormattedBuildDate] = useState("");
-     const [titleClickCount, setTitleClickCount] = useState(0);
 
      const router = useRouter();
 
@@ -61,26 +60,16 @@ const Settings = () => {
           setSettingsVisible(false);
      };
 
-     const titleClickHandler = () => {
-          const newTitleClick = titleClickCount + 1;
-
-          if (newTitleClick === 2) {
-               setBugLogVisible(true);
-               setTitleClickCount(0);
-          } else {
-               setTitleClickCount(newTitleClick);
-               setBugLogVisible(false);
-          }
-     }
-
      useEffect(() => {
           setFormattedBuildDate(buildDate);
      }, []);
 
+     const filteredVisibleSectionChoices = visibleSectionChoices?.filter((section) => routeList[section["name"]].Enabled === true);
+
      return (
           <div className="modal">
                <div className={`modal-content settingsPanel textLabel ${!darkMode ? " lightMode" : " darkMode"}`}>
-                    <div onDoubleClick={titleClickHandler}>Settings</div>
+                    <div>Settings</div>
                     <span className="clickable closeButton closeButtonAdjustment" onClick={closeDetail}>
                          X
                     </span>
@@ -94,7 +83,7 @@ const Settings = () => {
                               <span className="leftMargin" title="Show WatchList Items">
                                    <Multiselect
                                         className={`${!darkMode ? " lightMode" : " darkMode"}`}
-                                        options={visibleSectionChoices}
+                                        options={filteredVisibleSectionChoices}
                                         selectedValues={visibleSections}
                                         onSelect={(newList) => addRemoveVisibleSectionChange(newList)}
                                         onRemove={(newList) => addRemoveVisibleSectionChange(newList)}

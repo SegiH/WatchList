@@ -8,7 +8,6 @@ import IBugLog from "../interfaces/IBugLog";
 import { DataContext, DataContextType } from "../data-context";
 import TextField from "@mui/material/TextField";
 
-import "../Admin/AdminConsole.css";
 import "../page.css";
 
 export default function BugLog() {
@@ -250,7 +249,7 @@ export default function BugLog() {
                          }
 
                          {bugLogsLoadingComplete && bugLogs.length > 0 &&
-                              <table style={{ borderWidth: "1px", borderStyle: "solid" }} className={`bugLogs fullWidth ${!darkMode ? "lightMode" : "darkMode"}`}>
+                              <table style={{ borderWidth: "1px", borderStyle: "solid" }} className={`simpleTable fullWidth ${!darkMode ? "lightMode" : "darkMode"}`}>
                                    <thead>
                                         <tr>
                                              <th>Actions</th>

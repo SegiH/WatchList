@@ -9,7 +9,6 @@ import ManageWatchListSources from "./ManageWatchListSources";
 import ManageWatchListTypes from "./ManageWatchListTypes";
 import { DataContext, DataContextType } from "../data-context";
 
-import "./AdminConsole.css";
 import "../page.css";
 
 export default function Admin() {

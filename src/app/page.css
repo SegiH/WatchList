@@ -87,6 +87,21 @@ input:checked+.slider:before {
      transform: translateX(26px);
 }
 
+table.simpleTable {
+     width: 100%;
+     margin: 20px 0;
+     font-family: Arial, sans-serif;
+     /*background-color: #f9f9f9;*/
+     border: 1px solid black;
+     border-collapse: collapse;
+     border-radius: 8px;
+}
+
+/* This prevents the last buglog from being cut off due to the bottom nav bar */
+table.simpleTable:last-child {
+     margin-bottom: 120px !important;
+}
+
 #wl_autocomplete {
      margin-bottom: 5px;
      min-width: 300px;
@@ -126,6 +141,10 @@ input:checked+.slider:before {
      transform: scale(1.8) !important;
 }
 
+.cancelPassword {
+     margin-left: 10% !important;
+}
+
 .card {
      display: flex;
      justify-content: flex-start;
@@ -139,6 +158,10 @@ input:checked+.slider:before {
      display: grid;
      width: 600px;
      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+}
+
+.changePassword {
+     margin-left: 10% !important;
 }
 
 .clickable {
@@ -199,6 +222,10 @@ input:checked+.slider:before {
 .darkMode {
      color: var(--dark-mode-foregroundColor) !important;
      background-color: var(--dark-mode-backgroundColor) !important;
+}
+
+.dialogActions {
+     display: inline-block !important;
 }
 
 .editsaveCancelButton {
@@ -662,6 +689,26 @@ input:checked+.slider:before {
 .show-title {
      display: inline-flex;
      word-wrap: break-word;
+}
+
+.simpleTable th {
+     padding: 12px;
+     text-align: left;
+     font-size: 16px;
+     border: 1px solid #ddd;
+     border-collapse: collapse;
+}
+
+.simpleTable td {
+     padding: 12px;
+     text-align: left;
+     border-bottom: 1px solid #ddd;
+     font-size: 14px;
+     border: 1px solid #ddd;
+}
+
+.simpleTable td:first-child {
+     font-weight: bold;
 }
 
 .slider {

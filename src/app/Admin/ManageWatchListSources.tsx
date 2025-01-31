@@ -169,7 +169,7 @@ const ManageWatchListSources = () => {
                }
 
                {watchListSources && watchListSources.length > 0 &&
-                    <table style={{ borderWidth: "1px", borderStyle: "solid" }} className={`${!darkMode ? "lightMode" : "darkMode"}`}>
+                    <table style={{ borderWidth: "1px", borderStyle: "solid" }} className={`simpleTable ${!darkMode ? "lightMode" : "darkMode"}`}>
                          <thead>
                               <tr>
                                    <th>Actions</th>

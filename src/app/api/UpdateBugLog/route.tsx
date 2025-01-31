@@ -77,8 +77,13 @@ export async function PUT(request: NextRequest) {
 
     if (completedDate !== null) {
         SQL += SQL != "" ? "," : "";
-        SQL += "CompletedDate=?";
-        params.push(encodeURIComponent(completedDate));
+        
+        if (completedDate !== "NULL") {
+            SQL += "CompletedDate=?";
+            params.push(encodeURIComponent(completedDate));
+        } else {
+            SQL += "CompletedDate=NULL";
+        }
     }
 
     if (resolutionNotes !== null) {

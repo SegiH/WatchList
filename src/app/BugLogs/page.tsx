@@ -155,8 +155,8 @@ export default function BugLog() {
           columns += (columns === `` ? `?` : `&`) + `BugName=${encodeURIComponent(currentBugLog.BugName)}`;
           columns += (columns === `` ? `?` : `&`) + `AddDate=${currentBugLog.AddDate}`;
 
-          if (typeof currentBugLog.CompletedDate !== "undefined" && currentBugLog.CompletedDate !== null && currentBugLog.CompletedDate !== '') {
-               columns += (columns === `` ? `?` : `&`) + `CompletedDate=${currentBugLog.CompletedDate}`;
+          if (typeof currentBugLog.CompletedDate !== "undefined" && currentBugLog.CompletedDate !== null) {
+               columns += (columns === `` ? `?` : `&`) + `CompletedDate=${currentBugLog.CompletedDate !== '' ? currentBugLog.CompletedDate : 'NULL'}`;
           }
 
           if (typeof currentBugLog.ResolutionNotes !== "undefined") {

@@ -99,7 +99,9 @@ const SharedLayout = () => {
                          {isLoggedIn && watchListSourcesLoadingComplete && watchListTypesLoadingComplete &&
                               <>
                                    <span className={`menuBar ${!darkMode ? "lightMode" : "darkMode"}`}>
-                                        <span className={`leftMargin menuBarActiveRoute${!darkMode ? " lightMode" : " darkMode"}`}>{activeRouteDisplayName}{demoMode ? " (Demo)" : ""}</span>
+                                        {demoMode &&
+                                             <span className={`leftMargin menuBarActiveRoute${!darkMode ? " lightMode" : " darkMode"}`}>Demo</span>
+                                        }
 
                                         {(activeRoute === "WatchList" || activeRoute === "Items") &&
                                              <>
@@ -124,23 +126,23 @@ const SharedLayout = () => {
                                                   <span title="Section">
                                                        <select className="leftMargin selectStyle" value={activeRoute !== null ? activeRoute : ""} onChange={(event) => tabChangeHandler(event.target.value)}>
                                                             {Object.keys(routeList)
-                                                            .filter((routeName) => {
-                                                                 return routeList[routeName].RequiresAuth === true
-                                                                 && routeName !== "Setup"
-                                                                 && routeName !== "SearchIMDB"
-                                                                 && (routeName !== "Admin" || (routeName === "Admin" && isAdmin() === true && isEnabled("Admin")))
-                                                                 && (routeName !== "Items" || (routeName ==="Items" && isEnabled("Items")))
-                                                                 && (routeName !== "BugLogs" || (routeName ==="BugLogs" && isEnabled("BugLogs") && !demoMode))
-                                                                 && (routeName !== "Stats" || (routeName === "Stats" && isEnabled("Stats")))
-                                                            }
-                                                            )
-                                                            .sort().map((routeName, index) => {
-                                                                 return (
-                                                                      <option key={index} value={routeName}>
-                                                                           {routeList[routeName].DisplayName}
-                                                                      </option>
-                                                                 );
-                                                            })}
+                                                                 .filter((routeName) => {
+                                                                      return routeList[routeName].RequiresAuth === true
+                                                                           && routeName !== "Setup"
+                                                                           && routeName !== "SearchIMDB"
+                                                                           && (routeName !== "Admin" || (routeName === "Admin" && isAdmin() === true && isEnabled("Admin")))
+                                                                           && (routeName !== "Items" || (routeName === "Items" && isEnabled("Items")))
+                                                                           && (routeName !== "BugLogs" || (routeName === "BugLogs" && isEnabled("BugLogs") && !demoMode))
+                                                                           && (routeName !== "Stats" || (routeName === "Stats" && isEnabled("Stats")))
+                                                                 }
+                                                                 )
+                                                                 .sort().map((routeName, index) => {
+                                                                      return (
+                                                                           <option key={index} value={routeName}>
+                                                                                {routeList[routeName].DisplayName}
+                                                                           </option>
+                                                                      );
+                                                                 })}
                                                        </select>
                                                   </span>
                                              </>

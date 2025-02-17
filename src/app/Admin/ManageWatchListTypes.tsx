@@ -32,7 +32,17 @@ const ManageWatchListTypes = () => {
 
      const router = useRouter();
 
-     const cancelAddEditModeClickHandler = () => {
+     const addTypeClickHandler = () => {
+          setAddingType({
+               WatchListTypeID: -1,
+               WatchListTypeName: "",
+               IsModified: false
+          })
+
+          setIsAdding(true);
+     }
+
+     const cancelAddEditTypeClickHandler = () => {
           setIsAdding(false);
           setIsEditing(false);
      }
@@ -58,17 +68,7 @@ const ManageWatchListTypes = () => {
                });
      }
 
-     const enterAddModeClickHandler = () => {
-          setAddingType({
-               WatchListTypeID: -1,
-               WatchListTypeName: "",
-               IsModified: false
-          })
-
-          setIsAdding(true);
-     }
-
-     const enterEditModeClickHandler = (id: number) => {
+     const editTypeClickHandler = (id: number) => {
           const newEditingTypeResult = watchListTypes?.filter((watchListType: IWatchListType) => {
                return watchListType.WatchListTypeID === id;
           });
@@ -158,7 +158,7 @@ const ManageWatchListTypes = () => {
                          color="primary"
                          variant="contained"
                          className="borderRadius15 bottomMargin20 topMargin"
-                         onClick={enterAddModeClickHandler} >
+                         onClick={addTypeClickHandler} >
                          Add Type
                     </Button>
                }
@@ -186,7 +186,7 @@ const ManageWatchListTypes = () => {
                                                        {SaveIconComponent}
                                                   </span>
 
-                                                  <span className={`clickable iconLarge error`} onClick={() => cancelAddEditModeClickHandler()}>
+                                                  <span className={`clickable iconLarge error`} onClick={() => cancelAddEditTypeClickHandler()}>
                                                        {CancelIconComponent}
                                                   </span>
                                              </span>
@@ -214,7 +214,7 @@ const ManageWatchListTypes = () => {
                                         <tr key={watchListType.WatchListTypeID}>
                                              <td>
                                                   {!isEditing &&
-                                                       <span className={`clickable tabIcon`} onClick={() => enterEditModeClickHandler(watchListType.WatchListTypeID)}>
+                                                       <span className={`clickable tabIcon`} onClick={() => editTypeClickHandler(watchListType.WatchListTypeID)}>
                                                             {EditIconComponent}
                                                        </span>
                                                   }
@@ -225,7 +225,7 @@ const ManageWatchListTypes = () => {
                                                                  {SaveIconComponent}
                                                             </span>
 
-                                                            <span className={`clickable iconLarge error`} onClick={() => cancelAddEditModeClickHandler()}>
+                                                            <span className={`clickable iconLarge error`} onClick={() => cancelAddEditTypeClickHandler()}>
                                                                  {CancelIconComponent}
                                                             </span>
                                                        </span>

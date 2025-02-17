@@ -33,7 +33,17 @@ const ManageWatchListSources = () => {
 
      const router = useRouter();
 
-     const cancelAddEditModeClickHandler = () => {
+     const addSourceClickHandler = () => {
+          setAddingSource({
+               WatchListSourceID: -1,
+               WatchListSourceName: "",
+               IsModified: false
+          })
+
+          setIsAdding(true);
+     }
+
+     const cancelAddEditSourceClickHandler = () => {
           setIsAdding(false);
           setIsEditing(false);
      }
@@ -59,17 +69,7 @@ const ManageWatchListSources = () => {
                });
      }
 
-     const enterAddModeClickHandler = () => {
-          setAddingSource({
-               WatchListSourceID: -1,
-               WatchListSourceName: "",
-               IsModified: false
-          })
-
-          setIsAdding(true);
-     }
-
-     const enterEditModeClickHandler = (id: number) => {
+     const editSourceClickHandler = (id: number) => {
           const newEditingSourceResult = watchListSources?.filter((watchListSource: IWatchListSource) => {
                return watchListSource.WatchListSourceID === id;
           });
@@ -163,7 +163,7 @@ const ManageWatchListSources = () => {
                          color="primary"
                          variant="contained"
                          className="borderRadius15 bottomMargin20 topMargin"
-                         onClick={enterAddModeClickHandler}>
+                         onClick={addSourceClickHandler}>
                          Add Source
                     </Button>
                }
@@ -191,7 +191,7 @@ const ManageWatchListSources = () => {
                                                        {SaveIconComponent}
                                                   </span>
 
-                                                  <span className={`clickable iconLarge error`} onClick={() => cancelAddEditModeClickHandler()}>
+                                                  <span className={`clickable iconLarge error`} onClick={() => cancelAddEditSourceClickHandler()}>
                                                        {CancelIconComponent}
                                                   </span>
                                              </span>
@@ -219,7 +219,7 @@ const ManageWatchListSources = () => {
                                         <tr key={watchListSource.WatchListSourceID}>
                                              <td>
                                                   {!isEditing &&
-                                                       <span className={`clickable tabIcon`} onClick={() => enterEditModeClickHandler(watchListSource.WatchListSourceID)}>
+                                                       <span className={`clickable tabIcon`} onClick={() => editSourceClickHandler(watchListSource.WatchListSourceID)}>
                                                             {EditIconComponent}
                                                        </span>
                                                   }
@@ -230,7 +230,7 @@ const ManageWatchListSources = () => {
                                                                  {SaveIconComponent}
                                                             </span>
 
-                                                            <span className={`clickable iconLarge error`} onClick={() => cancelAddEditModeClickHandler()}>
+                                                            <span className={`clickable iconLarge error`} onClick={() => cancelAddEditSourceClickHandler()}>
                                                                  {CancelIconComponent}
                                                             </span>
                                                        </span>

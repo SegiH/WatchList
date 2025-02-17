@@ -3,11 +3,11 @@
 import axios, { AxiosResponse } from "axios";
 import Image from "next/image";
 
-import React, { useCallback, useContext, useEffect, useState } from "react";
 import { Autocomplete } from "@mui/material";
-import Recommendations from "../../components/Recommendations";
-import { useRouter } from "next/navigation";
 import TextField, { TextFieldProps } from "@mui/material/TextField";
+import { useRouter } from "next/navigation";
+import React, { useCallback, useContext, useEffect, useState } from "react";
+import Recommendations from "../../components/Recommendations";
 
 import EmptyIcon from "@mui/icons-material/StarBorder";
 const EmptyIconComponent = <EmptyIcon />;
@@ -303,7 +303,7 @@ export default function WatchListDetail() {
                     return;
                }
 
-               let queryURL = `/api/AddWatchList?WatchListItemID=${addWatchListDtl.WatchListItemID}&StartDate=${addWatchListDtl.StartDate.substring(0, 10)}&WatchListSourceID=${addWatchListDtl.WatchListSourceID}&Archived=${addWatchListDtl.Archived}`;
+               let queryURL = `/api/AddWatchList?WatchListItemID=${addWatchListDtl.WatchListItemID}&StartDate=${addWatchListDtl.StartDate.substring(0, 10)}&WatchListSourceID=${addWatchListDtl.WatchListSourceID}&Archived=false`;
 
                if (addWatchListDtl.EndDate !== "") {
                     queryURL += `&EndDate=${addWatchListDtl.EndDate.substring(0, 10)}`;
@@ -482,7 +482,7 @@ export default function WatchListDetail() {
 
      const imdbImage = typeof watchListDtl?.IMDB_Poster !== "undefined" && watchListDtl?.IMDB_Poster !== null && watchListDtl?.IMDB_Poster_Error !== true && watchListDtl?.IMDB_Poster !== "" && watchListDtl?.IMDB_Poster.length > 0
           ?
-          <Image className="poster-detail" width="175" height="200" alt="Image Not Available" src={watchListDtl?.IMDB_Poster} onError={() => showDefaultSrc()} />
+          <Image className="poster-detail" width="175" height="260" alt="Image Not Available" src={watchListDtl?.IMDB_Poster} onError={() => showDefaultSrc()} />
           :
           <>{BrokenImageIconComponent}</>;
 
@@ -692,7 +692,7 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
 
                                                   {typeof watchListDtl?.IMDB_URL === "undefined" &&
                                                        <>
-                                                            <div title={watchListDtl?.Tooltip} className={`${!darkMode ? "lightMode" : "darkMode"}`}>
+                                                            <div title={watchListDtl?.Tooltip} className={`${!darkMode ? "lightMode" : "darkMode"}`} style={{position: "relative", left: "-5px"}}>
                                                                  {watchListDtl?.WatchListItemName}
                                                             </div>
                                                        </>
@@ -715,7 +715,7 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
                                         }
 
                                         {!isAdding && !isEditing &&
-                                             <span className={`clickable closeButton ${!darkMode ? " lightMode" : "darkMode"}`} onClick={closeDetail}>
+                                             <span className={`clickable closeButton ${!darkMode ? " lightMode" : "darkMode"}`} style={{position: "relative", top: "-20px"}} onClick={closeDetail}>
                                                   X
                                              </span>
                                         }
@@ -735,7 +735,7 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
                                         }
 
                                         {isAdding && addWatchListDtl && watchListItems?.filter((currentWatchListItem: IWatchListItem) => String(currentWatchListItem?.WatchListItemID) === String(addWatchListDtl?.WatchListItemID)).length === 1 &&
-                                             <span className="column"><Image className="poster-detail" width="175" height="200" alt="Image Not Available" src={watchListItems?.filter((currentWatchListItem: IWatchListItem) => String(currentWatchListItem?.WatchListItemID) === String(addWatchListDtl?.WatchListItemID))[0].IMDB_Poster ?? ""} /></span>
+                                             <span className="column"><Image className="poster-detail" width="175" height="280" alt="Image Not Available" src={watchListItems?.filter((currentWatchListItem: IWatchListItem) => String(currentWatchListItem?.WatchListItemID) === String(addWatchListDtl?.WatchListItemID))[0].IMDB_Poster ?? ""} /></span>
                                         }
                                    </div>
 
@@ -914,7 +914,7 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
 
                                    <div className="narrow card">
                                         {!isAdding && !isEditing && recommendationsEnabled &&
-                                             <div className={`clickable hyperlink text-label rightAligned`} onClick={recommendationsClickHandler}>Recommendations</div>
+                                             <div className={`clickable hyperlink text-label rightAligned topMargin`} onClick={recommendationsClickHandler}>Recommendations</div>
                                         }
                                    </div>
 

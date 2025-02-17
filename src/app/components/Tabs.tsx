@@ -1,7 +1,7 @@
 "use client"
 
-import React, { useContext } from "react";
 import { useRouter } from 'next/navigation';
+import { useContext } from "react";
 
 import { DataContext, DataContextType } from "../data-context";
 
@@ -58,9 +58,9 @@ const Tabs = () => {
                                    return routeList[routeName].RequiresAuth === true
                                    && routeName !== "Setup"
                                    && routeName !== "SearchIMDB"
-                                   && (routeName !== "Admin" || (routeName === "Admin" && isAdmin() === true && isEnabled("Admin")))
+                                   && (routeName !== "Admin" || (routeName === "Admin" && isAdmin() === true)) // You cannot dynamically set Enabled on this route so don't call isEnabled()
                                    && (routeName !== "Items" || (routeName ==="Items" && isEnabled("Items")))
-                                   && (routeName !== "BugLogs" || (routeName ==="BugLogs" && isEnabled("BugLogs") && !demoMode))
+                                   && (routeName !== "BugLogs" || (routeName ==="BugLogs" && !demoMode))  // You cannot dynamically set Enabled on this route so don't call isEnabled()
                                    && (routeName !== "Stats" || (routeName === "Stats" && isEnabled("Stats")))
                               }
                               )

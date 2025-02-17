@@ -1,31 +1,7 @@
 import { NextRequest } from 'next/server';
-import { execUpdateDelete, isLoggedIn } from "../lib";
+import { getDB, isLoggedIn, writeDB } from "../lib";
+import IWatchListSource from '@/app/interfaces/IWatchListSource';
 
-/**
- * @swagger
- * /api/UpdateWatchListSource:
- *    put:
- *        tags:
- *          - WatchListSources
- *        summary: Update a WatchListItem source
- *        description: Update a WatchListItem source
- *        parameters:
- *           - name: WatchListSourceID
- *             in: query
- *             description: New WatchListSource ID
- *             required: true
- *             schema:
- *                  type: string
- *           - name: WatchListSourceName
- *             in: query
- *             description: New WatchListSource Name
- *             required: true
- *             schema:
- *                  type: string
- *        responses:
- *          200:
- *            description: '["OK",""] on success, ["ERROR","error message"] on error'
- */
 export async function PUT(request: NextRequest) {
      if (!isLoggedIn(request)) {
           return Response.json(["ERROR", "Error. Not signed in"]);
@@ -42,15 +18,28 @@ export async function PUT(request: NextRequest) {
           return Response.json(["ERROR", "WatchList Source Name was not provided"]);
      }
 
-     const values: [string, string] = [watchListSourceName, watchListSourceID];
-
      try {
-          const sql = `UPDATE WatchListSources SET WatchListSourceName=? WHERE WatchListSourceID=?`;
+          const db = getDB();
 
-          await execUpdateDelete(sql, values);
+          const watchListSourcesDB = db.WatchListSources;
+
+          const watchListSourceResult = watchListSourcesDB.filter((watchListSource: IWatchListSource) => {
+               return String(watchListSource.WatchListSourceID) === String(watchListSourceID)
+          });
+
+          if (watchListSourceResult.length !== 1) {
+               return Response.json(["ERROR", "Unable to get the existing Watchlist Source"]);
+          }
+
+          const watchListSource = watchListSourceResult[0];
+
+          watchListSource.WatchListSourceName = watchListSourceName;
+
+          writeDB(db);
 
           return Response.json(["OK"]);
      } catch (e) {
-          return Response.json(["ERROR", `The error occurred updating the WatchList Source with ID ${watchListSourceID} with the error ${e.message}`]);
+          console.log(e.message)
+          return Response.json(["ERROR", e.message]);
      }
 }

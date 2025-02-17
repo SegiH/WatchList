@@ -1,41 +1,35 @@
 import { NextRequest } from 'next/server';
-import { execUpdateDelete, isLoggedIn } from "../lib";
+import { getDB, isLoggedIn, writeDB } from "../lib";
+import IBugLog from '@/app/interfaces/IBugLog';
 
-/**
- * @swagger
- * /api/DeleteBugLog:
- *    put:
- *        tags:
- *          - BugLog
- *        summary: Delete a bug log
- *        description: Delete a bug log
- *        parameters:
- *           - name: BugLogId
- *             in: query
- *             description: ID of the bug
- *             required: true
- *             schema:
- *                  type: number
- *        responses:
- *          200:
- *            description: '["OK",""] on success, ["ERROR","error message"] on error'
- */
 export async function PUT(request: NextRequest) {
      const searchParams = request.nextUrl.searchParams;
-     const BugLogId = searchParams.get("BugLogId");
+     const bugLogId = searchParams.get("BugLogId");
 
      if (!isLoggedIn(request)) {
           return Response.json(["ERROR", "Error. Not signed in"]);
      }
 
-     if (BugLogId === null) {
-        return Response.json(["ERROR", "ID was not provided"])
-   }
+     if (bugLogId === null) {
+          return Response.json(["ERROR", "ID was not provided"])
+     }
 
-     const SQL = `DELETE FROM BugLogs WHERE BugLogId=?`;
-     let params = [BugLogId];
+     try {
+          const db = getDB();
 
-     await execUpdateDelete(SQL, params);
+          const buglogsDB = db.BugLogs;
 
-     return Response.json(["OK"]);
+          const newBugLogs = buglogsDB.filter((currentBuglog: IBugLog) => {
+               return String(currentBuglog.BugLogId) !== String(bugLogId)
+          });
+
+          db.BugLogs = newBugLogs;
+
+          writeDB(db);
+
+          return Response.json(["OK"]);
+     } catch (e) {
+          console.log(e.message);
+          return Response.json(["ERROR", e.message]);
+     }
 }

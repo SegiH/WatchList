@@ -1,73 +1,6 @@
 import { NextRequest } from 'next/server';
-import { execInsert, getUserID, isLoggedIn } from '../lib';
+import { getDB, getUserID, isLoggedIn, writeDB } from '../lib';
 
-/**
- * @swagger
- * /api/AddWatchList:
- *    put:
- *        tags:
- *          - WatchList
- *        summary: Add a WatchList record
- *        description: Add a WatchList record to log a watched movie/TV show
- *        parameters:
- *           - name: WatchListItemID
- *             in: query
- *             description: New WatchListItem ID (ID of the movie or TV Show)
- *             required: true
- *             schema:
- *                  type: number
- *           - name: UserID
- *             in: query
- *             description: User ID of the person adding the log
- *             required: true
- *             schema:
- *                  type: number
- *           - name: StartDate
- *             in: query
- *             description: Start date that the movie/show was watched
- *             required: true
- *             schema:
- *                  type: string
- *           - name: EndDate
- *             in: query
- *             description: End date that the movie/show was watched
- *             required: false
- *             schema:
- *                  type: string
- *           - name: WatchListSourceID
- *             in: query
- *             description: Source ID of the movie/show where it was watched
- *             required: false
- *             schema:
- *                  type: number
- *           - name: Season
- *             in: query
- *             description: Season of the show
- *             required: false
- *             schema:
- *                  type: number
- *           - name: Rating
- *             in: query
- *             description: Rating of the movie/show
- *             required: false
- *             schema:
- *                  type: number
- *           - name: Notes
- *             in: query
- *             description: Notes for the movie/show
- *             required: false
- *             schema:
- *                  type: string
- *           - name: Archived
- *             in: query
- *             description: Archived status
- *             required: false
- *             schema:
- *                  type: number
- *        responses:
- *          200:
- *            description: '["OK",""] on success, ["ERROR","error message"] on error'
- */
 export async function PUT(request: NextRequest) {
      if (!isLoggedIn(request)) {
           return Response.json(["ERROR", "Error. Not signed in"]);
@@ -93,13 +26,32 @@ export async function PUT(request: NextRequest) {
      } else if (startDate === null) {
           return Response.json(["Start Date was not provided"]);
      } else {
-          const SQL = "INSERT INTO WatchList(UserID, WatchListItemID, StartDate, EndDate, WatchListSourceID, Season, Archived, Rating, Notes) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);"
-          const params = [userID, watchListItemID, startDate, endDate, sourceID, season, archived, rating, notes];
+          try {
+               const db = getDB();
 
-          const result = await execInsert(SQL, params);
+               const watchListDB = db.WatchList;
 
-          const newID = result.lastID;
+               const highestWatchListID = Math.max(...watchListDB.map(o => o.WatchListID));
 
-          return Response.json(["OK", newID]);
+               watchListDB.push({
+                    "WatchListID": (highestWatchListID !== null ? highestWatchListID : 0) + 1,
+                    "UserID": userID,
+                    "WatchListItemID": parseInt(watchListItemID, 10),
+                    "StartDate": startDate,
+                    "EndDate": endDate,
+                    "WatchListSourceID": parseInt(sourceID as string, 10),
+                    "Season": season,
+                    "Archived": archived,
+                    "Rating": rating,
+                    "Notes": notes
+               });
+
+               writeDB(db);
+
+               return Response.json(["OK", watchListDB.length]); // New ID
+          } catch (e) {
+               console.log(e.message)
+               return Response.json(["ERROR", e.message]);
+          }
      }
 }

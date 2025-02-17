@@ -1,31 +1,7 @@
 import axios from "axios";
 import { NextRequest } from 'next/server';
 import { getRecommendationsAPIKey, isLoggedIn } from '../lib';
-/**
- * @swagger
- * /api/Recommendations:
- *    get:
- *        tags:
- *          - Recommendations
- *        summary: Get recommendations based on the current movie/show
- *        description: Get recommendations based on the current movie/show
- *        parameters:
- *           - name: SearchTerm
- *             in: query
- *             description: Search term
- *             required: true
- *             schema:
- *                  type: string
- *           - name: Type
- *             in: query
- *             description: Type of the search term (movie or show)
- *             required: true
- *             schema:
- *                  type: string
- *        responses:
- *          200:
- *            description: '["OK",recommendations] on success, ["ERROR","error message"] on error'
- */
+
 export async function GET(request: NextRequest) {
      if (!isLoggedIn(request)) {
           return Response.json(["ERROR", "Error. Not signed in"]);

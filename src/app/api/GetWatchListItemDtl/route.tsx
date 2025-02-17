@@ -1,25 +1,8 @@
 import { NextRequest } from 'next/server';
-import { execSelect, isLoggedIn } from "../lib";
+import { getDB, isLoggedIn } from "../lib";
+import IWatchListItem from '@/app/interfaces/IWatchListItem';
+import IWatchListType from '@/app/interfaces/IWatchListType';
 
-/**
- * @swagger
- * /api/GetWatchListItemDtl:
- *    get:
- *        tags:
- *          - WatchListItems
- *        summary: Get WatchList Item record based on the provided WatchListItemID
- *        description: Get WatchListItem record based on the provided WatchListItemID
- *        parameters:
- *           - name: WatchListItemID
- *             in: query
- *             description: WatchList Item ID of the record to return
- *             required: true
- *             schema:
- *                  type: number
- *        responses:
- *          200:
- *            description: '["OK",""] on success, ["ERROR","error message"] on error'
- */
 export async function GET(request: NextRequest) {
      if (!isLoggedIn(request)) {
           return Response.json(["ERROR", "Error. Not signed in"]);
@@ -33,16 +16,31 @@ export async function GET(request: NextRequest) {
           return Response.json(["ERROR", "WatchList ItemID was not provided"]);
      }
 
-     const SQL = `SELECT WatchListItems.*, WatchListTypeName FROM WatchListItems
-                LEFT JOIN WatchListTypes ON WatchListTypes.WatchListTypeID=WatchListItems.WatchListTypeID
-                WHERE WatchListItemID=?
-                `;
-
      try {
-          const results = await execSelect(SQL, [watchListItemID]);
+          const db = getDB();
 
-          return Response.json(["OK", results]);
+          const watchListItemsDB = db.WatchListItems;
+          const watchListTypesDB = db.WatchListTypes;
+
+          const filteredWatchListItem = watchListItemsDB.filter((watchListItem: IWatchListItem) => {
+               return (String(watchListItem.WatchListItemID) === String(watchListItemID));
+          });
+
+          filteredWatchListItem.map((watchListItem) => {
+               const watchListType = watchListTypesDB.filter((watchListType: IWatchListType) => {
+                    return (String(watchListType.WatchListTypeID) === String(watchListItem.WatchListTypeID));
+               });
+
+               /*if (watchListType.length !== 1) { // This shouldn't ever happen
+                    return Response.json(["ERROR", `Unable to get WatchListType ${watchListItem[0].WatchListTypeID} for WatchListItemID ${watchListItem.WatchListItemID}`]);
+               }*/
+
+               watchListItem.WatchListTypeName = watchListType.length > 0 ? watchListType[0].WatchListTypeName : "";
+          });
+
+          return Response.json(["OK", filteredWatchListItem]);
      } catch (e) {
-          return Response.json(["ERROR", `The error ${e.message} occurred getting the WatchList Item Detail`]);
+          console.log(e.message);
+          return Response.json(["ERROR", e.message]);
      }
 }

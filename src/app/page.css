@@ -172,7 +172,7 @@ table.simpleTable:last-child {
 .closeButton {
      display: flex;
      float: right;
-     transform: scale(2.4) !important;
+     transform: scale(2.1) !important;
 }
 
 .closeButtonAdjustment {
@@ -445,6 +445,10 @@ table.simpleTable:last-child {
      list-style-type: none
 }
 
+.minWidth150 {
+     min-width: 150px !important;
+}
+
 .modal {
      height: 100%;
      /* Full height */
@@ -509,11 +513,11 @@ table.simpleTable:last-child {
 }
 
 .poster-detail {
-     max-height: 200px;
+     max-height: 500px;
      max-width: 175px;
      position: relative;
-     top: 70px;
-     margin-top: 20px;
+     top: 80px;
+     margin-top: 50px;
 }
 
 .primary {
@@ -806,7 +810,6 @@ table.simpleTable:last-child {
      margin-top: 25px !important;
 }
 
-
 .topMarginContent {
      position: relative;
      top: 50px !important;
@@ -820,13 +823,9 @@ table.simpleTable:last-child {
      width: 50px;
 }
 
-.minWidth150 {
-     min-width: 150px !important;
-}
-
 .wordWrapLabel {
      display: inline-flex;
-     max-width: 95px;
+     max-width: 105px;
 }
 
 .zIndex {

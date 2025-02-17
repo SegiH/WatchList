@@ -1,8 +1,5 @@
 "use client"
 
-import axios, { AxiosResponse } from "axios";
-import React, { useContext, useEffect, useState } from "react";
-import { DataContext, DataContextType } from "../data-context";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
@@ -10,7 +7,10 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import TextField from "@mui/material/TextField";
+import axios, { AxiosResponse } from "axios";
 import { useRouter } from 'next/navigation';
+import React, { useContext, useEffect, useState } from "react";
+import { DataContext, DataContextType } from "../data-context";
 import IUser from "../interfaces/IUser";
 
 import "../page.css";
@@ -220,7 +220,12 @@ const ManageUserAccounts = () => {
      const userChangeHandler = (fieldName: string, fieldValue: string) => {
           const newUser: IUser = Object.assign({}, isAdding ? addingUser : editingUser) as IUser;
 
-          newUser[fieldName] = fieldValue;
+          if (fieldName === "Admin") {
+               newUser[fieldName] = fieldValue === "true" ? true : false;
+          } else {
+               newUser[fieldName] = fieldValue;
+          }
+
           newUser.IsModified = true;
 
           if (isAdding) {

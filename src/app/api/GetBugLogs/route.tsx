@@ -1,25 +1,7 @@
 import { NextRequest } from 'next/server';
-import { execSelect, isLoggedIn } from '../lib';
+import { getDB, isLoggedIn } from '../lib';
+import IBugLog from '@/app/interfaces/IBugLog';
 
-/**
- * @swagger
- * /api/GetBugLogs:
- *    put:
- *        tags:
- *          - BugLog
- *        summary: Get bug logs
- *        description: Get bug logs
- *        parameters:
- *           - name: GetActiveBugLogs
- *             in: query
- *             description: Get active/all bug logs
- *             required: true
- *             schema:
- *                  type: string
- *        responses:
- *          200:
- *            description: '["OK",""] on success, ["ERROR","error message"] on error'
- */
 export async function GET(request: NextRequest) {
      if (!isLoggedIn(request)) {
           return Response.json(["ERROR", "Error. Not signed in"]);
@@ -28,15 +10,18 @@ export async function GET(request: NextRequest) {
      const searchParams = request.nextUrl.searchParams;
      const getActiveBugLogs = searchParams.get("GetActiveBugLogs");
 
-     let SQL = `SELECT * FROM BugLogs`;
+     try {
+          const db = getDB();
 
-     if (getActiveBugLogs !== null && getActiveBugLogs === "true") {
-          SQL += " WHERE CompletedDate IS NULL"
+          const buglogsDB = db.BugLogs;
+
+          const filteredBugLogs = buglogsDB.filter((currentBuglog: IBugLog) => {
+               return getActiveBugLogs === null || (getActiveBugLogs === "true" && currentBuglog.CompletedDate == null)
+          });
+
+          return Response.json(["OK", filteredBugLogs]);
+     } catch (e) {
+          console.log(e.message);
+          return Response.json(["ERROR", e.message]);
      }
-
-
-
-     const result = await execSelect(SQL, []);
-
-     return Response.json(["OK", result]);
 }

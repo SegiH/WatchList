@@ -1,17 +1,8 @@
-import { execSelect, execUpdateDelete, getUserSession, isUserAdmin } from "../lib";
+import { getDB, isUserAdmin, writeDB } from "../lib";
 import { NextRequest } from 'next/server';
-/**
- * @swagger
- * /api/DeleteWatchListSource:
- *    put:
- *        tags:
- *          - WatchListSources
- *        summary: Delete a WatchList source as long as its in not in use
- *        description: Delete a WatchList source as long as its in not in use
- *        responses:
- *          200:
- *            description: '["OK",""] on success, ["ERROR","error message"] on error'
- */
+import IWatchListSource from "@/app/interfaces/IWatchListSource";
+import IWatchList from "@/app/interfaces/IWatchList";
+
 export async function PUT(request: NextRequest) {
      // This needs to be here even though this endpoint doesn't take any parameters because without this,
      // when you do 'npm run build', Next.js will compile this route as a static route which causes a bug where
@@ -32,28 +23,38 @@ export async function PUT(request: NextRequest) {
      }
 
      try {
-          const validSourceIDValidationSQL = `SELECT COUNT(*) AS SourceCount FROM WatchListSources WHERE WatchListSourceID=?`;
+          const db = getDB();
 
-          const validSourceIDValidationResults = await execSelect(validSourceIDValidationSQL, [watchListSourceID]);
+          const watchListDB = db.WatchList
+          const watchListSourcesDB = db.WatchListSources;
 
-          if (validSourceIDValidationResults[0].SourceCount === 0) {
+          const watchListSourceIdValidation = watchListSourcesDB.filter((currentWatchListSource: IWatchListSource) => {
+               return String(currentWatchListSource.WatchListSourceID) === String(watchListSourceID);
+          });
+
+          if (watchListSourceIdValidation.length === 0) {
                return Response.json(["ERROR", `The WatchList Source with ID ${watchListSourceID} is not a valid ID`]);
           }
 
-          const inUseValidationSQL = `SELECT COUNT(*) AS SourceCount FROM WatchList WHERE WatchListSourceID=?`;
+          const inUseValidationResults = watchListDB.filter((currentWatchList: IWatchList) => {
+               return String(currentWatchList.WatchListSourceID) === String(watchListSourceID);
+          });
 
-          const inUseValidationResults = await execSelect(inUseValidationSQL, [watchListSourceID]);
-
-          if (inUseValidationResults[0].SourceCount !== 0) {
+          if (inUseValidationResults.length > 0) {
                return Response.json(["ERROR", `The WatchList Source with ID ${watchListSourceID} is in use`]);
           }
 
-          const SQL = "DELETE FROM WatchListSources WHERE WatchListSourceID=?";
+          const newWatchListSources = watchListSourcesDB.filter((currentWatchListSource: IWatchListSource) => {
+               return String(currentWatchListSource.WatchListSourceID) !== String(watchListSourceID)
+          });
 
-          await execUpdateDelete(SQL, [parseInt(watchListSourceID, 10)]);
+          db.WatchListSources = newWatchListSources
+
+          writeDB(db);
 
           return Response.json(["OK"]);
      } catch (e) {
-          return Response.json(["ERROR", `The fatal error ${e.message} occurred deleting the WatchList Source with ID`]);
+          console.log(e.message);
+          return Response.json(["ERROR", e.message]);
      }
 }

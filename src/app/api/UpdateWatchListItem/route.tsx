@@ -1,61 +1,7 @@
 import { NextRequest } from 'next/server';
-import { execUpdateDelete, isLoggedIn } from "../lib";
+import { getDB, isLoggedIn, writeDB } from "../lib";
+import IWatchListItem from '@/app/interfaces/IWatchListItem';
 
-/**
- * @swagger
- * /api/UpdateWatchListItem:
- *    put:
- *        tags:
- *          - WatchListItems
- *        summary: Update a WatchListItem record
- *        description: Update a WatchListItem record
- *        parameters:
- *           - name: WatchListItemID
- *             in: query
- *             description: WatchListItem ID
- *             required: true
- *             schema:
- *                  type: string
- *           - name: WatchListItemName
- *             in: query
- *             description: WatchListItem Name
- *             required: false
- *             schema:
- *                  type: string
- *           - name: WatchListTypeID
- *             in: query
- *             description: Type ID of the movie/show
- *             required: false
- *             schema:
- *                  type: number
- *           - name: IMDB_URL
- *             in: query
- *             description: IMDB URL of the movie/show
- *             required: false
- *             schema:
- *                  type: number
- *           - name: IMDB_Poster
- *             in: query
- *             description: IMDB Poster of the movie/show
- *             required: false
- *             schema:
- *                  type: string
- *           - name: Notes
- *             in: query
- *             description: Notes for the movie/show
- *             required: false
- *             schema:
- *                  type: string
- *           - name: Archived
- *             in: query
- *             description: Archived status
- *             required: false
- *             schema:
- *                  type: number
- *        responses:
- *          200:
- *            description: '["OK",""] on success, ["ERROR","error message"] on error'
- */
 export async function PUT(request: NextRequest) {
      if (!isLoggedIn(request)) {
           return Response.json(["ERROR", "Error. Not signed in"]);
@@ -76,57 +22,54 @@ export async function PUT(request: NextRequest) {
           return Response.json(["ERROR", "ID was not provided"]);
      }
 
-     let columns = "";
-     const values: string[] = [];
-
-     if (name !== null) {
-          columns += (columns !== "" ? "," : "") + "WatchListItemName=?";
-          values.push(name);
-     }
-     
-     if (typeID !== null) {
-          columns += (columns !== "" ? "," : "") + "WatchListTypeID=?";
-          values.push(typeID);
-     }
-
-     if (imdb_url !== null) {
-          columns += (columns !== "" ? "," : "") + "IMDB_URL=?";
-          values.push(imdb_url);
-     }
-
-     if (imdb_poster !== null) {
-          columns += (columns !== "" ? "," : "") + "IMDB_Poster=?";
-          values.push(imdb_poster);
-     }
-
-     if (imdb_json !== null) {
-          columns += (columns !== "" ? "," : "") + "IMDB_JSON=?";
-          values.push(imdb_json);
-     }
-
-     if (notes !== null) {
-          columns += (columns !== "" ? "," : "") + "ItemNotes=?";
-          values.push(notes);
-     }
-
-     if (archived !== null) {
-          columns += (columns !== "" ? "," : "") + "Archived=?";
-          values.push(archived);
-     }
-
-     if (values.length === 0) {
-          return Response.json(["ERROR", `No parameters were passed`]);
-     }
-
-     values.push(watchListItemID);
-
      try {
-          const sql = `UPDATE WatchListItems SET ${columns} WHERE WatchListItemID=?`;
+          const db = getDB()
 
-          await execUpdateDelete(sql, values);
+          const watchListItemsDB = db.WatchListItems;
+
+          const watchListItemsResult = watchListItemsDB.filter((watchListItem: IWatchListItem) => {
+               return String(watchListItem.WatchListItemID) === String(watchListItemID)
+          });
+
+          if (watchListItemsResult.length !== 1) {
+               return Response.json(["ERROR", "Unable to get the existing Watchlist Item"]);
+          }
+
+          const watchListItem = watchListItemsResult[0];
+
+          if (name !== null) {
+               watchListItem.WatchListItemName = name;
+          }
+
+          if (typeID !== null) {
+               watchListItem.WatchListTypeID = typeID;
+          }
+
+          if (imdb_url !== null) {
+               watchListItem.IMDB_URL = imdb_url;
+          }
+
+          if (imdb_poster !== null) {
+               watchListItem.IMDB_Poster = imdb_poster;
+          }
+
+          if (imdb_json !== null) {
+               watchListItem.IMDB_JSON = imdb_json;
+          }
+
+          if (notes !== null) {
+               watchListItem.ItemNotes = notes;
+          }
+
+          if (archived !== null) {
+               watchListItem.Archived = archived;
+          }
+
+          writeDB(db);
 
           return Response.json(["OK"]);
      } catch (e) {
-          return Response.json(["ERROR", `The error occurred updating the WatchList Item with ID ${watchListItemID} with the error ${e.message}`]);
+          console.log(e.message)
+          return Response.json(["ERROR", e.message]);
      }
 }

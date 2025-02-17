@@ -5,7 +5,7 @@ You can track how many times you watched something, where you watched it and whe
 
 It is possible to search IMDB for a movie or TV show (if you provide an API key. More info in INSTALL.md).
 
-WatchList uses a SQLite3 database to store your logged movie and TV shows.
+WatchList uses a JSON database to store your logged movie and TV shows.
 
 WatchList can be run as a web app. If you use Google Chrome or Edge, you can also install WatchList as a desktop application by installing it as a [Progressive Web Application](https://developer.mozilla.org/en-US/docs/Web/Progressive_web_apps) (PWA) where it runs on a desktop or mobile device and looks like a native desktop application. See INSTALL.MD for details.
 
@@ -43,13 +43,12 @@ Archived - If you add a WatchList record and decide not to continue watching the
 
 Auto Add - After you add a WatchListItem, if you want to immediately add a WatchList record to record when you watched a movie or show, enable this feature. If it is off, you will need to click on the plus sign in WatchList to add a new record.
 
-Missing Images (Only available in Items) - If you add a WatchList Item record for a movie or TV show and the image does not display, enable "Show WLI", click on Items, then enable "Missing Images" to see WatchListItems with missing images.
+No Image (Only available in Items) - If you add a WatchList Item record for a movie or TV show and the image does not display, go to Items, then enable "No Image" to see Items with missing images.
 
 # Demo Mode
 You can test out WatchList in demo mode without any setup. Adding and saving is currently disabled in demo mode.
 
 1. Check out the code and go to the root directory of the project in a command prompt
-1. Rename `watchlistdb.sqlite.demo` to `watchlistdb.sqlite`
 1. `npm install`
 1. `npm run build`
 1. `npm run start`

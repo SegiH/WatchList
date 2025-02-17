@@ -1,43 +1,6 @@
 import { NextRequest } from 'next/server';
-import { execInsert, isLoggedIn } from "../lib";
+import { getDB, isLoggedIn, writeDB } from "../lib";
 
-/**
- * @swagger
- * /api/AddBugLog:
- *    put:
- *        tags:
- *          - BugLog
- *        summary: Add a bug log
- *        description: Add a bug log
- *        parameters:
- *           - name: BugName
- *             in: query
- *             description: Description of the bug
- *             required: true
- *             schema:
- *                  type: string
- *           - name: AddDate
- *             in: query
- *             description: Date the bug log was added
- *             required: true
- *             schema:
- *                  type: string
- *           - name: CompletedDate
- *             in: query
- *             description: Date the bug was fixed
- *             required: true
- *             schema:
- *                  type: string
- *           - name: ResolutionNotes
- *             in: query
- *             description: Notes on what was done to fix the problem
- *             required: false
- *             schema:
- *                  type: string
- *        responses:
- *          200:
- *            description: '["OK",""] on success, ["ERROR","error message"] on error'
- */
 export async function PUT(request: NextRequest) {
      const searchParams = request.nextUrl.searchParams;
 
@@ -58,26 +21,26 @@ export async function PUT(request: NextRequest) {
           return Response.json({ "ERROR": "AddDate was not provided" });
      }
 
-     let SQL = `INSERT INTO BugLogs (BugName,AddDate`;
-     let valuePlaceholder = ' VALUES (?,?';
-     let params = [bugLogName, addDate];
+     try {
+          const db = getDB();
 
-     if (completedDate !== null && completedDate != 'NULL') {
-          SQL += ',CompletedDate';
-          valuePlaceholder += ",?";
-          params.push(completedDate);
+          const buglogsDB = db.BugLogs;
+
+          const highestBugLogID = Math.max(...buglogsDB.map(o => o.BugLogId));
+
+          buglogsDB.push({
+               "BugLogID": (highestBugLogID !== null ? highestBugLogID : 0) + 1,
+               "BugName": bugLogName,
+               "AddDate": addDate,
+               "CompletedDate": completedDate !== "NULL" ? completedDate : null,
+               "ResolutionNotes": resolutionNotes
+          });
+
+          writeDB(db);
+
+          return Response.json(["OK", buglogsDB.length]); // New ID
+     } catch (e) {
+          console.log(e.message)
+          return Response.json(["ERROR", e.message]);
      }
-
-     SQL += ',ResolutionNotes';
-     valuePlaceholder += ",?";
-     params.push(resolutionNotes !== null ? resolutionNotes : ""); // Default ResolutionNotes to empty space
-
-     SQL += ')';
-     valuePlaceholder += ");";
-
-     const result = await execInsert(SQL + valuePlaceholder, params);
-
-     const newID = result.lastID;
-
-     return Response.json(["OK", newID]);
 }

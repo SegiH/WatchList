@@ -1,18 +1,9 @@
 import { NextRequest } from 'next/server';
-import { execSelect, getUserID } from "../lib";
+import { getDB, getUserID } from "../lib";
+import IWatchListType from '@/app/interfaces/IWatchListType';
+import IWatchList from '@/app/interfaces/IWatchList';
+import IWatchListItem from '@/app/interfaces/IWatchListItem';
 
-/**
- * @swagger
- * /api/GetWatchListTVTop10Stats:
- *    get:
- *        tags:
- *          - WatchList
- *        summary: Get the WatchList top rated TV show stats for the current user
- *        description: Get the WatchList top rated TV show stats for the current user
- *        responses:
- *          200:
- *            description: '["OK",""] on success, ["ERROR","error message"] on error'
- */
 export async function GET(request: NextRequest) {
      const userID = await getUserID(request);
 
@@ -20,13 +11,61 @@ export async function GET(request: NextRequest) {
           return Response.json(["ERROR", "User ID is not set"]);
      }
 
-     const SQL = `WITH GetFrequentItems AS (SELECT UserID,WLI.WatchListItemName,MIN(StartDate) AS StartDate,MAX(StartDate) AS EndDate,COUNT(*) AS ItemCount FROM WatchList WL LEFT JOIN WatchListItems WLI ON WLI.WatchListItemID=WL.WatchListItemID LEFT JOIN WatchListTypes WLT ON WLT.WatchListTypeID=WLI.WatchListTypeID WHERE WLI.WatchListTypeID=2 AND WL.EndDate IS NOT NULL GROUP BY UserID,WatchListItemName) SELECT *,(SELECT IMDB_URL FROM WatchListItems WHERE WatchListItemName=GetFrequentItems.WatchListItemName) AS IMDB_URL FROM GetFrequentItems WHERE UserID=? AND ItemCount > 1 ORDER BY ItemCount DESC LIMIT 10`;
+     const db = getDB();
 
-     try {
-          const results = await execSelect(SQL, [userID]);
+     const watchListDB = db.WatchList;
+     const watchListItemsDB = db.WatchListItems;
+     const watchListTypesDB = db.WatchListTypes;
 
-          return Response.json(["OK", results]);
-     } catch (e) {
-          return Response.json(["ERROR", `The error ${e.message} occurred getting the WatchList TV Stats`]);
+     const filteredWatchList = watchListDB.filter((watchList: IWatchList) => {
+          return (watchList.UserID === userID);
+     });
+
+     const tvTypeIDResult = watchListTypesDB.filter((watchListType: IWatchListType) => {
+          return watchListType.WatchListTypeName === "TV";
+     });
+
+     if (tvTypeIDResult.length !== 1) {
+          return Response.json(["ERROR", `Unable to get ID for tv type movie`]);
      }
+
+     const tvTypeID = tvTypeIDResult[0].WatchListTypeID;
+
+     const allTvWatchList = filteredWatchList.filter((watchList: IWatchList) => {
+          return watchListItemsDB.filter((watchListItem: IWatchListItem) => {
+               return (watchListItem.WatchListItemID === watchList.WatchListItemID && String(watchListItem.WatchListTypeID) === String(tvTypeID));
+          }).length == 1;
+     });
+
+     const frequencyMap = allTvWatchList.reduce((acc, item) => {
+          const key = `${item.WatchListItemID}`;
+          if (!acc[key]) {
+               acc[key] = 0;
+          }
+          acc[key]++;
+          return acc;
+     }, {} as { [key: string]: number });
+
+     const frequencyArray = Object.entries(frequencyMap);
+
+     const sortedTop10 = frequencyArray
+          .sort((a: any, b: any) => b[1] - a[1])
+          .slice(0, 10)
+          .map(([key, count]) => {
+               const [WatchListItemID] = key.split('-');
+               return { WatchListItemID: Number(WatchListItemID), ItemCount: count };
+          });
+
+     sortedTop10.map((watchList: any) => {
+          const watchListItem = watchListItemsDB.filter((watchListItem: IWatchListItem) => {
+               return (String(watchListItem.WatchListItemID) === String(watchList.WatchListItemID));
+          });
+
+          if (watchListItem.length === 1) {
+               watchList.WatchListItemName = watchListItem[0].WatchListItemName;
+               watchList.IMDB_URL = watchListItem[0].IMDB_URL;
+          }
+     });
+
+     return Response.json(["OK", sortedTop10]);
 }

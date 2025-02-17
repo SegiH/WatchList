@@ -1,68 +1,20 @@
 import { NextRequest } from 'next/server';
-import { execSelect, getUserID } from "../lib";
+import { getDB, getUserID } from "../lib";
+import IWatchList from '@/app/interfaces/IWatchList';
+import IWatchListItem from '@/app/interfaces/IWatchListItem';
+import IWatchListType from '@/app/interfaces/IWatchListType';
+import IWatchListSource from '@/app/interfaces/IWatchListSource';
+import { watch } from 'fs';
 
-/**
- * @swagger
- * /api/GetWatchList:
- *    get:
- *        tags:
- *          - WatchList
- *        summary: Get all WatchList records for the currently logged in user
- *        description: Get all WatchList records for the currently logged in user
- *        parameters:
- *           - name: SortColumn
- *             in: query
- *             description: Sort by specified column
- *             required: false
- *             schema:
- *                  type: string
- *           - name: SortDirection
- *             in: query
- *             description: Sort by specified direction
- *             required: false
- *             schema:
- *                  type: string
- *           - name: RecordLimit
- *             in: query
- *             description: Limit numbr of records selected
- *             required: false
- *             schema:
- *                  type: string
- *        responses:
- *          200:
- *            description: '["OK",""] on success, ["ERROR","error message"] on error'
- */
 export async function GET(request: NextRequest) {
      const userID = await getUserID(request);
 
      const searchParams = request.nextUrl.searchParams;
 
-     let sortColumn = typeof searchParams.get("SortColumn") !== "undefined" ? searchParams.get("SortColumn") : "WatchListItemName";
-     let sortDirection = typeof searchParams.get("SortDirection") !== "undefined" ? searchParams.get("SortDirection") : "ASC";
      let recordLimit = searchParams.get("RecordLimit");
 
      if (userID === null) {
           return Response.json(["User ID is not set"]);
-     }
-
-     if (sortColumn === null || typeof sortColumn == "undefined") {
-          sortColumn = "WatchListItemName";
-     } else {
-          if (sortColumn === "ID") {
-               sortColumn = "WatchListID";
-          } else if (sortColumn === "Name") {
-               sortColumn = "WatchListItemName";
-          } else {
-               sortColumn = "WatchListItemName"; // Fallback if unknown sort column is passed
-          }
-     }
-
-     if (sortDirection === null || typeof sortDirection == "undefined") {
-          sortDirection = "ASC";
-     } else {
-          if (sortDirection !== "ASC" && sortDirection != "DESC") {
-               sortDirection = "ASC"; // Fallback if unknown sort direction is passed
-          }
      }
 
      if (recordLimit !== null) {
@@ -75,18 +27,58 @@ export async function GET(request: NextRequest) {
           }
      }
 
-     const SQL = `SELECT WatchList.*,WatchListItems.WatchListItemName,WatchListItems.WatchListTypeID,IMDB_URL, IMDB_Poster, IMDB_JSON, ItemNotes, WatchListSourceName, WatchListTypeName FROM WatchList
-                LEFT JOIN WatchListItems ON WatchListItems.WatchListItemID=WatchList.WatchListItemID
-                LEFT JOIN WatchListSources ON WatchListSources.WatchListSourceID=WatchList.WatchListSourceID
-                LEFT JOIN WatchListTypes ON WatchListTypes.WatchListTypeID=WatchListItems.WatchListTypeID
-                ${recordLimit !== null ? ` LIMIT ${recordLimit}` : ''}
-                `;
-
      try {
-          const results = await execSelect(SQL, []);
+          const db = getDB();
 
-          return Response.json(["OK", results]);
+          const watchListDB = db.WatchList;
+          const watchListItemsDB = db.WatchListItems;
+          const watchListSourcesDB = db.WatchListSources;
+          const watchListTypesDB = db.WatchListTypes;
+
+          const filteredWatchList = watchListDB.filter((watchList: IWatchList) => {
+               return (String(watchList.UserID) === String(userID));
+          });
+
+          filteredWatchList.map((watchList) => {
+               const watchListItem = watchListItemsDB.filter((watchListItem: IWatchListItem) => {
+                    return (String(watchListItem.WatchListItemID) === String(watchList.WatchListItemID));
+               });
+
+               /*if (watchListItem.length === 0) { // This shouldn't ever happen
+                    return Response.json(["ERROR", `Unable to get WatchListItem ${watchListItem.WatchListTypeID} for WatchListID ${watchList.WatchListID}`]);
+               }*/
+
+               const watchListSource = watchListSourcesDB.filter((watchListSource: IWatchListSource) => {
+                    return (String(watchListSource.WatchListSourceID) === String(watchList.WatchListSourceID));
+               });
+
+               /*if (watchListSource.length === 0) { // This shouldn't ever happen
+                    return Response.json(["ERROR", `Unable to get WatchListSource ${watchList.WatchListSourceID} for WatchListID ${watchList.WatchListID}`]);
+               }*/
+
+               const watchListType = watchListTypesDB.filter((watchListType: IWatchListType) => {
+                    return (String(watchListType.WatchListTypeID) === String(watchListItem[0].WatchListTypeID));
+               });
+
+               /*if (watchListType.length === 0) { // This shouldn't ever happen
+                    return Response.json(["ERROR", `Unable to get WatchListType ${watchListItem[0].WatchListTypeID} for WatchListID ${watchList.WatchListID}`]);
+               }*/
+
+               watchList.WatchListItemID = watchListItem.length > 0 ? parseInt(watchList.WatchListItemID, 10) : "";
+               watchList.WatchListItemName = watchListItem.length > 0 ? watchListItem[0].WatchListItemName : "";
+               watchList.WatchListTypeID = watchListItem.length > 0 ? watchListItem[0].WatchListTypeID : "";
+               watchList.WatchListTypeName = watchListType.length > 0 ? watchListType[0].WatchListTypeName : "";
+               watchList.IMDB_URL = watchListItem.length > 0 ? watchListItem[0].IMDB_URL : "";
+               watchList.IMDB_Poster = watchListItem.length > 0 ? watchListItem[0].IMDB_Poster : "";
+               watchList.ItemNotes = watchListItem.length > 0 ? watchListItem[0].ItemNotes : "";
+               watchList.IMDBArchived = watchListItem.length > 0 ? watchListItem[0].Archived : "";
+               watchList.IMDB_JSON = watchListItem.length > 0 ? watchListItem[0].IMDB_JSON : "";
+               watchList.WatchListSourceName = watchListItem.length > 0 ? watchListSource[0]?.WatchListSourceName : "";
+          });
+
+          return Response.json(["OK", filteredWatchList]);
      } catch (e) {
-          return Response.json(["ERROR", `The error ${e.message} occurred getting the WatchList`]);
+          console.log(e.message);
+          return Response.json(["ERROR", e.message]);
      }
 }

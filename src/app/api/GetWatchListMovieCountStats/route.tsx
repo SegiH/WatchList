@@ -1,18 +1,9 @@
 import { NextRequest } from 'next/server';
-import { execSelect, getUserID } from "../lib";
+import { getDB, getUserID } from "../lib";
+import IWatchList from '@/app/interfaces/IWatchList';
+import IWatchListType from '@/app/interfaces/IWatchListType';
+import IWatchListItem from '@/app/interfaces/IWatchListItem';
 
-/**
- * @swagger
- * /api/GetWatchListMovieCountStats:
- *    get:
- *        tags:
- *          - WatchList
- *        summary: Get count of how many movies the current user watched
- *        description: Get count of how many movies the current user watched
- *        responses:
- *          200:
- *            description: '["OK",""] on success, ["ERROR","error message"] on error'
- */
 export async function GET(request: NextRequest) {
      const userID = await getUserID(request);
 
@@ -20,13 +11,37 @@ export async function GET(request: NextRequest) {
           return Response.json(["ERROR", "User ID is not set"]);
      }
 
-     const SQL = `SELECT COUNT(*) AS MovieCount FROM WatchList WL LEFT JOIN WatchListItems WLI ON WLI.WatchlistItemID=WL.WatchlistItemID LEFT JOIN WatchListTypes WLT ON WLT.WatchListTypeID=WLI.WatchListTypeID WHERE UserID=? AND WLT.WatchListTypeName='Movie';`;
-
      try {
-          const results = await execSelect(SQL, [userID]);
+          const db = getDB();
 
-          return Response.json(["OK", results]);
+          const watchListDB = db.WatchList
+          const watchListItemsDB = db.WatchListItems;
+          const watchListTypesDB = db.WatchListTypes;
+
+          // Get ID for movie type
+          const movieTypeIDResult = watchListTypesDB.filter((watchListType: IWatchListType) => {
+               return watchListType.WatchListTypeName === "Movie";
+          });
+
+          if (movieTypeIDResult.length !== 1) {
+               return Response.json(["ERROR", `Unable to get ID for movie type movie`]);
+          }
+
+          const movieTypeID = movieTypeIDResult[0].WatchListTypeID;
+
+          const filteredWatchList = watchListDB.filter((watchList: IWatchList) => {
+               return (watchList.UserID === userID);
+          });
+
+          const allMovieWatchList = filteredWatchList.filter((watchList: IWatchList) => {
+               return watchListItemsDB.filter((watchListItem: IWatchListItem) => {
+                    return (watchListItem.WatchListItemID === watchList.WatchListItemID && String(watchListItem.WatchListTypeID) === String(movieTypeID));
+               }).length == 1;
+          });
+
+          return Response.json(["OK", [{ MovieCount: allMovieWatchList.length }]]);
      } catch (e) {
-          return Response.json(["ERROR", `The error ${e.message} occurred getting the WatchList Movie count Stats`]);
+          console.log(e.message);
+          return Response.json(["ERROR", e.message]);
      }
 }

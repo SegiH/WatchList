@@ -1,7 +1,8 @@
-import React, { useContext, useEffect, useState } from "react";
-import { useRouter } from 'next/navigation';
 import Multiselect from 'multiselect-react-dropdown';
+import { useRouter } from 'next/navigation';
+import { useContext, useEffect, useState } from "react";
 import { DataContext, DataContextType } from "../data-context";
+import IUserOption from "../interfaces/IUserOption";
 
 const Settings = () => {
      const {
@@ -19,10 +20,7 @@ const Settings = () => {
           routeList,
           setActiveRoute,
           setActiveRouteDisplayName,
-          setArchivedVisible,
-          setAutoAdd,
-          setDarkMode,
-          setHideTabs,
+          setOptions,
           setSettingsVisible,
           setShowMissingArtwork,
           setStillWatching,
@@ -59,6 +57,18 @@ const Settings = () => {
 
           setSettingsVisible(false);
      };
+
+     const optionChanged = (columnName: string, columnValue: boolean | string) => {
+          const options :IUserOption = {
+               "ArchivedVisible": columnName === "ArchivedVisible" ? columnValue === true ? 1 : 0 : archivedVisible ? 1 : 0,
+               "AutoAdd": columnName === "AutoAdd" ? columnValue === true ? 1 : 0 : autoAdd ? 1 : 0,
+               "DarkMode": columnName === "DarkMode" ? columnValue === true ? 1 : 0 : darkMode ? 1 : 0,
+               "HideTabs": columnName === "HideTabs" ? columnValue === true ? 1 : 0 : hideTabs ? 1 : 0,
+               "ShowMissingArtwork": columnName === "ShowMissingArtwork" ? columnValue === true ? 1 : 0 : showMissingArtwork ? 1 : 0
+          }
+
+          setOptions(options, true);
+     }
 
      useEffect(() => {
           setFormattedBuildDate(buildDate);
@@ -99,7 +109,7 @@ const Settings = () => {
 
                               <span className="leftMargin" title="Show WatchList Items">
                                    <label className="switch">
-                                        <input type="checkbox" checked={darkMode} onChange={(event) => setDarkMode(event.target.checked)} />
+                                        <input type="checkbox" checked={darkMode} onChange={(event) => optionChanged("DarkMode", event.target.checked)} />
                                         <span className="slider round"></span>
                                    </label>
                               </span>
@@ -114,9 +124,11 @@ const Settings = () => {
                                    <span className="leftMargin" title="Archived Items">
                                         <label className="switch">
                                              <input type="checkbox" checked={archivedVisible} onChange={(event) => {
-                                                  setArchivedVisible(event.target.checked);
+                                                  optionChanged("ArchivedVisible", event.target.checked)
 
-                                                  if (event.target.checked === true) setStillWatching(false);
+                                                  if (event.target.checked === true) {
+                                                       setStillWatching(false);
+                                                  }
                                              }} />
 
                                              <span className="slider round"></span>
@@ -133,7 +145,7 @@ const Settings = () => {
 
                                    <span className="leftMargin" title="Automatically add WatchList after adding new item">
                                         <label className="switch">
-                                             <input type="checkbox" checked={autoAdd} onChange={(event) => setAutoAdd(event.target.checked)} />
+                                             <input type="checkbox" checked={autoAdd} onChange={(event) => optionChanged("AutoAdd", event.target.checked)} />
                                              <span className="slider round"></span>
                                         </label>
                                    </span>
@@ -147,7 +159,7 @@ const Settings = () => {
 
                               <span className="leftMargin" title="Hide bottom tab bar">
                                    <label className="switch">
-                                        <input type="checkbox" checked={hideTabs} onChange={(event) => setHideTabs(event.target.checked)} />
+                                        <input type="checkbox" checked={hideTabs} onChange={(event) => optionChanged("HideTabs", event.target.checked)} />
                                         <span className="slider round"></span>
                                    </label>
                               </span>
@@ -155,11 +167,11 @@ const Settings = () => {
 
                          {(activeRoute === "Items") && (
                               <li className="topMargin">
-                                   <span className="leftMargin" title="Show WatchListItems with missing images">
-                                        <span className="wordWrapLabel">Missing images</span>
+                                   <span className="firstItem" title="Show WatchListItems with missing images">
+                                        <span>No Image</span>
                                    </span>
 
-                                   <span>
+                                   <span className="leftMargin">
                                         <label className="switch">
                                              <input type="checkbox" checked={showMissingArtwork} onChange={(event) => setShowMissingArtwork(event.target.checked)} />
                                              <span className="slider round"></span>

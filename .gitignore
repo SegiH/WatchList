@@ -1,6 +1,5 @@
 node_modules
 build
-watchlistdb.sqlite
 wiberSessions
 public/sw.js
 next-env.d.ts

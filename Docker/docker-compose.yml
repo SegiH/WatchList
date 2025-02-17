@@ -10,7 +10,7 @@ services:
      container_name: WatchList_unsecured
      image: watchlist:latest
      volumes:
-       - ./watchlistdb.sqlite:/app/watchlistdb.sqlite
+       - ./database.json:/app/database.json
      ports:
        - 3000:3000
      environment:

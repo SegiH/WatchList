@@ -1,7 +1,7 @@
 "use client"
 
-import React, { useContext, useEffect } from "react";
 import Image from "next/image";
+import { useContext, useEffect } from "react";
 import IWatchListItem from "../interfaces/IWatchListItem";
 
 import { DataContext, DataContextType } from "../data-context";

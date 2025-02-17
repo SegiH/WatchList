@@ -1,55 +1,7 @@
 import { NextRequest } from 'next/server';
-import { encrypt, execUpdateDelete, isUserAdmin } from "../lib";
+import { encrypt, getDB, isUserAdmin, writeDB } from "../lib";
+import IUser from '@/app/interfaces/IUser';
 
-/**
- * @swagger
- * /api/UpdateUser:
- *    put:
- *        tags:
- *          - Users
- *        summary: Add a user
- *        description: Add a user
- *        parameters:
- *           - name: wl_userid
- *             in: query
- *             description: New user id
- *             required: true
- *             schema:
- *                  type: number
- *           - name: wl_username
- *             in: query
- *             description: Updated username
- *             required: false
- *             schema:
- *                  type: string
- *           - name: wl_realname
- *             in: query
- *             description: Updated name of the user
- *             required: false
- *             schema:
- *                  type: string
- *           - name: wl_password
- *             in: query
- *             description: Updated password
- *             required: false
- *             schema:
- *                  type: string
- *           - name: wl_admin
- *             in: query
- *             description: Update whether the user is an admin
- *             required: false
- *             schema:
- *                  type: string
- *           - name: wl_enabled
- *             in: query
- *             description: Update whether the user account is enabled
- *             required: false
- *             schema:
- *                  type: string
- *        responses:
- *          200:
- *            description: '["OK",""] on success, ["ERROR","error message"] on error'
- */
 export async function PUT(request: NextRequest) {
      // Only admins can call this endpoint. this is to prevent a non-admin from making themselves an admin
      const isAdminResult = await isUserAdmin(request);
@@ -71,47 +23,46 @@ export async function PUT(request: NextRequest) {
           return Response.json(["ERROR", "User ID was not provided"]);
      }
 
-     let columns = "";
-     const values: (string | number)[] = [];
-
-     if (userName !== null) {
-          columns += (columns !== "" ? "," : "") + "Username=?";
-          values.push(encrypt(String(userName)));
-     }
-
-     if (realName !== null) {
-          columns += (columns !== "" ? "," : "") + "Realname=?";
-          values.push(encrypt(String(realName)));
-     }
-
-     if (password !== null) {
-          columns += (columns !== "" ? "," : "") + "Password=?";
-          values.push(encrypt(String(password)));
-     }
-
-     if (admin !== null) {
-          columns += (columns !== "" ? "," : "") + "Admin=?";
-          values.push(admin);
-     }
-
-     if (enabled !== null) {
-          columns += (columns !== "" ? "," : "") + "Enabled=?";
-          values.push(enabled);
-     }
-
-     if (values.length === 0) {
-          return Response.json(["ERROR", `No parameters were passed`]);
-     }
-
-     values.push(userID);
-
      try {
-          const sql = `UPDATE Users SET ${columns} WHERE UserID=?`;
+          const db = getDB();
 
-          await execUpdateDelete(sql, values);
+          const usersDB = db.Users;
+
+          const userResult = usersDB.filter((user: IUser) => {
+               return String(user.UserID) === String(userID)
+          });
+
+          if (userResult.length !== 1) {
+               return Response.json(["ERROR", "Unable to get the existing user record"]);
+          }
+
+          const user = userResult[0];
+
+          if (userName !== null) {
+               user.Username = encrypt(String(userName));
+          }
+
+          if (realName !== null) {
+               user.Realname = encrypt(String(realName));
+          }
+
+          if (password !== null) {
+               user.Password = encrypt(String(password));
+          }
+
+          if (admin !== null) {
+               user.Admin = admin;
+          }
+
+          if (enabled !== null) {
+               user.Enabled = enabled;
+          }
+
+          writeDB(db);
 
           return Response.json(["OK"]);
      } catch (e) {
-          return Response.json(["ERROR", `An error occurred updating the User with ID ${userID} with the error ${e.message}`]);
+          console.log(e.message)
+          return Response.json(["ERROR", e.message]);
      }
 }

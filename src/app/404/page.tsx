@@ -1,7 +1,7 @@
 "use client"
 
-import { useContext } from "react";
 import { useRouter } from 'next/navigation';
+import { useContext } from "react";
 
 import { DataContext, DataContextType } from "../data-context";
 

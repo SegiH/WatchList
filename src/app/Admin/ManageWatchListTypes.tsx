@@ -1,8 +1,8 @@
-import axios, { AxiosResponse } from "axios";
-import Button from "@mui/material/Button"
+import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
-import React, { useContext, useEffect, useState } from "react";
+import axios, { AxiosResponse } from "axios";
 import { useRouter } from 'next/navigation';
+import React, { useContext, useEffect, useState } from "react";
 
 import { DataContext, DataContextType } from "../data-context";
 import IWatchListType from "../interfaces/IWatchListType";
@@ -37,20 +37,10 @@ const ManageWatchListTypes = () => {
           setIsEditing(false);
      }
 
-     const enterAddModeClickHandler = () => {
-          setAddingType({
-               WatchListTypeID: -1,
-               WatchListTypeName: "",
-               IsModified: false
-          })
+     const deleteTypeClickHandler = (id: number, name: string) => {
+          const confirmDelete = confirm(`Are you sure that you want to delete the WatchList Type ${name} ?`);
 
-          setIsAdding(true);
-     }
-
-     const deleteTypeClickHandler = (id: number, name: string) => () => {
-          const confirmLeave = confirm(`Are you sure that you want to delete the WatchList Type ${name} ?`);
-
-          if (!confirmLeave) {
+          if (!confirmDelete) {
                return;
           }
 
@@ -66,6 +56,16 @@ const ManageWatchListTypes = () => {
                .catch((err: Error) => {
                     alert("Failed to delete type with the error " + err.message);
                });
+     }
+
+     const enterAddModeClickHandler = () => {
+          setAddingType({
+               WatchListTypeID: -1,
+               WatchListTypeName: "",
+               IsModified: false
+          })
+
+          setIsAdding(true);
      }
 
      const enterEditModeClickHandler = (id: number) => {
@@ -91,7 +91,7 @@ const ManageWatchListTypes = () => {
 
           const currentType = Object.assign({}, isAdding ? addingType : editingType);
 
-          // validate rows
+          // validate row
           if (typeof currentType.WatchListTypeName === "undefined" || currentType.WatchListTypeName === "") {
                alert("Please enter the type name");
 
@@ -132,15 +132,15 @@ const ManageWatchListTypes = () => {
      }
 
      const typeChangeHandler = (fieldName: string, fieldValue: string) => {
-          const newUser = Object.assign({}, isAdding ? addingType : editingType);
+          const newType = Object.assign({}, isAdding ? addingType : editingType);
 
-          newUser[fieldName] = fieldValue;
-          newUser.IsModified = true;
+          newType[fieldName] = fieldValue;
+          newType.IsModified = true;
 
           if (isAdding) {
-               setAddingType(newUser);
+               setAddingType(newType);
           } else {
-               setEditingType(newUser);
+               setEditingType(newType);
           }
      }
 
@@ -180,7 +180,7 @@ const ManageWatchListTypes = () => {
                          <tbody>
                               {isAdding &&
                                    <tr>
-                                        <td>
+                      ItemDesc                  <td>
                                              <span className="inlineFlex">
                                                   <span className={`clickable iconLarge primary`} onClick={saveRow}>
                                                        {SaveIconComponent}

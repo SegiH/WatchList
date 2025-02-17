@@ -1,49 +1,7 @@
 import { NextRequest } from 'next/server';
-import { execInsert, execSelect, getIMDBDetails, isLoggedIn } from "../lib";
+import { getDB, getIMDBDetails, isLoggedIn, writeDB } from "../lib";
+import IWatchListItem from '@/app/interfaces/IWatchListItem';
 
-/**
- * @swagger
- * /api/AddWatchListItem:
- *    put:
- *        tags:
- *          - WatchListItems
- *        summary: Add a WatchListItem record
- *        description: Add a WatchListItem record to add a movie/TV show
- *        parameters:
- *           - name: WatchListItemName
- *             in: query
- *             description: New WatchListItem Name (name of the movie or TV Show)
- *             required: true
- *             schema:
- *                  type: string
- *           - name: WatchListTypeID
- *             in: query
- *             description: Type ID of the movie/show
- *             required: true
- *             schema:
- *                  type: number
- *           - name: IMDB_URL
- *             in: query
- *             description: IMDB URL of the movie/show
- *             required: false
- *             schema:
- *                  type: number
- *           - name: IMDB_Poster
- *             in: query
- *             description: IMDB Poster of the movie/show
- *             required: false
- *             schema:
- *                  type: string
- *           - name: Notes
- *             in: query
- *             description: Notes for the movie/show
- *             required: false
- *             schema:
- *                  type: string
- *        responses:
- *          200:
- *            description: '["OK",""] on success, ["ERROR","error message"] on error'
- */
 export async function PUT(request: NextRequest) {
      if (!isLoggedIn(request)) {
           return Response.json(["ERROR", "Error. Not signed in"]);
@@ -64,10 +22,21 @@ export async function PUT(request: NextRequest) {
           return Response.json(["ERROR", "Type was not provided"]);
      } else {
           if (imdb_url !== null) {
-               const existingWatchListItem = await execSelect("SELECT * FROM WatchListItems WHERE IMDB_URL=?", [imdb_url]);
+               try {
+                    const db = getDB();
 
-               if (existingWatchListItem.length > 0) {
-                    return Response.json(["ERROR-ALREADY-EXISTS", `The URL ${imdb_url} already exists with the name ${existingWatchListItem[0].WatchListItemName} and the ID ${existingWatchListItem[0].WatchListItemID}. It was NOT added!`]);
+                    const watchListItemsDB = db.WatchListItems;
+
+                    const existingWatchListItem = watchListItemsDB.filter((watchListItem: IWatchListItem) => {
+                         return watchListItem.IMDB_URL === imdb_url
+                    });
+
+                    if (existingWatchListItem.length > 0) {
+                         return Response.json(["ERROR-ALREADY-EXISTS", `The URL ${imdb_url} already exists with the name ${existingWatchListItem[0].WatchListItemName} and the ID ${existingWatchListItem[0].WatchListItemID}. It was NOT added!`]);
+                    }
+               } catch (e) {
+                    console.log(e)
+                    return Response.json(["OK", []]);
                }
           }
 
@@ -87,14 +56,30 @@ export async function PUT(request: NextRequest) {
                }
           }
 
-          const SQL="INSERT INTO WatchListItems(WatchListItemName, WatchListTypeID, IMDB_URL, IMDB_Poster, IMDB_JSON, ItemNotes, Archived) VALUES(?, ?, ?, ?, ?, ?, ?);";
+          try {
+               const db = getDB();
 
-          const params = [name, type, imdb_url, imdb_poster, imdb_json, notes, archived];
+               const watchListItemsDB = db.WatchListItems;
 
-          const result = await execInsert(SQL, params);
+               const highestWatchListItemID = Math.max(...watchListItemsDB.map(o => o.WatchListItemID));
 
-          const newID = result.lastID;
+               watchListItemsDB.push({
+                    "WatchListItemID": (highestWatchListItemID !== null ? highestWatchListItemID : 0) + 1,
+                    "WatchListItemName": name,
+                    "WatchListTypeID": parseInt(type, 10),
+                    "IMDB_URL": imdb_url,
+                    "IMDB_Poster":  imdb_poster,
+                    "IMDB_JSON": imdb_json,
+                    "ItemNotes": notes,
+                    "Archived": parseInt(archived as string, 10),
+               });
 
-          return Response.json(["OK", newID]);
+               writeDB(db)
+
+               return Response.json(["OK", watchListItemsDB.length]); // New ID
+          } catch (e) {
+               console.log(e.message);
+               return Response.json(["ERROR", e.message]);
+          }
      }
 }

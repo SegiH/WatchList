@@ -1,18 +1,9 @@
 import { NextRequest } from 'next/server';
-import { execSelect, getUserID } from "../lib";
+import { getDB, getUserID } from "../lib";
+import IWatchListSource from '@/app/interfaces/IWatchListSource';
+import IWatchList from '@/app/interfaces/IWatchList';
+import IWatchListItem from '@/app/interfaces/IWatchListItem';
 
-/**
- * @swagger
- * /api/GetWatchListSourceStats:
- *    get:
- *        tags:
- *          - WatchListSources
- *        summary: Get the WatchList source stats for the current user
- *        description: Get the WatchList source stats that indicate how many times a movie/show was watched at a source (I.E Netflix) for the current user
- *        responses:
- *          200:
- *            description: '["OK",""] on success, ["ERROR","error message"] on error'
- */
 export async function GET(request: NextRequest) {
      const userID = await getUserID(request);
 
@@ -24,15 +15,74 @@ export async function GET(request: NextRequest) {
           return Response.json(["ERROR", "User ID is not set"]);
      }
 
-     const SQL = "SELECT WatchList.WatchListSourceID, WatchListSources.WatchListSourceName, COUNT(WatchList.WatchListSourceID) AS SourceCount FROM WatchList LEFT JOIN WatchListSources ON WatchListSources.WatchListSourceID=WatchList.WatchListSourceID WHERE UserID=? AND  WatchListSources.WatchListSourceName IS NOT NULL GROUP BY WatchList.WatchListSourceID,WatchListSources.WatchListSourceName ORDER BY SourceCount DESC";
+     const db = getDB();
 
-     const detailSQL = "SELECT * FROM WatchList LEFT JOIN WatchListItems ON WatchListItems.WatchListItemID=WatchList.WatchListItemID LEFT JOIN WatchListSources ON WatchListSources.WatchListSourceID=WatchList.WatchListSourceID WHERE UserID=? ORDER BY StartDate DESC";
+     const watchListDB = db.WatchList;
+     const watchListItemsDB = db.WatchListItems;
+     const watchListSourcesDB = db.WatchListSources;
 
-     try {
-          const results = await execSelect(!getDetail ? SQL : detailSQL, [userID]);
+     const filteredWatchList = watchListDB.filter((watchList: IWatchList) => {
+          return (String(watchList.UserID) === String(userID));
+     });
+
+     const countOccurrences = filteredWatchList.reduce((acc, obj) => {
+          acc[obj.WatchListSourceID] = (acc[obj.WatchListSourceID] || 0) + 1;
+          return acc;
+     }, {});
+
+     const countArray = Object.entries(countOccurrences);
+
+     const top10 = countArray.sort((a: any, b: any) => b[1] - a[1]).slice(0, 10);
+
+     const results: any = [];
+
+     if (!getDetail) {
+          top10.map(async (element: any, index) => {
+               const watchListSource = watchListSourcesDB.filter((watchListSource: IWatchListSource) => {
+                    return (String(watchListSource.WatchListSourceID) === String(element[0]));
+               });
+
+               if (watchListSource.length === 1) {
+                    results.push({
+                         WatchListSourceID: element[0],
+                         WatchListSourceName: watchListSource[0].WatchListSourceName,
+                         SourceCount: element[1]
+                    });
+               }
+          });
 
           return Response.json(["OK", results]);
-     } catch (e) {
-          return Response.json(["ERROR", `The error ${e.message} occurred getting the WatchList Source Stats`]);
+     } else {
+          top10.map(async (element: any) => {
+               const watchListForSource = filteredWatchList.filter((watchList: IWatchList) => {
+                    return (String(watchList.WatchListSourceID) === String(element[0]));
+               });
+
+               watchListForSource.map(async (watchList: any) => {
+                    const currentWatchListItem = watchListItemsDB.filter((watchListItem: IWatchListItem) => {
+                         return (String(watchListItem.WatchListItemID) === String(watchList.WatchListItemID));
+                    });
+
+                    const currentWatchListSource = watchListSourcesDB.filter((watchListSource: IWatchListSource) => {
+                         return (String(watchListSource.WatchListSourceID) === String(watchList.WatchListSourceID));
+                    });
+
+                    if (currentWatchListSource.length !== 0 && currentWatchListItem.length !== 0) {
+                         results.push({
+                              WatchListID: watchList.WatchListID,
+                              UserID: watchList.UserID,
+                              WatchListItemID: watchList.WatchListItemID,
+                              WatchListItemName: currentWatchListItem[0].WatchListItemName,
+                              StartDate: watchList.StartDate,
+                              EndDate: watchList.EndDate,
+                              Season: watchList.Season,
+                              WatchListSourceID: currentWatchListSource[0]?.WatchListSourceID,
+                              WatchListSourceName: currentWatchListSource[0]?.WatchListSourceName
+                         });
+                    }
+               });
+          });
+
+          return Response.json(["OK", results]);
      }
 }

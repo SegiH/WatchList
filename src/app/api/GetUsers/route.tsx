@@ -1,33 +1,7 @@
 import { NextRequest } from 'next/server';
-import { decrypt, execSelect, getUserID, isUserAdmin } from "../lib";
-import User from "../../interfaces/IUser";
+import { getDB, decrypt, getUserID, isUserAdmin } from "../lib";
 import IUser from '../../interfaces/IUser';
 
-/**
- * @swagger
- * /api/GetUsers:
- *    get:
- *        tags:
- *          - Users
- *        summary: Get all users
- *        description: Get all users
- *        parameters:
- *           - name: Admin
- *             in: query
- *             description: Filter on admin status
- *             required: false
- *             schema:
- *                  type: string
- *           - name: Enabled
- *             in: query
- *             description: Filter on Enabled status
- *             required: false
- *             schema:
- *                  type: string
- *        responses:
- *          200:
- *            description: '["OK",""] on success, ["ERROR","error message"] on error'
- */
 export async function GET(request: NextRequest) {
      const searchParams = request.nextUrl.searchParams;
 
@@ -59,20 +33,29 @@ export async function GET(request: NextRequest) {
           params.push(admin);
      }
 
-     const SQL = `SELECT UserID, Username, Realname, Admin, Enabled FROM Users ${whereClause}`;
-
      try {
-          const results: User[] = await execSelect(SQL, params);
+          const db = getDB();
 
-          // Decrypt the encrypt values
-          const decryptedUsers = results.map((currentUser: IUser) => {
-               currentUser.Username = decrypt(currentUser.Username);
-               currentUser.Realname = decrypt(currentUser.Realname);
-               return currentUser;
+          const usersDB = db.Users;
+
+          const decryptedUsers: IUser[] = [];
+
+          usersDB.map((currentUser: IUser) => {
+               decryptedUsers.push({
+                    UserID: currentUser.UserID,
+                    Username: decrypt(currentUser.Username),
+                    Realname: decrypt(currentUser.Realname),
+                    Password: "",
+                    Admin: currentUser.Admin,
+                    Enabled: currentUser.Enabled,
+                    IsModified: false,
+                    Options: currentUser.Options
+               });
           });
 
           return Response.json(["OK", decryptedUsers]);
      } catch (e) {
-          return Response.json(["ERROR", `An error occurred getting the users with the error ${e.message}`]);
+          console.log(e.message);
+          return Response.json(["ERROR", e.message]);
      }
 }

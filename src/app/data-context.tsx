@@ -2,20 +2,23 @@
 // NOTE: If you run this script in VS Code in Docker, you HAVE to run the web app on port 8080 or websocket will stop working which breaks hot reloading
 //
 import axios, { AxiosResponse } from "axios";
-import React, { createContext, useCallback, useEffect, useMemo, useState } from "react";
-import PropTypes from 'prop-types';
 import { useRouter } from 'next/navigation';
+import PropTypes from 'prop-types';
+import React, { createContext, useCallback, useEffect, useMemo, useState } from "react";
 
 import IBugLog from "./interfaces/IBugLog";
+import IRecommendation from "./interfaces/IRecommendation";
 import IRouteList from "./interfaces/IRoute";
-import IUser, { IUserOption } from "./interfaces/IUser";
+import ISearchImdb from "./interfaces/ISearchImdb";
+import ISectionChoice from "./interfaces/ISectionChoice";
+import IUser from "./interfaces/IUser";
+import IUserData from './interfaces/IUserData';
+import IUserOption from "./interfaces/IUserOption";
 import IWatchList from "./interfaces/IWatchList";
 import IWatchListItem from "./interfaces/IWatchListItem";
+import IWatchListSortColumn from './interfaces/IWatchListSortColumn';
 import IWatchListSource from "./interfaces/IWatchListSource";
 import IWatchListType from "./interfaces/IWatchListType";
-import SectionChoice from "./interfaces/SectionChoice";
-import IWatchListSortColumn from './interfaces/IWatchListSortColumn';
-import IUserData from './interfaces/IUserData';
 
 const ratingMax = 5;
 
@@ -62,8 +65,6 @@ import WatchListIcon from "@mui/icons-material/Movie";
 const WatchListIconComponent = <WatchListIcon className="icon" />;
 
 import WatchListItemsIcon from "@mui/icons-material/SmartDisplay";
-import ISearchImdb from "./interfaces/ISearchImdb";
-import IRecommendation from "./interfaces/IRecommendation";
 const WatchListItemsIconComponent = <WatchListItemsIcon className="icon" />;
 
 export interface DataContextType {
@@ -123,7 +124,7 @@ export interface DataContextType {
      setErrorMessage: (value: string) => void;
      setIsLoggedIn: (value: boolean) => void;
      setIsLoggedInCheckComplete: (value: boolean) => void;
-     setOptions: (value: IUserOption) => void;
+     setOptions: (value: IUserOption, updateDB: boolean) => void;
      setShowMissingArtwork: (value: boolean) => void;
      setSearchCount: (value: number) => void;
      setSearchTerm: (value: string) => void;
@@ -164,7 +165,7 @@ export interface DataContextType {
      users: IUser[],
      userData: IUserData;
      validatePassword: (value: string) => boolean;
-     visibleSectionChoices: SectionChoice[],
+     visibleSectionChoices: ISectionChoice[],
      visibleSections: { name: string; id: number; }[],
      watchList: IWatchList[];
      watchListItems: IWatchListItem[];
@@ -237,7 +238,7 @@ const DataProvider = ({ children }) => {
      const [watchListSortColumn, setWatchListSortColumn] = useState("Name");
      const [watchListSortDirection, setWatchListSortDirection] = useState("ASC");
 
-     const [visibleSections, setVisibleSections] = useState([{ name: 'Stats', id: 2 }]);
+     const [visibleSections, setVisibleSections] = useState([{ name: 'Stats', id: 2 }, { name: 'Items', id: 1 }]);
 
      const defaultRoute = "WatchList";
      const demoUsername = "demo";
@@ -321,7 +322,7 @@ const DataProvider = ({ children }) => {
           return true;
      }, [isLoggedIn, isLoggedInCheckComplete]);
 
-     const isLoggedInApi = () => {
+     const isLoggedInApi = (noReroute: boolean = false) => {
           let params = '';
 
           axios.get(`/api/IsLoggedIn${params}`)
@@ -335,18 +336,24 @@ const DataProvider = ({ children }) => {
                          newUserData.RealName = res.data[1].RealName;
                          newUserData.Admin = res.data[1].Admin;
 
-                         if (typeof res.data[1].Options !== "undefined" && res.data[1].Options.length === 1) {
-                              await setOptions(res.data[1].Options[0]);
+                         if (newUserData.Admin) {
+                              routeList["Admin"].Enabled = true;
+                         }
+
+                         if (typeof res.data[1].Options !== "undefined") {
+                              await setOptions(res.data[1].Options, false);
                          }
 
                          setUserData(newUserData);
 
                          setIsLoggedIn(true);
 
-                         setActiveRoute("WatchList");
-                         setActiveRouteDisplayName("WatchList");
+                         if (!noReroute) {
+                              setActiveRoute("WatchList");
+                              setActiveRouteDisplayName("WatchList");
 
-                         router.push("/WatchList");
+                              router.push("/WatchList");
+                         }
                     } else {
                          pullToRefreshEnabled(false);
 
@@ -355,6 +362,8 @@ const DataProvider = ({ children }) => {
                               setActiveRouteDisplayName("Setup");
                               router.push("/Setup");
                               return;
+                         } else if (res.data[1] !== "") {
+                              alert(res.data[1]);
                          }
 
                          setIsLoggedIn(false);
@@ -388,17 +397,17 @@ const DataProvider = ({ children }) => {
           }
      }
 
-     const openDetailClickHandler = useCallback((Id: number) => {
+     const openDetailClickHandler = useCallback((Id: number, activeRouteOverride: string = "") => {
           // Disable pull to refresh
           pullToRefreshEnabled(false);
 
-          if (activeRoute === "WatchList" && Id !== null) {
+          if (((activeRoute === "WatchList" && activeRouteOverride === "") || activeRouteOverride === "WatchList") && Id !== null) {
                if (Id === -1) {
                     setIsAdding(true);
                }
 
                router.push(`/WatchList/Dtl${Id !== -1 ? `?WatchListID=${Id}` : ""}`);
-          } else if (activeRoute === "Items" && Id !== null) {
+          } else if (((activeRoute === "Items" && activeRouteOverride === "") || activeRouteOverride === "Items") && Id !== null) {
                if (Id === -1) {
                     setIsAdding(true);
                }
@@ -407,7 +416,7 @@ const DataProvider = ({ children }) => {
           }
      }, [activeRoute, setIsAdding]);
 
-     const setOptions = async (newOptions: IUserOption) => {
+     const setOptions = async (newOptions: IUserOption, updateDB: boolean) => {
           const newArchivedVisible = typeof newOptions.ArchivedVisible !== "undefined" && newOptions.ArchivedVisible === 1 ? true : false;
           setArchivedVisible(newArchivedVisible);
 
@@ -429,10 +438,10 @@ const DataProvider = ({ children }) => {
           const newShowMissingArtwork = typeof newOptions.ShowMissingArtwork !== "undefined" && newOptions.ShowMissingArtwork === 1 ? true : false;
           setShowMissingArtwork(newShowMissingArtwork);
 
-          const newSourceFilter = typeof newOptions.SourceFilter !== "undefined" && !isNaN(newOptions.SourceFilter) ? newOptions.SourceFilter : 5;
+          const newSourceFilter = typeof newOptions.SourceFilter !== "undefined" && !isNaN(newOptions.SourceFilter) ? newOptions.SourceFilter : sourceFilter;
           setSourceFilter(newSourceFilter);
 
-          const newTypeFilter = typeof newOptions.TypeFilter !== "undefined" && !isNaN(newOptions.TypeFilter) ? newOptions.TypeFilter : 5;
+          const newTypeFilter = typeof newOptions.TypeFilter !== "undefined" && !isNaN(newOptions.TypeFilter) ? newOptions.TypeFilter : typeFilter;
           setTypeFilter(newTypeFilter);
 
           const newSortColumn = typeof newOptions.WatchListSortColumn !== "undefined" ? newOptions.WatchListSortColumn : "Name";
@@ -443,6 +452,14 @@ const DataProvider = ({ children }) => {
 
           const newVisibleSections = typeof newOptions.VisibleSections !== "undefined" ? JSON.parse(newOptions.VisibleSections) : [{ name: 'Stats', id: 2 }];
           setVisibleSections(newVisibleSections);
+
+          if (updateDB) {
+               axios.get(`/api/UpdateOptions?Options=${JSON.stringify(newOptions)}`)
+                    .catch((err: Error) => {
+                         setErrorMessage("Failed to update option with the error " + err.message);
+                         setIsError(true);
+                    });
+          }
      }
 
      const showSearch = () => {
@@ -573,7 +590,7 @@ const DataProvider = ({ children }) => {
           if (!watchListLoadingStarted && !watchListLoadingComplete) {
                setWatchListLoadingStarted(true);
 
-               axios.get(`/api/GetWatchList?SortColumn=${watchListSortColumn}&SortDirection=${watchListSortDirection}`, { withCredentials: true })
+               axios.get(`/api/GetWatchList`, { withCredentials: true })
                     .then((res: AxiosResponse<IWatchList>) => {
                          if (res.data[0] !== "OK") {
                               setErrorMessage("Failed to get WatchList with the error " + res.data[1])
@@ -707,38 +724,6 @@ const DataProvider = ({ children }) => {
           }
      }, [isLoggedInCheck, isLoggedInCheckComplete, isLoggedIn, watchListSourcesLoadingComplete, watchListTypesLoadingStarted, watchListTypesLoadingComplete]);
 
-     // Save preferences
-     useEffect(() => {
-          if (!isLoggedIn) {
-               return;
-          }
-
-          const options = {
-               "ArchivedVisible": archivedVisible ? 1 : 0,
-               "AutoAdd": autoAdd ? 1 : 0,
-               "DarkMode": darkMode ? 1 : 0,
-               "HideTabs": hideTabs ? 1 : 0,
-               "SearchCount": searchCount,
-               "ShowMissingArtwork": showMissingArtwork ? 1 : 0,
-               "SourceFilter": sourceFilter,
-               "StillWatching": stillWatching ? 1 : 0,
-               "TypeFilter": typeFilter,
-               "VisibleSections": JSON.stringify(visibleSections),
-               "WatchListSortColumn": watchListSortColumn,
-               "WatchListSortDirection": watchListSortDirection
-          }
-
-          axios.get(`/api/UpdateOptions?Options=${JSON.stringify(options)}`)
-               .catch((err: Error) => {
-                    setErrorMessage("Failed to update option with the error " + err.message);
-                    setIsError(true);
-               });
-
-
-          //setWatchListSortingComplete(false);
-          //setWatchListItemsSortingComplete(false);
-     }, [archivedVisible, autoAdd, darkMode, hideTabs, isLoggedIn, searchCount, showMissingArtwork, stillWatching, sourceFilter, typeFilter, visibleSections, watchListSortColumn, watchListSortDirection]);
-
      /* useEffect that does isClient check */
      useEffect(() => {
           const newIsClient = !window.location.href.endsWith("api-doc") && !window.location.href.endsWith("api-doc/") ? true : false;
@@ -780,14 +765,27 @@ const DataProvider = ({ children }) => {
           } else {
                pullToRefreshEnabled(true);
 
-               const currentPath = location.pathname !== "" ? location.pathname.replace("/","") : "";
+               const currentPath = location.pathname !== "" ? location.pathname.replace("/", "") : "";
+               const queryParams = location.search;
 
                if (currentPath === routeList["Login"].Path && isLoggedIn) {
                     newRoute = defaultRoute;
                } else if (currentPath !== "") {
                     const findRouteByPath = Object.keys(routeList).filter((routeName) => routeList[routeName].Path === "/" + currentPath);
 
-                    if (findRouteByPath.length !== 1) { // Path wasn't found so use default route
+                    if (currentPath === "WatchList/Dtl" && queryParams !== null && queryParams !== "") {
+                         setActiveRoute("WatchList");
+
+                         const id = queryParams.split("=")[1];
+                         openDetailClickHandler(parseInt(id, 10), "WatchList");
+                         return;
+                    } else if (currentPath === "Items/Dtl") {
+                         setActiveRoute("Items");
+
+                         const id = queryParams.split("=")[1];
+                         openDetailClickHandler(parseInt(id, 10), "Items");
+                         return;
+                    } else if (findRouteByPath.length !== 1) { // Path wasn't found so use default route
                          newRoute = defaultRoute;
                     } else if (
                          (currentPath === "WatchList") ||
@@ -875,7 +873,7 @@ const DataProvider = ({ children }) => {
      useEffect(() => {
           const handleVisibilityChange = () => {
                if (!document.hidden) {
-                    isLoggedInApi();
+                    isLoggedInApi(true);
                }
           };
 
@@ -1095,47 +1093,3 @@ DataProvider.propTypes = {
 }
 
 export { DataContext, DataProvider };
-
-/*axios.get(`/api/GetOptions`)
-                    .then((res: typeof IUser) => {
-                         if (res.data[0] !== "OK") {
-                              alert(res.data[1]);
-                         } else {
-                              const options = res.data[1][0];
-
-                              const newArchivedVisible = typeof options.ArchivedVisible !== "undefined" && options.ArchivedVisible === 1 ? true : false;
-                              setArchivedVisible(newArchivedVisible);
-
-                              const newAutoAdd = typeof options.AutoAdd !== "undefined" && options.AutoAdd === 1 ? true : false;
-                              setAutoAdd(newAutoAdd);
-
-                              const darkMode = typeof options.DarkMode !== "undefined" && options.DarkMode === 1 ? true : false;
-                              setDarkMode(darkMode);
-
-                              const newSearchCount = typeof options.SearchCount !== "undefined" && !isNaN(options.SearchCount) ? parseInt(options.SearchCount, 10) : 5;
-                              setSearchCount(newSearchCount);
-
-                              const newStillWatching = typeof options.StillWatching !== "undefined" && options.StillWatching === 1 ? true : false;
-                              setStillWatching(newStillWatching);
-
-                              const newShowMissingArtwork = typeof options.ShowMissingArtwork !== "undefined" && options.ShowMissingArtwork === 1 ? true : false;
-                              setShowMissingArtwork(newShowMissingArtwork);
-
-                              const newSourceFilter = typeof options.SourceFilter !== "undefined" && !isNaN(options.SourceFilter) ? parseInt(options.SourceFilter, 10) : 5;
-                              setSourceFilter(newSourceFilter);
-
-                              const newTypeFilter = typeof options.TypeFilter !== "undefined" && !isNaN(options.TypeFilter) ? parseInt(options.TypeFilter, 10) : 5;
-                              setTypeFilter(newTypeFilter);
-
-                              const newSortColumn = typeof options.WatchListSortColumn !== "undefined" ? options.WatchListSortColumn : "Name";
-                              setWatchListSortColumn(newSortColumn);
-
-                              const newSortDirection = typeof options.WatchListSortDirection !== "undefined" ? options.WatchListSortDirection : "Name";
-                              setWatchListSortDirection(newSortDirection);
-
-                              const newVisibleSections = typeof options.VisibleSections !== "undefined" ? JSON.parse(options.VisibleSections) : [{ name: 'Stats', id: 2 }];
-                              setVisibleSections(newVisibleSections);
-                         }
-                    })
-                    .catch((err: Error) => {
-                    });*/

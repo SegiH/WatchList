@@ -3,8 +3,9 @@
 # If you do not have a zip file named watchlist.zip and do not have a directory named WatchList in the current  directory, the latest code will be pulled from Github and used to build this app
 #>
 $COMPOSE_SCRIPT="C:\Users\JohnDoe\docker-compose.yml"
-$CONFIG_FILE="C:\Users\JohnDoe\default.json"
-$DB_FILE="C:\Users\JohnDoe\watchlistdb.sqlite"
+#$CONFIG_FILE="C:\Users\JohnDoe\default.json"
+$ENV_FILE="C:\Users\JohnDoe\.env"
+$DB_FILE="C:\Users\JohnDoe\database.json"
 $DOCKER_COMMANDS='docker stop WatchList','docker rm WatchList'
 
 # DO NOT CHANGE ANYTHING BELOW THIS LINE
@@ -14,7 +15,8 @@ $USE_EXISTING_PARAM="--use-existing"
 $REPO_URL="https://github.com/SegiH/WatchList"
 
 $COMPOSE_SCRIPT_EXISTS = Test-Path $COMPOSE_SCRIPT
-$CONFIG_FILE_EXISTS = Test-Path $CONFIG_FILE
+$ENV_FILE_EXISTS = Test-Path $ENV_FILE
+#$CONFIG_FILE_EXISTS = Test-Path $CONFIG_FILE
 $DB_FILE_EXISTS = Test-Path $DB_FILE
 $DESTINATION_DIR_EXISTS=Test-Path $DESTINATION_DIR
 $ZIP_FILE_EXISTS=Test-Path $ZIP_FILE
@@ -24,8 +26,12 @@ if ( ! $COMPOSE_SCRIPT_EXISTS) {
      throw "$COMPOSE_SCRIPT was not found!”
 }
 
-if ( ! $CONFIG_FILE_EXISTS) {
-     throw "$CONFIG_FILE was not found!”
+#if ( ! $CONFIG_FILE_EXISTS) {
+#     throw "$CONFIG_FILE was not found!”
+#}
+
+if ( ! $ENV_FILE_EXISTS) {
+     throw "$ENV_FILE_EXISTS was not found!”
 }
 
 if ( ! $DB_FILE_EXISTS) {
@@ -71,7 +77,9 @@ Set-Location $DESTINATION_DIR
 
 Copy-Item -Path $COMPOSE_SCRIPT -Destination $DESTINATION_DIR
 
-Copy-Item -Path $CONFIG_FILE -Destination $DESTINATION_DIR\config
+Copy-Item -Path $ENV_FILE -Destination $DESTINATION_DIR
+
+#Copy-Item -Path $CONFIG_FILE -Destination $DESTINATION_DIR\config
 
 Copy-Item -Path $DB_FILE -Destination $DESTINATION_DIR
 

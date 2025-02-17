@@ -1,30 +1,6 @@
 import { NextRequest } from 'next/server';
 import { fetchData, getRapidAPIKey, isLoggedIn } from '../lib';
-/**
- * @swagger
- * /api/SearchIMDB:
- *    get:
- *        tags:
- *          - Search
- *        summary: Search IMDB
- *        description: Search IMDB for the specified movie/show
- *        parameters:
- *           - name: SearchTerm
- *             in: query
- *             description: Search term
- *             required: true
- *             schema:
- *                  type: string
- *           - name: SearchCount
- *             in: query
- *             description: how many search results to return
- *             required: false
- *             schema:
- *                  type: string
- *        responses:
- *          200:
- *            description: '["OK",search results] on success, ["ERROR","error message"] on error'
- */
+
 export async function GET(request: NextRequest) {
      if (!isLoggedIn(request)) {
           return Response.json(["ERROR", "Error. Not signed in"]);

@@ -1,10 +1,10 @@
 "use client"
 
-import React, { useContext, useEffect } from "react";
 import Image from "next/image";
+import { useContext, useEffect } from "react";
 
-import IWatchList from "../interfaces/IWatchList";
 import { DataContext, DataContextType } from "../data-context";
+import IWatchList from "../interfaces/IWatchList";
 
 import "../page.css";
 
@@ -95,7 +95,7 @@ export default function WatchList() {
                                    &&
                                    (searchTerm === "" || (searchTerm !== "" && currentWatchList?.WatchListItemName?.toLowerCase().includes(searchTerm)))
                                    &&
-                                   (sourceFilter === -1 || sourceFilter === null || (sourceFilter !== -1 && sourceFilter !== null && String(currentWatchList?.WatchListSourceID) === String(sourceFilter)))
+                                   (sourceFilter === -1 || sourceFilter === null || (sourceFilter !== -1 && sourceFilter !== null && currentWatchList?.WatchListSourceID === sourceFilter))
                                    &&
                                    (typeFilter === -1 || (typeFilter !== -1 && String(currentWatchList?.WatchListTypeID) === String(typeFilter)))
                          ).map((currentWatchList: IWatchList, index: number) => {
@@ -111,9 +111,9 @@ export default function WatchList() {
 
                                                   <a className="clickable image-crop show-link" onClick={() => openDetailClickHandler(currentWatchList?.WatchListID)}>
                                                        <div>
-                                                            {currentWatchList?.IMDB_Poster !== null && currentWatchList?.IMDB_Poster !== "" && currentWatchList?.IMDB_Poster_Error !== true && <Image width="128" height="187" alt={currentWatchList?.WatchListItemName ?? ""} src={currentWatchList?.IMDB_Poster ?? ""} onError={() => showDefaultSrc(currentWatchList?.WatchListID)} />}
+                                                            {typeof currentWatchList?.IMDB_Poster !== "undefined" && currentWatchList?.IMDB_Poster !== null && currentWatchList?.IMDB_Poster !== "" && currentWatchList?.IMDB_Poster_Error !== true && <Image width="128" height="187" alt={currentWatchList?.WatchListItemName ?? ""} src={currentWatchList?.IMDB_Poster ?? ""} onError={() => showDefaultSrc(currentWatchList?.WatchListID)} />}
 
-                                                            {(currentWatchList?.IMDB_Poster === null || currentWatchList?.IMDB_Poster_Error === true) && <>{BrokenImageIconComponent}</>}
+                                                            {(typeof currentWatchList?.IMDB_Poster === "undefined" || currentWatchList?.IMDB_Poster === null || currentWatchList?.IMDB_Poster_Error === true) && <>{BrokenImageIconComponent}</>}
                                                        </div>
                                                   </a>
 

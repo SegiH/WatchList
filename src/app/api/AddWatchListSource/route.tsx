@@ -1,25 +1,6 @@
 import { NextRequest } from 'next/server';
-import { execInsert, isLoggedIn } from "../lib";
+import { getDB, isLoggedIn, writeDB } from "../lib";
 
-/**
- * @swagger
- * /api/AddWatchListSource:
- *    put:
- *        tags:
- *          - WatchListSources
- *        summary: Add a WatchListItem source
- *        description: Add a WatchListItem source to indicate where a movie/show was watched at
- *        parameters:
- *           - name: WatchListSourceName
- *             in: query
- *             description: New WatchListSource Name
- *             required: true
- *             schema:
- *                  type: string
- *        responses:
- *          200:
- *            description: '["OK",""] on success, ["ERROR","error message"] on error'
- */
 export async function PUT(request: NextRequest) {
      if (!isLoggedIn(request)) {
           return Response.json(["ERROR", "Error. Not signed in"]);
@@ -33,12 +14,23 @@ export async function PUT(request: NextRequest) {
           return Response.json(["ERROR", "WatchList Source Name was not provided"]);
      }
 
-     const SQL = "INSERT INTO WatchListSources(WatchListSourceName) VALUES(?);";
-     const params = [watchListSourceName];
+     try {
+          const db = getDB();
 
-     const result = await execInsert(SQL, params);
+          const watchListSourcesDB = db.WatchListSources;
 
-     const newID = result.lastID;
+          const highestWatchListSourceID = Math.max(...watchListSourcesDB.map(o => o.WatchListSourceID));
 
-     return Response.json(["OK", newID]);
+          watchListSourcesDB.push({
+               "WatchListSourceID": (highestWatchListSourceID !== null ? highestWatchListSourceID : 0) + 1,
+               "WatchListSourceName": watchListSourceName
+          });
+
+          writeDB(db);
+
+          return Response.json(["OK", watchListSourcesDB.length]); // New ID
+     } catch (e) {
+          console.log(e.message);
+          return Response.json(["ERROR", e.message]);
+     }
 }

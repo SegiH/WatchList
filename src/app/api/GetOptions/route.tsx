@@ -1,17 +1,8 @@
 import { NextRequest } from 'next/server';
-import { execSelect, execInsert, getUserID, getUserSession } from "../lib";
-/**
- * @swagger
- * /api/GetOptions
- *    get:
- *        tags:
- *          - Options
- *        summary: Get all options
- *        description: Get all options
- *        responses:
- *          200:
- *            description: '["OK",""] on success, ["ERROR","error message"] on error'
- */
+import { getDB, getUserID, getUserSession, writeDB } from "../lib";
+import IUserOption from '@/app/interfaces/IUser';
+import ISectionChoice from '@/app/interfaces/ISectionChoice';
+
 export async function GET(request: NextRequest) {
      const searchParams = request.nextUrl.searchParams; // This is here to prevent this endpoint from being built as a static endpoint when running npm run build
 
@@ -21,27 +12,51 @@ export async function GET(request: NextRequest) {
           return Response.json(["ERROR", "Access denied"]);
      }
 
-     const getOptionsSQL = `SELECT * FROM Options WHERE UserID=?`;
-     const params = [userID];
-
      const userSession = await getUserSession(request);
 
      try {
           // There may be no options the first time ever getting the options
-          const resultsFirstCheck = await execSelect(getOptionsSQL, params);
+          const db = getDB()
 
-          if (resultsFirstCheck.length === 0) {
-               const visibleSectionsChoicesResult = await execSelect(`SELECT * FROM VisibleSections ${userSession.Admin === 0 ? " WHERE name != 'Admin'" : ""}`, []);
-               const visibleSectionsChoices= JSON.stringify(visibleSectionsChoicesResult);
+          const optionsDB = db.Options;
 
-               //await execInsert("INSERT INTO Options (UserID, ArchivedVisible, AutoAdd, DarkMode, SearchCount, StillWatching, ShowMissingArtwork, SourceFilter, TypeFilter, WatchListSortColumn, WatchListSortDirection, VisibleSections) VALUES (" + userID + ", false, true, true, 5, true, false, -1, -1, \"Name\", \"ASC\", '\"[{\\\"name\\\":\\\"Items\\\",\\\"id\\\":1},{\\\"name\\\":\\\"Admin\\\",\\\"id\\\":3},{\\\"name\\\":\\\"Stats\\\",\\\"id\\\":2}]\"');", []);
-               await execInsert("INSERT INTO Options (UserID, ArchivedVisible, AutoAdd, DarkMode, DemoMode, SearchCount, StillWatching, ShowMissingArtwork, SourceFilter, TypeFilter, WatchListSortColumn, WatchListSortDirection, VisibleSections) VALUES (" + userID + ", false, true, true, false, 5, true, false, -1, -1,\"Name\", \"ASC\",'" + visibleSectionsChoices + "');", []);
+          const filteredOptions = optionsDB.filter((currentOption: IUserOption) => {
+               return currentOption.UserID === userID;
+          });
 
-               const resultsSecondCheck = await execSelect(getOptionsSQL, params);
+          if (filteredOptions.length === 0) {
+               const visibleSectionsDB = db.VisibleSections;
 
-               return Response.json(["OK", resultsSecondCheck]);
+               const filteredVisibleSections = visibleSectionsDB.filter((visibleSection: ISectionChoice) => {
+                    return (visibleSection.name !== "Admin" || (visibleSection.name === "Admin" && userSession.Admin));
+               });
+
+               const filteredVisibleSectionsJSON = JSON.stringify(filteredVisibleSections);
+
+               const newOptions = {
+                    "OptionID": optionsDB.length + 1,
+                    "UserID": 1,
+                    "ArchivedVisible": 0,
+                    "AutoAdd": 1,
+                    "DarkMode": 1,
+                    "HideTabs": 0,
+                    "SearchCount": 5,
+                    "StillWatching": 0,
+                    "ShowMissingArtwork": 0,
+                    "SourceFilter": -1,
+                    "TypeFilter": -1,
+                    "WatchListSortColumn": "Name",
+                    "WatchListSortDirection": "ASC",
+                    "VisibleSections": filteredVisibleSectionsJSON
+               };
+
+               optionsDB.push(newOptions);
+
+               writeDB(db);
+
+               return Response.json(["OK", newOptions]);
           } else {
-               return Response.json(["OK", resultsFirstCheck]);
+               return Response.json(["OK", filteredOptions[0]]);
           }
      } catch (e) {
           return Response.json(["ERROR", `An error occurred getting the options with the error ${e.message}`]);

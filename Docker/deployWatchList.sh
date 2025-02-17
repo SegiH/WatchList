@@ -4,11 +4,11 @@
  # If you have a directory named WatchList but do not have watchlist.zip in the same location as this script, you can use the parameter --use-existing to redeploy WatchList using the existing WatchList directory.
  # If you do not have a zip file named watchlist.zip and do not have a directory named WatchList in the current directory, the latest code will be pulled from Github and used to build this app
  COMPOSE_SCRIPT=/home/JohnDoe/secure-files/WatchList/docker-compose.yml
- CONFIG_FILE=/home/JohnDoe/WatchList/config/default.json
- DB_FILE=/home/JohnDoe/WatchListDB/watchlistdb.sqlite
- 
+ #CONFIG_FILE=/home/JohnDoe/WatchList/config/default.json
+ DB_FILE=/home/JohnDoe/WatchListDB/database.json
  DOCKER_COMMANDS=( "docker stop WatchList WatchList_unsecured" "docker rm WatchList WatchList_unsecured" )
- 
+ ENV_FILE=/home/JohnDoe/.env
+
  # DO NOT CHANGE ANYTHING BELOW THIS LINE
  DESTINATION_DIR=/home/segi/WatchList
  ZIP_FILE=watchlist.zip
@@ -21,8 +21,8 @@
       exit 1
  fi   
  
- if [ ! -f $CONFIG_FILE ]; then
-      echo "${CONFIG_FILE} was not found!"
+ if [ ! -f $ENV_FILE ]; then
+      echo "${ENV_FILE} was not found!"
       exit 1
  fi
  
@@ -71,7 +71,7 @@
  
  cp "$COMPOSE_SCRIPT" .
  
- cp "$CONFIG_FILE" config/
+ cp "$ENV_FILE" .
  
  cp "$DB_FILE" .
 

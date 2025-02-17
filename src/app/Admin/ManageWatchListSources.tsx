@@ -1,9 +1,9 @@
-import axios, { AxiosResponse } from "axios";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
+import axios, { AxiosResponse } from "axios";
 
-import React, { useContext, useEffect, useState } from "react";
 import { useRouter } from 'next/navigation';
+import React, { useContext, useEffect, useState } from "react";
 import IWatchListSource from "../interfaces/IWatchListSource";
 
 import { DataContext, DataContextType } from "../data-context";
@@ -39,9 +39,9 @@ const ManageWatchListSources = () => {
      }
 
      const deleteSourceClickHandler = (id: number, name: string) => {
-          const confirmLeave = confirm(`Are you sure that you want to delete the WatchList Source ${name} ?`);
+          const confirmDelete = confirm(`Are you sure that you want to delete the WatchList Source ${name} ?`);
 
-          if (!confirmLeave) {
+          if (!confirmDelete) {
                return;
           }
 

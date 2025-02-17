@@ -2,12 +2,12 @@
 
 import axios, { AxiosResponse } from "axios";
 import Image from "next/image";
-import React, { useContext, useEffect, useState } from "react";
 import { useRouter } from 'next/navigation';
+import React, { useContext, useEffect, useState } from "react";
 import Recommendations from "../../components/Recommendations";
+import { DataContext, DataContextType } from "../../data-context";
 import IWatchListItem from "../../interfaces/IWatchListItem";
 import IWatchListType from "../../interfaces/IWatchListType";
-import { DataContext, DataContextType } from "../../data-context";
 
 export default function WatchListItemsDtl() {
      const {
@@ -435,7 +435,7 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
                                    <div className="narrow card">
                                         {!isAdding &&
                                              <>
-                                                  {typeof watchListItemDtl?.IMDB_Poster !== "undefined" && watchListItemDtl?.IMDB_Poster !== null && watchListItemDtl?.IMDB_Poster !== "" && watchListItemDtl?.IMDB_Poster_Error !== true && typeof watchListItemDtl?.WatchListItemName !== "undefined" && <Image alt={watchListItemDtl?.WatchListItemName} className="poster-detail" width="175" height="200" src={watchListItemDtl?.IMDB_Poster} onError={() => showDefaultSrc()} />}
+                                                  {typeof watchListItemDtl?.IMDB_Poster !== "undefined" && watchListItemDtl?.IMDB_Poster !== null && watchListItemDtl?.IMDB_Poster !== "" && watchListItemDtl?.IMDB_Poster_Error !== true && typeof watchListItemDtl?.WatchListItemName !== "undefined" && <Image alt={watchListItemDtl?.WatchListItemName} className="poster-detail" width="175" height="200" style={{position: "relative", top: "55px"}} src={watchListItemDtl?.IMDB_Poster} onError={() => showDefaultSrc()} />}
 
                                                   {(typeof watchListItemDtl?.IMDB_Poster === "undefined" || watchListItemDtl?.IMDB_Poster === null || watchListItemDtl?.IMDB_Poster === "" || watchListItemDtl?.IMDB_Poster_Error === true || typeof watchListItemDtl?.WatchListItemName === "undefined") && <>{BrokenImageIconComponent}</>}
                                              </>
@@ -624,9 +624,6 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
 
                     {recommendationsVisible && (
                          <>
-                              <span className={`clickable closeButton ${!darkMode ? " lightMode" : " darkMode"}`} onClick={closeDetail}>
-                                   X
-                              </span>
                               <Recommendations BrokenImageIcon={BrokenImageIconComponent} queryTerm={recommendationName} type={recommendationType} setRecommendationName={setRecommendationName} setRecommendationType={setRecommendationName} setRecommendationsVisible={setRecommendationsVisible} />
                          </>
                     )}

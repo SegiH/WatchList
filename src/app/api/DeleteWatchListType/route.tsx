@@ -1,17 +1,8 @@
-import { execSelect, execUpdateDelete,getUserSession, isUserAdmin } from "../lib";
+import { getDB, isUserAdmin, writeDB } from "../lib";
 import { NextRequest } from 'next/server';
-/**
- * @swagger
- * /api/DeleteWatchListType:
- *    put:
- *        tags:
- *          - WatchListTypes
- *        summary: Delete a WatchList Type as long as its in not in use
- *        description: Delete a WatchList Type as long as its in not in use
- *        responses:
- *          200:
- *            description: '["OK",""] on success, ["ERROR","error message"] on error'
- */
+import IWatchListType from "@/app/interfaces/IWatchListType";
+import IWatchListItem from "@/app/interfaces/IWatchListItem";
+
 export async function PUT(request: NextRequest) {
      // This needs to be here even though this endpoint doesn't take any parameters because without this,
      // when you do 'npm run build', Next.js will compile this route as a static route which causes a bug where
@@ -32,28 +23,38 @@ export async function PUT(request: NextRequest) {
      }
 
      try {
-          const validTypeIDValidationSQL = `SELECT COUNT(*) AS TypeCount FROM WatchListTypes WHERE WatchListTypeID=?`;
+          const db = getDB();
 
-          const validTypeIDValidationResults = await execSelect(validTypeIDValidationSQL, [watchListTypeID]);
+          const watchListItemsDB = db.WatchListItems;
+          const watchListTypesDB = db.WatchListTypes;
 
-          if (validTypeIDValidationResults[0].TypeCount === 0) {
+          const watchListTypeIdValidation = watchListTypesDB.filter((currentWatchListType: IWatchListType) => {
+               return String(currentWatchListType.WatchListTypeID) === String(watchListTypeID);
+          });
+
+          if (watchListTypeIdValidation.length === 0) {
                return Response.json(["ERROR", `The WatchList Type with ID ${watchListTypeID} is not a valid ID`]);
           }
 
-          const inUseValidationSQL = `SELECT COUNT(*) AS TypeCount FROM WatchListItems WHERE WatchListTypeID=?`;
+          const inUseValidationResults = watchListItemsDB.filter((currentWatchListItem: IWatchListItem) => {
+               return String(currentWatchListItem.WatchListTypeID) === String(watchListTypeID);
+          });
 
-          const inUseValidationResults = await execSelect(inUseValidationSQL, [watchListTypeID]);
-
-          if (inUseValidationResults[0].TypeCount !== 0) {
+          if (inUseValidationResults.length !== 0) {
                return Response.json(["ERROR", `The WatchList Type with ID ${watchListTypeID} is in use`]);
           }
 
-          const SQL = "DELETE FROM WatchListTypes WHERE WatchListTypeID=?";
+          const newWatchListTypes = watchListTypesDB.filter((currentWatchListType: IWatchListType) => {
+               return String(currentWatchListType.WatchListTypeID) !== String(watchListTypeID)
+          });
 
-          await execUpdateDelete(SQL, [parseInt(watchListTypeID, 10)]);
+          db.WatchListTypes = newWatchListTypes
+
+          writeDB(db);
 
           return Response.json(["OK"]);
      } catch (e) {
-          return Response.json(["ERROR", `The fatal error ${e.message} occurred deleting the WatchList Type with ID`]);
+          console.log(e.message);
+          return Response.json(["ERROR", e.message]);
      }
 }

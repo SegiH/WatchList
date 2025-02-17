@@ -1,25 +1,6 @@
 import { NextRequest } from 'next/server';
-import { execInsert, isLoggedIn } from "../lib";
+import { getDB, isLoggedIn, writeDB } from "../lib";
 
-/**
- * @swagger
- * /api/AddWatchListType:
- *    put:
- *        tags:
- *          - WatchListTypes
- *        summary: Add a WatchListItem Type
- *        description: Add a WatchListItem Type to indicate where a movie/show was watched at
- *        parameters:
- *           - name: WatchListTypeName
- *             in: query
- *             description: New WatchListType Name
- *             required: true
- *             schema:
- *                  type: string
- *        responses:
- *          200:
- *            description: '["OK",""] on success, ["ERROR","error message"] on error'
- */
 export async function PUT(request: NextRequest) {
      if (!isLoggedIn(request)) {
           return Response.json(["ERROR", "Error. Not signed in"]);
@@ -33,12 +14,23 @@ export async function PUT(request: NextRequest) {
           return Response.json(["ERROR", "WatchList WatchListType Name was not provided"]);
      }
 
-     const SQL = "INSERT INTO WatchListTypes(WatchListTypeName) VALUES(?);";
-     const params = [watchListTypeName];
+     try {
+          const db = getDB();
 
-     const result = await execInsert(SQL, params);
+          const watchListTypesDB = db.WatchListTypes;
 
-     const newID = result.lastID;
+          const highestWatchListTypeID = Math.max(...watchListTypesDB.map(o => o.WatchListTypeID));
 
-     return Response.json(["OK", newID]);
+          watchListTypesDB.push({
+               "WatchListTypeID": (highestWatchListTypeID !== null ? highestWatchListTypeID : 0) + 1,
+               "WatchListTypeName": watchListTypeName
+          });
+
+          writeDB(db);
+
+          return Response.json(["OK", watchListTypesDB.length]); // New ID
+     } catch (e) {
+          console.log(e.message);
+          return Response.json(["ERROR", e.message]);
+     }
 }

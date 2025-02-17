@@ -1,7 +1,7 @@
 "use client"
 
-import React, { useContext, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useContext, useEffect, useState } from "react";
 
 import SearchIMDB from "./components/SearchIMDB";
 import Settings from "./components/Settings";
@@ -15,7 +15,6 @@ import "./page.css";
 const SharedLayout = () => {
      const {
           activeRoute,
-          activeRouteDisplayName,
           AddIconComponent,
           darkMode,
           demoMode,

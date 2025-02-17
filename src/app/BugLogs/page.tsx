@@ -1,12 +1,12 @@
 "use client"
 
-import axios, { AxiosResponse } from "axios";
 import Button from "@mui/material/Button";
-import React, { useContext, useEffect, useState } from "react";
-import { useRouter } from 'next/navigation';
-import IBugLog from "../interfaces/IBugLog";
-import { DataContext, DataContextType } from "../data-context";
 import TextField from "@mui/material/TextField";
+import axios, { AxiosResponse } from "axios";
+import { useRouter } from 'next/navigation';
+import React, { useContext, useEffect, useState } from "react";
+import { DataContext, DataContextType } from "../data-context";
+import IBugLog from "../interfaces/IBugLog";
 
 import "../page.css";
 
@@ -75,9 +75,9 @@ export default function BugLog() {
      }
 
      const deleteBugLogHandler = (id: number) => {
-          const confirmLeave = confirm(`Are you sure that you want to delete the Bug Log ?`);
+          const confirmDelete = confirm(`Are you sure that you want to delete the Bug Log ?`);
 
-          if (!confirmLeave) {
+          if (!confirmDelete) {
                return;
           }
 
@@ -237,7 +237,6 @@ export default function BugLog() {
                                                   onClick={() => enterAddModeClickHandler()}>
                                                   Add Bug Log
                                              </Button>
-
 
                                              <span className="leftMargin40">
                                                   Show Active Bug Logs

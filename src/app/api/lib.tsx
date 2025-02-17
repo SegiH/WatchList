@@ -4,33 +4,17 @@ import { cookies } from 'next/headers';
 import * as CryptoJS from 'crypto-js';
 import { NextRequest } from 'next/server';
 import IUser from "../interfaces/IUser";
-import { open } from 'sqlite'
-import sqlite3 from "sqlite3";
+import ISectionChoice from "../interfaces/ISectionChoice";
+import IUserOption from "../interfaces/IUserOption";
+import path from "path";
 
-// Constants
-export const DBFile = "watchlistdb.sqlite";
-export const watchListSQL = "CREATE TABLE WatchList (WatchListID INTEGER PRIMARY KEY, UserID INTEGER NOT NULL, WatchListItemID INTEGER NOT NULL, StartDate VARCHAR(80), EndDate VARCHAR(80), WatchListSourceID INTEGER, Season INTEGER, Archived TINYINT(1), Notes VARCHAR(200), Rating DECIMAL(18,2));";
-export const watchListItemsSQL = "CREATE TABLE WatchListItems(WatchListItemID INTEGER PRIMARY KEY,WatchListItemName VARCHAR(500),WatchListTypeID INTEGER,IMDB_URL VARCHAR(200),IMDB_Poster VARCHAR(2000),ItemNotes VARCHAR(200),Archived TINYINT(1), IMDB_JSON TEXT NULL);";
-export const watchListSourcesSQL = "CREATE TABLE WatchListSources (WatchListSourceID INTEGER PRIMARY KEY, WatchListSourceName VARCHAR(80) NOT NULL);";
-export const watchListTypesSQL = "CREATE TABLE WatchListTypes (WatchListTypeID INTEGER PRIMARY KEY, WatchListTypeName VARCHAR(80) NOT NULL);";
-export const usersSQL = "CREATE TABLE Users (UserID INTEGER PRIMARY KEY, Username BLOB NOT NULL, Realname BLOB NOT NULL, Password BLOB NOT NULL, Admin BIT NULL DEFAULT 0, Enabled NULL DEFAULT 0, Token TEXT NULL, TokenExpiration INTEGER NULL);";
-export const bugLogsSQL = "CREATE TABLE BugLogs (BugLogId INTEGER PRIMARY KEY, BugName TEXT NOT NULL, AddDate TEXT NOT NULL,CompletedDate TEXT NULL, ResolutionNotes TEXT NULL);";
-export const optionsSQL = "CREATE TABLE Options (`OptionID` INTEGER PRIMARY KEY, UserID INT, ArchivedVisible TINYINT(1), AutoAdd TINYINT(1), DarkMode TINYINT(1), HideTabs TINYINT(1), SearchCount INT, StillWatching TINYINT(1), ShowMissingArtwork TINYINT(1), SourceFilter INT, TypeFilter INT, WatchListSortColumn VARCHAR(100), WatchListSortDirection VARCHAR(100), VisibleSections VARCHAR(1000));"
-export const visibleSectionsSQL = "CREATE TABLE VisibleSections (id INTEGER PRIMARY KEY, name VARCHAR(100));"
+const dbFile = "./database.json";
 
 export const defaultSources = ['Amazon', 'Hulu', 'Movie Theatre', 'Netflix', 'Plex', 'Prime', 'Web'];
 export const defaultTypes = ['Movie', 'Other', 'Special', 'TV'];
 
-const secretKey = String(process.env.SECRET);
-
-export const logMessage = async (message) => {
-     message = new Date().toISOString() + " " + message
-     fs.appendFile('app.log', message + '\n', (err) => {
-          if (err) {
-               console.error('Error appending to log file:', err);
-          }
-     });
-};
+const secretKey = typeof process.env.SECRET !== "undefined" ? String(process.env.SECRET) : "";
+const sessionDuration = 604800000;
 
 export const addUser = async (request: NextRequest, isNewInstance = false) => {
      const searchParams = request.nextUrl.searchParams;
@@ -38,7 +22,7 @@ export const addUser = async (request: NextRequest, isNewInstance = false) => {
      const userName = searchParams.get("wl_username");
      const realName = searchParams.get("wl_realname");
      const password = searchParams.get("wl_password");
-     const isAdmin = searchParams.get("wl_admin") !== "undefined" && (searchParams.get("wl_admin") === "true" || isNewInstance === true) ? 1 : 0;
+     const isAdmin = ((searchParams.get("wl_admin") !== "undefined" && (searchParams.get("wl_admin") === "true") || isNewInstance === true)) ? true : false;
 
      if (userName === null) {
           return Response.json(["User Name was not provided"]);
@@ -56,15 +40,33 @@ export const addUser = async (request: NextRequest, isNewInstance = false) => {
           }
      }
 
-     const SQL = "INSERT INTO Users(UserName, Realname, Password, Admin, Enabled) VALUES (?, ?, ?, ?, ?);";
+     try {
+          const db = getDB();
 
-     const params = [encrypt(String(userName)), encrypt(String(realName)), encrypt(String(password)), isAdmin, 1];
+          const usersDB = db.Users;
 
-     const result = await execInsert(SQL, params);
+          const highestWatchListID = usersDB !== null && usersDB.length > 0 ? Math.max(...usersDB.map(o => o.UserID)) : null;
 
-     const newID = result.lastID;
+          usersDB.push({
+               "UserID": (highestWatchListID !== null ? highestWatchListID : 0) + 1,
+               "Username": encrypt(String(userName)),
+               "Realname": encrypt(String(realName)),
+               "Password": encrypt(String(password)),
+               "Admin": isAdmin,
+               "Enabled": true
+          });
 
-     return Response.json(["OK", newID]);
+          if (isNewInstance) {
+               db.SetupComplete = true;
+          }
+
+          writeDB(db);
+
+          return Response.json(["OK", usersDB.length]);
+     } catch (e) {
+          console.log(e.message)
+          return Response.json(["ERROR", e.message]);
+     }
 }
 
 export const decrypt = (cipherText: string) => {
@@ -78,62 +80,22 @@ export const encrypt = (plainText: string) => {
      return cipherText
 }
 
-export const execInsert = async (sql: string, params: Array<string | number | null>) => {
-     const db = await openDB();
-
-     try {
-          const stmt = await db.prepare(sql);
-
-          return await stmt.run(params);
-     } catch (e) {
-          return e;
-     }
-}
-
-export const execSelect = async (sql: string, params: Array<string | number>) => {
-     const db = await openDB();
-
-     interface Row {
-          [key: string]: unknown;  // Use `unknown` if row structure is dynamic, or define more specific properties
-     }
-
-     try {
-          const stmt = await db.prepare(sql);
-
-          const results: Row[] = [];
-
-          await stmt.each(params, function (_err: unknown, row: Row) {
-               results.push(row);
-          });
-
-          stmt.finalize();
-
-          db.close();
-
-          return results;
-     } catch (e) {
-          return e;
-     }
-}
-
-export const execUpdateDelete = async (sql: string, params: Array<string | number>) => {
-     const db = await openDB();
-
-     try {
-          const stmt = await db.prepare(sql);
-
-          await stmt.run(params);
-     } catch (e) {
-          return e;
-     }
-}
-
 export const fetchData = async (options) => {
      try {
           const response = await axios(options);
           return response.data;
      } catch (error) {
           throw error;
+     }
+}
+
+export const getDB = () => {
+     try {
+          const filePath = path.join(process.cwd(), dbFile);
+          const data = fs.readFileSync(filePath, 'utf8');
+          return JSON.parse(data);
+     } catch (e) {
+          return {};
      }
 }
 
@@ -180,22 +142,60 @@ export const getUserID = async (req: NextRequest) => {
 
 export const getUserOptions = async (userID: number, isAdmin: boolean) => {
      // Get Users' options
-     const getOptionsSQL = `SELECT * FROM Options WHERE UserID=?`;
-     const params = [userID];
+     try {
+          const db = getDB();
 
-     // There may be no options the first time ever getting the options
-     let userOptions = await execSelect(getOptionsSQL, params);
+          const optionsDB = db.Options;
 
-     if (userOptions.length === 0) {
-          const visibleSectionsChoicesResult = await execSelect(`SELECT * FROM VisibleSections ${isAdmin === false ? " WHERE name != 'Admin'" : ""}`, []);
-          const visibleSectionsChoices = JSON.stringify(visibleSectionsChoicesResult);
+          const existingWatchListItemResult = optionsDB.filter((option: IUserOption) => {
+               return option.UserID === userID;
+          });
 
-          await execInsert("INSERT INTO Options (UserID, ArchivedVisible, AutoAdd, DarkMode, HideTabs, SearchCount, StillWatching, ShowMissingArtwork, SourceFilter, TypeFilter, WatchListSortColumn, WatchListSortDirection, VisibleSections) VALUES (" + userID + ", false, true, true, false, 5, true, false, -1, -1,\"Name\", \"ASC\",'" + visibleSectionsChoices + "');", []);
+          if (existingWatchListItemResult.length !== 1) {
+               if (existingWatchListItemResult.length !== 0) {// Should never happen. Means theres more than 1 result
+                    console.log("Fatal error! more than 1 option for this user id");
+                    return Response.json(["ERROR", "Fatal error! more than 1 option for this user id"]);
+               }
+
+               const visibleSectionsDB = db.VisibleSections;
+
+               const filteredVisibleSections = visibleSectionsDB.filter((visibleSection: ISectionChoice) => {
+                    return (visibleSection.name !== "Admin");
+               });
+
+               const filteredVisibleSectionsJSON = JSON.stringify(filteredVisibleSections);
+
+               const highestOptionID = Math.max(...optionsDB.map(o => o.OptionID));
+
+               const newOptions = {
+                    "OptionID": highestOptionID + 1,
+                    "UserID": userID,
+                    "ArchivedVisible": 0,
+                    "AutoAdd": 1,
+                    "DarkMode": 1,
+                    "HideTabs": 0,
+                    "SearchCount": 5,
+                    "StillWatching": 0,
+                    "ShowMissingArtwork": 0,
+                    "SourceFilter": -1,
+                    "TypeFilter": -1,
+                    "WatchListSortColumn": "Name",
+                    "WatchListSortDirection": "ASC",
+                    "VisibleSections": filteredVisibleSectionsJSON
+               };
+
+               optionsDB.push(newOptions);
+
+               writeDB(db);
+
+               return newOptions;
+          } else {
+               return existingWatchListItemResult[0];
+          }
+     } catch (e) {
+          console.log(e)
+          return null;
      }
-
-     userOptions = await execSelect(getOptionsSQL, params);
-
-     return userOptions;
 }
 
 export const getUserSession = async (req: NextRequest) => {
@@ -223,24 +223,18 @@ export const isLoggedIn = async (req: NextRequest) => {
 export const isUserAdmin = async (req: NextRequest) => {
      const userSession = await getUserSession(req);
 
-     if (typeof userSession === "undefined" || (typeof userSession !== "undefined" && userSession.Admin === 0)) {
+     if (typeof userSession === "undefined" || (typeof userSession !== "undefined" && userSession.Admin !== true)) {
           return false;
-     } else if (userSession.Admin === true) {
-          return true;
      } else {
-          return false;
+          return true;
      }
 }
 
 export const login = async (username: string, password: string) => {
      try {
-          const SQL = "SELECT UserID,Username,Password,Realname,Admin FROM Users WHERE Enabled=1";
+          const db = getDB();
 
-          const results = await execSelect(SQL, []);
-
-          if (results.length === 0) {
-               return Response.json(["ERROR", "Invalid username or password"]);
-          }
+          const results = db.Users;
 
           // Since the encryption is done in the API, we have to get the username and password and decrypt it in this endpoint
           const currentUser = results.filter((currentUser: IUser) => {
@@ -258,19 +252,28 @@ export const login = async (username: string, password: string) => {
      }
 }
 
+export const logMessage = async (message) => {
+     message = new Date().toISOString() + " " + message
+     fs.appendFile('app.log', message + '\n', (err) => {
+          if (err) {
+               console.error('Error appending to log file:', err);
+          }
+     });
+};
+
 export const loginSuccessfullActions = async (currentUser: IUser) => {
      try {
-          const userOptions = await getUserOptions(currentUser[0].UserID, currentUser[0].Admin === 1 ? true : false);
+          const userOptions = await getUserOptions(currentUser[0].UserID, currentUser[0].Admin);
 
           const userData = {
                UserID: currentUser[0].UserID,
                Username: decrypt(currentUser[0].Username),
                Realname: decrypt(currentUser[0].Realname),
-               Admin: currentUser[0].Admin === 1 ? true : false,
+               Admin: currentUser[0].Admin,
                Options: userOptions
           }
 
-          const expires = new Date(Date.now() + 3600000);
+          const expires = new Date(Date.now() + sessionDuration);
 
           const currentCookies = await cookies();
 
@@ -282,13 +285,6 @@ export const loginSuccessfullActions = async (currentUser: IUser) => {
      }
 }
 
-const openDB = async () => {
-     return await open({
-          filename: DBFile,
-          driver: sqlite3.Database,
-     });
-}
-
 export const validateSettings = async () => {
      // Validate .env properties that are required
      if (process.env.SECRET === null || process.env.SECRET === "") {
@@ -296,4 +292,8 @@ export const validateSettings = async () => {
      }
 
      return "";
+}
+
+export const writeDB = async (newDB) => {
+     fs.writeFileSync(dbFile, JSON.stringify(newDB));
 }

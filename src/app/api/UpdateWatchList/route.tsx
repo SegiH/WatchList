@@ -1,73 +1,7 @@
 import { NextRequest } from 'next/server';
-import { execUpdateDelete, isLoggedIn } from "../lib";
+import { getDB, isLoggedIn, writeDB } from "../lib";
+import IWatchList from '@/app/interfaces/IWatchList';
 
-/**
- * @swagger
- * /api/UpdateWatchList:
- *    put:
- *        tags:
- *          - WatchList
- *        summary: Update a WatchList record
- *        description: Update a WatchList record
- *        parameters:
- *           - name: WatchListID
- *             in: query
- *             description: WatchList ID to update
- *             required: true
- *             schema:
- *                  type: number
- *           - name: WatchListItemID
- *             in: query
- *             description: WatchList Item ID to update
- *             required: false
- *             schema:
- *                  type: number
- *           - name: StartDate
- *             in: query
- *             description: Start date that the movie/show was watched
- *             required: false
- *             schema:
- *                  type: string
- *           - name: EndDate
- *             in: query
- *             description: End date that the movie/show was watched
- *             required: false
- *             schema:
- *                  type: string
- *           - name: WatchListSourceID
- *             in: query
- *             description: Source ID of the movie/show where it was watched
- *             required: false
- *             schema:
- *                  type: number
- *           - name: Season
- *             in: query
- *             description: Season of the show
- *             required: false
- *             schema:
- *                  type: number
- *           - name: Rating
- *             in: query
- *             description: Rating of the movie/show
- *             required: false
- *             schema:
- *                  type: number
- *           - name: Notes
- *             in: query
- *             description: Notes for the movie/show
- *             required: false
- *             schema:
- *                  type: string
- *           - name: Archived
- *             in: query
- *             description: Archived status
- *             required: false
- *             schema:
- *                  type: number
- *        responses:
- *          200:
- *            description: '["OK",""] on success, ["ERROR","error message"] on error'
- */
 export async function PUT(request: NextRequest) {
      if (!isLoggedIn(request)) {
           return Response.json(["ERROR", "Error. Not signed in"]);
@@ -89,62 +23,58 @@ export async function PUT(request: NextRequest) {
           return Response.json(["ERROR", "WatchList ID was not provided"]);
      }
 
-     let columns = "";
-     const values: (string | number)[] = [];
-
-     if (watchListItemID !== null) {
-          columns += (columns !== "" ? "," : "") + "WatchListItemID=?";
-          values.push(watchListItemID);
-     }
-
-     if (startDate !== null) {
-          columns += (columns !== "" ? "," : "") + "StartDate=?";
-          values.push(startDate);
-     }
-
-     if (endDate !== null) {
-          columns += (columns !== "" ? "," : "") + "EndDate=?";
-          values.push(endDate);
-     }
-
-     if (sourceID !== null) {
-          columns += (columns !== "" ? "," : "") + "WatchListSourceID=?";
-          values.push(sourceID);
-     }
-
-     if (season !== null) {
-          columns += (columns !== "" ? "," : "") + "Season=?";
-          values.push(season);
-     }
-
-     if (archived !== null) {
-          columns += (columns !== "" ? "," : "") + "Archived=?";
-          values.push((archived === "true" ? 1 : 0));
-     }
-
-     if (rating !== null) {
-          columns += (columns !== "" ? "," : "") + "Rating=?";
-          values.push(rating);
-     }
-
-     if (notes !== null) {
-          columns += (columns !== "" ? "," : "") + "Notes=?";
-          values.push(notes);
-     }
-
-     if (values.length === 0) {
-          return Response.json(["ERROR", `No parameters were passed`]);
-     }
-
-     values.push(watchListID);
-
      try {
-          const sql = `UPDATE WatchList SET ${columns} WHERE WatchListID=?`;
+          const db = getDB();
 
-          await execUpdateDelete(sql, values);
+          const watchListDB = db.WatchList
+
+          const watchListResult = watchListDB.filter((watchList: IWatchList) => {
+               return String(watchList.WatchListID) === String(watchListID)
+          });
+
+          if (watchListResult.length !== 1) {
+               return Response.json(["ERROR", "Unable to get the existing Watchlist"]);
+          }
+
+          const watchList = watchListResult[0];
+
+          if (watchListItemID !== null) {
+               watchList.WatchListItemID = watchListItemID;
+          }
+
+          if (startDate !== null) {
+               watchList.StartDate = startDate;
+          }
+
+          if (endDate !== null) {
+               watchList.EndDate = endDate;
+          }
+
+          if (sourceID !== null) {
+               watchList.WatchListSourceID = sourceID;
+          }
+
+          if (season !== null) {
+               watchList.Season = season;
+          }
+
+          if (archived !== null) {
+               watchList.Archived = archived;
+          }
+
+          if (rating !== null) {
+               watchList.Rating = rating;
+          }
+
+          if (notes !== null) {
+               watchList.Notes = notes;
+          }
+
+          writeDB(db);
 
           return Response.json(["OK"]);
      } catch (e) {
-          return Response.json(["ERROR", `The error occurred updating the WatchList with ID ${watchListID} with the error ${e.message}`]);
+          console.log(e.message)
+          return Response.json(["ERROR", e.message]);
      }
 }

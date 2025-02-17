@@ -1,11 +1,11 @@
 "use client"
 
 import axios, { AxiosResponse } from "axios";
-import React, { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
+import React, { useCallback, useContext, useEffect, useRef, useState } from "react";
+import { DataContext, DataContextType } from "../data-context";
 import IUser from "../interfaces/IUser";
 import IUserData from "../interfaces/IUserData";
-import { DataContext, DataContextType } from "../data-context";
 
 import "./Login.css";
 
@@ -131,7 +131,7 @@ export default function Login() {
                setUserData(newUserData);
 
                if (typeof response.Options !== "undefined" && response.Options.length === 1) {
-                    setOptions(response.Options[0]);
+                    setOptions(response.Options[0], false);
                }
 
                setIsLoggedIn(true);

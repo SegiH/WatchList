@@ -6,8 +6,8 @@ import ISearchImdb from "../interfaces/ISearchImdb";
 import IWatchList from "../interfaces/IWatchList";
 import IWatchListItem from "../interfaces/IWatchListItem";
 
-import React, { useContext, useState } from "react";
 import { useRouter } from 'next/navigation';
+import React, { useContext, useState } from "react";
 
 import { DataContext, DataContextType } from "../data-context";
 

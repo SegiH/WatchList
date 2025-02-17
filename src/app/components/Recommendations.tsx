@@ -1,8 +1,8 @@
 import axios, { AxiosResponse } from "axios";
-import React, { useContext, useEffect, useState } from "react";
-import exact from "prop-types-exact";
 import Image from 'next/image';
 import PropTypes from 'prop-types';
+import exact from "prop-types-exact";
+import { useContext, useEffect, useState } from "react";
 import { DataContext, DataContextType } from "../data-context";
 import IRecommendation from "../interfaces/IRecommendation";
 

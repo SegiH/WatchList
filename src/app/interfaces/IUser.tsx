@@ -1,19 +1,4 @@
-export interface IUserOption {
-     OptionID: number,
-     UserID: number,
-     ArchivedVisible: number,
-     AutoAdd: number,
-     DarkMode: number,
-     HideTabs: number,
-     SearchCount: number,
-     StillWatching: number,
-     ShowMissingArtwork: number,
-     SourceFilter: number,
-     TypeFilter: number,
-     WatchListSortColumn: string,
-     WatchListSortDirection: string,
-     VisibleSections: string
-}
+import IUserOption from "./IUserOption";
 
 export default interface IUser {
      UserID: number,

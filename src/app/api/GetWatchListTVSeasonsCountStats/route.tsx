@@ -1,18 +1,9 @@
 import { NextRequest } from 'next/server';
-import { execSelect, getUserID } from "../lib";
+import { getDB, getUserID } from "../lib";
+import IWatchListType from '@/app/interfaces/IWatchListType';
+import IWatchList from '@/app/interfaces/IWatchList';
+import IWatchListItem from '@/app/interfaces/IWatchListItem';
 
-/**
- * @swagger
- * /api/GetWatchListTVSeasonsCountStats:
- *    get:
- *        tags:
- *          - WatchList
- *        summary: Get count of how many TV seasons the current user watched
- *        description: Get count of how many TV seasons the current user watched
- *        responses:
- *          200:
- *            description: '["OK",""] on success, ["ERROR","error message"] on error'
- */
 export async function GET(request: NextRequest) {
      const userID = await getUserID(request);
 
@@ -20,13 +11,31 @@ export async function GET(request: NextRequest) {
           return Response.json(["ERROR", "User ID is not set"]);
      }
 
-     const SQL = `SELECT COUNT(*) AS TVSeasonsCount FROM WatchList WL LEFT JOIN WatchListItems WLI ON WLI.WatchlistItemID=WL.WatchlistItemID LEFT JOIN WatchListTypes WLT ON WLT.WatchListTypeID=WLI.WatchListTypeID WHERE UserID=? AND WLT.WatchListTypeName='TV';`;
+     const db = getDB();
 
-     try {
-          const results = await execSelect(SQL, [userID]);
+     const watchListDB = db.WatchList;
+     const watchListItemsDB = db.WatchListItems;
+     const watchListTypesDB = db.WatchListTypes;
 
-          return Response.json(["OK", results]);
-     } catch (e) {
-          return Response.json(["ERROR", `The error ${e.message} occurred getting the WatchList TV seasons count Stats`]);
+     const tvTypeIDResult = watchListTypesDB.filter((watchListType: IWatchListType) => {
+          return watchListType.WatchListTypeName === "TV";
+     });
+
+     if (tvTypeIDResult.length !== 1) {
+          return Response.json(["ERROR", `Unable to get ID for tv type movie`]);
      }
+
+     const tvTypeID = tvTypeIDResult[0].WatchListTypeID;
+
+     const filteredWatchList = watchListDB.filter((watchList: IWatchList) => {
+          return (watchList.UserID === userID);
+     });
+
+     const allTvWatchList = filteredWatchList.filter((watchList: IWatchList) => {
+          return watchListItemsDB.filter((watchListItem: IWatchListItem) => {
+               return (watchListItem.WatchListItemID === watchList.WatchListItemID && String(watchListItem.WatchListTypeID) === String(tvTypeID));
+          }).length == 1;
+     });
+
+     return Response.json(["OK", [{ "TVSeasonsCount": allTvWatchList.length }]]);
 }

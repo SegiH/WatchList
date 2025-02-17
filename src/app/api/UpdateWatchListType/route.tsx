@@ -1,31 +1,7 @@
 import { NextRequest } from 'next/server';
-import { execUpdateDelete, isLoggedIn } from "../lib";
+import { getDB, isLoggedIn, writeDB } from "../lib";
+import IWatchListType from '@/app/interfaces/IWatchListType';
 
-/**
- * @swagger
- * /api/UpdateWatchListType:
- *    put:
- *        tags:
- *          - WatchListTypes
- *        summary: Update a WatchListItem Type
- *        description: Update a WatchListItem Type
- *        parameters:
- *           - name: WatchListTypeID
- *             in: query
- *             description: New WatchListType ID
- *             required: true
- *             schema:
- *                  type: string
- *           - name: WatchListTypeName
- *             in: query
- *             description: New WatchListType Name
- *             required: true
- *             schema:
- *                  type: string
- *        responses:
- *          200:
- *            description: '["OK",""] on success, ["ERROR","error message"] on error'
- */
 export async function PUT(request: NextRequest) {
      if (!isLoggedIn(request)) {
           return Response.json(["ERROR", "Error. Not signed in"]);
@@ -42,15 +18,28 @@ export async function PUT(request: NextRequest) {
           return Response.json(["ERROR", "WatchList Type Name was not provided"]);
      }
 
-     const values: [string, string] = [watchListTypeName, watchListTypeID];
-
      try {
-          const sql = `UPDATE WatchListTypes SET WatchListTypeName=? WHERE WatchListTypeID=?`;
+          const db = getDB();
 
-          await execUpdateDelete(sql, values);
+          const watchListTypesDB = db.WatchListTypes;
+
+          const watchListTypeResult = watchListTypesDB.filter((watchListType: IWatchListType) => {
+               return String(watchListType.WatchListTypeID) === String(watchListTypeID)
+          });
+
+          if (watchListTypeResult.length !== 1) {
+               return Response.json(["ERROR", "Unable to get the existing Watchlist Type"]);
+          }
+
+          const watchListType = watchListTypeResult[0];
+
+          watchListType.WatchListTypeName = watchListTypeName;
+
+          writeDB(db);
 
           return Response.json(["OK"]);
      } catch (e) {
-          return Response.json(["ERROR", `The error occurred updating the WatchList Type with ID ${watchListTypeID} with the error ${e.message}`]);
+          console.log(e.message)
+          return Response.json(["ERROR", e.message]);
      }
 }

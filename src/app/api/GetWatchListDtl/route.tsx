@@ -1,25 +1,10 @@
 import { NextRequest } from 'next/server';
-import { execSelect, isLoggedIn } from "../lib";
+import { getDB, isLoggedIn } from "../lib";
+import IWatchList from '@/app/interfaces/IWatchList';
+import IWatchListItem from '@/app/interfaces/IWatchListItem';
+import IWatchListSource from '@/app/interfaces/IWatchListSource';
+import IWatchListType from '@/app/interfaces/IWatchListType';
 
-/**
- * @swagger
- * /api/GetWatchListDtl:
- *    get:
- *        tags:
- *          - WatchList
- *        summary: Get WatchList record based on the provided WatchListID
- *        description: Get WatchList record based on the provided WatchListID
- *        parameters:
- *           - name: WatchListID
- *             in: query
- *             description: WatchList ID of the record to return
- *             required: true
- *             schema:
- *                  type: number
- *        responses:
- *          200:
- *            description: '["OK",""] on success, ["ERROR","error message"] on error'
- */
 export async function GET(request: NextRequest) {
      if (!isLoggedIn(request)) {
           return Response.json(["ERROR", "Error. Not signed in"]);
@@ -32,19 +17,59 @@ export async function GET(request: NextRequest) {
      if (watchListID === null) {
           return Response.json(["ERROR", "WatchList ID was not provided"]);
      }
-     
-     const SQL = `SELECT WatchList.*,WatchListItems.WatchListItemName,WatchListItems.WatchListTypeID,IMDB_URL, IMDB_Poster, IMDB_JSON, ItemNotes, WatchListSourceName, WatchListTypeName FROM WatchList
-                LEFT JOIN WatchListItems ON WatchListItems.WatchListItemID=WatchList.WatchListItemID
-                LEFT JOIN WatchListSources ON WatchListSources.WatchListSourceID=WatchList.WatchListSourceID
-                LEFT JOIN WatchListTypes ON WatchListTypes.WatchListTypeID=WatchListItems.WatchListTypeID
-                WHERE WatchListID=?
-                `;
-                
-     try {
-          const results = await execSelect(SQL, [watchListID]);
 
-          return Response.json(["OK", results]);
+     try {
+          const db = getDB();
+
+          const watchListDB = db.WatchList
+          const watchListItems = db.WatchListItems;
+          const watchListSourcesDB = db.WatchListSources;
+          const watchListTypesDB = db.WatchListTypes;
+
+          const filteredWatchList = watchListDB.filter((watchList: IWatchList) => {
+               return (String(watchList.WatchListID) === String(watchListID));
+          });
+
+          filteredWatchList.map((watchList) => {
+               const watchListItem = watchListItems.filter((watchListItem: IWatchListItem) => {
+                    return (String(watchListItem.WatchListItemID) === String(watchList.WatchListItemID));
+               });
+
+               /*if (watchListItem.length !== 1) { // This shouldn't ever happen
+                    return Response.json(["ERROR", `Unable to get WatchListItem ${watchListItem.WatchListTypeID} for WatchListID ${watchList.WatchListID}`]);
+               }*/
+
+               const watchListSource = watchListSourcesDB.filter((watchListSource: IWatchListSource) => {
+                    return (String(watchListSource.WatchListSourceID) === String(watchList.WatchListSourceID));
+               });
+
+               /*if (watchListSource.length !== 1) { // This shouldn't ever happen
+                    return Response.json(["ERROR", `Unable to get WatchListSource ${watchList.WatchListSourceID} for WatchListID ${watchList.WatchListID}`]);
+               }*/
+
+               const watchListType = watchListTypesDB.filter((watchListType: IWatchListType) => {
+                    return (String(watchListType.WatchListTypeID) === String(watchListItem[0].WatchListTypeID));
+               });
+
+               /*if (watchListType.length !== 1) { // This shouldn't ever happen
+                    return Response.json(["ERROR", `Unable to get WatchListType ${watchListItem[0].WatchListTypeID} for WatchListID ${watchList.WatchListID}`]);
+               }*/
+
+               watchList.WatchListItemID = watchListItem.length > 0 ? parseInt(watchList.WatchListItemID, 10) : "";
+               watchList.WatchListItemName = watchListItem.length > 0 ? watchListItem[0].WatchListItemName : "";
+               watchList.WatchListTypeID = watchListItem.length > 0 ? watchListItem[0].WatchListTypeID : "";
+               watchList.WatchListTypeName = watchListType.length > 0 ? watchListType[0].WatchListTypeName : "";
+               watchList.IMDB_URL = watchListItem.length > 0 ? watchListItem[0].IMDB_URL : "";
+               watchList.IMDB_Poster = watchListItem.length > 0 ? watchListItem[0].IMDB_Poster : "";
+               watchList.ItemNotes = watchListItem.length > 0 ? watchListItem[0].ItemNotes : "";
+               watchList.IMDBArchived = watchListItem.length > 0 ? watchListItem[0].Archived : "";
+               watchList.IMDB_JSON = watchListItem.length > 0 ? watchListItem[0].IMDB_JSON : "";
+               watchList.WatchListSourceName = watchListItem.length > 0 ? watchListSource[0]?.WatchListSourceName : "";
+          });
+
+          return Response.json(["OK", filteredWatchList]);
      } catch (e) {
-          return Response.json(["ERROR", `The error ${e.message} occurred getting the WatchList Detail`]);
+          console.log(e.message);
+          return Response.json(["ERROR", e.message]);
      }
 }

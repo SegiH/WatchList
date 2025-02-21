@@ -323,6 +323,10 @@ const DataProvider = ({ children }) => {
      }, [isLoggedIn, isLoggedInCheckComplete]);
 
      const isLoggedInApi = (noReroute: boolean = false) => {
+          if (isError) {
+               return;
+          }
+
           let params = '';
 
           axios.get(`/api/IsLoggedIn${params}`)
@@ -363,7 +367,15 @@ const DataProvider = ({ children }) => {
                               router.push("/Setup");
                               return;
                          } else if (res.data[1] !== "") {
-                              alert(res.data[1]);
+                              if (typeof res.data[2] !== "undefined" && res.data[2] === true) {
+                                   setErrorMessage(res.data[1]);
+
+                                   setIsError(true);
+
+                                   return;
+                              } else {
+                                   alert(res.data[1]);
+                              }
                          }
 
                          setIsLoggedIn(false);
@@ -565,7 +577,9 @@ const DataProvider = ({ children }) => {
                     return;
                }
 
-               isLoggedInApi();
+               if (!isError) {
+                    isLoggedInApi();
+               }
           } else if (isLoggedIn) {
                setIsLoggedInCheckComplete(true);
           } else {
@@ -739,16 +753,16 @@ const DataProvider = ({ children }) => {
                return;
           }
 
+          if (isError) {
+               router.push("404");
+               return;
+          }
+
           if (!isLoggedInCheckComplete) { // Tabs should never be rendered if the logged in check is not complete
                return;
           }
 
           if (!isLoggedIn && activeRoute !== "Login" && activeRoute !== "Setup") { // Tabs should never be rendered if the user is not logged in
-               return;
-          }
-
-          if (isError) {
-               router.push("/404");
                return;
           }
 
@@ -872,7 +886,7 @@ const DataProvider = ({ children }) => {
 
      useEffect(() => {
           const handleVisibilityChange = () => {
-               if (!document.hidden) {
+               if (!document.hidden && !isError) {
                     isLoggedInApi(true);
                }
           };
@@ -964,7 +978,7 @@ const DataProvider = ({ children }) => {
           } else {
                return "";
           }
-     }, [routeList]);
+     }, [isError, routeList]);
 
      const dataContextProps = {
           activeRoute: activeRoute,

@@ -8,7 +8,7 @@ export async function GET(request: NextRequest) {
      const validationResult = await validateSettings();
 
      if (validationResult !== "") {
-          return Response.json(["ERROR", validationResult]);
+          return Response.json(["ERROR", validationResult, true]); // Extra flag to indicate fatal error
      }
 
      try {

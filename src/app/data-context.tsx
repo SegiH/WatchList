@@ -216,7 +216,7 @@ const DataProvider = ({ children }) => {
      const [sourceFilter, setSourceFilter] = useState(-1);
      const [typeFilter, setTypeFilter] = useState(-1);
      const [users, setUsers] = useState<IUser[]>([]);
-     const [userData, setUserData] = useState({ UserID: 0, Username: "", RealName: "", Admin: false }); // cannot use iUserEmpty() here
+     const [userData, setUserData] = useState({ UserID: 0, Username: "", RealName: "", Admin: 0 }); // cannot use iUserEmpty() here
      const [watchList, setWatchList] = useState<IWatchList[]>([]);
      const [watchListLoadingStarted, setWatchListLoadingStarted] = useState(false);
      const [watchListLoadingComplete, setWatchListLoadingComplete] = useState(false);
@@ -311,7 +311,7 @@ const DataProvider = ({ children }) => {
      };
 
      const isAdmin = () => {
-          return userData.Admin;
+          return userData.Admin === 1 ? true : false;
      }
 
      const isLoggedInCheck = useCallback(() => {

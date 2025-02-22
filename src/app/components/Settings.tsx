@@ -14,6 +14,7 @@ const Settings = () => {
           defaultRoute,
           getDisplayName,
           hideTabs,
+          isAdmin,
           isLoggedIn,
           LogOutIconComponent,
           pullToRefreshEnabled,
@@ -50,6 +51,17 @@ const Settings = () => {
 
                router.push("/" + defaultRoute);
           }
+
+          const options = {
+               "ArchivedVisible": archivedVisible === true ? 1 : 0,
+               "AutoAdd": autoAdd === true ? 1 : 0,
+               "DarkMode": darkMode === true ? 1 : 0,
+               "HideTabs": hideTabs === true ? 1 : 0,
+               "ShowMissingArtwork": showMissingArtwork === true ? 1 : 0,
+               "VisibleSections": JSON.stringify(newList)
+          }
+
+          setOptions(options, true);
      }
 
      const closeDetail = async () => {
@@ -74,7 +86,18 @@ const Settings = () => {
           setFormattedBuildDate(buildDate);
      }, []);
 
-     const filteredVisibleSectionChoices = visibleSectionChoices?.filter((section) => routeList[section["name"]].Enabled === true);
+     const filteredVisibleSectionChoices = visibleSectionChoices?.filter(
+          (section) => {
+               return routeList[section["name"]].Enabled === true &&
+               (isAdmin() || (!isAdmin() && routeList[section["name"]].Name !== "Admin" && routeList[section["name"]].Name !== "BugLogs"))
+          }
+     );
+
+     const filteredVisibleSections = visibleSections?.filter(
+          (section) => {
+               return (isAdmin() || (!isAdmin() && section["name"] !== "Admin" && section["name"] !== "BugLogs"))
+          }
+     );
 
      return (
           <div className="modal">
@@ -94,7 +117,7 @@ const Settings = () => {
                                    <Multiselect
                                         className={`${!darkMode ? " lightMode" : " darkMode"}`}
                                         options={filteredVisibleSectionChoices}
-                                        selectedValues={visibleSections}
+                                        selectedValues={filteredVisibleSections}
                                         onSelect={(newList) => addRemoveVisibleSectionChange(newList)}
                                         onRemove={(newList) => addRemoveVisibleSectionChange(newList)}
                                         displayValue="name"

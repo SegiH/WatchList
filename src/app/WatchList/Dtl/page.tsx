@@ -202,30 +202,51 @@ export default function WatchListDetail() {
           if (isAdding) {
                if (addWatchListDtl === null) {
                     return EmptyIconComponent;
-               } else {
-                    const newRating = (
-                         <>
-                              {Array.from({ length: addWatchListDtl?.Rating }).map((_, index) => (
-                                   <FullIcon key={index} />
-                              ))}
-
-                              {addWatchListDtl?.Rating.toString().indexOf(".5") !== -1 &&
-                                   <HalfIcon />
-                              }
-
-                              {Array.from(Array(ratingMax - addWatchListDtl?.Rating - (addWatchListDtl?.Rating.toString().indexOf(".5") !== -1 ? 0.5 : 0)), (e, index) => {
-                                   return (
-                                        <EmptyIcon key={index} />
-                                   );
-                              })}
-                         </>
-                    );
-
-                    return newRating;
                }
+
+               if (typeof addWatchListDtl?.Rating === "undefined" || addWatchListDtl?.Rating == null) {
+                    addWatchListDtl.Rating = 0;
+               }
+
+               let arrayLength = ratingMax - addWatchListDtl?.Rating;
+
+               if (arrayLength.toString().indexOf(".5") !== -1) {
+                    arrayLength -= 0.5;
+               }
+
+               const newRating = (
+                    <>
+                         {Array.from({ length: addWatchListDtl?.Rating }).map((_, index) => (
+                              <FullIcon key={index} />
+                         ))}
+
+                         {addWatchListDtl?.Rating.toString().indexOf(".5") !== -1 &&
+                              <HalfIcon />
+                         }
+
+                         {Array.from(Array(arrayLength >= 0 ? arrayLength : 0), (e, index) => {
+                              return (
+                                   <EmptyIcon key={index} />
+                              );
+                         })}
+                    </>
+               );
+
+               return newRating;
+
           } else {
                if (watchListDtl === null) {
                     return EmptyIconComponent;
+               }
+
+               if (typeof watchListDtl?.Rating === "undefined" || watchListDtl?.Rating == null) {
+                    watchListDtl.Rating = 0;
+               }
+
+               let arrayLength = ratingMax - watchListDtl?.Rating;
+
+               if (arrayLength.toString().indexOf(".5") !== -1) {
+                    arrayLength -= 0.5;
                }
 
                const newRating = (
@@ -240,7 +261,7 @@ export default function WatchListDetail() {
                                         <HalfIcon />
                                    }
 
-                                   {watchListDtl && Array.from(Array(ratingMax - watchListDtl?.Rating - (watchListDtl?.Rating.toString().indexOf(".5") !== -1 ? 0.5 : 0)), (e, index) => {
+                                   {watchListDtl && Array.from(Array(!isNaN(arrayLength) && arrayLength >= 0 ? arrayLength : 0), (e, index) => {
                                         return (
                                              <EmptyIcon key={index} />
                                         );
@@ -487,7 +508,7 @@ export default function WatchListDetail() {
           if (fieldName === "Archived") {
                newWatchListDtl[fieldName] = fieldValue === true ? 1 : 0;
           } else if (fieldName === "Rating") {
-               newWatchListDtl[fieldName] = fieldValue as number;
+               newWatchListDtl[fieldName] = parseFloat(fieldValue as string);
           } else {
                newWatchListDtl[fieldName] = fieldValue;
           }
@@ -751,7 +772,7 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
                                    </div>
 
                                    <div className="narrow card rightAligned">
-                                        {!isAdding &&
+                                        {!isAdding && !isEditing &&
                                              <div>ID: {watchListDtl?.WatchListID}</div>
                                         }
 

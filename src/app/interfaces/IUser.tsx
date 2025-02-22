@@ -5,8 +5,8 @@ export default interface IUser {
      Username: string,
      Realname: string,
      Password: string,
-     Admin: boolean,
-     Enabled: boolean,
+     Admin: number,
+     Enabled: number,
      IsModified?: boolean,
      Options: IUserOption[]
 }

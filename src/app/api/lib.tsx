@@ -238,7 +238,7 @@ export const login = async (username: string, password: string) => {
 
           // Since the encryption is done in the API, we have to get the username and password and decrypt it in this endpoint
           const currentUser = results.filter((currentUser: IUser) => {
-               return username === decrypt(currentUser.Username) && password === decrypt(currentUser.Password)
+               return username === decrypt(currentUser.Username) && password === decrypt(currentUser.Password) && currentUser.Enabled === 1
           });
 
           if (currentUser.length !== 1) {

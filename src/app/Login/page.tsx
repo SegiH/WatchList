@@ -106,7 +106,7 @@ export default function Login() {
      };
 
      const loginSuccessfullActions = useCallback(async (response: IUser) => {
-          const newUserData: IUserData = { UserID: 0, Username: "", Admin: false };
+          const newUserData: IUserData = { UserID: 0, Username: "", Admin: 0 };
 
           try {
                if (typeof response.UserID !== "undefined") {
@@ -121,7 +121,7 @@ export default function Login() {
                     newUserData.Realname = response.Realname;
                }
 
-               newUserData.Admin = response.Admin === true ? true : false;
+               newUserData.Admin = response.Admin;
 
                setUsername("");
                setPassword("");

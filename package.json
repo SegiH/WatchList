@@ -17,6 +17,7 @@
     "start": "next start",
     "deploy-windows": "xcopy /e /i .env .next/standalone && xcopy /e /i public .next/standalone && xcopy /e /i .next/static .next/standalone/.next",
     "deploy-unix": "cp .env .next/standalone && cp database.json .next/standalone && cp -r public/ .next/standalone && cp -r .next/static .next/standalone/.next",
+    "cr": "cd .next/standalone && zip -r ../../watchlist.zip . && cd ../..",
     "test": "jest",
     "test:watch": "jest --watch"
   },

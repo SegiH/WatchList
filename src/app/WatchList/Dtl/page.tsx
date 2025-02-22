@@ -198,19 +198,59 @@ export default function WatchListDetail() {
           }
      }, [currentDate]);
 
-     const getRatingIcon = (index: number) => {
-          if (isAdding)
+     const getRatingIcon = () => {
+          if (isAdding) {
                if (addWatchListDtl === null) {
                     return EmptyIconComponent;
                } else {
-                    return addWatchListDtl?.Rating > index + 0.5 ? FullIconComponent : addWatchListDtl?.Rating === index + 0.5 ? HalfIconComponent : EmptyIconComponent;
+                    const newRating = (
+                         <>
+                              {Array.from({ length: addWatchListDtl?.Rating }).map((_, index) => (
+                                   <FullIcon key={index} />
+                              ))}
+
+                              {addWatchListDtl?.Rating.toString().indexOf(".5") !== -1 &&
+                                   <HalfIcon />
+                              }
+
+                              {Array.from(Array(ratingMax - addWatchListDtl?.Rating - (addWatchListDtl?.Rating.toString().indexOf(".5") !== -1 ? 0.5 : 0)), (e, index) => {
+                                   return (
+                                        <EmptyIcon key={index} />
+                                   );
+                              })}
+                         </>
+                    );
+
+                    return newRating;
                }
-          else {
+          } else {
                if (watchListDtl === null) {
                     return EmptyIconComponent;
                }
 
-               return watchListDtl?.Rating > index + 0.5 ? FullIconComponent : watchListDtl?.Rating === index + 0.5 ? HalfIconComponent : EmptyIconComponent;
+               const newRating = (
+                    <>
+                         {typeof watchListDtl !== "undefined" && typeof watchListDtl.Rating !== "undefined" &&
+                              <>
+                                   {watchListDtl && Array.from({ length: watchListDtl?.Rating }).map((_, index) => (
+                                        <FullIcon key={index} />
+                                   ))}
+
+                                   {watchListDtl?.Rating.toString().indexOf(".5") !== -1 &&
+                                        <HalfIcon />
+                                   }
+
+                                   {watchListDtl && Array.from(Array(ratingMax - watchListDtl?.Rating - (watchListDtl?.Rating.toString().indexOf(".5") !== -1 ? 0.5 : 0)), (e, index) => {
+                                        return (
+                                             <EmptyIcon key={index} />
+                                        );
+                                   })}
+                              </>
+                         }
+                    </>
+               );
+
+               return newRating;
           }
      };
 
@@ -226,44 +266,43 @@ export default function WatchListDetail() {
           }
      };
 
-     const ratingClickHandler = (index: number) => {
+     const ratingClickHandler = (newValue?: number) => {
           if (!isAdding && !isEditing) return true;
 
-          if (isAdding) {
-               if (addWatchListDtl === null) {
-                    return;
-               }
-
-               if (String(addWatchListDtl?.Rating + ".0") === String(index + ".0")) {
-                    addWatchListDtl.Rating = index + 0.5;
-               } else if (String(addWatchListDtl?.Rating) === String(index + ".5")) {
-                    addWatchListDtl.Rating = parseFloat((index + 1).toFixed(1));
-               } else {
-                    addWatchListDtl.Rating = parseFloat(index.toFixed(1));
-               }
-
-               addWatchListDetailChangeHandler("Rating", addWatchListDtl.Rating);
-          } else {
-               if (watchListDtl !== null) {
-                    const newWatchListDtl = Object.assign({}, watchListDtl);
-
-                    if (newWatchListDtl.Rating === null) watchListDtl.Rating = 0;
-
-                    if (String(watchListDtl.Rating + ".0") === String(index + ".0")) {
-                         watchListDtl.Rating = index + 0.5;
-                    } else if (String(watchListDtl.Rating) === String(index + ".5")) {
-                         watchListDtl.Rating = parseFloat((index + 1).toFixed(1));
-                    } else {
-                         watchListDtl.Rating = parseFloat(index.toFixed(1));
-                    }
-
-                    watchListDetailChangeHandler("Rating", watchListDtl.Rating.toString());
-               } else { // This shouldn't ever happen
-                    alert("watchListDtl is null in dtl for id" + watchListDtlID);
-                    return;
-               }
+          if (isAdding && addWatchListDtl === null) {
+               return;
           }
-     };
+
+          if (isEditing && watchListDtl === null) {
+               return;
+          }
+
+          let newRating = 0;
+
+          if (isAdding) {
+               newRating = addWatchListDtl?.Rating as number;
+          } else if (isEditing) {
+               newRating = watchListDtl?.Rating as number;
+          }
+
+          if (newRating === 5.0) {
+               newRating = 0;
+          } else if (newRating === 4.5) {
+               newRating = 5;
+          } else if (newRating === 4.0) {
+               newRating = 4.5
+          } else {
+               newRating += 0.5;
+          }
+
+          if (isAdding && addWatchListDtl !== null) {
+               addWatchListDtl.Rating = newRating;
+               addWatchListDetailChangeHandler("Rating", newRating);
+          } else if (isEditing && watchListDtl !== null) {
+               watchListDtl.Rating = newRating;
+               watchListDetailChangeHandler("Rating", newRating);
+          }
+     }
 
      const recommendationsClickHandler = () => {
           if (watchListDtl !== null) {
@@ -442,11 +481,13 @@ export default function WatchListDetail() {
           }
      }
 
-     const watchListDetailChangeHandler = (fieldName: string, fieldValue: boolean | string | boolean) => {
+     const watchListDetailChangeHandler = (fieldName: string, fieldValue: boolean | string | number) => {
           const newWatchListDtl = Object.assign({}, watchListDtl);
 
           if (fieldName === "Archived") {
                newWatchListDtl[fieldName] = fieldValue === true ? 1 : 0;
+          } else if (fieldName === "Rating") {
+               newWatchListDtl[fieldName] = fieldValue as number;
           } else {
                newWatchListDtl[fieldName] = fieldValue;
           }
@@ -692,7 +733,7 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
 
                                                   {typeof watchListDtl?.IMDB_URL === "undefined" &&
                                                        <>
-                                                            <div title={watchListDtl?.Tooltip} className={`${!darkMode ? "lightMode" : "darkMode"}`} style={{position: "relative", left: "-5px"}}>
+                                                            <div title={watchListDtl?.Tooltip} className={`${!darkMode ? "lightMode" : "darkMode"}`} style={{ position: "relative", left: "-5px" }}>
                                                                  {watchListDtl?.WatchListItemName}
                                                             </div>
                                                        </>
@@ -715,7 +756,7 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
                                         }
 
                                         {!isAdding && !isEditing &&
-                                             <span className={`clickable closeButton ${!darkMode ? " lightMode" : "darkMode"}`} style={{position: "relative", top: "-20px"}} onClick={closeDetail}>
+                                             <span className={`clickable closeButton ${!darkMode ? " lightMode" : "darkMode"}`} style={{ position: "relative", top: "-20px" }} onClick={closeDetail}>
                                                   X
                                              </span>
                                         }
@@ -925,37 +966,17 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
                                    <div className="labelWidth narrow card">
                                         {!isAdding && !isEditing &&
                                              <span className={`${!darkMode ? "lightMode" : "darkMode"}`}>
-                                                  {Array.from(Array(ratingMax), (e: Event, index: number) => {
-                                                       return (
-                                                            <span className="favoriteIcon" key={index}>
-                                                                 {getRatingIcon(index)}
-                                                            </span>
-                                                       );
-                                                  })}
+                                                  <span className="favoriteIcon">
+                                                       {getRatingIcon()}
+                                                  </span>
                                              </span>
                                         }
 
-                                        {isEditing &&
+                                        {(isEditing || (isAdding && addWatchListDtl)) &&
                                              <span className={`customTopMargin clickable ${!darkMode ? "lightMode" : "darkMode"}`}>
-                                                  {Array.from(Array(ratingMax), (e, index) => {
-                                                       return (
-                                                            <span className="favoriteIcon" key={index} onClick={() => ratingClickHandler(index)}>
-                                                                 {getRatingIcon(index)}
-                                                            </span>
-                                                       );
-                                                  })}
-                                             </span>
-                                        }
-
-                                        {isAdding && addWatchListDtl &&
-                                             <span className={`customTopMargin clickable ${!darkMode ? "lightMode" : "darkMode"}`}>
-                                                  {Array.from(Array(ratingMax), (e, index) => {
-                                                       return (
-                                                            <span className="favoriteIcon" key={index} onClick={() => ratingClickHandler(index)}>
-                                                                 {getRatingIcon(index)}
-                                                            </span>
-                                                       );
-                                                  })}
+                                                  <span className="favoriteIcon" onClick={() => ratingClickHandler()}>
+                                                       {getRatingIcon()}
+                                                  </span>
                                              </span>
                                         }
                                    </div>

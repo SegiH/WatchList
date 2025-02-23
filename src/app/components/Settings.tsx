@@ -88,7 +88,7 @@ const Settings = () => {
 
      const filteredVisibleSectionChoices = visibleSectionChoices?.filter(
           (section) => {
-               return routeList[section["name"]].Enabled === true &&
+               return (routeList[section["name"]].Name !== "Admin" && routeList[section["name"]].Name !== "BugLogs" && routeList[section["name"]].Enabled === true) &&
                (isAdmin() || (!isAdmin() && routeList[section["name"]].Name !== "Admin" && routeList[section["name"]].Name !== "BugLogs"))
           }
      );

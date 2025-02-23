@@ -50,6 +50,8 @@ const Tabs = () => {
           }
      };
 
+     console.log(routeList.BugLogs.Enabled ? "Buglogs enabled" : "Buglogs disabled")
+
      return (
           <>
                {isClient && isLoggedInCheckComplete && isLoggedIn && !isError && !hideTabs && (

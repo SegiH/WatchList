@@ -223,7 +223,7 @@ export const isLoggedIn = async (req: NextRequest) => {
 export const isUserAdmin = async (req: NextRequest) => {
      const userSession = await getUserSession(req);
 
-     if (typeof userSession === "undefined" || (typeof userSession !== "undefined" && userSession.Admin !== true)) {
+     if (typeof userSession === "undefined" || (typeof userSession !== "undefined" && userSession.Admin !== 1)) {
           return false;
      } else {
           return true;

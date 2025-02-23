@@ -1,0 +1,41 @@
+{
+    "SetupComplete": false,
+    "WatchList": [],
+    "WatchListItems": [],
+    "WatchListSources": [
+        {
+            "WatchListSourceID": 1,
+            "WatchListSourceName": "Amazon"
+        },
+        {
+            "WatchListSourceID": 2,
+            "WatchListSourceName": "Hulu"
+        },
+        {
+            "WatchListSourceID": 3,
+            "WatchListSourceName": "Movie Theatre"
+        }
+    ],
+    "WatchListTypes": [
+        {
+            "WatchListTypeID": 1,
+            "WatchListTypeName": "Movie"
+        },
+        {
+            "WatchListTypeID": 2,
+            "WatchListTypeName": "TV"
+        },
+        {
+            "WatchListTypeID": 3,
+            "WatchListTypeName": "Other"
+        },
+        {
+            "WatchListTypeID": 4,
+            "WatchListTypeName": "Special"
+        }
+    ],
+    "Users": [],
+    "Options": [],
+    "VisibleSections": [],
+    "BugLogs": []
+}

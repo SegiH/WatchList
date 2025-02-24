@@ -3,11 +3,13 @@
 import axios, { AxiosResponse } from "axios";
 import Image from "next/image";
 
-import { Autocomplete } from "@mui/material";
+import { Autocomplete, Rating } from "@mui/material";
 import TextField, { TextFieldProps } from "@mui/material/TextField";
 import { useRouter } from "next/navigation";
 import React, { useCallback, useContext, useEffect, useState } from "react";
 import Recommendations from "../../components/Recommendations";
+
+import StarIcon from '@mui/icons-material/Star';
 
 import EmptyIcon from "@mui/icons-material/StarBorder";
 const EmptyIconComponent = <EmptyIcon />;
@@ -198,83 +200,6 @@ export default function WatchListDetail() {
           }
      }, [currentDate]);
 
-     const getRatingIcon = () => {
-          if (isAdding) {
-               if (addWatchListDtl === null) {
-                    return EmptyIconComponent;
-               }
-
-               if (typeof addWatchListDtl?.Rating === "undefined" || addWatchListDtl?.Rating == null) {
-                    addWatchListDtl.Rating = 0;
-               }
-
-               let arrayLength = ratingMax - addWatchListDtl?.Rating;
-
-               if (arrayLength.toString().indexOf(".5") !== -1) {
-                    arrayLength -= 0.5;
-               }
-
-               const newRating = (
-                    <>
-                         {Array.from({ length: addWatchListDtl?.Rating }).map((_, index) => (
-                              <FullIcon key={index} />
-                         ))}
-
-                         {addWatchListDtl?.Rating.toString().indexOf(".5") !== -1 &&
-                              <HalfIcon />
-                         }
-
-                         {Array.from(Array(arrayLength >= 0 ? arrayLength : 0), (e, index) => {
-                              return (
-                                   <EmptyIcon key={index} />
-                              );
-                         })}
-                    </>
-               );
-
-               return newRating;
-
-          } else {
-               if (watchListDtl === null) {
-                    return EmptyIconComponent;
-               }
-
-               if (typeof watchListDtl?.Rating === "undefined" || watchListDtl?.Rating == null) {
-                    watchListDtl.Rating = 0;
-               }
-
-               let arrayLength = ratingMax - watchListDtl?.Rating;
-
-               if (arrayLength.toString().indexOf(".5") !== -1) {
-                    arrayLength -= 0.5;
-               }
-
-               const newRating = (
-                    <>
-                         {typeof watchListDtl !== "undefined" && typeof watchListDtl.Rating !== "undefined" &&
-                              <>
-                                   {watchListDtl && Array.from({ length: watchListDtl?.Rating }).map((_, index) => (
-                                        <FullIcon key={index} />
-                                   ))}
-
-                                   {watchListDtl?.Rating.toString().indexOf(".5") !== -1 &&
-                                        <HalfIcon />
-                                   }
-
-                                   {watchListDtl && Array.from(Array(!isNaN(arrayLength) && arrayLength >= 0 ? arrayLength : 0), (e, index) => {
-                                        return (
-                                             <EmptyIcon key={index} />
-                                        );
-                                   })}
-                              </>
-                         }
-                    </>
-               );
-
-               return newRating;
-          }
-     };
-
      const getWatchListTypeID = (watchListItemID: number) => {
           const results = watchListItems?.filter((watchListItem: IWatchListItem) => {
                return String(watchListItem.WatchListItemID) === String(watchListItemID);
@@ -286,44 +211,6 @@ export default function WatchListDetail() {
                return -1;
           }
      };
-
-     const ratingClickHandler = (newValue?: number) => {
-          if (!isAdding && !isEditing) return true;
-
-          if (isAdding && addWatchListDtl === null) {
-               return;
-          }
-
-          if (isEditing && watchListDtl === null) {
-               return;
-          }
-
-          let newRating = 0;
-
-          if (isAdding) {
-               newRating = addWatchListDtl?.Rating as number;
-          } else if (isEditing) {
-               newRating = watchListDtl?.Rating as number;
-          }
-
-          if (newRating === 5.0) {
-               newRating = 0;
-          } else if (newRating === 4.5) {
-               newRating = 5;
-          } else if (newRating === 4.0) {
-               newRating = 4.5
-          } else {
-               newRating += 0.5;
-          }
-
-          if (isAdding && addWatchListDtl !== null) {
-               addWatchListDtl.Rating = newRating;
-               addWatchListDetailChangeHandler("Rating", newRating);
-          } else if (isEditing && watchListDtl !== null) {
-               watchListDtl.Rating = newRating;
-               watchListDetailChangeHandler("Rating", newRating);
-          }
-     }
 
      const recommendationsClickHandler = () => {
           if (watchListDtl !== null) {
@@ -988,15 +875,30 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
                                         {!isAdding && !isEditing &&
                                              <span className={`${!darkMode ? "lightMode" : "darkMode"}`}>
                                                   <span className="favoriteIcon">
-                                                       {getRatingIcon()}
+                                                       {watchListDtl && watchListDtl?.Rating !== null &&
+                                                            <Rating
+                                                                 name="hover-feedback"
+                                                                 value={watchListDtl?.Rating}
+                                                                 precision={0.5}
+                                                                 emptyIcon={<StarIcon style={{ opacity: 0.55 }} fontSize="inherit" />}
+                                                            />
+                                                       }
                                                   </span>
                                              </span>
                                         }
 
                                         {(isEditing || (isAdding && addWatchListDtl)) &&
                                              <span className={`customTopMargin clickable ${!darkMode ? "lightMode" : "darkMode"}`}>
-                                                  <span className="favoriteIcon" onClick={() => ratingClickHandler()}>
-                                                       {getRatingIcon()}
+                                                  <span className="favoriteIcon">
+                                                       <Rating
+                                                            name="hover-feedback"
+                                                            value={watchListDtl?.Rating}
+                                                            precision={0.5}
+                                                            emptyIcon={<StarIcon style={{ opacity: 0.55 }} fontSize="inherit" />}
+                                                            onChange={(event, newValue) => {
+                                                                 watchListDetailChangeHandler("Rating", newValue as number);
+                                                            }}
+                                                       />
                                                   </span>
                                              </span>
                                         }

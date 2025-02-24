@@ -955,7 +955,7 @@ const DataProvider = ({ children }) => {
                Path: "/BugLogs",
                Icon: BugReportIconComponent,
                RequiresAuth: true,
-               Enabled: String(process.env.NEXT_PUBLIC_ENABLE_BUGLOGS) === "true" ? true : false
+               Enabled: true
           }
      };
 

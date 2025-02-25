@@ -11,15 +11,6 @@ import Recommendations from "../../components/Recommendations";
 
 import StarIcon from '@mui/icons-material/Star';
 
-import EmptyIcon from "@mui/icons-material/StarBorder";
-const EmptyIconComponent = <EmptyIcon />;
-
-import FullIcon from "@mui/icons-material/Grade";
-const FullIconComponent = <FullIcon />;
-
-import HalfIcon from "@mui/icons-material/StarHalf";
-const HalfIconComponent = <HalfIcon />;
-
 import IWatchList from "../../interfaces/IWatchList";
 import IWatchListItem from "../../interfaces/IWatchListItem";
 import IWatchListSource from "../../interfaces/IWatchListSource";
@@ -43,7 +34,6 @@ export default function WatchListDetail() {
           EditIconComponent,
           isAdding,
           isEditing,
-          ratingMax,
           recommendationsEnabled,
           SaveIconComponent,
           setIsAdding,
@@ -79,6 +69,8 @@ export default function WatchListDetail() {
      const [watchListItemDtlID, setWatchListItemDtlID] = useState<number>(0);
 
      const router = useRouter();
+
+     let addingStarted = false;
 
      const defaultProps = {
           options: formattedNames,
@@ -234,6 +226,10 @@ export default function WatchListDetail() {
                return;
           }
 
+          if (addingStarted) {
+               return;
+          }
+
           if (addWatchListDtl !== null) {
                if (addWatchListDtl.WatchListItemID === -1) {
                     alert("Please select the Movie or TV Show");
@@ -249,6 +245,8 @@ export default function WatchListDetail() {
                     alert("Please select the source");
                     return;
                }
+
+               addingStarted = true;
 
                let queryURL = `/api/AddWatchList?WatchListItemID=${addWatchListDtl.WatchListItemID}&StartDate=${addWatchListDtl.StartDate.substring(0, 10)}&WatchListSourceID=${addWatchListDtl.WatchListSourceID}&Archived=false`;
 
@@ -276,6 +274,7 @@ export default function WatchListDetail() {
                          setWatchListLoadingStarted(false);
                          setWatchListLoadingComplete(false);
                          setWatchListSortingComplete(false);
+                         addingStarted = false;
 
                          router.push("/WatchList");
                     }

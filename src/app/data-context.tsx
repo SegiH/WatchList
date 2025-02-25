@@ -437,10 +437,7 @@ const DataProvider = ({ children }) => {
           const newHideTabs = typeof newOptions.HideTabs !== "undefined" && newOptions.HideTabs === 1 ? true : false;
           setHideTabs(newHideTabs);
 
-          const newSearchCount = typeof newOptions.SearchCount !== "undefined" && !isNaN(newOptions.SearchCount) ? newOptions.SearchCount : 5;
-          setSearchCount(newSearchCount);
-
-          const newStillWatching = typeof newOptions.StillWatching !== "undefined" && newOptions.StillWatching === 1 ? true : false;
+          const newStillWatching = typeof newOptions.StillWatching !== "undefined" && newOptions.StillWatching === 1 ? true : stillWatching;
           setStillWatching(newStillWatching);
 
           const newShowMissingArtwork = typeof newOptions.ShowMissingArtwork !== "undefined" && newOptions.ShowMissingArtwork === 1 ? true : false;

@@ -5,7 +5,6 @@ export default interface IUserOption {
     AutoAdd: number,
     DarkMode: number,
     HideTabs: number,
-    SearchCount?: number,
     ShowMissingArtwork: number,
     SourceFilter?: number,
     StillWatching?: number,

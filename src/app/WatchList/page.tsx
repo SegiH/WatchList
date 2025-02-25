@@ -7,6 +7,9 @@ import { DataContext, DataContextType } from "../data-context";
 import IWatchList from "../interfaces/IWatchList";
 
 import "../page.css";
+import { Rating } from "@mui/material";
+
+import StarIcon from '@mui/icons-material/Star';
 
 export default function WatchList() {
      const {
@@ -14,7 +17,6 @@ export default function WatchList() {
           BrokenImageIconComponent,
           darkMode,
           openDetailClickHandler,
-          ratingMax,
           searchTerm,
           setActiveRoute,
           setIsAdding,
@@ -146,11 +148,19 @@ export default function WatchList() {
                                                        {currentWatchList.WatchListSourceName}
                                                   </div>
 
-                                                  {currentWatchList?.Rating !== null && (
-                                                       <div className={`${!darkMode ? "lightMode" : "darkMode"}`}>
-                                                            {currentWatchList?.Rating}/{ratingMax}
-                                                       </div>
-                                                  )}
+                                                  <div>
+                                                       <Rating
+                                                            sx={{
+                                                                 padding: 1,
+                                                                 '& .MuiRating-iconEmpty': {
+                                                                   color: darkMode ? 'white' : 'black', // Change the empty star color. Important when dark moe is enabled
+                                                                 }
+                                                            }}
+                                                            value={typeof currentWatchList?.Rating !== "undefined" ? currentWatchList?.Rating : null}
+                                                            precision={0.5}
+                                                            defaultValue={0}
+                                                       />
+                                                  </div>
                                              </li>
                                         )}
                                    </div>

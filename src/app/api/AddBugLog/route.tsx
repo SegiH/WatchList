@@ -29,7 +29,7 @@ export async function PUT(request: NextRequest) {
           const highestBugLogID = Math.max(...buglogsDB.map(o => o.BugLogId));
 
           buglogsDB.push({
-               "BugLogID": (highestBugLogID !== null ? highestBugLogID : 0) + 1,
+               "BugLogId": (highestBugLogID !== null ? highestBugLogID : 0) + 1,
                "BugName": bugLogName,
                "AddDate": addDate,
                "CompletedDate": completedDate !== "NULL" ? completedDate : null,

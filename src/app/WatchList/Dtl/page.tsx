@@ -895,7 +895,11 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
                                                             precision={0.5}
                                                             emptyIcon={<StarIcon style={{ opacity: 0.55 }} fontSize="inherit" />}
                                                             onChange={(event, newValue) => {
-                                                                 watchListDetailChangeHandler("Rating", newValue as number);
+                                                                 if (isAdding) {
+                                                                      addWatchListDetailChangeHandler("Rating", newValue as number);
+                                                                 } else if (isEditing) {
+                                                                      watchListDetailChangeHandler("Rating", newValue as number);
+                                                                 }
                                                             }}
                                                        />
                                                   </span>

@@ -258,12 +258,17 @@ export default function BugLog() {
                                              }
 
                                              <th>Bug name</th>
-                                             <th>Resolution Notes</th>
-                                             <th>Added On</th>
-                                             <th>Completed On</th>
 
-                                             {!isAdding && !isEditing &&
-                                                  <th>Delete</th>
+                                             {(isAdding || isEditing) &&
+                                                  <>
+                                                       <th>Resolution Notes</th>
+                                                       <th>Added On</th>
+                                                       <th>Completed On</th>
+
+                                                       {!isAdding && !isEditing &&
+                                                            <th>Delete</th>
+                                                       }
+                                                  </>
                                              }
                                         </tr>
                                    </thead>
@@ -347,42 +352,46 @@ export default function BugLog() {
                                                                  }
                                                             </td>
 
-                                                            <td>
-                                                                 {!isEditing &&
-                                                                      <span className="wordWrapLabel">{bugLog.ResolutionNotes}</span>
-                                                                 }
+                                                            {(isAdding || isEditing) &&
+                                                                 <>
+                                                                      <td>
+                                                                           {!isEditing &&
+                                                                                <span className="wordWrapLabel">{bugLog.ResolutionNotes}</span>
+                                                                           }
 
-                                                                 {isEditing &&
-                                                                      <textarea readOnly={false} style={cssStyle} value={typeof editingBugLog.ResolutionNotes !== "undefined" ? editingBugLog.ResolutionNotes : ""} rows={calculateRowCount(editingBugLog.BugName, editingBugLog.ResolutionNotes)} onChange={(event: React.ChangeEvent<HTMLTextAreaElement>) => bugLogChangeHandler("ResolutionNotes", event.target.value)} />
-                                                                 }
-                                                            </td>
+                                                                           {isEditing &&
+                                                                                <textarea readOnly={false} style={cssStyle} value={typeof editingBugLog.ResolutionNotes !== "undefined" ? editingBugLog.ResolutionNotes : ""} rows={calculateRowCount(editingBugLog.BugName, editingBugLog.ResolutionNotes)} onChange={(event: React.ChangeEvent<HTMLTextAreaElement>) => bugLogChangeHandler("ResolutionNotes", event.target.value)} />
+                                                                           }
+                                                                      </td>
 
-                                                            <td>
-                                                                 {!isEditing &&
-                                                                      <span>{bugLog.AddDate}</span>
-                                                                 }
+                                                                      <td>
+                                                                           {!isEditing &&
+                                                                                <span>{bugLog.AddDate}</span>
+                                                                           }
 
-                                                                 {isEditing &&
-                                                                      <TextField type="date" className={`lightMode borderRadius15 minWidth150`} margin="dense" id="addedOn" value={typeof editingBugLog.AddDate !== "undefined" ? editingBugLog.AddDate : ""} variant="standard" onChange={(event: React.ChangeEvent<HTMLTextAreaElement>) => bugLogChangeHandler("AddDate", event.target.value)} />
-                                                                 }
-                                                            </td>
+                                                                           {isEditing &&
+                                                                                <TextField type="date" className={`lightMode borderRadius15 minWidth150`} margin="dense" id="addedOn" value={typeof editingBugLog.AddDate !== "undefined" ? editingBugLog.AddDate : ""} variant="standard" onChange={(event: React.ChangeEvent<HTMLTextAreaElement>) => bugLogChangeHandler("AddDate", event.target.value)} />
+                                                                           }
+                                                                      </td>
 
-                                                            <td>
-                                                                 {!isEditing &&
-                                                                      <span>{bugLog.CompletedDate}</span>
-                                                                 }
+                                                                      <td>
+                                                                           {!isEditing &&
+                                                                                <span>{bugLog.CompletedDate}</span>
+                                                                           }
 
-                                                                 {isEditing &&
-                                                                      <TextField type="date" className={`lightMode borderRadius15 minWidth150`} margin="dense" id="completedOn" value={typeof editingBugLog.CompletedDate !== "undefined" && editingBugLog.CompletedDate !== null ? editingBugLog.CompletedDate : ""} variant="standard" onChange={(event: React.ChangeEvent<HTMLTextAreaElement>) => bugLogChangeHandler("CompletedDate", event.target.value)} />
-                                                                 }
-                                                            </td>
+                                                                           {isEditing &&
+                                                                                <TextField type="date" className={`lightMode borderRadius15 minWidth150`} margin="dense" id="completedOn" value={typeof editingBugLog.CompletedDate !== "undefined" && editingBugLog.CompletedDate !== null ? editingBugLog.CompletedDate : ""} variant="standard" onChange={(event: React.ChangeEvent<HTMLTextAreaElement>) => bugLogChangeHandler("CompletedDate", event.target.value)} />
+                                                                           }
+                                                                      </td>
 
-                                                            {!isAdding && !isEditing &&
-                                                                 <td>
-                                                                      <span className={`clickable iconLarge`} onClick={() => deleteBugLogHandler(bugLog.BugLogId)}>
-                                                                           {DeleteIconComponent}
-                                                                      </span>
-                                                                 </td>
+                                                                      {!isAdding && !isEditing &&
+                                                                           <td>
+                                                                                <span className={`clickable iconLarge`} onClick={() => deleteBugLogHandler(bugLog.BugLogId)}>
+                                                                                     {DeleteIconComponent}
+                                                                                </span>
+                                                                           </td>
+                                                                      }
+                                                                 </>
                                                             }
                                                        </tr>
                                                   )

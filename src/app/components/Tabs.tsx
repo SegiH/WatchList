@@ -61,7 +61,7 @@ const Tabs = () => {
                                    && routeName !== "SearchIMDB"
                                    && (routeName !== "Admin" || (routeName === "Admin" && isAdmin() === true && visibleSections.filter((section) => { return section.name === "Admin"}).length > 0)) // You cannot dynamically set Enabled on this route so don't call isEnabled()
                                    && (routeName !== "Items" || (routeName ==="Items" && isEnabled("Items")))
-                                   && (routeName !== "BugLogs" || (routeName ==="BugLogs" && !demoMode && isAdmin() === true))  // You cannot dynamically set Enabled on this route so don't call isEnabled()
+                                   && (routeName !== "BugLogs" || (routeName ==="BugLogs" && !demoMode && isAdmin() === true && visibleSections.filter(section => { return section.name === "BugLogs" }).length === 1))  // You cannot dynamically set Enabled on this route so don't call isEnabled()
                                    && (routeName !== "Stats" || (routeName === "Stats" && isEnabled("Stats")))
                               }
                               )

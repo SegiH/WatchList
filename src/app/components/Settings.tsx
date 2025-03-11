@@ -71,7 +71,7 @@ const Settings = () => {
      };
 
      const optionChanged = (columnName: string, columnValue: boolean | string) => {
-          const options :IUserOption = {
+          const options: IUserOption = {
                "ArchivedVisible": columnName === "ArchivedVisible" ? columnValue === true ? 1 : 0 : archivedVisible ? 1 : 0,
                "AutoAdd": columnName === "AutoAdd" ? columnValue === true ? 1 : 0 : autoAdd ? 1 : 0,
                "DarkMode": columnName === "DarkMode" ? columnValue === true ? 1 : 0 : darkMode ? 1 : 0,
@@ -88,9 +88,11 @@ const Settings = () => {
 
      const filteredVisibleSectionChoices = visibleSectionChoices?.filter(
           (section) => {
-               return (routeList[section["name"]].Name !== "Admin" && routeList[section["name"]].Name !== "BugLogs" && routeList[section["name"]].Enabled === true) &&
-               (isAdmin() || (!isAdmin() && routeList[section["name"]].Name !== "Admin" && routeList[section["name"]].Name !== "BugLogs")) &&
-               (routeList[section["name"]].Name !== "BugLogs" || (routeList[section["name"]].Name === "BugLogs" && String(process.env.NEXT_PUBLIC_ENABLE_BUGLOGS) === "true"))
+               return (
+                    (routeList[section["name"]].Name !== "Admin" && routeList[section["name"]].Name !== "BugLogs" && routeList[section["name"]].Enabled === true)
+                    || (routeList[section["name"]].Name === "Admin" && isAdmin())
+                    || (routeList[section["name"]].Name === "BugLogs" && isAdmin())
+               )
           }
      );
 

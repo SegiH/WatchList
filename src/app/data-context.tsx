@@ -244,7 +244,7 @@ const DataProvider = ({ children }) => {
      const demoUsername = "demo";
      const demoPassword = "demo";
 
-     const visibleSectionChoices = [{ name: 'Items', id: 1 }, { name: 'Stats', id: 2 }, { name: 'Admin', id: 3 }];
+     const visibleSectionChoices = [{ name: 'Items', id: 1 }, { name: 'Stats', id: 2 }, { name: 'Admin', id: 3 }, { name: 'BugLogs', id: 4 }];
 
      const router = useRouter();
 

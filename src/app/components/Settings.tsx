@@ -12,6 +12,7 @@ const Settings = () => {
           buildDate,
           darkMode,
           defaultRoute,
+          demoMode,
           getDisplayName,
           hideTabs,
           isAdmin,
@@ -54,16 +55,18 @@ const Settings = () => {
                router.push("/" + defaultRoute);
           }
 
-          const options = {
-               "ArchivedVisible": archivedVisible === true ? 1 : 0,
-               "AutoAdd": autoAdd === true ? 1 : 0,
-               "DarkMode": darkMode === true ? 1 : 0,
-               "HideTabs": hideTabs === true ? 1 : 0,
-               "ShowMissingArtwork": showMissingArtwork === true ? 1 : 0,
-               "VisibleSections": JSON.stringify(newList)
-          }
+          if (!demoMode) {
+               const options = {
+                    "ArchivedVisible": archivedVisible === true ? 1 : 0,
+                    "AutoAdd": autoAdd === true ? 1 : 0,
+                    "DarkMode": darkMode === true ? 1 : 0,
+                    "HideTabs": hideTabs === true ? 1 : 0,
+                    "ShowMissingArtwork": showMissingArtwork === true ? 1 : 0,
+                    "VisibleSections": JSON.stringify(newList)
+               }
 
-          saveOptions(options);
+               saveOptions(options);
+          }
      }
 
      const closeDetail = async () => {
@@ -93,17 +96,19 @@ const Settings = () => {
 
      const filteredVisibleSectionChoices = visibleSectionChoices?.filter(
           (section) => {
+               const userIsAdmin = isAdmin();
+
                return (
                     (routeList[section["name"]].Name !== "Admin" && routeList[section["name"]].Name !== "BugLogs" && routeList[section["name"]].Enabled === true)
-                    || (routeList[section["name"]].Name === "Admin" && isAdmin())
-                    || (routeList[section["name"]].Name === "BugLogs" && isAdmin())
+                    || (routeList[section["name"]].Name === "Admin" && (userIsAdmin || (!userIsAdmin && demoMode)))
+                    || (routeList[section["name"]].Name === "BugLogs" && userIsAdmin)
                )
           }
      );
 
      const filteredVisibleSections = visibleSections?.filter(
           (section) => {
-               return (isAdmin() || (!isAdmin() && section["name"] !== "Admin" && section["name"] !== "BugLogs"))
+               return (isAdmin() || (!isAdmin() && section["name"] !== "Admin" && section["name"] !== "BugLogs") || demoMode)
           }
      );
 

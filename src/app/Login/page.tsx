@@ -44,7 +44,7 @@ export default function Login() {
      }
 
      const login = (e?: any) => {
-          if (e !== null) {
+          if (typeof e !== "undefined") {
                e.preventDefault();
           }
 

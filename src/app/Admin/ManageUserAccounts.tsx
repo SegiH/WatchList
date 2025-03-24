@@ -187,7 +187,7 @@ const ManageUserAccounts = () => {
 
      useEffect(() => {
           // Make sure current user is an admin
-          if (!isAdmin()) {
+          if (!isAdmin() && !demoMode) {
                router.push(defaultRoute)
           }
 

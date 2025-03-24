@@ -15,6 +15,7 @@ export default function Admin() {
      const {
           darkMode,
           defaultRoute,
+          demoMode,
           isAdding,
           isAdmin,
           isEditing
@@ -50,7 +51,7 @@ export default function Admin() {
 
      useEffect(() => {
           // Make sure current user is an admin
-          if (!isAdmin()) {
+          if (!isAdmin() && !demoMode) {
                router.push(defaultRoute)
           }
 

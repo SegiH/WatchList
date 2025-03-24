@@ -57,6 +57,18 @@
      }
 }
 
+@media only screen and (max-width: 768px) {
+     .show-list {
+          position: relative;
+          left: -20px;
+     }
+
+     .show-item {
+          width: 150px !important;
+          margin-right: 25px !important;
+     }
+}
+
 html.no-pull-to-refresh {
      overflow: hidden;
      overscroll-behavior: none;
@@ -88,7 +100,7 @@ input:checked+.slider:before {
 }
 
 table.simpleTable {
-     width: 100%;
+     width: fit-content;
      margin: 20px 0;
      font-family: Arial, sans-serif;
      /*background-color: #f9f9f9;*/
@@ -240,17 +252,17 @@ table.simpleTable:last-child {
 
 .fa {
      box-sizing: border-box;
-     padding: 10px;
+     display: none;
      width: 42.5px;
-     height: 42.5px;
-     position: absolute;
-     top: 0;
+     height: 43.5px;
+     position: relative;
+     text-align: end;;
+     top: 50;
      right: 0;
      border-radius: 50%;
      color: #07051a;
-     text-align: center;
      font-size: 1.2em;
-     transition: all 1s;
+     /*transition: all 1s;*/
 }
 
 .fade-in {
@@ -258,7 +270,7 @@ table.simpleTable:last-child {
 }
 
 .fade-out {
-     animation: fadeOutAnimation 1s linear;
+     animation: fadeOutAnimation 0s linear;
 }
 
 .firstItem {
@@ -303,8 +315,8 @@ table.simpleTable:last-child {
 
 .image-crop img {
      border-radius: 15px;
-     width: 128px;
-     height: 187px;
+     width:80%;
+     /*width: 128px;*/
      text-align: center;
      margin-right: 10px;
 }
@@ -445,29 +457,26 @@ table.simpleTable:last-child {
      list-style-type: none
 }
 
+.minWidth105 {
+     min-width: 105px !important;
+}
+
 .minWidth150 {
      min-width: 150px !important;
 }
 
 .modal {
      height: 100%;
-     /* Full height */
      left: 0;
      overflow: auto;
-     /* Enable scroll if needed */
      padding-top: 100px;
-     /* Location of the box */
      position: fixed;
-     /* Stay in place */
      top: 0;
      width: 100%;
-     /* Full width */
      z-index: 999;
-     /* Sit on top */
 }
 
 .modal-content {
-     /*background-color: rgba(0, 0, 0, 0.7);*/
      border: 1px solid #888;
      border-radius: 20px;
      margin: auto;
@@ -524,6 +533,23 @@ table.simpleTable:last-child {
      color: rgb(25, 118, 210)
 }
 
+.ratingsBorder > * {
+     position: relative;
+     top: 5px;
+}
+
+.ratingsBorder.darkMode {
+     border-color: var(--dark-mode-foregroundColor) !important;
+     border-width: 1px;
+     border-style: solid;
+}
+
+.ratingsBorder.lightMode {
+     color: var(--light-mode-foregroundColor) !important;
+     border-width: 1px;
+     border-style: solid;
+}
+
 .rightAligned {
      display: block;
      margin-left: auto;
@@ -545,6 +571,14 @@ table.simpleTable:last-child {
      transform: scale(1.8);
 }
 
+.scrollableText {
+     height: 20px;
+     scroll-behavior: smooth;
+     overflow-x: auto;
+     white-space: nowrap;
+     padding-bottom: 10px;
+}
+
 .searchContainer {
      display: inline-flex;
      position: relative;
@@ -553,14 +587,16 @@ table.simpleTable:last-child {
      transform: translate(-50%, -50%);
      transition: all 1s;
      min-width: 400px !important;
-     height: 50px;
-     /*background: white;*/
+     /*height: 50px;
      box-sizing: border-box;
      border-radius: 25px;
-     /*border: 4px solid white;*/
-     padding: 5px;
-     border-width: 1px !important;
+     commented out on 03-19 to fix weird css issue
+     */
+     /*padding: 5px;*/
+     /*border-width: 1px !important;
      border-style: solid !important;
+     commented out on 03-19 to fix weird css issue
+     */
 }
 
 .searchContainer:hover,
@@ -582,9 +618,9 @@ table.simpleTable:last-child {
 
 .searchIcon {
      position: relative;
-     top: 8px;
-     left: -9px;
-     max-height: 33px;
+     top: 4px;
+     left: 155%;
+     z-index: 9999;
 }
 
 .searchIcon.darkMode>svg {
@@ -602,15 +638,13 @@ table.simpleTable:last-child {
 
 .searchInput {
      position: relative;
-     top: -2px;
+     top: 0.1px;
      left: 0;
-     width: 100%;
-     height: 42.5px;
+     width: 102%;
+     height: 48px;
      line-height: 30px;
-     outline: 0;
-     border: 0;
      font-size: 1em;
-     border-radius: 20px;
+     border-radius: 25px;
      padding: 0 20px;
 }
 
@@ -618,6 +652,15 @@ table.simpleTable:last-child {
 .searchInput::-webkit-search-cancel-button {
      position: relative;
      top: -20px;
+}
+
+.searchInputStyle, .imdbButton {
+     display: none;
+}
+
+.searchInputStyle.visible, .imdbButton.visible {
+     display: block;
+     animation: fadeInAnimation 2s linear;
 }
 
 .searchLabel {
@@ -659,6 +702,10 @@ table.simpleTable:last-child {
      width: 270px !important;
 }
 
+.show-date {
+     height: 35px;
+}
+
 .show-item {
      border-style: dashed;
      border-radius: 15px;
@@ -666,18 +713,17 @@ table.simpleTable:last-child {
      font-family: "Brush Script MT", cursive;
      margin-bottom: 45px;
      margin-right: 55px;
-     /*max-width: 175px;*/
-     /*max-height: 350px;*/
      overflow: hidden;
      text-align: center;
      vertical-align: top;
      list-style: none;
-     width: 150px;
+     width: 175px;
 }
 
-.show-item div {
+/* Scales better with this commented out */
+/*.show-item div {
      margin-left: 15px;
-}
+}*/
 
 .show-link {
      text-align: center;
@@ -688,11 +734,29 @@ table.simpleTable:last-child {
      display: flex;
      flex-wrap: wrap;
      text-align: left;
+     margin-bottom: 150px;
+}
+
+.show-list.noTabs {
+     margin-bottom: 75px !important;
+}
+
+.show-season {
+     height: 35px;
+}
+
+.show-source {
+     height: 25px;
 }
 
 .show-title {
      display: inline-flex;
      word-wrap: break-word;
+     min-height: 50px;
+}
+
+.show-type {
+     height: 25px;
 }
 
 .simpleTable th {
@@ -810,9 +874,19 @@ table.simpleTable:last-child {
      margin-top: 25px !important;
 }
 
+.topMargin15 {
+     margin-top: 15px !important;
+}
+
+.topMargin55 {
+     margin-top: 50px !important;
+}
+
 .topMarginContent {
      position: relative;
      top: 50px !important;
+     overflow-y: auto;
+     height: 100vh;
 }
 
 .unsetcardwidth {
@@ -823,6 +897,14 @@ table.simpleTable:last-child {
      width: 50px;
 }
 
+.width75 {
+     width: 75px;
+}
+
+.width125 {
+     width: 125px;
+}
+
 .wordWrapLabel {
      display: inline-flex;
      max-width: 105px;
@@ -830,6 +912,60 @@ table.simpleTable:last-child {
 
 .zIndex {
      z-index: 999 !important;
+}
+
+
+@keyframes bouncing-loader {
+     0% {
+          transform: translateY(0);
+     }
+
+     100% {
+          opacity: 0.1;
+          transform: translateY(-10px);
+     }
+}
+
+.bouncing-loader>div:nth-child(2) {
+     animation-delay: 0.2s;
+}
+
+.bouncing-loader>div:nth-child(3) {
+     animation-delay: 0.4s;
+}
+
+.bouncing-loader {
+     display: flex;
+     justify-content: center;
+     align-items: center;
+     height: 100vh;
+     font-size: 10vw;
+     gap: 10px;
+}
+
+.bouncing-loader>div {
+     width: 50px;
+     height: 50px;
+     margin: 3px 6px;
+     border-radius: 50%;
+     background-color: #a3a1a1;
+     opacity: 1;
+     display: inline-flex;
+     animation: bouncing-loader 0.6s infinite alternate;
+}
+
+.bubble {
+     width: 20px;
+     height: 20px;
+     background-color: #000;
+     border-radius: 50%;
+     animation: bounce 1.5s infinite alternate;
+}
+
+.bouncing-loader-text {
+     position: relative;
+     top: -10px;
+     z-index: 1;
 }
 
 @keyframes fadeInAnimation {

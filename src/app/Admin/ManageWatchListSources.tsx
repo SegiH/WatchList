@@ -173,7 +173,11 @@ const ManageWatchListSources = () => {
                          <thead>
                               <tr>
                                    <th>Actions</th>
-                                   <th>ID</th>
+
+                                   {!isAdding &&
+                                        <th>ID</th>
+                                   }
+
                                    <th>Source name</th>
 
                                    {!isAdding && !isEditing &&
@@ -198,11 +202,8 @@ const ManageWatchListSources = () => {
                                         </td>
 
                                         <td>
-                                        </td>
-
-                                        <td>
                                              {addingSource !== null &&
-                                                  <TextField className={`lightMode borderRadius15 minWidth150`} margin="dense" id="sourcename" label="source name" value={addingSource.WatchListSourceName} variant="standard" onChange={(event: React.ChangeEvent<HTMLInputElement>) => sourceChangeHandler("WatchListSourceName", event.target.value)} />
+                                                  <TextField className={`lightMode borderRadius15 minWidth150`} margin="dense" id="sourcename" value={addingSource.WatchListSourceName} variant="standard" onChange={(event: React.ChangeEvent<HTMLInputElement>) => sourceChangeHandler("WatchListSourceName", event.target.value)} />
                                              }
                                         </td>
                                    </tr>
@@ -247,7 +248,7 @@ const ManageWatchListSources = () => {
                                                   }
 
                                                   {isEditing && editingSource &&
-                                                       <TextField className={`lightMode borderRadius15 minWidth150`} margin="dense" id="username" label="username" value={editingSource.WatchListSourceName} variant="standard" onChange={(event: React.ChangeEvent<HTMLInputElement>) => sourceChangeHandler("WatchListSourceName", event.target.value)} />
+                                                       <TextField className={`lightMode borderRadius15 minWidth150`} margin="dense" id="sourcename" value={editingSource.WatchListSourceName} variant="standard" onChange={(event: React.ChangeEvent<HTMLInputElement>) => sourceChangeHandler("WatchListSourceName", event.target.value)} />
                                                   }
                                              </td>
 

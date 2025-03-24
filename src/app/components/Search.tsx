@@ -10,23 +10,22 @@ import { useRouter } from 'next/navigation';
 import React, { useContext, useState } from "react";
 
 import { DataContext, DataContextType } from "../data-context";
+import WatchListCard from "../WatchList/WatchListCard";
+import WatchListItemCard from "../Items/WatchListItemCard";
 
-export default function SearchIMDB() {
+export default function Search() {
      const {
           AddIconComponent,
           autoAdd,
           BrokenImageIconComponent,
           darkMode,
-          imdbSearchEnabled,
           searchCount,
           SearchIconComponent,
           setIsAdding,
           setSearchCount,
-          setSearchVisible,
+          setSearchModalVisible,
           setWatchListItemsLoadingStarted,
-          setWatchListItemsLoadingComplete,
-          watchList,
-          watchListItems
+          setWatchListItemsLoadingComplete
      } = useContext(DataContext) as DataContextType
 
      const [imdbSearchResults, setIMDBSearchResults] = useState<ISearchImdb[]>([]);
@@ -38,11 +37,11 @@ export default function SearchIMDB() {
      const [watchListItemsSearchResults, setWatchListItemsSearchResults] = useState<IWatchListItem[]>([]);
 
      const searchCountOptions = {
-          "10 results": 10,
-          "20 results": 20,
-          "30 results": 30,
-          "40 results": 40,
-          "50 results": 50
+          "10 results": 1,
+          "20 results": 2,
+          "30 results": 3,
+          "40 results": 4,
+          "50 results": 5
      };
 
      const searchSectionTypes = {
@@ -96,7 +95,7 @@ export default function SearchIMDB() {
                          newSearchResults.splice(index, 1);
                          setIMDBSearchResults(newSearchResults);
 
-                         setSearchVisible(false);
+                         setSearchModalVisible(false);
                     }
                })
                .catch((err: Error) => {
@@ -105,7 +104,7 @@ export default function SearchIMDB() {
      };
 
      const closeSearch = async () => {
-          setSearchVisible(false);
+          setSearchModalVisible(false);
      };
 
      const handleKeypress = e => {
@@ -114,66 +113,40 @@ export default function SearchIMDB() {
           }
      };
 
-     const openWatchListDetailClickHandler = (watchListID: number) => {
-          router.push(`/WatchList/Dtl?WatchListID=${watchListID}`);
-
-          closeSearch();
-     }
-
-     const openWatchListItemDetailClickHandler = (watchListItemID: number) => {
-          router.push(`/Items/Dtl?WatchListItemID=${watchListItemID}`);
-
-          closeSearch();
-     }
-
-     const showDefaultSrcWatchList = (watchListID: number): void => {
-          const newSearchResults = Object.assign([], watchList);
-
-          const currentSearchResultsResult: ISearchImdb[] = newSearchResults?.filter((currentWatchList: IWatchList) => {
-               return String(currentWatchList.WatchListID) === String(watchListID);
-          });
-
-          if (currentSearchResultsResult.length === 0) {
-               // this shouldn't ever happen!
-               return;
-          }
-
-          const currentSearchResult = currentSearchResultsResult[0];
-
-          currentSearchResult["WatchListItem"]["IMDB_Poster_Error"] = true;
-
-          setWatchListSearchResults(newSearchResults);
-     };
-
-     const showDefaultSrcWatchListItems = (watchListItemID: number): void => {
-          const newSearchResults = Object.assign([], watchListItems);
-
-          const currentSearchResultsResult = newSearchResults?.filter((currentWatchListItem: IWatchListItem) => {
-               return String(currentWatchListItem.WatchListItemID) === String(watchListItemID);
-          });
-
-          if (currentSearchResultsResult.length === 0) {
-               // this shouldn't ever happen!
-               return;
-          }
-
-          const currentSearchResult: ISearchImdb = currentSearchResultsResult[0];
-
-          currentSearchResult["IMDB_Poster_Error"] = true;
-
-          setWatchListItemsSearchResults(newSearchResults);
-     };
-
      const searchIMDB = () => {
           if (searchTerm === "") {
                setIMDBSearchResults([]);
                setWatchListSearchResults([]);
                setWatchListItemsSearchResults([]);
 
+               alert("Please enter a search term");
+
                return;
           }
 
-          switch (searchSection) {
+          // Use this to test IMDB search using demo data instead of hitting the API
+          //setTimeout(() => {
+          //     const demoData = require("../demo/index").demoIMDBSearchResults;
+
+          //     setIMDBSearchResults(demoData[1]);
+          //     setSearchLoadingComplete(true);
+          //     setSearchLoadingStarted(false);
+          //}, 5000);
+
+          axios.get(`/api/SearchIMDB?SearchTerm=${searchTerm}&SearchCount=${searchCount}`)
+               .then((res: AxiosResponse<ISearchImdb>) => {
+                    if (res.data[0] === "ERROR") {
+                         alert(`The error ${res.data[1]} occurred while searching IMDB`);
+                    } else {
+                         setIMDBSearchResults(res.data[1]);
+                         setSearchLoadingComplete(true);
+                         setSearchLoadingStarted(false);
+                    }
+               }).catch((err: Error) => {
+                    alert(`The error ${err} occurred while searching IMDB`);
+               });
+
+          /*switch (searchSection) {
                case searchSectionTypes.WatchList:
                     // Search existing WatchList
                     const newWatchList: IWatchList[] = Object.assign([], watchList) as IWatchList[];
@@ -189,7 +162,7 @@ export default function SearchIMDB() {
                     break;
                case searchSectionTypes.WatchListItems:
                     // Search existing WatchList Items
-                    const newWatchListItems: IWatchListItem[] = Object.assign([], watchListItems);
+                    const newWatchListItems: IWatchListItem[] = Object.assign([], watchListItems) as IWatchListItem[];
 
                     const currentWatchListItemsResult = newWatchListItems?.filter((currentWatchListItems: IWatchListItem) => {
                          return currentWatchListItems?.WatchListItemName.toString().toUpperCase().includes(String(searchTerm).toUpperCase());
@@ -206,13 +179,13 @@ export default function SearchIMDB() {
                     }
 
                     // Use this to test IMDB search using demo data instead of hitting the API
-                    /*setTimeout(() => {
-                         const demoData = require("../demo/index").demoIMDBSearchResults;
+                    //setTimeout(() => {
+                    //     const demoData = require("../demo/index").demoIMDBSearchResults;
 
-                         setIMDBSearchResults(demoData[1]);
-                         setSearchLoadingComplete(true);
-                         setSearchLoadingStarted(false);
-                    }, 5000);*/
+                    //     setIMDBSearchResults(demoData[1]);
+                    //     setSearchLoadingComplete(true);
+                    //     setSearchLoadingStarted(false);
+                    //}, 5000);
 
                     axios.get(`/api/SearchIMDB?SearchTerm=${searchTerm}&SearchCount=${searchCount}`)
                          .then((res: AxiosResponse<ISearchImdb>) => {
@@ -228,7 +201,7 @@ export default function SearchIMDB() {
                          });
 
                     break;
-          }
+          }*/
      }
 
      return (
@@ -253,11 +226,12 @@ export default function SearchIMDB() {
                          {!searchLoadingStarted &&
                               <div style={{ marginBottom: "20px" }}>
                                    <div className='customWidth flex'>
+                                        {/*{((searchSection === "WatchList" && activeRoute === "WatchList" && filteredWatchList.length > 0) || (searchSection === "Items" && activeRoute === "Items" && filteredWatchListItems.length > 0) || (activeRoute !== "WatchList" && activeRoute !== "Items"))}
                                         <div className="leftMargin searchLabel textLabel">Section</div>
 
                                         <select className="customBorderRadius leftMargin" value={searchSection} onChange={(event: React.ChangeEvent<HTMLSelectElement>) => setSearchSection(event.target.value)}>
                                              {Object.keys(searchSectionTypes)
-                                                  .filter((searchSectionType: string, index: number) => {
+                                                  .filter((searchSectionType: string) => {
                                                        return searchSectionType !== "IMDB" || (searchSectionType === "IMDB" && imdbSearchEnabled)
                                                   })
                                                   .map((searchSectionType: string, index: number) => {
@@ -267,7 +241,7 @@ export default function SearchIMDB() {
                                                             </option>
                                                        );
                                                   })}
-                                        </select>
+                                        </select>*/}
 
                                         <div className="leftMargin searchLabel textLabel">Count</div>
 
@@ -289,6 +263,14 @@ export default function SearchIMDB() {
                                    <>
                                         <div className={`card leftMargin searchLabel textLabel${!darkMode ? " lightMode" : " darkMode"}`}>Search</div>
                                         <span className={`card leftMargin searchMarginTop unsetcardwidth${!darkMode ? " lightMode" : " darkMode"}`}>
+                                             <span className={`clickable searchIcon${darkMode ? " lightMode" : " darkMode"}`} onClick={searchIMDB}>
+                                                  {SearchIconComponent}
+
+                                                  {searchTerm === "" &&
+                                                       <i className="fa fa-search"></i>
+                                                  }
+                                             </span>
+
                                              {/* Credit to https://codepen.io/menelaosly/pen/rZddyb */}
                                              <span className={`searchContainer`}>
                                                   <input
@@ -300,13 +282,6 @@ export default function SearchIMDB() {
                                                        onChange={(event) => setSearchTerm(event.target.value)}
                                                        onKeyUp={handleKeypress}
                                                   />
-                                                  {searchTerm === "" &&
-                                                       <i className="fa fa-search"></i>
-                                                  }
-                                                  <span className={`clickable searchIcon${darkMode ? " lightMode" : " darkMode"}`} onClick={searchIMDB}>
-                                                       {SearchIconComponent}
-                                                  </span>
-                                                  <br /><br />
                                              </span>
                                         </span>
 
@@ -365,43 +340,7 @@ export default function SearchIMDB() {
                                         watchListSearchResults.map(
                                              (currentResult: IWatchList, index: number) => {
                                                   return (
-                                                       <React.Fragment key={index}>
-                                                            {typeof currentResult.IMDB_Poster !== "undefined" && currentResult.IMDB_Poster !== null && currentResult.IMDB_Poster !== "" && !currentResult.IMDB_Poster_Error &&
-                                                                 <tr>
-                                                                      <td className="row">
-                                                                           <span className="clickable searchResult" onClick={() => openWatchListDetailClickHandler(currentResult.WatchListID)}>
-                                                                                {typeof currentResult.IMDB_Poster !== "undefined" && currentResult?.IMDB_Poster !== null && currentResult.IMDB_Poster !== "" && (currentResult.IMDB_Poster.startsWith("http://") || currentResult.IMDB_Poster.startsWith("https://")) && !currentResult?.IMDB_Poster_Error && (
-                                                                                     // The poster column
-                                                                                     <div>
-                                                                                          <Image
-                                                                                               //className="searchResultPoster"
-                                                                                               src={currentResult.IMDB_Poster}
-                                                                                               alt={currentResult.IMDB_Poster}
-                                                                                               width="180"
-                                                                                               height="180"
-                                                                                               onError={() => showDefaultSrcWatchList(currentResult?.WatchListID)}
-                                                                                          />
-                                                                                     </div>
-                                                                                )}
-
-                                                                                {(currentResult.IMDB_Poster_Error || currentResult.IMDB_Poster === null) && (
-                                                                                     // The poster column
-                                                                                     <div className="brokenImage">
-                                                                                          broken
-                                                                                          {BrokenImageIconComponent}
-                                                                                     </div>
-                                                                                )}
-
-                                                                                <div className="whitespace-nowrap px-3 py-5 text-sm flex-1">
-                                                                                     <span className="textLabel">
-                                                                                          {currentResult?.WatchListItemName}
-                                                                                     </span>
-                                                                                </div>
-                                                                           </span>
-                                                                      </td>
-                                                                 </tr>
-                                                            }
-                                                       </React.Fragment>
+                                                       <WatchListCard key={index} currentWatchList={currentResult} />
                                                   )
                                              })
                                    }
@@ -410,43 +349,21 @@ export default function SearchIMDB() {
                                         watchListItemsSearchResults.map(
                                              (currentResult: IWatchListItem, index: number) => {
                                                   return (
-                                                       <React.Fragment key={index}>
-                                                            {typeof currentResult.IMDB_Poster !== "undefined" && currentResult.IMDB_Poster !== null && currentResult.IMDB_Poster !== "" &&
-                                                                 <tr>
-                                                                      <td className="row">
-                                                                           <span className="clickable searchResult" onClick={() => openWatchListItemDetailClickHandler(currentResult.WatchListItemID)}>
-                                                                                <Image
-                                                                                     className="searchResultPoster"
-                                                                                     src={currentResult.IMDB_Poster}
-                                                                                     alt={currentResult.IMDB_Poster}
-                                                                                     width="180"
-                                                                                     height="180"
-                                                                                     onError={() => showDefaultSrcWatchListItems(currentResult?.WatchListItemID)}
-                                                                                />
-
-                                                                                {(currentResult.IMDB_Poster_Error || currentResult.IMDB_Poster === null) && (
-                                                                                     // The poster column
-                                                                                     <div className="brokenImage">
-                                                                                          broken
-                                                                                          {BrokenImageIconComponent}
-                                                                                     </div>
-                                                                                )}
-
-                                                                                <div className="whitespace-nowrap px-3 py-5 text-sm flex-1">
-                                                                                     <span className="textLabel">
-                                                                                          {currentResult.WatchListItemName}
-                                                                                     </span>
-                                                                                </div>
-                                                                           </span>
-                                                                      </td>
-                                                                 </tr>
-                                                            }
-                                                       </React.Fragment>
+                                                       <WatchListItemCard key={index} currentWatchListItem={currentResult} />
                                                   )
                                              })
                                    }
                               </tbody>
                          </table>
+                    }
+
+                    {searchLoadingStarted && !searchLoadingComplete &&
+                         <div className="bouncing-loader">
+                              <span className="bouncing-loader-text">Loading</span>
+                              <div className="bubble"></div>
+                              <div className="bubble"></div>
+                              <div className="bubble"></div>
+                         </div>
                     }
                </div>
           </div >

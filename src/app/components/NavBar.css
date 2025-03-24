@@ -1,0 +1,41 @@
+.navBar {
+    border: 1px solid lightgray;
+    box-sizing: border-box;
+    height: 35px;
+    text-align: center;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+}
+
+span.bottom {
+    bottom: 56px;
+    position: sticky;
+}
+
+span.top {
+    top: 59px;
+    position: sticky;
+    z-index: 9999;
+}
+
+.arrow {
+    font-size: 40px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.left {
+    text-align: left;
+}
+
+.right {
+    text-align: right;
+    margin-left: auto; 
+}
+
+.navBar.noTabs {
+    bottom: 0px !important;
+}

@@ -1,11 +1,6 @@
 "use client"
 
 import Button from "@mui/material/Button";
-import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
-import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
-import DialogTitle from "@mui/material/DialogTitle";
 import TextField from "@mui/material/TextField";
 import axios, { AxiosResponse } from "axios";
 import { useRouter } from 'next/navigation';
@@ -22,7 +17,7 @@ const ManageUserAccounts = () => {
           defaultRoute,
           demoMode,
           EditIconComponent,
-          generateRandomPassword,
+          //generateRandomPassword,
           isAdding,
           isAdmin,
           isEditing,
@@ -37,12 +32,8 @@ const ManageUserAccounts = () => {
      } = useContext(DataContext) as DataContextType;
 
      const [addingUser, setAddingUser] = useState<IUser>({} as IUser);
-     const [dialogVisible, setDialogVisible] = useState(false);
-     const [dialogVisibleParamID, setDialogVisibleParamID] = useState(-1);
      const [editingUser, setEditingUser] = useState<IUser>({} as IUser);
-     const [isPasswordGenerated, setIsPasswordGenerated] = useState(false);
-     const [newPassword, setNewPassword] = useState<string>("");
-     const [newConfirmPassword, setNewConfirmPassword] = useState("");
+     const [isPasswordModified, setIsPasswordModified] = useState(false);
      const [usersLoadingStarted, setUsersLoadingStarted] = useState(false);
      const [usersLoadingComplete, setUsersLoadingComplete] = useState(false);
 
@@ -52,14 +43,6 @@ const ManageUserAccounts = () => {
           setIsAdding(false);
           setIsEditing(false);
      }
-
-     const closeDialogClickHandler = () => {
-          setNewPassword("");
-          setNewConfirmPassword("");
-          setDialogVisibleParamID(-1);
-
-          setDialogVisible(false);
-     };
 
      const enterAddModeClickHandler = () => {
           setAddingUser({
@@ -89,15 +72,6 @@ const ManageUserAccounts = () => {
 
           setIsEditing(true);
      }
-
-     const generateNewPassword = () => {
-          const newRandomPassword: string = generateRandomPassword();
-
-          setNewPassword(newRandomPassword);
-          setNewConfirmPassword(newRandomPassword);
-
-          setIsPasswordGenerated(true);
-     };
 
      const saveRow = () => {
           if (demoMode) {
@@ -130,24 +104,43 @@ const ManageUserAccounts = () => {
                return;
           }
 
-          if (isAdding && (typeof currentUser.Password === "undefined" || currentUser.Password === "")) {
-               alert("Please set a password");
+          if (isPasswordModified) {
+               if (typeof currentUser.Password === "undefined" || typeof currentUser.ConfirmPassword === "undefined") {
+                    // TODO: Fix me. what do you do here?!
+               }
 
-               return;
+               // In case I modify the password field but then decide not to add, just clear both fields to ignore validation
+               if (currentUser.Password !== "" && currentUser.ConfirmPassword !== "") {
+                    if (currentUser.Password !== currentUser.ConfirmPassword) {
+                         alert("The 2 passwords do not match");
+
+                         return;
+                    }
+
+                    const validationResult = validatePassword(currentUser.Password);
+
+                    if (!validationResult) {
+                         alert("The password must be at least 8 characters long, contain 2 lower case letters, 1 uppercase letter, 2 numbers and 2 symbols");
+                         return;
+                    }
+               }
           }
+
 
           let columns = ``;
 
           if (isAdding !== true) {
                columns = `?wl_userid=${currentUser.UserID}`;
-          } else {
-               columns = `?wl_password=${encodeURIComponent(currentUser.Password)}`;
           }
 
-          columns += `&wl_username=${encodeURIComponent(currentUser.Username)}`;
-          columns += `&wl_realname=${encodeURIComponent(currentUser.Realname)}`;
-          columns += `&wl_admin=${currentUser.Admin === 1 ? true : false}`;
-          columns += `&wl_enabled=${currentUser.Enabled === 1 ? true : false}`;
+          if (isPasswordModified === true && currentUser.Password !== "" && currentUser.ConfirmPassword !== "") {
+               columns = (columns === "" ? "?" : "&") + `wl_password=${encodeURIComponent(currentUser.Password)}`;
+          }
+
+          columns += (columns === "" ? "?" : "&") + `wl_username=${encodeURIComponent(currentUser.Username)}`;
+          columns += (columns === "" ? "?" : "&") + `wl_realname=${encodeURIComponent(currentUser.Realname)}`;
+          columns += (columns === "" ? "?" : "&") + `wl_admin=${currentUser.Admin === 1 ? true : false}`;
+          columns += (columns === "" ? "?" : "&") + `wl_enabled=${currentUser.Enabled === 1 ? true : false}`;
 
           const endPoint = (isAdding ? `/api/AddUser` : `/api/UpdateUser`) + columns;
 
@@ -170,53 +163,6 @@ const ManageUserAccounts = () => {
                });
      }
 
-     const saveNewPassword = () => {
-          if (demoMode) {
-               alert("Saving the password is disabled in demo mode");
-               return;
-          }
-
-          if (newPassword !== newConfirmPassword) {
-               alert("The 2 passwords do not match");
-               return;
-          }
-
-          const validationResult = validatePassword(newPassword);
-
-          if (!validationResult) {
-               alert("The password must be at least 8 characters long, contain 2 lower case letters, 1 uppercase letter, 2 numbers and 2 symbols");
-               return;
-          }
-
-          if (isEditing) {
-               axios.put(`/api/UpdateUser?wl_userid=${dialogVisibleParamID}&wl_password=${encodeURIComponent(newPassword)}`, { withCredentials: true })
-                    .then((res: AxiosResponse<IUser>) => {
-                         setNewPassword("");
-                         setNewConfirmPassword("");
-
-                         if (res.data[0] === "OK") {
-                              alert("The new password was saved");
-
-                              setNewPassword("");
-                              setNewConfirmPassword("");
-                              setDialogVisibleParamID(-1);
-
-                              setUsersLoadingStarted(false);
-                              setUsersLoadingComplete(false);
-                         } else {
-                              alert("Failed to update the password with the error " + res.data[1]);
-                         }
-                    })
-                    .catch((err: Error) => {
-                         alert("Failed to update the password with the error " + err.message);
-                    });
-          } else {
-               userChangeHandler("Password", newPassword);
-          }
-
-          setDialogVisible(false);
-     };
-
      const userChangeHandler = (fieldName: string, fieldValue: string) => {
           const newUser: IUser = Object.assign({}, isAdding ? addingUser : editingUser) as IUser;
 
@@ -224,6 +170,10 @@ const ManageUserAccounts = () => {
                newUser[fieldName] = fieldValue === "true" ? 1 : 0;
           } else {
                newUser[fieldName] = fieldValue;
+          }
+
+          if (fieldName === "Password" || fieldName === "ConfirmPassword") {
+               setIsPasswordModified(true);
           }
 
           newUser.IsModified = true;
@@ -289,12 +239,17 @@ const ManageUserAccounts = () => {
                          <thead>
                               <tr>
                                    <th>Actions</th>
-                                   <th>ID</th>
+
+                                   {!isAdding &&
+                                        <th>ID</th>
+                                   }
+
                                    <th>User name</th>
                                    <th>Name</th>
                                    {(isAdding || isEditing) &&
                                         <>
-                                             <th>Password</th>
+                                             <th>New Password</th>
+                                             <th>Confirm Password</th>
                                              <th>Admin</th>
                                              <th>Enabled</th>
                                         </>
@@ -317,32 +272,24 @@ const ManageUserAccounts = () => {
                                              </span>
                                         </td>
 
-                                        {/* User ID column */}
                                         <td>
+                                             <TextField className={`lightMode borderRadius15 minWidth150`} margin="dense" id="username" value={addingUser.Username} variant="standard" onChange={(event: React.ChangeEvent<HTMLInputElement>) => userChangeHandler("Username", event.target.value)} />
                                         </td>
 
                                         <td>
-                                             <TextField className={`lightMode borderRadius15 minWidth150`} margin="dense" id="username" label="username" value={addingUser.Username} variant="standard" onChange={(event: React.ChangeEvent<HTMLInputElement>) => userChangeHandler("Username", event.target.value)} />
+                                             <TextField className={`lightMode borderRadius15 minWidth150`} margin="dense" id="name" value={addingUser.Realname} variant="standard" onChange={(event: React.ChangeEvent<HTMLInputElement>) => userChangeHandler("Realname", event.target.value)} />
                                         </td>
 
                                         <td>
-                                             <TextField className={`lightMode borderRadius15 minWidth150`} margin="dense" id="name" label="name" value={addingUser.Realname} variant="standard" onChange={(event: React.ChangeEvent<HTMLInputElement>) => userChangeHandler("Realname", event.target.value)} />
+                                             <TextField type="password" className={`lightMode borderRadius15 minWidth150`} margin="dense" id="password" value={addingUser.Password} variant="standard" onChange={(event: React.ChangeEvent<HTMLInputElement>) => userChangeHandler("Password", event.target.value)} />
                                         </td>
 
                                         <td>
-                                             <Button
-                                                  color="secondary"
-                                                  variant="contained"
-                                                  className="borderRadius15"
-                                                  onClick={() => {
-                                                       setDialogVisible(true);
-                                                  }}>
-                                                  Change Password
-                                             </Button>
+                                             <TextField type="password" className={`lightMode borderRadius15 minWidth150`} margin="dense" id="password" value={addingUser.ConfirmPassword} variant="standard" onChange={(event: React.ChangeEvent<HTMLInputElement>) => userChangeHandler("ConfirmPassword", event.target.value)} />
                                         </td>
 
                                         <td>
-                                             <input type="checkbox" checked={addingUser.Admin === 1 ? true: false} onChange={(event: React.ChangeEvent<HTMLInputElement>) => userChangeHandler("Admin", event.target.checked.toString())} />
+                                             <input type="checkbox" checked={addingUser.Admin === 1 ? true : false} onChange={(event: React.ChangeEvent<HTMLInputElement>) => userChangeHandler("Admin", event.target.checked.toString())} />
                                         </td>
 
                                         <td>
@@ -391,7 +338,7 @@ const ManageUserAccounts = () => {
                                                   }
 
                                                   {isEditing &&
-                                                       <TextField className={`lightMode borderRadius15 minWidth150`} margin="dense" id="username" label="username" value={editingUser.Username} variant="standard" onChange={(event: React.ChangeEvent<HTMLInputElement>) => userChangeHandler("Username", event.target.value)} />
+                                                       <TextField className={`lightMode borderRadius15 minWidth150`} margin="dense" id="username" value={editingUser.Username} variant="standard" onChange={(event: React.ChangeEvent<HTMLInputElement>) => userChangeHandler("Username", event.target.value)} />
                                                   }
                                              </td>
 
@@ -401,24 +348,18 @@ const ManageUserAccounts = () => {
                                                   }
 
                                                   {isEditing &&
-                                                       <TextField className={`lightMode borderRadius15 minWidth150`} margin="dense" id="username" label="name" value={editingUser.Realname} variant="standard" onChange={(event: React.ChangeEvent<HTMLInputElement>) => userChangeHandler("Realname", event.target.value)} />
+                                                       <TextField className={`lightMode borderRadius15 minWidth150`} margin="dense" id="realname" value={editingUser.Realname} variant="standard" onChange={(event: React.ChangeEvent<HTMLInputElement>) => userChangeHandler("Realname", event.target.value)} />
                                                   }
                                              </td>
 
-                                             {(isAdding || isEditing) &&
+                                             {isEditing &&
                                                   <>
                                                        <td>
-                                                            <Button
-                                                                 color="secondary"
-                                                                 variant="contained"
-                                                                 className="borderRadius15"
-                                                                 onClick={() => {
-                                                                      setDialogVisibleParamID(user.UserID);
+                                                            <TextField type="password" className={`lightMode borderRadius15 minWidth150`} margin="dense" id="password" value={editingUser.Password} variant="standard" onChange={(event: React.ChangeEvent<HTMLInputElement>) => userChangeHandler("Password", event.target.value)} />
+                                                       </td>
 
-                                                                      setDialogVisible(true);
-                                                                 }}>
-                                                                 Change Password
-                                                            </Button>
+                                                       <td>
+                                                            <TextField type="password" className={`lightMode borderRadius15 minWidth150`} margin="dense" id="password" value={editingUser.ConfirmPassword} variant="standard" onChange={(event: React.ChangeEvent<HTMLInputElement>) => userChangeHandler("ConfirmPassword", event.target.value)} />
                                                        </td>
 
                                                        <td>
@@ -432,16 +373,12 @@ const ManageUserAccounts = () => {
                                                        </td>
 
                                                        <td>
-                                                            {!isAdding && !isEditing &&
+                                                            {!isEditing &&
                                                                  <span>{user.Enabled === 1 ? "Y" : "N"}</span>
                                                             }
 
                                                             {isEditing &&
                                                                  <input type="checkbox" checked={editingUser.Enabled === 1 ? true : false} onChange={(event: React.ChangeEvent<HTMLInputElement>) => userChangeHandler("Enabled", event.target.checked.toString())} />
-                                                            }
-
-                                                            {isAdding &&
-                                                                 <input type="checkbox" checked={addingUser.Enabled === 1 ? true : false} onChange={(event: React.ChangeEvent<HTMLInputElement>) => userChangeHandler("Enabled", event.target.checked.toString())} />
                                                             }
                                                        </td>
                                                   </>
@@ -451,32 +388,6 @@ const ManageUserAccounts = () => {
                          </tbody>
                     </table>
                }
-
-               <Dialog open={dialogVisible} onClose={closeDialogClickHandler}>
-                    <DialogTitle>Change Password</DialogTitle>
-
-                    <DialogContent>
-                         <DialogContentText>Please enter a new password. it must be at least 8 characters long and contain letters and numbers</DialogContentText>
-
-                         <TextField autoFocus margin="dense" id="password" label="Password" type={!isPasswordGenerated ? "password" : "text"} value={newPassword} onChange={(event: React.ChangeEvent<HTMLInputElement>) => setNewPassword(event.target.value)} variant="standard" />
-
-                         {!isPasswordGenerated && <TextField margin="dense" id="confirm" label="Confirm Password" type="password" variant="standard" value={newConfirmPassword} onChange={(event: React.ChangeEvent<HTMLInputElement>) => setNewConfirmPassword(event.target.value)} />}
-                    </DialogContent>
-
-                    <DialogActions className="dialogActions">
-                         <Button className="generatePassword" onClick={() => generateNewPassword()}>
-                              Generate Password
-                         </Button>
-
-                         <Button className="changePassword" onClick={() => saveNewPassword()}>
-                              Change
-                         </Button>
-
-                         <Button className="cancelPassword" onClick={() => closeDialogClickHandler()}>
-                              Cancel
-                         </Button>
-                    </DialogActions>
-               </Dialog>
           </>
      );
 };

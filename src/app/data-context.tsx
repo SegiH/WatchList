@@ -65,6 +65,7 @@ import WatchListIcon from "@mui/icons-material/Movie";
 const WatchListIconComponent = <WatchListIcon className="icon" />;
 
 import WatchListItemsIcon from "@mui/icons-material/SmartDisplay";
+import { fetchData } from "./api/lib";
 const WatchListItemsIconComponent = <WatchListItemsIcon className="icon" />;
 
 export interface DataContextType {
@@ -77,6 +78,7 @@ export interface DataContextType {
      bugLogs: IBugLog[];
      BrokenImageIconComponent: React.ReactNode;
      CancelIconComponent: React.ReactNode;
+     currentPage: number;
      darkMode: boolean;
      defaultRoute: string;
      DeleteIconComponent: React.ReactNode;
@@ -84,6 +86,9 @@ export interface DataContextType {
      demoPassword: string;
      demoUsername: string;
      EditIconComponent: React.ReactNode;
+     errorMessage: string;
+     filteredWatchList: IWatchList[];
+     filteredWatchListItems: IWatchListItem[];
      getFormattedDate: (value: string | null, separator: string | null) => string;
      generateRandomPassword: () => string;
      getDisplayName: (value: string) => string;
@@ -96,39 +101,47 @@ export interface DataContextType {
      isEnabled: (value: string) => boolean;
      isEditing: boolean;
      isError: boolean;
-     errorMessage: string;
+     isLoading: boolean;
      isLoggedIn: boolean;
      isLoggedInCheckComplete: boolean;
+     lastPage: boolean,
      LogOutIconComponent: React.ReactNode;
-     openDetailClickHandler: (value: number) => void;
+     openDetailClickHandler: (value: number, activeRouteOverride?: string) => void;
      ratingMax: number;
      recommendationsEnabled: boolean,
      RemoveIconComponent: React.ReactNode;
      routeList: IRouteList;
      SaveIconComponent: React.ReactNode;
+     saveOptions: (newOptions: IUserOption) => void;
      searchCount: number;
      SearchIconComponent: React.ReactNode;
+     searchInputVisible: boolean,
+     searchModalVisible: boolean;
      searchTerm: string;
-     searchVisible: boolean;
      setActiveRoute: (value: string) => void;
      setActiveRouteDisplayName: (value: string) => void;
      setArchivedVisible: (value: boolean) => void;
      setAutoAdd: (value: boolean) => void;
      setBugLogs: React.Dispatch<React.SetStateAction<IBugLog[]>>;
+     setCurrentPage: (value: number) => void;
      setDarkMode: (value: boolean) => void;
      setDemoMode: (value: boolean) => void;
+     setFilteredWatchList: React.Dispatch<React.SetStateAction<IWatchList[]>>;
+     setFilteredWatchListItems: React.Dispatch<React.SetStateAction<IWatchListItem[]>>;
      setHideTabs: (value: boolean) => void;
      setIsAdding: (value: boolean) => void;
      setIsEditing: (value: boolean) => void;
      setIsError: (value: boolean) => void;
      setErrorMessage: (value: string) => void;
+     setIsLoading: (value: boolean) => void;
      setIsLoggedIn: (value: boolean) => void;
      setIsLoggedInCheckComplete: (value: boolean) => void;
-     setOptions: (value: IUserOption, updateDB: boolean) => void;
+     setOptions: (value: IUserOption) => void;
      setShowMissingArtwork: (value: boolean) => void;
      setSearchCount: (value: number) => void;
+     setSearchInputVisible: (value: boolean) => void;
      setSearchTerm: (value: string) => void;
-     setSearchVisible: (value: boolean) => void;
+     setSearchModalVisible: (value: boolean) => void;
      setSettingsVisible: (value: boolean) => void;
      setSourceFilter: (value: number) => void;
      setStillWatching: (value: boolean) => void;
@@ -138,7 +151,6 @@ export interface DataContextType {
      setUserData: React.Dispatch<React.SetStateAction<IUserData>>;
      setUsers: React.Dispatch<React.SetStateAction<IUser[]>>;
      setVisibleSections: (value: []) => void;
-     setWatchList: React.Dispatch<React.SetStateAction<IWatchList[]>>;
      setWatchListItems: React.Dispatch<React.SetStateAction<IWatchListItem[]>>;
      setWatchListItemsLoadingStarted: (value: boolean) => void;
      setWatchListItemsLoadingComplete: (value: boolean) => void;
@@ -193,6 +205,7 @@ const DataProvider = ({ children }) => {
      const [autoAdd, setAutoAdd] = useState(true);
      const [buildDate, setBuildDate] = useState('');
      const [bugLogs, setBugLogs] = useState<IBugLog[]>([]);
+     const [currentPage, setCurrentPage] = useState(1);
      const [darkMode, setDarkMode] = useState(true);
      const [demoMode, setDemoMode] = useState(false);
      const [hideTabs, setHideTabs] = useState(false);
@@ -203,13 +216,16 @@ const DataProvider = ({ children }) => {
      const [isEditing, setIsEditing] = useState(false);
      const [isError, setIsError] = useState(false);
      const [errorMessage, setErrorMessage] = useState("");
+     const [isLoading, setIsLoading] = useState(true);
      const [isLoggedIn, setIsLoggedIn] = useState(false);
      const [isLoggedInCheckComplete, setIsLoggedInCheckComplete] = useState(false);
      const [isLoggedInCheckStarted, setIsLoggedInCheckStarted] = useState(false);
+     const [lastPage, setLastPage] = useState(false);
      const [recommendationsEnabled, setRecommendationsEnabled] = useState(false);
      const [searchCount, setSearchCount] = useState(5);
+     const [searchInputVisible, setSearchInputVisible] = useState(false);
      const [searchTerm, setSearchTerm] = useState("");
-     const [searchVisible, setSearchVisible] = useState(false);
+     const [searchModalVisible, setSearchModalVisible] = useState(false);
      const [settingsVisible, setSettingsVisible] = useState(false);
      const [showMissingArtwork, setShowMissingArtwork] = useState(false);
      const [stillWatching, setStillWatching] = useState(true);
@@ -217,12 +233,15 @@ const DataProvider = ({ children }) => {
      const [typeFilter, setTypeFilter] = useState(-1);
      const [users, setUsers] = useState<IUser[]>([]);
      const [userData, setUserData] = useState({ UserID: 0, Username: "", RealName: "", Admin: 0 }); // cannot use iUserEmpty() here
+
      const [watchList, setWatchList] = useState<IWatchList[]>([]);
+     const [filteredWatchList, setFilteredWatchList] = useState<IWatchList[]>([]);
      const [watchListLoadingStarted, setWatchListLoadingStarted] = useState(false);
      const [watchListLoadingComplete, setWatchListLoadingComplete] = useState(false);
      const [watchListSortingComplete, setWatchListSortingComplete] = useState(false);
 
      const [watchListItems, setWatchListItems] = useState<IWatchListItem[]>([]);
+     const [filteredWatchListItems, setFilteredWatchListItems] = useState<IWatchListItem[]>([]);
      const [watchListItemsLoadingStarted, setWatchListItemsLoadingStarted] = useState(false);
      const [watchListItemsLoadingComplete, setWatchListItemsLoadingComplete] = useState(false);
      const [watchListItemsSortingComplete, setWatchListItemsSortingComplete] = useState(false);
@@ -244,6 +263,8 @@ const DataProvider = ({ children }) => {
      const demoUsername = "demo";
      const demoPassword = "demo";
 
+     const pageSize = 49;
+
      const visibleSectionChoices = [{ name: 'Items', id: 1 }, { name: 'Stats', id: 2 }, { name: 'Admin', id: 3 }, { name: 'BugLogs', id: 4 }];
 
      const router = useRouter();
@@ -258,7 +279,8 @@ const DataProvider = ({ children }) => {
      const watchListItemsSortColumns = useMemo(() => {
           return {
                ID: "ID",
-               Name: "Name"
+               Name: "Name",
+               Type: "Type"
           }
      }, []);
 
@@ -341,7 +363,7 @@ const DataProvider = ({ children }) => {
                          }
 
                          if (typeof res.data[1].Options !== "undefined") {
-                              await setOptions(res.data[1].Options, false);
+                              setOptions(res.data[1].Options);
                          }
 
                          setUserData(newUserData);
@@ -351,6 +373,7 @@ const DataProvider = ({ children }) => {
                          if (!noReroute) {
                               setActiveRoute("WatchList");
                               setActiveRouteDisplayName("WatchList");
+                              setCurrentPage(1);
 
                               router.push("/WatchList");
                          }
@@ -409,6 +432,8 @@ const DataProvider = ({ children }) => {
           // Disable pull to refresh
           pullToRefreshEnabled(false);
 
+          setSearchModalVisible(false);
+
           if (((activeRoute === "WatchList" && activeRouteOverride === "") || activeRouteOverride === "WatchList") && Id !== null) {
                if (Id === -1) {
                     setIsAdding(true);
@@ -424,7 +449,23 @@ const DataProvider = ({ children }) => {
           }
      }, [activeRoute, setIsAdding]);
 
-     const setOptions = async (newOptions: IUserOption, updateDB: boolean) => {
+     const pullToRefreshEnabled = (enabled: boolean) => {
+          if (enabled) {
+               document.getElementsByTagName("html")[0].classList.remove("no-pull-to-refresh");
+          } else {
+               document.getElementsByTagName("html")[0].classList.add("no-pull-to-refresh");
+          }
+     }
+
+     const saveOptions = async (newOptions: IUserOption) => {
+          await axios.get(`/api/UpdateOptions?Options=${JSON.stringify(newOptions)}`)
+               .catch((err: Error) => {
+                    setErrorMessage("Failed to update option with the error " + err.message);
+                    setIsError(true);
+               });
+     }
+
+     const setOptions = (newOptions: IUserOption) => {
           const newArchivedVisible = typeof newOptions.ArchivedVisible !== "undefined" && newOptions.ArchivedVisible === 1 ? true : false;
           setArchivedVisible(newArchivedVisible);
 
@@ -437,7 +478,7 @@ const DataProvider = ({ children }) => {
           const newHideTabs = typeof newOptions.HideTabs !== "undefined" && newOptions.HideTabs === 1 ? true : false;
           setHideTabs(newHideTabs);
 
-          const newStillWatching = typeof newOptions.StillWatching !== "undefined" && newOptions.StillWatching === 1 ? true : stillWatching;
+          const newStillWatching = typeof newOptions.StillWatching !== "undefined" && newOptions.StillWatching === 1 ? true : false;
           setStillWatching(newStillWatching);
 
           const newShowMissingArtwork = typeof newOptions.ShowMissingArtwork !== "undefined" && newOptions.ShowMissingArtwork === 1 ? true : false;
@@ -457,18 +498,10 @@ const DataProvider = ({ children }) => {
 
           const newVisibleSections = typeof newOptions.VisibleSections !== "undefined" ? JSON.parse(newOptions.VisibleSections) : [{ name: 'Stats', id: 2 }];
           setVisibleSections(newVisibleSections);
-
-          if (updateDB) {
-               axios.get(`/api/UpdateOptions?Options=${JSON.stringify(newOptions)}`)
-                    .catch((err: Error) => {
-                         setErrorMessage("Failed to update option with the error " + err.message);
-                         setIsError(true);
-                    });
-          }
      }
 
      const showSearch = () => {
-          setSearchVisible(true);
+          setSearchModalVisible(true);
      };
 
      const showSettings = () => {
@@ -538,14 +571,6 @@ const DataProvider = ({ children }) => {
           router.push("/Login");
      }
 
-     const pullToRefreshEnabled = (enabled: boolean) => {
-          if (enabled) {
-               document.getElementsByTagName("html")[0].classList.remove("no-pull-to-refresh");
-          } else {
-               document.getElementsByTagName("html")[0].classList.add("no-pull-to-refresh");
-          }
-     }
-
      const validatePassword = (value: string) => {
           // 1 lowercase alphabetical character, 1 uppercase alphabetical character, 1 numeric, 1 special char, 8 chars long minimum
           const strongRegex = new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,})");
@@ -594,25 +619,29 @@ const DataProvider = ({ children }) => {
                return;
           }
 
-          if (!watchListLoadingStarted && !watchListLoadingComplete) {
-               setWatchListLoadingStarted(true);
+          const fetchWatchListData = async () => {
+               if (!watchListLoadingStarted && !watchListLoadingComplete) {
+                    setWatchListLoadingStarted(true);
 
-               axios.get(`/api/GetWatchList`, { withCredentials: true })
-                    .then((res: AxiosResponse<IWatchList>) => {
-                         if (res.data[0] !== "OK") {
-                              setErrorMessage("Failed to get WatchList with the error " + res.data[1])
+                    axios.get(`/api/GetWatchList`, { withCredentials: true })
+                         .then((res: AxiosResponse<IWatchList>) => {
+                              if (res.data[0] !== "OK") {
+                                   setErrorMessage("Failed to get WatchList with the error " + res.data[1])
+                                   setIsError(true);
+                                   return;
+                              }
+
+                              setWatchList(res.data[1]);
+                              setWatchListLoadingComplete(true);
+                         })
+                         .catch((err: Error) => {
+                              setErrorMessage("Failed to get WatchList with the error " + err.message);
                               setIsError(true);
-                              return;
-                         }
+                         });
+               }
+          };
 
-                         setWatchList(res.data[1]);
-                         setWatchListLoadingComplete(true);
-                    })
-                    .catch((err: Error) => {
-                         setErrorMessage("Failed to get WatchList with the error " + err.message);
-                         setIsError(true);
-                    });
-          }
+          fetchWatchListData();
      }, [isLoggedInCheck, isLoggedIn, userData, watchListLoadingStarted, watchListLoadingComplete, watchListSortColumn, watchListSortDirection]);
 
      // Get WatchListItems
@@ -731,6 +760,110 @@ const DataProvider = ({ children }) => {
           }
      }, [isLoggedInCheck, isLoggedInCheckComplete, isLoggedIn, watchListSourcesLoadingComplete, watchListTypesLoadingStarted, watchListTypesLoadingComplete]);
 
+     // WatchList filter and sort useEffect
+     useEffect(() => {
+          if (!watchListLoadingComplete) {
+               return;
+          }
+
+          setIsLoading(true);
+
+          const newWatchList = watchList.filter(
+               (currentWatchList: IWatchList) =>
+                    (
+                         (currentWatchList?.Archived === 1 && archivedVisible === true) || (currentWatchList?.Archived === 0 && archivedVisible === false))
+                    &&
+                    ((stillWatching === false && currentWatchList?.EndDate !== null) || (stillWatching === true && currentWatchList?.EndDate === null && currentWatchList?.Archived === 0))
+                    &&
+                    (searchTerm === "" || (searchTerm !== "" && currentWatchList?.WatchListItemName?.toLowerCase().includes(searchTerm.toLowerCase())))
+                    &&
+                    (sourceFilter === -1 || sourceFilter === null || (sourceFilter !== -1 && sourceFilter !== null && currentWatchList?.WatchListSourceID === sourceFilter))
+                    &&
+                    (typeFilter === -1 || (typeFilter !== -1 && String(currentWatchList?.WatchListTypeID) === String(typeFilter)))
+          ).sort((a: IWatchList, b: IWatchList) => {
+               switch (watchListSortColumn) {
+                    case "ID":
+                         return a.WatchListID > b.WatchListID ? (watchListSortDirection === "ASC" ? 1 : -1) : watchListSortDirection === "ASC" ? -1 : 1;
+                    case "Name":
+                         const aName = a.WatchListItemName;
+                         const bName = b.WatchListItemName;
+
+                         return String(aName) > String(bName) ? (watchListSortDirection === "ASC" ? 1 : -1) : watchListSortDirection === "ASC" ? -1 : 1;
+                    case "StartDate":
+                         return parseFloat(new Date(a.StartDate).valueOf().toString()) > parseFloat(new Date(b.StartDate).valueOf().toString()) ? (watchListSortDirection === "ASC" ? 1 : -1) : watchListSortDirection === "ASC" ? -1 : 1;
+                    case "EndDate":
+                         return parseFloat(new Date(a.EndDate).valueOf().toString()) > parseFloat(new Date(b.EndDate).valueOf().toString()) ? (watchListSortDirection === "ASC" ? 1 : -1) : watchListSortDirection === "ASC" ? -1 : 1;
+                    default:
+                         return 0;
+               }
+          });
+
+          const sliceStart = (currentPage - 1) * pageSize;
+          const sliceEnd = sliceStart + pageSize;
+
+          const newWatchListPage = newWatchList.slice(sliceStart, sliceEnd);
+
+          if (activeRoute === "WatchList") {
+               if (newWatchListPage.length < pageSize) {
+                    setLastPage(true);
+               } else {
+                    setLastPage(false);
+               }
+          }
+
+          setFilteredWatchList(newWatchListPage);
+
+          setIsLoading(false);
+     }, [activeRoute,  archivedVisible, currentPage, searchTerm, stillWatching, sourceFilter, typeFilter, watchListLoadingComplete, watchListSortColumn, watchListSortDirection]);
+
+     // WatchListItems filter and sort useEffect
+     useEffect(() => {
+          if (!watchListItemsLoadingComplete) {
+               return;
+          }
+
+          setIsLoading(true);
+
+          const newWatchListItems = watchListItems.filter(
+               (currentWatchListItem: IWatchListItem) =>
+                    ((currentWatchListItem?.Archived === 1 && archivedVisible === true) || (currentWatchListItem?.Archived === 0 && archivedVisible === false))
+                    &&
+                    (searchTerm === "" || (searchTerm !== "" && (String(currentWatchListItem.WatchListItemName).toLowerCase().includes(searchTerm.toLowerCase()) || String(currentWatchListItem.IMDB_URL) == searchTerm || String(currentWatchListItem.IMDB_Poster) == searchTerm))) &&
+                    (typeFilter === -1 || (typeFilter !== -1 && String(currentWatchListItem.WatchListTypeID) === String(typeFilter)))
+                    && (showMissingArtwork === false || (showMissingArtwork === true && (currentWatchListItem.IMDB_Poster_Error === true || currentWatchListItem.IMDB_Poster === null)))
+          ).sort((a: IWatchListItem, b: IWatchListItem) => {
+               switch (watchListSortColumn) {
+                    case "ID":
+                         return a.WatchListItemID > b.WatchListItemID
+                              ? (watchListSortDirection === "ASC" ? 1 : -1)
+                              : watchListSortDirection === "ASC" ? -1 : 1;
+                    case "Name":
+                         return String(a.WatchListItemName) > String(b.WatchListItemName) ? (watchListSortDirection === "ASC" ? 1 : -1) : watchListSortDirection === "ASC" ? -1 : 1;
+                    //case "Type":
+                    //     return String(a.WatchListItemName) > String(b.WatchListItemName) ? (watchListSortDirection === "ASC" ? 1 : -1) : watchListSortDirection === "ASC" ? -1 : 1;     
+                    default:
+                         return 0;
+               }
+          });
+
+          const sliceStart = (currentPage - 1) * pageSize;
+          const sliceEnd = sliceStart + pageSize;
+
+          const newWatchListItemsPage = newWatchListItems.slice(sliceStart, sliceEnd);
+
+          if (activeRoute === "Items") {
+               if (newWatchListItemsPage.length < pageSize) {
+                    setLastPage(true);
+               } else {
+                    setLastPage(false);
+               }
+          }
+
+          setFilteredWatchListItems(newWatchListItemsPage);
+
+          setIsLoading(false);
+     }, [activeRoute, archivedVisible, currentPage, searchTerm, typeFilter, watchListItemsLoadingComplete, watchListSortColumn, watchListSortDirection]);
+
      /* useEffect that does isClient check */
      useEffect(() => {
           const newIsClient = !window.location.href.endsWith("api-doc") && !window.location.href.endsWith("api-doc/") ? true : false;
@@ -818,6 +951,10 @@ const DataProvider = ({ children }) => {
                }
           }
 
+          if (newRoute === "WatchList" || newRoute === "Items") {
+               setCurrentPage(1);
+          }
+
           setActiveRoute(newRoute);
 
           const path = getPath(newRoute);
@@ -877,9 +1014,13 @@ const DataProvider = ({ children }) => {
                });
      }, []);
 
-     useEffect(() => {
+     /* TODO: Fix this. Every time you go to a different tab this reloads the app */
+
+     /* Visibility change useEffect */
+     /*useEffect(() => {
           const handleVisibilityChange = () => {
                if (!document.hidden && !isError) {
+                    alert("here")
                     isLoggedInApi(true);
                }
           };
@@ -891,7 +1032,7 @@ const DataProvider = ({ children }) => {
           return () => {
                document.removeEventListener('visibilitychange', handleVisibilityChange);
           };
-     }, []);
+     }, []);*/
 
      useEffect(() => {
           if (isAdding || isEditing) {
@@ -971,123 +1112,134 @@ const DataProvider = ({ children }) => {
           } else {
                return "";
           }
-     }, [isError, routeList]);
+     }, [routeList]);
 
      const dataContextProps = {
-          activeRoute: activeRoute,
-          activeRouteDisplayName: activeRouteDisplayName,
-          AddIconComponent: AddIconComponent,
-          archivedVisible: archivedVisible,
-          autoAdd: autoAdd,
-          BrokenImageIconComponent: BrokenImageIconComponent,
-          bugLogs: bugLogs,
-          buildDate: buildDate,
-          CancelIconComponent: CancelIconComponent,
-          darkMode: darkMode,
-          defaultRoute: defaultRoute,
-          DeleteIconComponent: DeleteIconComponent,
-          demoMode: demoMode,
-          demoPassword: demoPassword,
-          demoUsername: demoUsername,
-          EditIconComponent: EditIconComponent,
-          getFormattedDate: getFormattedDate,
-          generateRandomPassword: generateRandomPassword,
-          getDisplayName: getDisplayName,
-          getPath: getPath,
-          hideTabs: hideTabs,
-          imdbSearchEnabled: imdbSearchEnabled,
-          isAdding: isAdding,
-          isAdmin: isAdmin,
-          isClient: isClient,
-          isEditing: isEditing,
-          isEnabled: isEnabled,
-          isError: isError,
-          errorMessage: errorMessage,
-          isLoggedIn: isLoggedIn,
-          isLoggedInCheckComplete: isLoggedInCheckComplete,
-          LogOutIconComponent: LogOutIconComponent,
-          openDetailClickHandler: openDetailClickHandler,
-          ratingMax: ratingMax,
-          recommendationsEnabled: recommendationsEnabled,
-          RemoveIconComponent: RemoveIconComponent,
-          routeList: routeList,
-          SaveIconComponent: SaveIconComponent,
-          searchCount: searchCount,
-          SearchIconComponent: SearchIconComponent,
-          searchTerm: searchTerm,
-          searchVisible: searchVisible,
-          setActiveRoute: setActiveRoute,
-          setActiveRouteDisplayName: setActiveRouteDisplayName,
-          setArchivedVisible: setArchivedVisible,
-          setAutoAdd: setAutoAdd,
-          setBugLogs: setBugLogs,
-          setDarkMode: setDarkMode,
-          setDemoMode: setDemoMode,
-          setHideTabs: setHideTabs,
-          setIsAdding: setIsAdding,
-          setIsEditing: setIsEditing,
-          setIsError: setIsError,
+          activeRoute,
+          activeRouteDisplayName,
+          AddIconComponent,
+          archivedVisible,
+          autoAdd,
+          BrokenImageIconComponent,
+          bugLogs,
+          buildDate,
+          CancelIconComponent,
+          currentPage,
+          darkMode,
+          defaultRoute,
+          DeleteIconComponent,
+          demoMode,
+          demoPassword,
+          demoUsername,
+          EditIconComponent,
+          filteredWatchList,
+          filteredWatchListItems,
+          getFormattedDate,
+          generateRandomPassword,
+          getDisplayName,
+          getPath,
+          hideTabs,
+          imdbSearchEnabled,
+          isAdding,
+          isAdmin,
+          isClient,
+          isEditing,
+          isEnabled,
+          isError,
+          errorMessage,
+          isLoading,
+          isLoggedIn,
+          isLoggedInCheckComplete,
+          lastPage,
+          LogOutIconComponent,
+          openDetailClickHandler,
+          ratingMax,
+          recommendationsEnabled,
+          RemoveIconComponent,
+          routeList,
+          SaveIconComponent,
+          saveOptions,
+          searchCount,
+          SearchIconComponent,
+          searchInputVisible,
+          searchModalVisible,
+          searchTerm,
+          setActiveRoute,
+          setActiveRouteDisplayName,
+          setArchivedVisible,
+          setAutoAdd,
+          setBugLogs,
+          setCurrentPage,
+          setDarkMode,
+          setDemoMode,
           setErrorMessage,
-          setIsLoggedIn: setIsLoggedIn,
-          setIsLoggedInCheckComplete: setIsLoggedInCheckComplete,
-          setOptions: setOptions,
-          setSearchCount: setSearchCount,
-          setSearchTerm: setSearchTerm,
-          setSearchVisible: setSearchVisible,
-          setSettingsVisible: setSettingsVisible,
-          setShowMissingArtwork: setShowMissingArtwork,
-          setStillWatching: setStillWatching,
-          setSourceFilter: setSourceFilter,
-          setUsers: setUsers,
-          SettingsIconComponent: SettingsIconComponent,
-          settingsVisible: settingsVisible,
-          setTypeFilter: setTypeFilter,
-          setUserData: setUserData,
-          setVisibleSections: setVisibleSections,
-          setWatchList: setWatchList,
-          setWatchListItems: setWatchListItems,
-          setWatchListItemsLoadingStarted: setWatchListItemsLoadingStarted,
-          setWatchListItemsLoadingComplete: setWatchListItemsLoadingComplete,
-          setWatchListLoadingComplete: setWatchListLoadingComplete,
-          setWatchListLoadingStarted: setWatchListLoadingStarted,
-          setWatchListSortColumn: setWatchListSortColumn,
-          setWatchListSortDirection: setWatchListSortDirection,
-          setWatchListSortingComplete: setWatchListSortingComplete,
-          setWatchListItemsSortingComplete: setWatchListItemsSortingComplete,
-          setWatchListSources: setWatchListSources,
-          setWatchListSourcesLoadingStarted: setWatchListSourcesLoadingStarted,
-          setWatchListSourcesLoadingComplete: setWatchListSourcesLoadingComplete,
-          setWatchListTypes: setWatchListTypes,
-          setWatchListTypesLoadingStarted: setWatchListTypesLoadingStarted,
-          setWatchListTypesLoadingComplete: setWatchListTypesLoadingComplete,
-          showMissingArtwork: showMissingArtwork,
-          showSearch: showSearch,
-          showSettings: showSettings,
-          signOut: signOut,
-          sourceFilter: sourceFilter,
-          stillWatching: stillWatching,
-          pullToRefreshEnabled: pullToRefreshEnabled,
-          typeFilter: typeFilter,
-          users: users,
+          setFilteredWatchList,
+          setFilteredWatchListItems,
+          setHideTabs,
+          setIsAdding,
+          setIsEditing,
+          setIsError,
+          setIsLoading,
+          setIsLoggedIn,
+          setIsLoggedInCheckComplete,
+          setOptions,
+          setSearchCount,
+          setSearchTerm,
+          setSearchInputVisible,
+          setSearchModalVisible,
+          setSettingsVisible,
+          setShowMissingArtwork,
+          setStillWatching,
+          setSourceFilter,
+          setUsers,
+          SettingsIconComponent,
+          settingsVisible,
+          setTypeFilter,
+          setUserData,
+          setVisibleSections,
+          setWatchListItems,
+          setWatchListItemsLoadingStarted,
+          setWatchListItemsLoadingComplete,
+          setWatchListLoadingComplete,
+          setWatchListLoadingStarted,
+          setWatchListSortColumn,
+          setWatchListSortDirection,
+          setWatchListSortingComplete,
+          setWatchListItemsSortingComplete,
+          setWatchListSources,
+          setWatchListSourcesLoadingStarted,
+          setWatchListSourcesLoadingComplete,
+          setWatchListTypes,
+          setWatchListTypesLoadingStarted,
+          setWatchListTypesLoadingComplete,
+          showMissingArtwork,
+          showSearch,
+          showSettings,
+          signOut,
+          sourceFilter,
+          stillWatching,
+          pullToRefreshEnabled,
+          typeFilter,
+          users,
           userData: userData,
-          validatePassword: validatePassword,
-          visibleSectionChoices: visibleSectionChoices,
-          visibleSections: visibleSections,
-          watchList: watchList,
-          watchListItems: watchListItems,
-          watchListItemsLoadingStarted: watchListItemsLoadingStarted,
-          watchListItemsLoadingComplete: watchListItemsLoadingComplete,
-          watchListItemsSortColumns: watchListItemsSortColumns,
-          watchListItemsSortingComplete: watchListItemsSortingComplete,
-          watchListLoadingComplete: watchListLoadingComplete,
-          watchListSortColumn: watchListSortColumn,
-          watchListSortColumns: watchListSortColumns,
-          watchListSortDirection: watchListSortDirection,
-          watchListSortingComplete: watchListSortingComplete,
-          watchListSources: watchListSources,
-          watchListSourcesLoadingComplete: watchListSourcesLoadingComplete,
-          watchListTypes: watchListTypes,
-          watchListTypesLoadingComplete: watchListTypesLoadingComplete,
+          validatePassword,
+          visibleSectionChoices,
+          visibleSections,
+          watchList,
+          watchListItems,
+          watchListItemsLoadingStarted,
+          watchListItemsLoadingComplete,
+          watchListItemsSortColumns,
+          watchListItemsSortingComplete,
+          watchListLoadingComplete,
+          watchListSortColumn,
+          watchListSortColumns,
+          watchListSortDirection,
+          watchListSortingComplete,
+          watchListSources,
+          watchListSourcesLoadingComplete,
+          watchListTypes,
+          watchListTypesLoadingComplete,
      };
 
      return (

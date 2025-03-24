@@ -15,23 +15,35 @@ const Tabs = () => {
           getDisplayName,
           getPath,
           hideTabs,
+          isAdding,
           isAdmin,
           isClient,
+          isEditing,
           isEnabled,
           isError,
+          isLoading,
           isLoggedIn,
           isLoggedInCheckComplete,
           pullToRefreshEnabled,
           routeList,
           setActiveRoute,
           setActiveRouteDisplayName,
+          setCurrentPage,
+          setSearchInputVisible,
+          setSearchTerm,
           visibleSections
-     } = useContext(DataContext) as DataContextType
+     } = useContext(DataContext) as DataContextType;
 
      const router = useRouter();
 
      const tabClickHandler = (tabClicked: string) => {
           setActiveRoute(tabClicked);
+
+          if (tabClicked === "WatchList" || tabClicked === "Items") {
+               setCurrentPage(1);
+               setSearchInputVisible(false);
+               setSearchTerm("");
+          }
 
           const path = getPath(tabClicked.replace("/", ""));
 
@@ -52,17 +64,17 @@ const Tabs = () => {
 
      return (
           <>
-               {isClient && isLoggedInCheckComplete && isLoggedIn && !isError && !hideTabs && (
+               {isClient && isLoggedInCheckComplete && isLoggedIn && !isError && !hideTabs && !isLoading && !isAdding && !isEditing && (
                     <div className={`tabBar ${!darkMode ? "lightMode" : "darkMode"}`}>
                          {Object.keys(routeList)
                               .filter((routeName) => {
                                    return routeList[routeName].RequiresAuth === true
-                                   && routeName !== "Setup"
-                                   && routeName !== "SearchIMDB"
-                                   && (routeName !== "Admin" || (routeName === "Admin" && isAdmin() === true && visibleSections.filter((section) => { return section.name === "Admin"}).length > 0)) // You cannot dynamically set Enabled on this route so don't call isEnabled()
-                                   && (routeName !== "Items" || (routeName ==="Items" && isEnabled("Items")))
-                                   && (routeName !== "BugLogs" || (routeName ==="BugLogs" && !demoMode && isAdmin() === true && visibleSections.filter(section => { return section.name === "BugLogs" }).length === 1))  // You cannot dynamically set Enabled on this route so don't call isEnabled()
-                                   && (routeName !== "Stats" || (routeName === "Stats" && isEnabled("Stats")))
+                                        && routeName !== "Setup"
+                                        && routeName !== "Search"
+                                        && (routeName !== "Admin" || (routeName === "Admin" && isAdmin() === true && visibleSections.filter((section) => { return section.name === "Admin" }).length > 0)) // You cannot dynamically set Enabled on this route so don't call isEnabled()
+                                        && (routeName !== "Items" || (routeName === "Items" && isEnabled("Items")))
+                                        && (routeName !== "BugLogs" || (routeName === "BugLogs" && !demoMode && isAdmin() === true && visibleSections.filter(section => { return section.name === "BugLogs" }).length === 1))  // You cannot dynamically set Enabled on this route so don't call isEnabled()
+                                        && (routeName !== "Stats" || (routeName === "Stats" && isEnabled("Stats")))
                               }
                               )
                               .map((routeName, index) => {

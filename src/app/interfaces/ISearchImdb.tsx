@@ -1,4 +1,4 @@
-export default interface SearchIMDB {
+export default interface Search {
      Title: string,
      Year: string,
      imdbID: string,

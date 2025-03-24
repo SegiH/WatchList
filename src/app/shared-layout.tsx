@@ -1,9 +1,9 @@
 "use client"
 
 import { useRouter } from "next/navigation";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 
-import SearchIMDB from "./components/SearchIMDB";
+import Search from "./components/Search";
 import Settings from "./components/Settings";
 import IWatchListSource from "./interfaces/IWatchListSource";
 import IWatchListType from "./interfaces/IWatchListType";
@@ -11,6 +11,8 @@ import IWatchListType from "./interfaces/IWatchListType";
 import { DataContext, DataContextType } from "./data-context";
 
 import "./page.css";
+import IUserOption from "./interfaces/IUserOption";
+import { Button } from "@mui/material";
 
 const SharedLayout = () => {
      const {
@@ -20,26 +22,33 @@ const SharedLayout = () => {
           demoMode,
           getDisplayName,
           hideTabs,
+          imdbSearchEnabled,
           isAdmin,
           isEnabled,
           isError,
+          isLoading,
           isLoggedIn,
           openDetailClickHandler,
           routeList,
+          saveOptions,
           SearchIconComponent,
-          searchVisible,
+          searchInputVisible,
+          searchModalVisible,
+          searchTerm,
           setActiveRouteDisplayName,
           setSourceFilter,
           setStillWatching,
           SettingsIconComponent,
           settingsVisible,
           setActiveRoute,
+          setCurrentPage,
+          setIsLoading,
+          setSearchInputVisible,
+          setSearchModalVisible,
+          setSearchTerm,
           setTypeFilter,
-          setWatchListItemsSortingComplete,
           setWatchListSortColumn,
           setWatchListSortDirection,
-          setWatchListSortingComplete,
-          showSearch,
           showSettings,
           sourceFilter,
           typeFilter,
@@ -56,18 +65,50 @@ const SharedLayout = () => {
 
      const [isClient, setIsClient] = useState(false);
 
+     const inputRef = useRef<HTMLInputElement>(null);
      const router = useRouter();
 
-     const resort = () => {
-          if (activeRoute === "WatchList") {
-               setWatchListSortingComplete(false);
-          } else if (activeRoute === "Items") {
-               setWatchListItemsSortingComplete(false);
+     const settingChangeHandler = async (name: string, value: string | number | boolean) => {
+          const options: IUserOption = {}
+
+          setIsLoading(true);
+
+          switch (name) {
+               case "StillWatching":
+                    options["StillWatching"] = (value === true ? 1 : 0);
+                    setStillWatching(value as boolean);
+                    break;
+               case "SourceFilter":
+                    options["SourceFilter"] = (value as number);
+                    setSourceFilter(value as number);
+                    break;
+               case "TypeFilter":
+                    options["TypeFilter"] = (value as number);
+                    setTypeFilter(value as number);
+                    break;
+               case "SortColumn":
+                    options["SortColumn"] = value;
+                    setWatchListSortColumn(value as string);
+                    break;
+               case "SortDirection":
+                    options["SortDirection"] = value;
+                    setWatchListSortDirection(value as string);
+                    break;
           }
+
+          saveOptions(options);
+
+          setCurrentPage(1);
+
+          setIsLoading(false);
      }
 
      const tabChangeHandler = async (newTab: string) => {
           setActiveRoute(newTab);
+
+          if (newTab === "WatchList" || newTab === "Items") {
+               setCurrentPage(1);
+          }
 
           router.push("/" + newTab);
 
@@ -76,13 +117,27 @@ const SharedLayout = () => {
           setActiveRouteDisplayName(displayName);
      }
 
+     const toggleSearch = () => {
+          if (!searchInputVisible) {
+               setSearchTerm("");
+
+               setTimeout(function () {
+                    if (inputRef.current) {
+                         inputRef.current.focus();
+                    }
+               }, 500);
+          }
+
+          setSearchInputVisible(!searchInputVisible);
+     }
+
      useEffect(() => {
           const newIsClient = !window.location.href.endsWith("api-doc") && !window.location.href.endsWith("api-doc/") ? true : false;
 
           setIsClient(newIsClient);
      }, []);
 
-     // This is the only way to really set the  body class based on dark mode
+     // This is the only way to really set the body class based on dark mode
      useEffect(() => {
           document.body.className = darkMode ? 'darkMode' : '';
      }, [darkMode]);
@@ -95,7 +150,16 @@ const SharedLayout = () => {
           <span>
                {!isError &&
                     <>
-                         {isLoggedIn && watchListSourcesLoadingComplete && watchListTypesLoadingComplete &&
+                         {isLoading &&
+                              <div className="bouncing-loader">
+                                   <span className="bouncing-loader-text">Loading</span>
+                                   <div className="bubble"></div>
+                                   <div className="bubble"></div>
+                                   <div className="bubble"></div>
+                              </div>
+                         }
+
+                         {isLoggedIn && watchListSourcesLoadingComplete && watchListTypesLoadingComplete && !isLoading &&
                               <>
                                    <span className={`menuBar ${!darkMode ? "lightMode" : "darkMode"}`}>
                                         {demoMode &&
@@ -104,9 +168,21 @@ const SharedLayout = () => {
 
                                         {(activeRoute === "WatchList" || activeRoute === "Items") &&
                                              <>
-                                                  <span className={`clickable leftMargin50${!darkMode ? " lightMode" : " darkMode"}`} onClick={showSearch}>
+                                                  <span className={`clickable leftMargin50${!darkMode ? " lightMode" : " darkMode"}`} onClick={toggleSearch}>
                                                        {SearchIconComponent}
                                                   </span>
+
+                                                  <span className={`clickable leftMargin${!darkMode ? " lightMode" : " darkMode"} searchInputStyle ${searchInputVisible ? "visible" : ""}`}>
+                                                       <input className={`inputStyle lightMode`} ref={inputRef} value={searchTerm} onChange={(event) => setSearchTerm(event.target.value)} />
+                                                  </span>
+                                             </>
+                                        }
+
+                                        {(activeRoute === "WatchList" || activeRoute === "Items") &&
+                                             <>
+                                                  {searchInputVisible && imdbSearchEnabled &&
+                                                       <Button variant="contained" className={`imdbButton ${searchInputVisible ? "visible" : ""}`} style={{ marginLeft: "30px" }} onClick={() => setSearchModalVisible(true)}>IMDB</Button>
+                                                  }
 
                                                   {isLoggedIn && !isError && (
                                                        <span className={`bottomMargin20 clickable customTopMargin leftMargin40 ${!darkMode ? " lightMode" : " darkMode"}`} onClick={() => openDetailClickHandler(-1)}>
@@ -128,7 +204,7 @@ const SharedLayout = () => {
                                                                  .filter((routeName) => {
                                                                       return routeList[routeName].RequiresAuth === true
                                                                            && routeName !== "Setup"
-                                                                           && routeName !== "SearchIMDB"
+                                                                           && routeName !== "Search"
                                                                            && (routeName !== "Admin" || (routeName === "Admin" && isAdmin() === true && isEnabled("Admin")))
                                                                            && (routeName !== "Items" || (routeName === "Items" && isEnabled("Items")))
                                                                            && (routeName !== "BugLogs" || (routeName === "BugLogs" && isEnabled("BugLogs") && !demoMode))
@@ -155,7 +231,7 @@ const SharedLayout = () => {
 
                                                   <span title="Stuff you are still watching">
                                                        <label className="leftMargin switch">
-                                                            <input type="checkbox" checked={stillWatching} onChange={(event) => setStillWatching(event.target.checked)} />
+                                                            <input type="checkbox" checked={stillWatching} onChange={(event) => settingChangeHandler("StillWatching", event.target.checked)} />
                                                             <span className="slider round"></span>
                                                        </label>
                                                   </span>
@@ -192,7 +268,7 @@ const SharedLayout = () => {
                                                   </span>
 
                                                   <span title="Filter by type">
-                                                       <select className="selectStyle" value={typeFilter} onChange={(event) => setTypeFilter(parseInt(event.target.value, 10))}>
+                                                       <select className="selectStyle" value={typeFilter} onChange={(event) => settingChangeHandler("TypeFilter", parseInt(event.target.value, 10))}>
                                                             <option value="-1">Please select</option>
 
                                                             {watchListTypes?.map((watchListType: IWatchListType, index: number) => {
@@ -210,7 +286,7 @@ const SharedLayout = () => {
                                                   </span>
 
                                                   <span title="Sort by">
-                                                       <select className="selectStyle" value={watchListSortColumn} onChange={(event) => { setWatchListSortColumn(event.target.value); resort(); }}>
+                                                       <select className="selectStyle" value={watchListSortColumn} onChange={(event) => settingChangeHandler("SortColumn", event.target.value)}>
                                                             {activeRoute === "WatchList" &&
                                                                  Object.keys(watchListSortColumns).filter((sortColumn) => {
                                                                       return sortColumn !== "EndDate" || (sortColumn === "EndDate" && !stillWatching);
@@ -236,7 +312,7 @@ const SharedLayout = () => {
                                                   </span>
 
                                                   <span className="leftMargin" title="Sort direction">
-                                                       <select className="selectStyle" value={watchListSortDirection} onChange={(event) => { setWatchListSortDirection(event.target.value); resort(); }}>
+                                                       <select className="selectStyle" value={watchListSortDirection} onChange={(event) => settingChangeHandler("SortDirection", event.target.value)}>
                                                             <option value="ASC">ASC</option>
                                                             <option value="DESC">DESC</option>
                                                        </select>
@@ -249,8 +325,8 @@ const SharedLayout = () => {
                                         </span>
                                    </span>
 
-                                   {searchVisible &&
-                                        <SearchIMDB />
+                                   {searchModalVisible &&
+                                        <Search />
                                    }
 
                                    {settingsVisible &&

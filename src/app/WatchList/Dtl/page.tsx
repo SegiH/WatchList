@@ -19,7 +19,7 @@ import "../../page.css";
 
 import { DataContext, DataContextType } from "../../data-context";
 
-// I have a very specific use case here where I'm using a custom type that only has these 2 properties so the interface is created here
+// I have a very specific use case here where I'm using a custom type for the Auto Complete dropdown that only has these 2 properties and is only used here so the interface is created here
 interface AutoCompleteWatchListItem {
      WatchListItemID: number; // Adjust the type as necessary (e.g., string, number)
      WatchListItemName: string;
@@ -33,6 +33,7 @@ export default function WatchListDetail() {
           demoMode,
           EditIconComponent,
           isAdding,
+          isLoading,
           isEditing,
           recommendationsEnabled,
           SaveIconComponent,
@@ -58,6 +59,8 @@ export default function WatchListDetail() {
      const [formattedNames, setFormattedNames] = useState<IAutoCompleteOption[]>([]);
      const [formattedNamesWithId, setFormattedNamesWithId] = useState<AutoCompleteWatchListItem[]>([]);
      const [editModified, setEditModified] = useState(false);
+     const [isClosing, setIsClosing] = useState(false);
+     const [isLoadingComplete, setIsLoadingComplete] = useState(false);
      const [originalWatchListDtl, setOriginalWatchListDtl] = useState<IWatchList | null>(null); (null);
      const [recommendationsVisible, setRecommendationsVisible] = useState(false);
      const [recommendationName, setRecommendationName] = useState<string>("");
@@ -175,7 +178,7 @@ export default function WatchListDetail() {
 
           pullToRefreshEnabled(true);
 
-          router.push("/WatchList");
+          setIsClosing(true);
      };
 
      const getLocaleDate = useCallback(() => {
@@ -494,6 +497,7 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
 
                               setWatchListDtl(wld[0]);
                               setWatchListDtlLoadingComplete(true);
+                              setIsLoadingComplete(true);
                          }
                     })
                     .catch((err: Error) => {
@@ -611,332 +615,347 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
           }
      }, []);
 
+     useEffect(() => {
+          if (isClosing) {
+               router.push("/WatchList");
+          }
+     }, [isClosing]);
+
      return (
-          <div className="modal">
-               <div className={`modal-content ${watchListDtlID != null ? "fade-in" : "fade-out"}${!darkMode ? " lightMode" : " darkMode"}`}>
-                    {!recommendationsVisible &&
-                         <div className="container">
-                              <div className="cards">
-                                   <div className="narrow card">
-                                        {!isAdding && !isEditing &&
-                                             <span onClick={startEditing}>
-                                                  <span className={`clickable editsaveCancelButton ${!darkMode ? " lightMode" : " darkMode"}`}>{EditIconComponent}</span>
-                                             </span>
-                                        }
-
-                                        {(isAdding || isEditing) &&
-                                             <span className={`clickable saveIcon${!darkMode ? " lightMode" : " darkMode"}`} onClick={isAdding ? saveNewClickHandler : saveClickHandler}>
-                                                  {SaveIconComponent}
-                                             </span>
-                                        }
-                                   </div>
-
-                                   <div className="labelWidth card">
-                                        {!isAdding && !isEditing &&
-                                             <>
-                                                  {typeof watchListDtl?.IMDB_URL !== "undefined" &&
-                                                       <a className={`linkStyle text-label${!darkMode ? " lightMode" : " darkMode"}`} href={watchListDtl?.IMDB_URL} target='_blank' title={watchListDtl?.Tooltip}>{watchListDtl?.WatchListItemName}</a>
+          <>
+               {!isLoading && !isClosing && isLoadingComplete &&
+                    <div className="modal">
+                         <div className={`modal-content ${watchListDtlID != null ? "fade-in" : ""}${!darkMode ? " lightMode" : " darkMode"}`}>
+                              {!recommendationsVisible &&
+                                   <div className="container">
+                                        <div className="cards">
+                                             <div className="narrow card">
+                                                  {!isAdding && !isEditing &&
+                                                       <span onClick={startEditing}>
+                                                            <span className={`clickable editsaveCancelButton ${!darkMode ? " lightMode" : " darkMode"}`}>{EditIconComponent}</span>
+                                                       </span>
                                                   }
 
-                                                  {typeof watchListDtl?.IMDB_URL === "undefined" &&
+                                                  {(isAdding || isEditing) &&
+                                                       <span className={`clickable saveIcon${!darkMode ? " lightMode" : " darkMode"}`} onClick={isAdding ? saveNewClickHandler : saveClickHandler}>
+                                                            {SaveIconComponent}
+                                                       </span>
+                                                  }
+                                             </div>
+
+                                             <div className="labelWidth card">
+                                                  {!isAdding && !isEditing &&
                                                        <>
-                                                            <div title={watchListDtl?.Tooltip} className={`${!darkMode ? "lightMode" : "darkMode"}`} style={{ position: "relative", left: "-5px" }}>
-                                                                 {watchListDtl?.WatchListItemName}
-                                                            </div>
+                                                            {typeof watchListDtl?.IMDB_URL !== "undefined" &&
+                                                                 <a className={`linkStyle text-label${!darkMode ? " lightMode" : " darkMode"}`} href={watchListDtl?.IMDB_URL} target='_blank' title={watchListDtl?.Tooltip}>{watchListDtl?.WatchListItemName}</a>
+                                                            }
+
+                                                            {typeof watchListDtl?.IMDB_URL === "undefined" &&
+                                                                 <>
+                                                                      <div title={watchListDtl?.Tooltip} className={`${!darkMode ? "lightMode" : "darkMode"}`} style={{ position: "relative", left: "-5px" }}>
+                                                                           {watchListDtl?.WatchListItemName}
+                                                                      </div>
+                                                                 </>
+                                                            }
+
+                                                            {watchListDtl?.Archived === 1 ? <span className={`${!darkMode ? "lightMode" : "darkMode"}`}>&nbsp;(A)</span> : <></>}
                                                        </>
                                                   }
 
-                                                  {watchListDtl?.Archived === 1 ? <span className={`${!darkMode ? "lightMode" : "darkMode"}`}>&nbsp;(A)</span> : <></>}
-                                             </>
-                                        }
-
-                                        {(isEditing || isAdding) && formattedNames &&
-                                             <div className="narrow card">
-                                                  <Autocomplete id="wl_autocomplete" className={`labelWidth lightMode`} size="small" sx={{ width: 250, height: 40 }} {...defaultProps} options={formattedNames} value={autoComplete} onChange={(event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => autoCompleteChangeHandler(event)} renderInput={(params: TextFieldProps) => <TextField {...params} label="Search" />} />
-                                             </div>
-                                        }
-                                   </div>
-
-                                   <div className="narrow card rightAligned">
-                                        {!isAdding && !isEditing &&
-                                             <div>ID: {watchListDtl?.WatchListID}</div>
-                                        }
-
-                                        {!isAdding && !isEditing &&
-                                             <span className={`clickable closeButton ${!darkMode ? " lightMode" : "darkMode"}`} style={{ position: "relative", top: "-20px" }} onClick={closeDetail}>
-                                                  X
-                                             </span>
-                                        }
-
-                                        {(isAdding || isEditing) &&
-                                             <span className={`clickable cancelIcon${!darkMode ? " lightMode" : " darkMode"}`} onClick={isAdding ? closeDetail : cancelClickHandler}>
-                                                  {CancelIconComponent}
-                                             </span>
-                                        }
-                                   </div>
-
-                                   <div className="narrow card">
-                                        {!isAdding &&
-                                             <>
-                                                  {imdbImage}
-                                             </>
-                                        }
-
-                                        {isAdding && addWatchListDtl && watchListItems?.filter((currentWatchListItem: IWatchListItem) => String(currentWatchListItem?.WatchListItemID) === String(addWatchListDtl?.WatchListItemID)).length === 1 &&
-                                             <span className="column"><Image className="poster-detail" width="175" height="280" alt="Image Not Available" src={watchListItems?.filter((currentWatchListItem: IWatchListItem) => String(currentWatchListItem?.WatchListItemID) === String(addWatchListDtl?.WatchListItemID))[0].IMDB_Poster ?? ""} /></span>
-                                        }
-                                   </div>
-
-                                   {!isAdding && !isEditing &&
-                                        <>
-                                             <div className="narrow card"></div>
-                                             <div className="narrow card"></div>
-                                        </>
-                                   }
-
-                                   {isAdding && addWatchListDtl &&
-                                        <div className="narrow card">
-                                             <select className="selectStyle editing" autoFocus value={addWatchListDtl?.WatchListItemID} onChange={(event) => addWatchListDetailChangeHandler("WatchListItemID", event.target.value)}>
-                                                  <option value="-1">Please select</option>
-
-                                                  {formattedNamesWithId && formattedNamesWithId.map((watchListItem: IWatchListItem, index: number) => {
-                                                       return (
-                                                            <option key={index} value={watchListItem?.WatchListItemID}>
-                                                                 {watchListItem?.WatchListItemName}
-                                                            </option>
-                                                       )
-                                                  })}
-                                             </select>
-                                        </div>
-                                   }
-
-                                   {isEditing &&
-                                        <div className="narrow card">
-                                             <select className="selectStyle editing" autoFocus value={watchListDtl?.WatchListItemID} onChange={(event) => watchListDetailChangeHandler("WatchListItemID", event.target.value)}>
-                                                  <option value="-1">Please select</option>
-
-                                                  {watchListItems?.sort((a: IWatchListItem, b: IWatchListItem) => {
-                                                       return String(a.WatchListItemName) > String(b.WatchListItemName) ? (watchListSortDirection === "ASC" ? 1 : -1) : watchListSortDirection === "ASC" ? -1 : 1;
-                                                  }).map((watchListItem: IWatchListItem, index: number) => {
-                                                       return (
-                                                            <option key={index} value={watchListItem.WatchListItemID}>
-                                                                 {watchListItem.WatchListItemName}
-                                                            </option>
-                                                       );
-                                                  })}
-                                             </select>
-                                        </div>
-                                   }
-
-                                   <div className="narrow card">
-                                        {((isAdding && addWatchListDtl) || isEditing) &&
-                                             <div className="clickable hyperlink text-label rightAligned" onClick={addNewChangeHandler}>Add</div>
-                                        }
-                                   </div>
-
-                                   {(isAdding || isEditing) &&
-                                        <div className="narrow card"></div>
-                                   }
-
-                                   <div className="narrow card">
-                                        <span className={`textLabel ${!darkMode ? " lightMode" : "darkMode"}`}>Start Date:&nbsp;</span>
-                                   </div>
-
-                                   <div className="labelWidth narrow card">
-                                        {!isAdding && !isEditing &&
-                                             <span className={`${!darkMode ? " lightMode" : " darkMode"}`}>{watchListDtl?.StartDate && watchListDtl?.StartDate}</span>
-                                        }
-
-                                        {isEditing &&
-                                             <input className={`lightMode`} type="date" value={watchListDtl?.StartDate !== null ? watchListDtl?.StartDate : ""} onChange={(event) => watchListDetailChangeHandler("StartDate", event.target.value)} />
-                                        }
-
-                                        {isAdding && addWatchListDtl &&
-                                             <input className={`lightMode`} type="date" value={addWatchListDtl?.StartDate} onChange={(event) => addWatchListDetailChangeHandler("StartDate", event.target.value)} />
-                                        }
-                                   </div>
-
-                                   <div className="narrow card"></div>
-
-                                   <div className="narrow card">
-                                        <span className={`textLabel ${!darkMode ? " lightMode" : " darkMode"}`}>End Date:&nbsp;</span>
-                                   </div>
-
-                                   <div className="labelWidth narrow card">
-                                        {!isAdding && !isEditing &&
-                                             <span className={`${!darkMode ? "lightMode" : "darkMode"}`}>{watchListDtl?.EndDate && watchListDtl?.EndDate}</span>
-                                        }
-
-                                        {isEditing &&
-                                             <input className={`lightMode`} type="date" value={watchListDtl?.EndDate !== null ? watchListDtl?.EndDate : ""} onChange={(event) => watchListDetailChangeHandler("EndDate", event.target.value)} />
-                                        }
-
-                                        {isAdding && addWatchListDtl &&
-                                             <input className={`lightMode`} type="date" value={addWatchListDtl?.EndDate} onChange={(event) => addWatchListDetailChangeHandler("EndDate", event.target.value)} />
-                                        }
-                                   </div>
-
-                                   <div className="narrow card"></div>
-
-                                   <div className="narrow card">
-                                        <div className={`textLabel ${!darkMode ? " lightMode" : "darkMode"}`}>Source:</div>
-                                   </div>
-
-                                   <div className="narrow card">
-                                        {!isAdding && !isEditing &&
-                                             <div className={`${!darkMode ? " lightMode" : "darkMode"}`}>{watchListDtl?.WatchListSourceName}</div>
-                                        }
-
-                                        {isEditing &&
-                                             <select className="selectStyle" value={watchListDtl?.WatchListSourceID} onChange={(event) => watchListDetailChangeHandler("WatchListSourceID", event.target.value)}>
-                                                  <option value="-1">Please select</option>
-
-                                                  {watchListSources?.map((watchListSource: IWatchListSource, index: number) => {
-                                                       return (
-                                                            <option key={index} value={watchListSource?.WatchListSourceID}>
-                                                                 {watchListSource?.WatchListSourceName}
-                                                            </option>
-                                                       );
-                                                  })}
-                                             </select>
-                                        }
-
-                                        {isAdding && addWatchListDtl &&
-                                             <select className="selectStyle" value={addWatchListDtl?.WatchListSourceID} onChange={(event) => addWatchListDetailChangeHandler("WatchListSourceID", event.target.value)}>
-                                                  <option value="-1">Please select</option>
-
-                                                  {watchListSources?.map((watchListSource: IWatchListSource, index: number) => {
-                                                       return (
-                                                            <option key={index} value={watchListSource?.WatchListSourceID}>
-                                                                 {watchListSource?.WatchListSourceName}
-                                                            </option>
-                                                       );
-                                                  })}
-                                             </select>
-                                        }
-                                   </div>
-
-                                   {((isAdding && addWatchListDtl !== null && addWatchListDtl?.WatchListItemID !== -1 && getWatchListTypeID(addWatchListDtl.WatchListItemID) === 2) || (!isAdding && watchListDtl?.WatchListTypeID === 2)) &&
-                                        <>
-                                             <div className="narrow card"></div>
-
-                                             <div className="narrow card">
-                                                  <div className={`textLabel ${!darkMode ? " lightMode" : "darkMode"}`}>Season:</div>
+                                                  {(isEditing || isAdding) && formattedNames &&
+                                                       <div className="narrow card">
+                                                            <Autocomplete id="wl_autocomplete" className={`labelWidth lightMode`} size="small" sx={{ width: 250, height: 40 }} {...defaultProps} options={formattedNames} value={autoComplete} onChange={(event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => autoCompleteChangeHandler(event)} renderInput={(params: TextFieldProps) => <TextField {...params} label="Search" />} />
+                                                       </div>
+                                                  }
                                              </div>
 
-                                             <div className="narrow card">
+                                             <div className="narrow card rightAligned">
                                                   {!isAdding && !isEditing &&
-                                                       <div>{watchListDtl?.Season}</div>
+                                                       <div>ID: {watchListDtl?.WatchListID}</div>
                                                   }
 
-                                                  {isEditing &&
-                                                       <input className={`inputStyle narrowWidth lightMode`} type="number" value={watchListDtl?.Season !== null ? watchListDtl?.Season : ""} onChange={(event) => watchListDetailChangeHandler("Season", event.target.value)} />
+                                                  {!isAdding && !isEditing &&
+                                                       <span className={`clickable closeButton ${!darkMode ? " lightMode" : "darkMode"}`} style={{ position: "relative", top: "-20px" }} onClick={closeDetail}>
+                                                            X
+                                                       </span>
                                                   }
 
-                                                  {isAdding && addWatchListDtl &&
-                                                       <input className={`inputStyle narrowWidth lightMode`} type="number" value={addWatchListDtl?.Season} onChange={(event) => addWatchListDetailChangeHandler("Season", event.target.value)} />
+                                                  {(isAdding || isEditing) &&
+                                                       <span className={`clickable cancelIcon${!darkMode ? " lightMode" : " darkMode"}`} onClick={isAdding ? closeDetail : cancelClickHandler}>
+                                                            {CancelIconComponent}
+                                                       </span>
                                                   }
                                              </div>
-                                        </>
-                                   }
-
-                                   <div className="narrow card"></div>
-
-                                   <div className="narrow card">
-                                        <div className={`textLabel ${!darkMode ? " lightMode" : "darkMode"}`}>Notes:</div>
-                                   </div>
-
-                                   <div className="narrow card no-width">
-                                        {!isAdding && !isEditing &&
-                                             <div className={`${!darkMode ? "lightMode" : "darkMode"}`}>{watchListDtl?.Notes}</div>
-                                        }
-
-                                        {isEditing &&
-                                             <input className={`inputStyle lightMode`} value={watchListDtl?.Notes} onChange={(event) => watchListDetailChangeHandler("Notes", event.target.value)} />
-                                        }
-
-                                        {isAdding && addWatchListDtl &&
-                                             <input className={`inputStyle lightMode`} value={addWatchListDtl?.Notes} onChange={(event) => addWatchListDetailChangeHandler("Notes", event.target.value)} />
-                                        }
-                                   </div>
-
-                                   <div className="narrow card">
-                                        {!isAdding && !isEditing && recommendationsEnabled &&
-                                             <div className={`clickable hyperlink text-label rightAligned topMargin`} onClick={recommendationsClickHandler}>Recommendations</div>
-                                        }
-                                   </div>
-
-                                   <div className="narrow card">
-                                        <div className={`textLabel ${!darkMode ? " lightMode" : "darkMode"}`}>Rating:</div>
-                                   </div>
-
-                                   <div className="labelWidth narrow card">
-                                        {!isAdding && !isEditing &&
-                                             <span className={`${!darkMode ? "lightMode" : "darkMode"}`}>
-                                                  <span className="favoriteIcon">
-                                                       {watchListDtl && watchListDtl?.Rating !== null &&
-                                                            <Rating
-                                                                 name="hover-feedback"
-                                                                 value={watchListDtl?.Rating}
-                                                                 precision={0.5}
-                                                                 emptyIcon={<StarIcon style={{ opacity: 0.55 }} fontSize="inherit" />}
-                                                            />
-                                                       }
-                                                  </span>
-                                             </span>
-                                        }
-
-                                        {(isEditing || (isAdding && addWatchListDtl)) &&
-                                             <span className={`customTopMargin clickable ${!darkMode ? "lightMode" : "darkMode"}`}>
-                                                  <span className="favoriteIcon">
-                                                       <Rating
-                                                            name="hover-feedback"
-                                                            value={watchListDtl?.Rating}
-                                                            precision={0.5}
-                                                            emptyIcon={<StarIcon style={{ opacity: 0.55 }} fontSize="inherit" />}
-                                                            onChange={(event, newValue) => {
-                                                                 if (isAdding) {
-                                                                      addWatchListDetailChangeHandler("Rating", newValue as number);
-                                                                 } else if (isEditing) {
-                                                                      watchListDetailChangeHandler("Rating", newValue as number);
-                                                                 }
-                                                            }}
-                                                       />
-                                                  </span>
-                                             </span>
-                                        }
-                                   </div>
-
-                                   {(isAdding || isEditing) &&
-                                        <>
-                                             <div className="narrow card"></div>
 
                                              <div className="narrow card">
-                                                  <div className={`textLabel ${!darkMode ? " lightMode" : " darkMode"}`}>Archive:</div>
+                                                  {!isAdding && !isClosing &&
+                                                       <>
+                                                            {imdbImage}
+                                                       </>
+                                                  }
+
+                                                  {isAdding && addWatchListDtl && watchListItems?.filter((currentWatchListItem: IWatchListItem) => String(currentWatchListItem?.WatchListItemID) === String(addWatchListDtl?.WatchListItemID)).length === 1 && !isClosing &&
+                                                       <span className="column"><Image className="poster-detail" width="175" height="280" alt="Image Not Available" src={watchListItems?.filter((currentWatchListItem: IWatchListItem) => String(currentWatchListItem?.WatchListItemID) === String(addWatchListDtl?.WatchListItemID))[0].IMDB_Poster ?? ""} /></span>
+                                                  }
                                              </div>
 
-                                             {isAdding &&
-                                                  <div className="narrow card">
-                                                       <input className={`lightMode`} type="checkbox" checked={addWatchListDtl?.Archived === 1 ? true : false} onChange={(event) => addWatchListDetailChangeHandler("Archived", event.target.checked)} />
-                                                  </div>
+                                             {!isAdding && !isEditing &&
+                                                  <>
+                                                       <div className="narrow card"></div>
+                                                       <div className="narrow card"></div>
+                                                  </>
+                                             }
 
+                                             {isAdding && addWatchListDtl &&
+                                                  <div className="narrow card">
+                                                       <select className="selectStyle editing" autoFocus value={addWatchListDtl?.WatchListItemID} onChange={(event) => addWatchListDetailChangeHandler("WatchListItemID", event.target.value)}>
+                                                            <option value="-1">Please select</option>
+
+                                                            {formattedNamesWithId && formattedNamesWithId.map((watchListItem: IWatchListItem, index: number) => {
+                                                                 return (
+                                                                      <option key={index} value={watchListItem?.WatchListItemID}>
+                                                                           {watchListItem?.WatchListItemName}
+                                                                      </option>
+                                                                 )
+                                                            })}
+                                                       </select>
+                                                  </div>
                                              }
 
                                              {isEditing &&
                                                   <div className="narrow card">
-                                                       <input className={`lightMode`} type="checkbox" checked={watchListDtl?.Archived === 1 ? true : false} onChange={(event: React.ChangeEvent<HTMLInputElement>) => watchListDetailChangeHandler("Archived", event.target.checked)} />
+                                                       <select className="selectStyle editing" autoFocus value={watchListDtl?.WatchListItemID} onChange={(event) => watchListDetailChangeHandler("WatchListItemID", event.target.value)}>
+                                                            <option value="-1">Please select</option>
+
+                                                            {watchListItems?.sort((a: IWatchListItem, b: IWatchListItem) => {
+                                                                 return String(a.WatchListItemName) > String(b.WatchListItemName) ? (watchListSortDirection === "ASC" ? 1 : -1) : watchListSortDirection === "ASC" ? -1 : 1;
+                                                            }).map((watchListItem: IWatchListItem, index: number) => {
+                                                                 return (
+                                                                      <option key={index} value={watchListItem.WatchListItemID}>
+                                                                           {watchListItem.WatchListItemName}
+                                                                      </option>
+                                                                 );
+                                                            })}
+                                                       </select>
                                                   </div>
                                              }
-                                        </>
-                                   }
-                              </div>
-                         </div>
-                    }
 
-                    {recommendationsVisible && (
-                         <Recommendations queryTerm={recommendationName} type={recommendationType} setRecommendationName={setRecommendationName} setRecommendationType={setRecommendationName} setRecommendationsVisible={setRecommendationsVisible} />
-                    )}
-               </div>
-          </div>
+                                             <div className="narrow card">
+                                                  {((isAdding && addWatchListDtl) || isEditing) &&
+                                                       <div className="clickable hyperlink text-label rightAligned" onClick={addNewChangeHandler}>Add</div>
+                                                  }
+                                             </div>
+
+                                             {(isAdding || isEditing) &&
+                                                  <div className="narrow card"></div>
+                                             }
+
+                                             <div className="narrow card topMargin">
+                                                  <span className={`textLabel minWidth105 ${!darkMode ? " lightMode" : "darkMode"}`}>Start Date:&nbsp;</span>
+                                             </div>
+
+                                             <div className="labelWidth narrow card topMargin">
+                                                  {!isAdding && !isEditing &&
+                                                       <span className={`${!darkMode ? " lightMode" : " darkMode"}`}>{watchListDtl?.StartDate && watchListDtl?.StartDate}</span>
+                                                  }
+
+                                                  {isEditing &&
+                                                       <input className={`lightMode`} type="date" value={watchListDtl?.StartDate !== null ? watchListDtl?.StartDate : ""} onChange={(event) => watchListDetailChangeHandler("StartDate", event.target.value)} />
+                                                  }
+
+                                                  {isAdding && addWatchListDtl &&
+                                                       <input className={`lightMode`} type="date" value={addWatchListDtl?.StartDate} onChange={(event) => addWatchListDetailChangeHandler("StartDate", event.target.value)} />
+                                                  }
+                                             </div>
+
+                                             <div className="narrow card"></div>
+
+                                             <div className="narrow card">
+                                                  <span className={`textLabel ${!darkMode ? " lightMode" : " darkMode"}`}>End Date:&nbsp;</span>
+                                             </div>
+
+                                             <div className="labelWidth narrow card">
+                                                  {!isAdding && !isEditing &&
+                                                       <span className={`${!darkMode ? "lightMode" : "darkMode"}`}>{watchListDtl?.EndDate && watchListDtl?.EndDate}</span>
+                                                  }
+
+                                                  {isEditing &&
+                                                       <input className={`lightMode`} type="date" value={watchListDtl?.EndDate !== null ? watchListDtl?.EndDate : ""} onChange={(event) => watchListDetailChangeHandler("EndDate", event.target.value)} />
+                                                  }
+
+                                                  {isAdding && addWatchListDtl &&
+                                                       <input className={`lightMode`} type="date" value={addWatchListDtl?.EndDate} onChange={(event) => addWatchListDetailChangeHandler("EndDate", event.target.value)} />
+                                                  }
+                                             </div>
+
+                                             <div className="narrow card"></div>
+
+                                             <div className="narrow card">
+                                                  <div className={`textLabel ${!darkMode ? " lightMode" : "darkMode"}`}>Source:</div>
+                                             </div>
+
+                                             <div className="narrow card">
+                                                  {!isAdding && !isEditing &&
+                                                       <div className={`${!darkMode ? " lightMode" : "darkMode"}`}>{watchListDtl?.WatchListSourceName}</div>
+                                                  }
+
+                                                  {isEditing &&
+                                                       <select className="selectStyle" value={watchListDtl?.WatchListSourceID} onChange={(event) => watchListDetailChangeHandler("WatchListSourceID", event.target.value)}>
+                                                            <option value="-1">Please select</option>
+
+                                                            {watchListSources?.map((watchListSource: IWatchListSource, index: number) => {
+                                                                 return (
+                                                                      <option key={index} value={watchListSource?.WatchListSourceID}>
+                                                                           {watchListSource?.WatchListSourceName}
+                                                                      </option>
+                                                                 );
+                                                            })}
+                                                       </select>
+                                                  }
+
+                                                  {isAdding && addWatchListDtl &&
+                                                       <select className="selectStyle" value={addWatchListDtl?.WatchListSourceID} onChange={(event) => addWatchListDetailChangeHandler("WatchListSourceID", event.target.value)}>
+                                                            <option value="-1">Please select</option>
+
+                                                            {watchListSources?.map((watchListSource: IWatchListSource, index: number) => {
+                                                                 return (
+                                                                      <option key={index} value={watchListSource?.WatchListSourceID}>
+                                                                           {watchListSource?.WatchListSourceName}
+                                                                      </option>
+                                                                 );
+                                                            })}
+                                                       </select>
+                                                  }
+                                             </div>
+
+                                             {((isAdding && addWatchListDtl !== null && addWatchListDtl?.WatchListItemID !== -1 && getWatchListTypeID(addWatchListDtl.WatchListItemID) === 2) || (!isAdding && watchListDtl?.WatchListTypeID === 2)) &&
+                                                  <>
+                                                       <div className="narrow card"></div>
+
+                                                       <div className="narrow card">
+                                                            <div className={`textLabel ${!darkMode ? " lightMode" : "darkMode"}`}>Season:</div>
+                                                       </div>
+
+                                                       <div className="narrow card">
+                                                            {!isAdding && !isEditing &&
+                                                                 <div>{watchListDtl?.Season}</div>
+                                                            }
+
+                                                            {isEditing &&
+                                                                 <input className={`inputStyle narrowWidth lightMode`} type="number" value={watchListDtl?.Season !== null ? watchListDtl?.Season : ""} onChange={(event) => watchListDetailChangeHandler("Season", event.target.value)} />
+                                                            }
+
+                                                            {isAdding && addWatchListDtl &&
+                                                                 <input className={`inputStyle narrowWidth lightMode`} type="number" value={addWatchListDtl?.Season} onChange={(event) => addWatchListDetailChangeHandler("Season", event.target.value)} />
+                                                            }
+                                                       </div>
+                                                  </>
+                                             }
+
+                                             <div className="narrow card"></div>
+
+                                             <div className="narrow card">
+                                                  <div className={`textLabel ${!darkMode ? " lightMode" : "darkMode"}`}>Notes:</div>
+                                             </div>
+
+                                             <div className="narrow card no-width">
+                                                  {!isAdding && !isEditing &&
+                                                       <div className={`scrollableText ${!darkMode ? "lightMode" : "darkMode"}`}>{watchListDtl?.Notes}</div>
+                                                  }
+
+                                                  {isEditing &&
+                                                       <input className={`inputStyle lightMode`} value={watchListDtl?.Notes} onChange={(event) => watchListDetailChangeHandler("Notes", event.target.value)} />
+                                                  }
+
+                                                  {isAdding && addWatchListDtl &&
+                                                       <input className={`inputStyle lightMode`} value={addWatchListDtl?.Notes} onChange={(event) => addWatchListDetailChangeHandler("Notes", event.target.value)} />
+                                                  }
+                                             </div>
+
+                                             <div className="narrow card topMargin">
+                                                  {!isAdding && !isEditing && recommendationsEnabled &&
+                                                       <div className={`clickable hyperlink text-label rightAligned topMargin`} onClick={recommendationsClickHandler}>Recommendations</div>
+                                                  }
+                                             </div>
+
+                                             <div className="narrow card">
+                                                  <div className={`textLabel ${!darkMode ? " lightMode" : "darkMode"}`}>Rating:</div>
+                                             </div>
+
+                                             <div className="labelWidth narrow card">
+                                                  {!isAdding && !isEditing &&
+                                                       <span className={`${!darkMode ? "lightMode" : "darkMode"}`}>
+                                                            <span className={`favoriteIcon`}>
+                                                                 {watchListDtl && watchListDtl?.Rating !== null && watchListDtl?.Rating.toString() !== "" &&
+                                                                      <Rating
+                                                                           name="hover-feedback"
+                                                                           disabled
+                                                                           value={watchListDtl?.Rating}
+                                                                           precision={0.5}
+                                                                           style={{ opacity: 1 }}
+                                                                      />
+                                                                 }
+
+                                                                 {watchListDtl && (watchListDtl?.Rating === null || watchListDtl?.Rating.toString() === "") &&
+                                                                      <span>Not Rated</span>
+                                                                 }
+                                                            </span>
+                                                       </span>
+                                                  }
+
+                                                  {(isEditing || (isAdding && addWatchListDtl)) &&
+                                                       <span className={`customTopMargin clickable ${!darkMode ? "lightMode" : "darkMode"}`}>
+                                                            <span className={`favoriteIcon ratingsBorder ${!darkMode ? "lightMode" : "darkMode"}`}>
+                                                                 <Rating
+                                                                      name="hover-feedback"
+                                                                      value={watchListDtl?.Rating}
+                                                                      precision={0.5}
+                                                                      emptyIcon={<StarIcon style={{ opacity: 0.55 }} fontSize="inherit" />}
+                                                                      onChange={(event, newValue) => {
+                                                                           if (isAdding) {
+                                                                                addWatchListDetailChangeHandler("Rating", newValue as number);
+                                                                           } else if (isEditing) {
+                                                                                watchListDetailChangeHandler("Rating", newValue as number);
+                                                                           }
+                                                                      }}
+                                                                 />
+                                                            </span>
+                                                       </span>
+                                                  }
+                                             </div>
+
+                                             {(isAdding || isEditing) &&
+                                                  <>
+                                                       <div className="narrow card"></div>
+
+                                                       <div className="narrow card">
+                                                            <div className={`textLabel ${!darkMode ? " lightMode" : " darkMode"}`}>Archive:</div>
+                                                       </div>
+
+                                                       {isAdding &&
+                                                            <div className="narrow card">
+                                                                 <input className={`lightMode`} type="checkbox" checked={addWatchListDtl?.Archived === 1 ? true : false} onChange={(event) => addWatchListDetailChangeHandler("Archived", event.target.checked)} />
+                                                            </div>
+
+                                                       }
+
+                                                       {isEditing &&
+                                                            <div className="narrow card">
+                                                                 <input className={`lightMode`} type="checkbox" checked={watchListDtl?.Archived === 1 ? true : false} onChange={(event: React.ChangeEvent<HTMLInputElement>) => watchListDetailChangeHandler("Archived", event.target.checked)} />
+                                                            </div>
+                                                       }
+                                                  </>
+                                             }
+                                        </div>
+                                   </div>
+                              }
+
+                              {recommendationsVisible && (
+                                   <Recommendations queryTerm={recommendationName} type={recommendationType} setRecommendationName={setRecommendationName} setRecommendationType={setRecommendationName} setRecommendationsVisible={setRecommendationsVisible} />
+                              )}
+                         </div>
+                    </div>
+               }
+          </>
      )
 }

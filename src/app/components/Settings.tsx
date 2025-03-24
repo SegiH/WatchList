@@ -19,8 +19,10 @@ const Settings = () => {
           LogOutIconComponent,
           pullToRefreshEnabled,
           routeList,
+          saveOptions,
           setActiveRoute,
           setActiveRouteDisplayName,
+          setCurrentPage,
           setOptions,
           setSettingsVisible,
           setShowMissingArtwork,
@@ -61,7 +63,7 @@ const Settings = () => {
                "VisibleSections": JSON.stringify(newList)
           }
 
-          setOptions(options, true);
+          saveOptions(options);
      }
 
      const closeDetail = async () => {
@@ -79,7 +81,10 @@ const Settings = () => {
                "ShowMissingArtwork": columnName === "ShowMissingArtwork" ? columnValue === true ? 1 : 0 : showMissingArtwork ? 1 : 0
           }
 
-          setOptions(options, true);
+          setOptions(options);
+          saveOptions(options);
+
+          setCurrentPage(1);
      }
 
      useEffect(() => {
@@ -163,7 +168,7 @@ const Settings = () => {
                               </li>
                          )}
 
-                         {(activeRoute === "WatchList" || activeRoute === "Items" || activeRoute === "SearchIMDB") && (
+                         {(activeRoute === "WatchList" || activeRoute === "Items" || activeRoute === "Search") && (
                               <li className="topMargin">
                                    <span className="firstItem">
                                         <span>Auto Add</span>

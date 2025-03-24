@@ -168,7 +168,11 @@ const ManageWatchListTypes = () => {
                          <thead>
                               <tr>
                                    <th>Actions</th>
-                                   <th>ID</th>
+
+                                   {!isAdding &&
+                                        <th>ID</th>
+                                   }
+
                                    <th>Type name</th>
 
                                    {!isAdding && !isEditing &&
@@ -180,7 +184,7 @@ const ManageWatchListTypes = () => {
                          <tbody>
                               {isAdding &&
                                    <tr>
-                      ItemDesc                  <td>
+                                        <td>
                                              <span className="inlineFlex">
                                                   <span className={`clickable iconLarge primary`} onClick={saveRow}>
                                                        {SaveIconComponent}
@@ -193,11 +197,8 @@ const ManageWatchListTypes = () => {
                                         </td>
 
                                         <td>
-                                        </td>
-
-                                        <td>
                                              {addingType !== null &&
-                                                  <TextField className={`lightMode borderRadius15 minWidth150`} margin="dense" id="typename" label="type name" value={addingType.WatchListTypeName} variant="standard" onChange={(event: React.ChangeEvent<HTMLInputElement>) => typeChangeHandler("WatchListTypeName", event.target.value)} />
+                                                  <TextField className={`lightMode borderRadius15 minWidth150`} margin="dense" id="typename" value={addingType.WatchListTypeName} variant="standard" onChange={(event: React.ChangeEvent<HTMLInputElement>) => typeChangeHandler("WatchListTypeName", event.target.value)} />
                                              }
                                         </td>
                                    </tr>
@@ -242,7 +243,7 @@ const ManageWatchListTypes = () => {
                                                   }
 
                                                   {isEditing && editingType !== null &&
-                                                       <TextField className={`lightMode borderRadius15 minWidth150`} margin="dense" id="username" label="username" value={editingType.WatchListTypeName} variant="standard" onChange={(event: React.ChangeEvent<HTMLInputElement>) => typeChangeHandler("WatchListTypeName", event.target.value)} />
+                                                       <TextField className={`lightMode borderRadius15 minWidth150`} margin="dense" id="typename" value={editingType.WatchListTypeName} variant="standard" onChange={(event: React.ChangeEvent<HTMLInputElement>) => typeChangeHandler("WatchListTypeName", event.target.value)} />
                                                   }
                                              </td>
 

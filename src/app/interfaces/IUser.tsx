@@ -5,6 +5,7 @@ export default interface IUser {
      Username: string,
      Realname: string,
      Password: string,
+     ConfirmPassword?: string; // Virtual field used when adding a new user
      Admin: number,
      Enabled: number,
      IsModified?: boolean,

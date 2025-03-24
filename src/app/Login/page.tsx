@@ -131,7 +131,7 @@ export default function Login() {
                setUserData(newUserData);
 
                if (typeof response.Options !== "undefined" && response.Options.length === 1) {
-                    setOptions(response.Options[0], false);
+                    setOptions(response.Options[0]);
                }
 
                setIsLoggedIn(true);

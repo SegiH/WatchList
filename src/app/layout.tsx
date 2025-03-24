@@ -4,6 +4,7 @@ import { Inter } from 'next/font/google';
 import Tabs from './components/Tabs';
 import { DataProvider } from "./data-context";
 import SharedLayout from "./shared-layout";
+import NavBar from './components/NavBar';
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -21,6 +22,7 @@ export default function RootLayout({
           <html lang="en" suppressHydrationWarning>
                <head>
                     <meta name="theme-color" content="#317EFB" />
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
                     <link rel="manifest" href="/manifest.json" crossOrigin="use-credentials"></link>
                </head>

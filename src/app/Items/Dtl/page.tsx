@@ -372,6 +372,8 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
                newAddWatchListItemDtl.ItemNotes = "";
 
                setAddWatchListItemDtl(newAddWatchListItemDtl);
+
+               setIsLoadingComplete(true);   
           }
      }, [demoMode, isAdding, setErrorMessage, setIsError, watchListItemDtlLoadingStarted, watchListItemDtlLoadingComplete, watchListItemDtl, watchListItemDtlID]);
 

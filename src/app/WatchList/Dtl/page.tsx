@@ -458,6 +458,8 @@ export default function WatchListDetail() {
                     setWatchListDtlLoadingStarted(true);
                     setWatchListDtlLoadingComplete(true);
 
+                    setIsLoadingComplete(true);
+
                     return;
                }
 

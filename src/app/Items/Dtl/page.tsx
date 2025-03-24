@@ -315,6 +315,8 @@ export default function WatchListItemsDtl() {
                     setWatchListItemDtlLoadingStarted(true);
                     setWatchListItemDtlLoadingComplete(true);
 
+                    setIsLoadingComplete(true);
+
                     return;
                }
 

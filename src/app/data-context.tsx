@@ -3,6 +3,7 @@
 //
 import axios, { AxiosResponse } from "axios";
 import { useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import PropTypes from 'prop-types';
 import React, { createContext, useCallback, useEffect, useMemo, useState } from "react";
 
@@ -284,6 +285,8 @@ const DataProvider = ({ children }) => {
           }
      }, []);
 
+     const currentPath = usePathname();
+
      const generateRandomPassword = () => {
           const lowercaseChars = "abcdefghijklmnopqrstuvwxyz";
           const uppercaseChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -389,6 +392,7 @@ const DataProvider = ({ children }) => {
                               if (typeof res.data[2] !== "undefined" && res.data[2] === true) {
                                    setErrorMessage(res.data[1]);
 
+                                   setActiveRoute("404");
                                    setIsError(true);
 
                                    return;
@@ -879,10 +883,15 @@ const DataProvider = ({ children }) => {
                return;
           }
 
-          if (isError) {
-               router.push("404");
+          /*if (isError && activeRoute !== "") {
+               router.push("/404");
                return;
-          }
+          }*/
+          /*if (isError && activeRoute !== "404" && activeRoute !== "/404" && activeRoute !== "404" && activeRoute !== "") {
+               setActiveRoute("404");
+               router.push("/404");
+               return;
+          }*/
 
           if (!isLoggedInCheckComplete) { // Tabs should never be rendered if the logged in check is not complete
                return;
@@ -967,6 +976,12 @@ const DataProvider = ({ children }) => {
                setActiveRouteDisplayName(displayName);
           }
      }, [defaultRoute, isError, isLoggedIn, isLoggedInCheckComplete]); // Do not add activeRoute, getDisplayName, routeList, setActiveRoute, setActiveRouteDisplayName to dependencies. Causes dtl to close when you click on edit
+
+     useEffect(() => {
+          if (currentPath == "/" && activeRoute === "404" && isError) {
+               router.push("/404");
+          }
+     }, [activeRoute]);
 
      /* UseEffect that checks if IMDB search is enabled */
      useEffect(() => {

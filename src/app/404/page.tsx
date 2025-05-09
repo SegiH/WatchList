@@ -8,16 +8,11 @@ import { DataContext, DataContextType } from "../data-context";
 export default function ErrorPage() {
      const {
           darkMode,
-          errorMessage
+          errorMessage,
+          setActiveRoute
      } = useContext(DataContext) as DataContextType
 
      const router = useRouter();
-
-     useEffect(() => {
-          if (errorMessage !== "") {
-               throw new Error(errorMessage);
-          }
-     }, [errorMessage]);
 
      return (
           <div className={`${!darkMode ? " lightMode" : " darkMode"}`}>
@@ -26,7 +21,7 @@ export default function ErrorPage() {
 
                     <br /><br />
 
-                    <a className={`clickable largeText ${!darkMode ? " lightMode" : " darkMode"}`} onClick={() => router.push("/")}>Go Home</a>
+                    <a className={`clickable largeText ${!darkMode ? " lightMode" : " darkMode"}`} onClick={() => setActiveRoute("")}>Go Home</a>
 
                     <h1>{errorMessage}</h1>
                </span>

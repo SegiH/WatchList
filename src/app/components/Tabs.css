@@ -13,7 +13,7 @@
      max-width: 168px;
 }
 
-:tab:last-child {
+.tab:last-child {
      margin-right: 125px;
 }
 

@@ -1,7 +1,6 @@
 "use client"
 
-import { useRouter } from 'next/navigation';
-import { useContext, useEffect } from "react";
+import { useContext } from "react";
 
 import { DataContext, DataContextType } from "../data-context";
 
@@ -11,8 +10,6 @@ export default function ErrorPage() {
           errorMessage,
           setActiveRoute
      } = useContext(DataContext) as DataContextType
-
-     const router = useRouter();
 
      return (
           <div className={`${!darkMode ? " lightMode" : " darkMode"}`}>

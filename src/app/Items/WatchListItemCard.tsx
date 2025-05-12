@@ -45,7 +45,7 @@ export default function WatchListItemCard({ currentWatchListItem }: WatchListCar
             <a className="show-link" onClick={() => openDetailClickHandler(currentWatchListItem?.WatchListItemID, "Items")}>
                 <div className="clickable image-crop">
                     {currentWatchListItem?.IMDB_Poster !== null && currentWatchListItem?.IMDB_Poster_Error !== true &&
-                        <Image width="128" height="187" alt={currentWatchListItem?.WatchListItemName} src={currentWatchListItem?.IMDB_Poster} onError={() => currentWatchListItem["IMDB_Poster_Error"] = true} />
+                        <Image width="128" height="187" alt={currentWatchListItem?.WatchListItemName} src={currentWatchListItem?.IMDB_Poster} onError={() => showDefaultSrc(currentWatchListItem.WatchListItemID)} />
                     }
 
                     {(currentWatchListItem?.IMDB_Poster === null || currentWatchListItem?.IMDB_Poster_Error === true) && <>{BrokenImageIconComponent}</>}

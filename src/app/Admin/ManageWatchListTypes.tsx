@@ -4,7 +4,7 @@ import axios, { AxiosResponse } from "axios";
 import { useRouter } from 'next/navigation';
 import React, { useContext, useEffect, useState } from "react";
 
-import { DataContext, DataContextType } from "../data-context";
+import { APIStatus, DataContext, DataContextType } from "../data-context";
 import IWatchListType from "../interfaces/IWatchListType";
 
 const ManageWatchListTypes = () => {
@@ -21,10 +21,9 @@ const ManageWatchListTypes = () => {
           SaveIconComponent,
           setIsAdding,
           setIsEditing,
-          setWatchListTypesLoadingComplete,
-          setWatchListTypesLoadingStarted,
+          setWatchListTypesLoadingCheck,
           watchListTypes,
-          watchListTypesLoadingComplete
+          watchListTypesLoadingCheck
      } = useContext(DataContext) as DataContextType;
 
      const [addingType, setAddingType] = useState<IWatchListType | null>(null);
@@ -59,8 +58,7 @@ const ManageWatchListTypes = () => {
                     if (response.data[0] === "ERROR") {
                          alert(response.data[1])
                     } else {
-                         setWatchListTypesLoadingStarted(false);
-                         setWatchListTypesLoadingComplete(false);
+                         setWatchListTypesLoadingCheck(APIStatus.Idle);
                     }
                })
                .catch((err: Error) => {
@@ -117,9 +115,7 @@ const ManageWatchListTypes = () => {
                     if (response !== null && response.data !== null && response.data[0] === "OK") {
                          alert("Saved");
 
-                         setWatchListTypesLoadingStarted(false);
-                         setWatchListTypesLoadingComplete(false);
-
+                         setWatchListTypesLoadingCheck(APIStatus.Idle);
                          setIsAdding(false);
                          setIsEditing(false);
                     } else {
@@ -153,7 +149,7 @@ const ManageWatchListTypes = () => {
 
      return (
           <span>
-               {watchListTypesLoadingComplete &&
+               {watchListTypesLoadingCheck === APIStatus.Success &&
                     <Button
                          color="primary"
                          variant="contained"

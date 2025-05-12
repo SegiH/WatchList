@@ -5,7 +5,7 @@ import TextField from "@mui/material/TextField";
 import axios, { AxiosResponse } from "axios";
 import { useRouter } from 'next/navigation';
 import React, { useContext, useEffect, useState } from "react";
-import { DataContext, DataContextType } from "../data-context";
+import { APIStatus, DataContext, DataContextType } from "../data-context";
 import IBugLog from "../interfaces/IBugLog";
 
 import "../page.css";
@@ -31,8 +31,7 @@ export default function BugLog() {
 
      const [addingBugLog, setAddingBugLog] = useState<IBugLog>({} as IBugLog);
      const [editingBugLog, setEditingBugLog] = useState<IBugLog>({} as IBugLog);
-     const [bugLogsLoadingStarted, setBugLogsLoadingStarted] = useState(false);
-     const [bugLogsLoadingComplete, setBugLogsLoadingComplete] = useState(false);
+     const [bugLogsLoadingCheck, setBugLogsLoadingCheck] = useState(APIStatus.Idle);
      const [isMounted, setIsMounted] = useState(false);
      const [showActiveBugLogs, setShowActiveBugLogs] = useState(true);
 
@@ -169,8 +168,7 @@ export default function BugLog() {
                     if (response !== null && response.data !== null && response.data[0] === "OK") {
                          alert("Saved");
 
-                         setBugLogsLoadingStarted(false);
-                         setBugLogsLoadingComplete(false);
+                         setBugLogsLoadingCheck(APIStatus.Idle);
 
                          setIsAdding(false);
                          setIsEditing(false);
@@ -184,11 +182,11 @@ export default function BugLog() {
      }
 
      useEffect(() => {
-          if (bugLogsLoadingStarted) {
+          if (bugLogsLoadingCheck === APIStatus.Loading) {
                return;
           }
 
-          setBugLogsLoadingStarted(true);
+          setBugLogsLoadingCheck(APIStatus.Loading);
 
           axios.get(`/api/GetBugLogs`)
                .then((res) => {
@@ -202,7 +200,7 @@ export default function BugLog() {
                          });
 
                          setBugLogs(res.data[1]);
-                         setBugLogsLoadingComplete(true);
+                         setBugLogsLoadingCheck(APIStatus.Success);
                     } else {
                          alert(`An error occurred while getting the bug logs`);
                     }
@@ -211,7 +209,7 @@ export default function BugLog() {
                     setErrorMessage(`The fatal error ${err.message} occurred while getting the bug logs`);
                     setIsError(true);
                });
-     }, [bugLogsLoadingStarted, bugLogsLoadingComplete]);
+     }, [bugLogsLoadingCheck]);
 
      useEffect(() => {
           // Make sure current user is an admin
@@ -226,7 +224,7 @@ export default function BugLog() {
           <>
                {isMounted &&
                     <span className="topMarginContent">
-                         {bugLogsLoadingComplete &&
+                         {bugLogsLoadingCheck === APIStatus.Success &&
                               <span>
                                    {!isAdding && !isEditing &&
                                         <>
@@ -247,7 +245,7 @@ export default function BugLog() {
                               </span>
                          }
 
-                         {bugLogsLoadingComplete && bugLogs.length > 0 &&
+                         {bugLogsLoadingCheck === APIStatus.Success && bugLogs.length > 0 &&
                               <table style={{ borderWidth: "1px", borderStyle: "solid" }} className={`simpleTable fullWidth ${!darkMode ? "lightMode" : "darkMode"}`}>
                                    <thead>
                                         <tr>

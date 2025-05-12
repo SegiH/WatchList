@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 import React, { useContext, useEffect, useState } from "react";
 import IWatchListSource from "../interfaces/IWatchListSource";
 
-import { DataContext, DataContextType } from "../data-context";
+import { APIStatus, DataContext, DataContextType } from "../data-context";
 
 const ManageWatchListSources = () => {
      const {
@@ -22,10 +22,9 @@ const ManageWatchListSources = () => {
           SaveIconComponent,
           setIsAdding,
           setIsEditing,
-          setWatchListSourcesLoadingComplete,
-          setWatchListSourcesLoadingStarted,
-          watchListSources,
-          watchListSourcesLoadingComplete
+          setWatchListSourcesLoadingCheck,
+          watchListSourcesLoadingCheck,
+          watchListSources
      } = useContext(DataContext) as DataContextType;
 
      const [addingSource, setAddingSource] = useState<IWatchListSource | null>(null);
@@ -60,8 +59,7 @@ const ManageWatchListSources = () => {
                     if (response.data[0] === "ERROR") {
                          alert(response.data[1])
                     } else {
-                         setWatchListSourcesLoadingStarted(false);
-                         setWatchListSourcesLoadingComplete(false);
+                         setWatchListSourcesLoadingCheck(APIStatus.Idle);
                     }
                })
                .catch((err: Error) => {
@@ -122,9 +120,7 @@ const ManageWatchListSources = () => {
                     if (response !== null && response.data !== null && response.data[0] === "OK") {
                          alert("Saved");
 
-                         setWatchListSourcesLoadingStarted(false);
-                         setWatchListSourcesLoadingComplete(false);
-
+                         setWatchListSourcesLoadingCheck(APIStatus.Idle);
                          setIsAdding(false);
                          setIsEditing(false);
                     } else {
@@ -158,7 +154,7 @@ const ManageWatchListSources = () => {
 
      return (
           <span>
-               {watchListSourcesLoadingComplete &&
+               {watchListSourcesLoadingCheck === APIStatus.Success &&
                     <Button
                          color="primary"
                          variant="contained"

@@ -5,7 +5,7 @@ import Image from "next/image";
 import { useRouter } from 'next/navigation';
 import React, { useContext, useEffect, useState } from "react";
 import Recommendations from "../../components/Recommendations";
-import { DataContext, DataContextType } from "../../data-context";
+import { APIStatus, DataContext, DataContextType } from "../../data-context";
 import IWatchListItem from "../../interfaces/IWatchListItem";
 import IWatchListType from "../../interfaces/IWatchListType";
 
@@ -20,14 +20,13 @@ export default function WatchListItemsDtl() {
           isEnabled,
           isEditing,
           isLoading,
+          pullToRefreshEnabled,
           SaveIconComponent,
           setIsAdding,
           setIsEditing,
           setIsError,
           setErrorMessage,
-          setWatchListItemsLoadingStarted,
-          setWatchListItemsLoadingComplete,
-          pullToRefreshEnabled,
+          setWatchListItemsLoadingCheck,          
           watchListTypes
      } = useContext(DataContext) as DataContextType
 
@@ -35,14 +34,12 @@ export default function WatchListItemsDtl() {
      const [editModified, setEditModified] = useState(false);
      const [addModified, setAddModified] = useState(false);
      const [isClosing, setIsClosing] = useState(false);
-     const [isLoadingComplete, setIsLoadingComplete] = useState(false);
      const [originalWatchListItemDtl, setOriginalWatchListItemDtl] = useState<IWatchListItem | null>();
      const [recommendationsVisible, setRecommendationsVisible] = useState(false);
      const [recommendationName, setRecommendationName] = useState<string>("");
      const [recommendationType, setRecommendationType] = useState("");
      const [watchListItemDtl, setWatchListItemDtl] = useState<IWatchListItem | null>();
-     const [watchListItemDtlLoadingStarted, setWatchListItemDtlLoadingStarted] = useState(false);
-     const [watchListItemDtlLoadingComplete, setWatchListItemDtlLoadingComplete] = useState(false);
+     const [watchListItemDtlLoadingCheck, setWatchListItemDtlLoadingCheck] = useState(APIStatus.Idle);
      const [watchListItemDtlID, setWatchListItemDtlID] = useState<number>(-1);
 
      const router = useRouter();
@@ -82,8 +79,7 @@ export default function WatchListItemsDtl() {
           setOriginalWatchListItemDtl(null);
 
           if (addModified || editModified) {
-               setWatchListItemsLoadingStarted(false);
-               setWatchListItemsLoadingComplete(false);
+               setWatchListItemsLoadingCheck(APIStatus.Idle);
           }
 
           pullToRefreshEnabled(true);
@@ -250,8 +246,7 @@ export default function WatchListItemsDtl() {
                     if (addNewWatchListPrompt) {
                          setIsAdding(true);
                          router.push(`/WatchList/Dtl?WatchListItemID=${res.data[1]}`);
-                         setWatchListItemsLoadingStarted(false);
-                         setWatchListItemsLoadingComplete(false);
+                         setWatchListItemsLoadingCheck(APIStatus.Idle);
                     }
                }
           })
@@ -295,8 +290,8 @@ export default function WatchListItemsDtl() {
      };
 
      useEffect(() => {
-          if (!isAdding && !watchListItemDtlLoadingStarted && !watchListItemDtlLoadingComplete && watchListItemDtlID !== null && watchListItemDtlID !== -1 && watchListItemDtl == null) {
-               setWatchListItemDtlLoadingStarted(true);
+          if (!isAdding && watchListItemDtlLoadingCheck === APIStatus.Idle && watchListItemDtlID !== null && watchListItemDtlID !== -1 && watchListItemDtl == null) {
+               setWatchListItemDtlLoadingCheck(APIStatus.Loading);
 
                if (demoMode) {
                     const demoWatchListItemPayload = require("../../demo/index").demoWatchListItemsPayload;
@@ -312,17 +307,14 @@ export default function WatchListItemsDtl() {
                     }
 
                     setWatchListItemDtl(detailWatchListItem[0]);
-                    setWatchListItemDtlLoadingStarted(true);
-                    setWatchListItemDtlLoadingComplete(true);
-
-                    setIsLoadingComplete(true);
+                    setWatchListItemDtlLoadingCheck(APIStatus.Success);
 
                     return;
                }
 
                axios.get(`/api/GetWatchListItemDtl?WatchListItemID=${watchListItemDtlID}`)
                     .then((res: AxiosResponse<IWatchListItem>) => {
-                         setWatchListItemDtlLoadingComplete(true);
+                         setWatchListItemDtlLoadingCheck(APIStatus.Success);
 
                          if (res.data[0] === "ERROR") {
                               setErrorMessage(`The error ${res.data[1]} occurred while getting the item detail`);
@@ -358,7 +350,7 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
 
                               setWatchListItemDtl(wlid[0]);
 
-                              setIsLoadingComplete(true);
+                              setWatchListItemDtlLoadingCheck(APIStatus.Success);
                          }
                     })
                     .catch((err: Error) => {
@@ -375,9 +367,9 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
 
                setAddWatchListItemDtl(newAddWatchListItemDtl);
 
-               setIsLoadingComplete(true);   
+               setWatchListItemDtlLoadingCheck(APIStatus.Success);  
           }
-     }, [demoMode, isAdding, setErrorMessage, setIsError, watchListItemDtlLoadingStarted, watchListItemDtlLoadingComplete, watchListItemDtl, watchListItemDtlID]);
+     }, [demoMode, isAdding, setErrorMessage, setIsError, watchListItemDtlLoadingCheck, watchListItemDtl, watchListItemDtlID]);
 
      useEffect(() => {
           if (recommendationName !== "" && recommendationType !== "") {
@@ -411,7 +403,7 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
 
      return (
           <>
-               {!isLoading && !isClosing && isLoadingComplete &&
+               {!isLoading && !isClosing && watchListItemDtlLoadingCheck === APIStatus.Success &&
                     <div className="modal">
                          <div className={`modal-content ${watchListItemDtlID != null ? "fade-in" : ""}${!darkMode ? " lightMode" : " darkMode"}`}>
                               {!recommendationsVisible &&
@@ -638,7 +630,7 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
 
                               {recommendationsVisible && (
                                    <>
-                                        <Recommendations BrokenImageIcon={BrokenImageIconComponent} queryTerm={recommendationName} type={recommendationType} setRecommendationName={setRecommendationName} setRecommendationType={setRecommendationName} setRecommendationsVisible={setRecommendationsVisible} />
+                                        <Recommendations queryTerm={recommendationName} type={recommendationType} setRecommendationName={setRecommendationName} setRecommendationType={setRecommendationName} setRecommendationsVisible={setRecommendationsVisible} />
                                    </>
                               )}
                          </div>

@@ -5,7 +5,7 @@ import TextField from "@mui/material/TextField";
 import axios, { AxiosResponse } from "axios";
 import { useRouter } from 'next/navigation';
 import React, { useContext, useEffect, useState } from "react";
-import { DataContext, DataContextType } from "../data-context";
+import { APIStatus, DataContext, DataContextType } from "../data-context";
 import IUser from "../interfaces/IUser";
 
 import "../page.css";
@@ -17,7 +17,6 @@ const ManageUserAccounts = () => {
           defaultRoute,
           demoMode,
           EditIconComponent,
-          //generateRandomPassword,
           isAdding,
           isAdmin,
           isEditing,
@@ -34,8 +33,7 @@ const ManageUserAccounts = () => {
      const [addingUser, setAddingUser] = useState<IUser>({} as IUser);
      const [editingUser, setEditingUser] = useState<IUser>({} as IUser);
      const [isPasswordModified, setIsPasswordModified] = useState(false);
-     const [usersLoadingStarted, setUsersLoadingStarted] = useState(false);
-     const [usersLoadingComplete, setUsersLoadingComplete] = useState(false);
+     const [usersLoadingCheck, setUsersLoadingCheck] = useState(APIStatus.Idle);
 
      const router = useRouter();
 
@@ -50,8 +48,8 @@ const ManageUserAccounts = () => {
                Username: "",
                Realname: "",
                Password: "",
-               Admin: 0,
-               Enabled: 1,
+               Admin: false,
+               Enabled: true,
                Options: []
           });
 
@@ -106,7 +104,8 @@ const ManageUserAccounts = () => {
 
           if (isPasswordModified) {
                if (typeof currentUser.Password === "undefined" || typeof currentUser.ConfirmPassword === "undefined") {
-                    // TODO: Fix me. what do you do here?!
+                    alert("One of the passwords are not valid");
+                    return;
                }
 
                // In case I modify the password field but then decide not to add, just clear both fields to ignore validation
@@ -139,8 +138,8 @@ const ManageUserAccounts = () => {
 
           columns += (columns === "" ? "?" : "&") + `wl_username=${encodeURIComponent(currentUser.Username)}`;
           columns += (columns === "" ? "?" : "&") + `wl_realname=${encodeURIComponent(currentUser.Realname)}`;
-          columns += (columns === "" ? "?" : "&") + `wl_admin=${currentUser.Admin === 1 ? true : false}`;
-          columns += (columns === "" ? "?" : "&") + `wl_enabled=${currentUser.Enabled === 1 ? true : false}`;
+          columns += (columns === "" ? "?" : "&") + `wl_admin=${currentUser.Admin === true ? true : false}`;
+          columns += (columns === "" ? "?" : "&") + `wl_enabled=${currentUser.Enabled === true ? true : false}`;
 
           const endPoint = (isAdding ? `/api/AddUser` : `/api/UpdateUser`) + columns;
 
@@ -149,8 +148,7 @@ const ManageUserAccounts = () => {
                     if (response !== null && response.data !== null && response.data[0] === "OK") {
                          alert("Saved");
 
-                         setUsersLoadingStarted(false);
-                         setUsersLoadingComplete(false);
+                         setUsersLoadingCheck(APIStatus.Idle);
 
                          setIsAdding(false);
                          setIsEditing(false);
@@ -167,7 +165,7 @@ const ManageUserAccounts = () => {
           const newUser: IUser = Object.assign({}, isAdding ? addingUser : editingUser) as IUser;
 
           if (fieldName === "Admin") {
-               newUser[fieldName] = fieldValue === "true" ? 1 : 0;
+               newUser[fieldName] = fieldValue === "true" ? true : false;
           } else {
                newUser[fieldName] = fieldValue;
           }
@@ -195,13 +193,12 @@ const ManageUserAccounts = () => {
                const newUserData: IUser[] = require("../demo/index").demoUsers;
 
                setUsers(newUserData);
-               setUsersLoadingStarted(true);
-               setUsersLoadingComplete(true);
+               setUsersLoadingCheck(APIStatus.Success);
                return;
           }
 
-          if (!usersLoadingStarted && !usersLoadingComplete) {
-               setUsersLoadingStarted(true);
+          if (usersLoadingCheck === APIStatus.Idle) {
+               setUsersLoadingCheck(APIStatus.Loading);
 
                axios.get(`/api/GetUsers`, { withCredentials: true })
                     .then((res: AxiosResponse<IUser>) => {
@@ -213,18 +210,18 @@ const ManageUserAccounts = () => {
                               setIsError(true);
                          }
 
-                         setUsersLoadingComplete(true);
+                         setUsersLoadingCheck(APIStatus.Success);
                     })
                     .catch((err: Error) => {
                          setErrorMessage("Failed to get users with the error " + err.message);
                          setIsError(true);
                     });
           }
-     }, [usersLoadingStarted, usersLoadingComplete]);
+     }, [usersLoadingCheck]);
 
      return (
           <>
-               {usersLoadingComplete &&
+               {usersLoadingCheck === APIStatus.Success &&
                     <Button
                          color="primary"
                          variant="contained"
@@ -289,7 +286,7 @@ const ManageUserAccounts = () => {
                                         </td>
 
                                         <td>
-                                             <input type="checkbox" checked={addingUser.Admin === 1 ? true : false} onChange={(event: React.ChangeEvent<HTMLInputElement>) => userChangeHandler("Admin", event.target.checked.toString())} />
+                                             <input type="checkbox" checked={addingUser.Admin === true ? true : false} onChange={(event: React.ChangeEvent<HTMLInputElement>) => userChangeHandler("Admin", event.target.checked.toString())} />
                                         </td>
 
                                         <td>
@@ -364,21 +361,21 @@ const ManageUserAccounts = () => {
 
                                                        <td>
                                                             {!isEditing &&
-                                                                 <span>{user.Admin === 1 ? "Y" : "N"}</span>
+                                                                 <span>{user.Admin === true ? "Y" : "N"}</span>
                                                             }
 
                                                             {isEditing &&
-                                                                 <input type="checkbox" checked={editingUser.Admin === 1 ? true : false} onChange={(event: React.ChangeEvent<HTMLInputElement>) => userChangeHandler("Admin", event.target.checked.toString())} />
+                                                                 <input type="checkbox" checked={editingUser.Admin === true ? true : false} onChange={(event: React.ChangeEvent<HTMLInputElement>) => userChangeHandler("Admin", event.target.checked.toString())} />
                                                             }
                                                        </td>
 
                                                        <td>
                                                             {!isEditing &&
-                                                                 <span>{user.Enabled === 1 ? "Y" : "N"}</span>
+                                                                 <span>{user.Enabled === true ? "Y" : "N"}</span>
                                                             }
 
                                                             {isEditing &&
-                                                                 <input type="checkbox" checked={editingUser.Enabled === 1 ? true : false} onChange={(event: React.ChangeEvent<HTMLInputElement>) => userChangeHandler("Enabled", event.target.checked.toString())} />
+                                                                 <input type="checkbox" checked={editingUser.Enabled === true ? true : false} onChange={(event: React.ChangeEvent<HTMLInputElement>) => userChangeHandler("Enabled", event.target.checked.toString())} />
                                                             }
                                                        </td>
                                                   </>

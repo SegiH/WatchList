@@ -17,7 +17,7 @@ import IWatchListSource from "../../interfaces/IWatchListSource";
 
 import "../../page.css";
 
-import { DataContext, DataContextType } from "../../data-context";
+import { APIStatus, DataContext, DataContextType } from "../../data-context";
 
 // I have a very specific use case here where I'm using a custom type for the Auto Complete dropdown that only has these 2 properties and is only used here so the interface is created here
 interface AutoCompleteWatchListItem {
@@ -41,9 +41,8 @@ export default function WatchListDetail() {
           setIsEditing,
           setIsError,
           setErrorMessage,
-          setWatchListLoadingStarted,
-          setWatchListLoadingComplete,
-          setWatchListSortingComplete,
+          setWatchListLoadingCheck, 
+          setWatchListSortingCheck,        
           showSearch,
           pullToRefreshEnabled,
           watchListItems,
@@ -60,15 +59,13 @@ export default function WatchListDetail() {
      const [formattedNamesWithId, setFormattedNamesWithId] = useState<AutoCompleteWatchListItem[]>([]);
      const [editModified, setEditModified] = useState(false);
      const [isClosing, setIsClosing] = useState(false);
-     const [isLoadingComplete, setIsLoadingComplete] = useState(false);
      const [originalWatchListDtl, setOriginalWatchListDtl] = useState<IWatchList | null>(null); (null);
      const [recommendationsVisible, setRecommendationsVisible] = useState(false);
      const [recommendationName, setRecommendationName] = useState<string>("");
      const [recommendationType, setRecommendationType] = useState<string>("");
      const [watchListDtl, setWatchListDtl] = useState<IWatchList | null>(null);
      const [watchListDtlID, setWatchListDtlID] = useState<number>(-1);
-     const [watchListDtlLoadingStarted, setWatchListDtlLoadingStarted] = useState(false);
-     const [watchListDtlLoadingComplete, setWatchListDtlLoadingComplete] = useState(false);
+     const [watchListDtlLoadingCheck, setWatchListDtlLoadingCheck] = useState(APIStatus.Idle);
      const [watchListItemDtlID, setWatchListItemDtlID] = useState<number>(0);
 
      const router = useRouter();
@@ -171,9 +168,8 @@ export default function WatchListDetail() {
           setOriginalWatchListDtl(null);
 
           if (addModified || editModified) {
-               setWatchListLoadingStarted(false);
-               setWatchListLoadingComplete(false);
-               setWatchListSortingComplete(false);
+               setWatchListLoadingCheck(APIStatus.Idle);
+               setWatchListSortingCheck(APIStatus.Idle)
           }
 
           pullToRefreshEnabled(true);
@@ -274,9 +270,8 @@ export default function WatchListDetail() {
                          alert(`The error ${res.data[1]} occurred while adding the detail`);
                     } else {
                          setIsAdding(false);
-                         setWatchListLoadingStarted(false);
-                         setWatchListLoadingComplete(false);
-                         setWatchListSortingComplete(false);
+                         setWatchListLoadingCheck(APIStatus.Idle); // Initiate WL to re downlaod the data
+                         setWatchListSortingCheck(APIStatus.Idle);
                          addingStarted = false;
 
                          router.push("/WatchList");
@@ -438,8 +433,8 @@ export default function WatchListDetail() {
           <>{BrokenImageIconComponent}</>;
 
      useEffect(() => {
-          if (!isAdding && !watchListDtlLoadingStarted && !watchListDtlLoadingComplete && watchListDtlID !== -1 && watchListDtlID !== -1 && !isNaN(watchListDtlID)) {
-               setWatchListDtlLoadingStarted(true);
+          if (!isAdding && watchListDtlLoadingCheck === APIStatus.Idle && watchListDtlID !== -1 && watchListDtlID !== -1 && !isNaN(watchListDtlID)) {
+               setWatchListDtlLoadingCheck(APIStatus.Loading);
 
                if (demoMode && watchListDtlID !== -1) {
                     const demoWatchListPayload = require("../../demo/index").demoWatchListPayload;
@@ -455,10 +450,7 @@ export default function WatchListDetail() {
                     }
 
                     setWatchListDtl(detailWatchList[0]);
-                    setWatchListDtlLoadingStarted(true);
-                    setWatchListDtlLoadingComplete(true);
-
-                    setIsLoadingComplete(true);
+                    setWatchListDtlLoadingCheck(APIStatus.Success);
 
                     return;
                }
@@ -498,8 +490,7 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
                               });
 
                               setWatchListDtl(wld[0]);
-                              setWatchListDtlLoadingComplete(true);
-                              setIsLoadingComplete(true);
+                              setWatchListDtlLoadingCheck(APIStatus.Success);
                          }
                     })
                     .catch((err: Error) => {
@@ -518,9 +509,9 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
 
                setAddWatchListDtl(newAddWatchListDtl);
 
-               setIsLoadingComplete(true);
+               setWatchListDtlLoadingCheck(APIStatus.Success);
           }
-     }, [demoMode, getLocaleDate, isAdding, setErrorMessage, setIsError, watchListDtl, watchListDtlID, watchListDtlLoadingStarted, watchListDtlLoadingComplete, watchListItemDtlID]);
+     }, [demoMode, getLocaleDate, isAdding, setErrorMessage, setIsError, watchListDtl, watchListDtlID, watchListDtlLoadingCheck, watchListItemDtlID]);
 
      useEffect(() => {
           if (watchListItems.length > 0) {
@@ -627,7 +618,7 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
 
      return (
           <>
-               {!isLoading && !isClosing && isLoadingComplete &&
+               {!isLoading && !isClosing && watchListDtlLoadingCheck === APIStatus.Success &&
                     <div className="modal">
                          <div className={`modal-content ${watchListDtlID != null ? "fade-in" : ""}${!darkMode ? " lightMode" : " darkMode"}`}>
                               {!recommendationsVisible &&

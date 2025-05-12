@@ -3,7 +3,7 @@
 import axios, { AxiosResponse } from "axios";
 import { useRouter } from "next/navigation";
 import React, { useCallback, useContext, useEffect, useRef, useState } from "react";
-import { DataContext, DataContextType } from "../data-context";
+import { APIStatus, DataContext, DataContextType } from "../data-context";
 import IUser from "../interfaces/IUser";
 import IUserData from "../interfaces/IUserData";
 
@@ -16,13 +16,11 @@ export default function Login() {
           defaultRoute,
           demoPassword,
           demoUsername,
-          isLoggedIn,
-          isLoggedInCheckComplete,
+          loggedInCheck,
           setActiveRoute,
           setActiveRouteDisplayName,
           setDemoMode,
-          setIsLoggedIn,
-          setIsLoggedInCheckComplete,
+          setLoggedInCheck,
           setOptions,
           setUserData
      } = useContext(DataContext) as DataContextType
@@ -68,8 +66,7 @@ export default function Login() {
                setActiveRoute("WatchList");
                setActiveRouteDisplayName("WatchList");
                setUserData(newUserData);
-               setIsLoggedIn(true);
-               setIsLoggedInCheckComplete(true);
+               setLoggedInCheck(APIStatus.Success);
 
                setTimeout(() => {
                     router.push("/WatchList");
@@ -92,7 +89,7 @@ export default function Login() {
                     }
                })
                .catch((err: Error) => {
-                    setIsLoggedInCheckComplete(true);
+                    setLoggedInCheck(APIStatus.Unauthorized);
                     setLoginSubmitted(false);
 
                     if (String(err.message).startsWith("Unauthorized")) {
@@ -106,7 +103,7 @@ export default function Login() {
      };
 
      const loginSuccessfullActions = useCallback(async (response: IUser) => {
-          const newUserData: IUserData = { UserID: 0, Username: "", Admin: 0 };
+          const newUserData: IUserData = { UserID: 0, Username: "", Admin: false };
 
           try {
                if (typeof response.UserID !== "undefined") {
@@ -134,17 +131,16 @@ export default function Login() {
                     setOptions(response.Options[0]);
                }
 
-               setIsLoggedIn(true);
-               setIsLoggedInCheckComplete(true);
+               setLoggedInCheck(APIStatus.Success);
 
                setTimeout(() => {
                     router.push("/WatchList");
                }, 1000);
           } catch (err) { }
-     }, [defaultRoute, setActiveRoute, setIsLoggedIn, setIsLoggedInCheckComplete, setUserData]);
+     }, [defaultRoute, setActiveRoute, setLoggedInCheck, setUserData]);
 
      useEffect(() => {
-          if (isLoggedIn && activeRoute === "Login") {
+          if (loggedInCheck === APIStatus.Success && activeRoute === "Login") {
                router.push(defaultRoute);
           }
      }, []);
@@ -157,7 +153,7 @@ export default function Login() {
 
      return (
           <>
-               {isLoggedInCheckComplete &&
+               {(loggedInCheck === APIStatus.Idle || loggedInCheck === APIStatus.Unauthorized) &&
                     <div className={`login-page`}>
                          <div className="form">
                               <form className="login-form" onSubmit={login}>

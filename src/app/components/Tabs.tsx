@@ -3,7 +3,7 @@
 import { useRouter } from 'next/navigation';
 import { useContext } from "react";
 
-import { DataContext, DataContextType } from "../data-context";
+import { APIStatus, DataContext, DataContextType } from "../data-context";
 
 import "./Tabs.css";
 
@@ -22,8 +22,7 @@ const Tabs = () => {
           isEnabled,
           isError,
           isLoading,
-          isLoggedIn,
-          isLoggedInCheckComplete,
+          loggedInCheck,
           pullToRefreshEnabled,
           routeList,
           setActiveRoute,
@@ -64,7 +63,7 @@ const Tabs = () => {
 
      return (
           <>
-               {isClient && isLoggedInCheckComplete && isLoggedIn && !isError && !hideTabs && !isLoading && !isAdding && !isEditing && (
+               {isClient && loggedInCheck === APIStatus.Success && !isError && !hideTabs && !isLoading && !isAdding && !isEditing && (
                     <div className={`tabBar ${!darkMode ? "lightMode" : "darkMode"}`}>
                          {Object.keys(routeList)
                               .filter((routeName) => {

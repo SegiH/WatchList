@@ -3,7 +3,7 @@
 import axios, { AxiosResponse } from "axios";
 import { useRouter } from "next/navigation";
 import React, { useContext, useEffect, useState } from "react";
-import { DataContext, DataContextType } from "../data-context";
+import { APIStatus, DataContext, DataContextType } from "../data-context";
 
 import "../Login/Login.css";
 import IUser from "../interfaces/IUser";
@@ -14,8 +14,7 @@ export default function Setup() {
           defaultRoute,
           darkMode,
           demoUsername,
-          isLoggedIn,
-          isLoggedInCheckComplete,
+          loggedInCheck,
           validatePassword
      } = useContext(DataContext) as DataContextType
 
@@ -100,7 +99,7 @@ export default function Setup() {
 
      return (
           <>
-          {isLoggedInCheckComplete && !isLoggedIn && 
+          {loggedInCheck === APIStatus.Unauthorized && 
                <div className={`login-page`}>
                     <div className="form">
                          <form className="login-form">

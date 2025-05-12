@@ -1,7 +1,7 @@
 import Multiselect from 'multiselect-react-dropdown';
 import { useRouter } from 'next/navigation';
 import { useContext, useEffect, useState } from "react";
-import { DataContext, DataContextType } from "../data-context";
+import { APIStatus, DataContext, DataContextType } from "../data-context";
 import IUserOption from "../interfaces/IUserOption";
 
 const Settings = () => {
@@ -16,7 +16,7 @@ const Settings = () => {
           getDisplayName,
           hideTabs,
           isAdmin,
-          isLoggedIn,
+          loggedInCheck,
           LogOutIconComponent,
           pullToRefreshEnabled,
           routeList,
@@ -111,7 +111,7 @@ const Settings = () => {
                return (isAdmin() || (!isAdmin() && section["name"] !== "Admin" && section["name"] !== "BugLogs") || demoMode)
           }
      );
-
+console.log(visibleSections)
      return (
           <div className="modal">
                <div className={`modal-content settingsPanel textLabel ${!darkMode ? " lightMode" : " darkMode"}`}>
@@ -216,7 +216,7 @@ const Settings = () => {
                               </li>
                          )}
 
-                         {isLoggedIn && (
+                         {loggedInCheck == APIStatus.Success && (
                               <li className="topMargin">
                                    <span className="firstItem">
                                         <span>Sign Out</span>

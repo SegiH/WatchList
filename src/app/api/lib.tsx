@@ -223,7 +223,7 @@ export const isLoggedIn = async (req: NextRequest) => {
 export const isUserAdmin = async (req: NextRequest) => {
      const userSession = await getUserSession(req);
 
-     if (typeof userSession === "undefined" || (typeof userSession !== "undefined" && userSession.Admin !== 1)) {
+     if (typeof userSession === "undefined" || (typeof userSession !== "undefined" && userSession.Admin !== true)) {
           return false;
      } else {
           return true;
@@ -238,11 +238,15 @@ export const login = async (username: string, password: string) => {
 
           // Since the encryption is done in the API, we have to get the username and password and decrypt it in this endpoint
           const currentUser = results.filter((currentUser: IUser) => {
-               return username === decrypt(currentUser.Username) && password === decrypt(currentUser.Password) && currentUser.Enabled === 1
+               return username === decrypt(currentUser.Username) && password === decrypt(currentUser.Password)
           });
 
           if (currentUser.length !== 1) {
                return Response.json(["ERROR", "Invalid username or password"]);
+          }
+
+          if (currentUser[0].Enabled !== 1) {
+               return Response.json(["ERROR", "This user account is not enabled"]);
           }
 
           return loginSuccessfullActions(currentUser);
@@ -269,7 +273,7 @@ export const loginSuccessfullActions = async (currentUser: IUser) => {
                UserID: currentUser[0].UserID,
                Username: decrypt(currentUser[0].Username),
                Realname: decrypt(currentUser[0].Realname),
-               Admin: currentUser[0].Admin,
+               Admin: currentUser[0].Admin === 1 ? true : false,
                Options: userOptions
           }
 

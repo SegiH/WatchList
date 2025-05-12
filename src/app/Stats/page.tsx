@@ -20,7 +20,7 @@ import IWatchListTVTotalCountStat from "../interfaces/IWatchListTVTotalCountStat
 import IWatchListWeeklyMovieStat from "../interfaces/IWatchListWeeklyMovieStat";
 import IWatchListWeeklyTVStat from "../interfaces/IWatchListWeeklyTVStat";
 
-import { DataContext, DataContextType } from "../data-context";
+import { APIStatus, DataContext, DataContextType } from "../data-context";
 
 import "../css/tablestyle.css";
 import "./watchliststats.css";
@@ -34,64 +34,46 @@ export default function WatchListStats() {
           setErrorMessage
      } = useContext(DataContext) as DataContextType
 
+     /* States for Movie Stats */
      const [watchListMovieTop10Stats, setWatchListMovieTop10Stats] = useState<IWatchListMovieTop10Stat[]>([]);
-     const [watchListMovieTop10StatsLoadingStarted, setWatchListMovieTop10StatsLoadingStarted] = useState(false);
-     const [watchListMovieTop10StatsLoadingComplete, setWatchListMovieTop10StatsLoadingComplete] = useState(false);
-
+     const [watchListMovieTop10StatsLoadingCheck, setWatchListMovieTop10StatsLoadingCheck] = useState(APIStatus.Idle);
      const [watchListMovieCountStats, setWatchListMovieCountStats] = useState<IWatchListMovieCountStat[]>([]);
-     const [watchListMovieCountStatsLoadingStarted, setWatchListMovieCountStatsLoadingStarted] = useState(false);
-     const [watchListMovieCountStatsLoadingComplete, setWatchListMovieCountStatsLoadingComplete] = useState(false);
-
-     const [watchListSourceStats, setWatchListSourceStats] = useState<IWatchListSourceStat[]>([]);
-     const [watchListSourceStatsLoadingStarted, setWatchListSourceStatsLoadingStarted] = useState(false);
-     const [watchListSourceStatsLoadingComplete, setWatchListSourceStatsLoadingComplete] = useState(false);
-
-     const [watchListTopRatedStats, setWatchListTopRatedStats] = useState<IWatchListTopRatedStat[]>([]);
-     const [watchListTopRatedStatsLoadingStarted, setWatchListTopRatedStatsLoadingStarted] = useState(false);
-     const [watchListTopRatedStatsLoadingComplete, setWatchListTopRatedStatsLoadingComplete] = useState(false);
-
-     const [watchListTVTop10Stats, setWatchListTVTop10Stats] = useState<IWatchListTVTop10Stat[]>([]);
-     const [watchListTVTop10StatsLoadingStarted, setWatchListTVTop10StatsLoadingStarted] = useState(false);
-     const [watchListTVTop10StatsLoadingComplete, setWatchListTVTop10StatsLoadingComplete] = useState(false);
-
-     const [watchListTVSeasonsCountStats, setWatchListTVSeasonsCountStats] = useState<IWatchListTVSeasonsCountStat[]>([]);
-     const [watchListTVSeasonsCountStatsLoadingStarted, setWatchListTVSeasonsCountStatsLoadingStarted] = useState(false);
-     const [watchListTVSeasonsCountStatsLoadingComplete, setWatchListTVSeasonsCountStatsLoadingComplete] = useState(false);
-
-     const [watchListTVTotalCountStats, setWatchListTVTotalCountStats] = useState<IWatchListTVTotalCountStat[]>([]);
-     const [watchListTVTotalCountStatsLoadingStarted, setWatchListTVTotalCountStatsLoadingStarted] = useState(false);
-     const [watchListTVTotalCountStatsLoadingComplete, setWatchListTVTotalCountStatsLoadingComplete] = useState(false);
-
-     const [watchListSourceDtlStats, setWatchListSourceDtlStats] = useState<IWatchListSourceDtlStat[]>([]);
-     const [watchListSourceDtlLoadingStarted, setWatchListSourceDtlLoadingStarted] = useState(false);
-     const [watchListSourceDtlLoadingComplete, setWatchListSourceDtlLoadingComplete] = useState(false);
-
-     const [watchListWeeklyTVSeasonStats, setWatchListWeeklyTVSeasonStats] = useState<IWatchListWeeklyTVStat[]>([]);
-     const [watchListWeeklyTVSeasonsYearsStats, setWatchListWeeklyTVSeasonsYearsStats] = useState<[]>([]);
-     const [watchListWeeklyTVSeasonsMaxWeek, setWatchListWeeklyTVSeasonsMaxWeek] = useState(-1);
-     const [watchListWeeklyCurrentTVSeasonsYearStat, setWatchListWeeklyCurrentTVSeasonsYearStat] = useState(-1);
-     const [watchListWeeklyCurrentTVSeasonsWeekGroupingStat, setWatchListWeeklyCurrentTVSeasonsWeekGroupingStat] = useState<number[]>([]);
-     const [watchListWeeklyTVSeasonsStatsLoadingStarted, setWatchListWeeklyTVSeasonsStatsLoadingStarted] = useState(false);
-     const [watchListWeeklyTVSeasonsStatsLoadingComplete, setWatchListWeeklyTVSeasonsStatsLoadingComplete] = useState(false);
-
-     const [watchListWeeklyTVTotalYearsStats, setWatchListWeeklyTVTotalYearsStats] = useState<[]>([]);
-     const [watchListWeeklyCurrentTVTotalYearStat, setWatchListWeeklyCurrentTVTotalYearStat] = useState(-1);
-     const [watchListWeeklyTVTotalStats, setWatchListWeeklyTVTotalStats] = useState<IWatchListWeeklyTVStat[]>([]);
-     const [watchListWeeklyTVTotalStatsLoadingStarted, setWatchListWeeklyTVTotalStatsLoadingStarted] = useState(false);
-     const [watchListWeeklyTVTotalStatsLoadingComplete, setWatchListWeeklyTVTotalStatsLoadingComplete] = useState(false);
-     const [watchListWeeklyTVTotalMaxWeek, setWatchListWeeklyTVTotalMaxWeek] = useState(-1);
-     const [watchListWeeklyCurrentTVTotalWeekGroupingStat, setWatchListWeeklyCurrentTVTotalWeekGroupingStat] = useState<number[]>([]);
-
-     const [watchListWeeklyMovieStats, setWatchListWeeklyMovieStats] = useState<IWatchListWeeklyMovieStat[]>([]);
-     const [watchListWeeklyMovieYearsStats, setWatchListWeeklyMovieYearsStats] = useState<[]>([]);
-     const [watchListWeeklyMovieMaxWeek, setWatchListWeeklyMovieMaxWeek] = useState(-1);
+     const [watchListMovieCountStatsLoadingCheck, setWatchListMovieCountStatsLoadingCheck] = useState(APIStatus.Idle);
      const [watchListWeeklyCurrentMovieYearStat, setWatchListWeeklyCurrentMovieYearStat] = useState(-1);
      const [watchListWeeklyCurrentMovieWeekGroupingStat, setWatchListWeeklyCurrentMovieWeekGroupingStat] = useState<number[]>([]);
+     const [watchListWeeklyMovieMaxWeek, setWatchListWeeklyMovieMaxWeek] = useState(-1);
+     const [watchListWeeklyMovieStats, setWatchListWeeklyMovieStats] = useState<IWatchListWeeklyMovieStat[]>([]);
+     const [watchListWeeklyMovieYearsStats, setWatchListWeeklyMovieYearsStats] = useState<[]>([]);
 
-     const [watchListWeeklyMovieStatsLoadingStarted, setWatchListWeeklyMovieStatsLoadingStarted] = useState(false);
-     const [watchListWeeklyMovieStatsLoadingComplete, setWatchListWeeklyMovieStatsLoadingComplete] = useState(false);
-
+     /* States for Source Stats */
+     const [watchListSourceDtlStats, setWatchListSourceDtlStats] = useState<IWatchListSourceDtlStat[]>([]);
+     const [watchListSourceDtlLoadingCheck, setWatchListSourceDtlLoadingCheck] = useState(APIStatus.Idle);
+     const [watchListSourceStats, setWatchListSourceStats] = useState<IWatchListSourceStat[]>([]);
      const [watchListSourceStatsFilter, setWatchListSourceStatsFilter] = useState("StartDate");
+     const [watchListSourceStatsLoadingCheck, setWatchListSourceStatsLoadingCheck] = useState(APIStatus.Idle);
+
+     /* States for Television Stats */
+     const [watchListTVSeasonsCountStats, setWatchListTVSeasonsCountStats] = useState<IWatchListTVSeasonsCountStat[]>([]);
+     const [watchListTVSeasonsCountStatsLoadingCheck, setWatchListSeasonsCountStatsLoadingCheck] = useState(APIStatus.Idle);
+     const [watchListTVTop10Stats, setWatchListTVTop10Stats] = useState<IWatchListTVTop10Stat[]>([]);
+     const [watchListTVTop10StatsLoadingCheck, setWatchListTVTop10StatsLoadingCheck] = useState(APIStatus.Idle);
+     const [watchListTVTotalCountStats, setWatchListTVTotalCountStats] = useState<IWatchListTVTotalCountStat[]>([]);
+     const [watchListTVTotalCountStatsLoadingCheck, setWatchListTVTotalCountStatsLoadingCheck] = useState(APIStatus.Idle);
+     const [watchListWeeklyCurrentTVSeasonsWeekGroupingStat, setWatchListWeeklyCurrentTVSeasonsWeekGroupingStat] = useState<number[]>([]);
+     const [watchListWeeklyCurrentTVSeasonsYearStat, setWatchListWeeklyCurrentTVSeasonsYearStat] = useState(-1);
+     const [watchListWeeklyCurrentTVTotalWeekGroupingStat, setWatchListWeeklyCurrentTVTotalWeekGroupingStat] = useState<number[]>([]);
+     const [watchListWeeklyCurrentTVTotalYearStat, setWatchListWeeklyCurrentTVTotalYearStat] = useState(-1);
+     const [watchListWeeklyTVSeasonsMaxWeek, setWatchListWeeklyTVSeasonsMaxWeek] = useState(-1);
+     const [watchListWeeklyTVSeasonStats, setWatchListWeeklyTVSeasonStats] = useState<IWatchListWeeklyTVStat[]>([]);
+     const [watchListWeeklyTVSeasonsYearsStats, setWatchListWeeklyTVSeasonsYearsStats] = useState<[]>([]);
+     const [watchListWeeklyTVTotalMaxWeek, setWatchListWeeklyTVTotalMaxWeek] = useState(-1);     
+     const [watchListWeeklyTVTotalStats, setWatchListWeeklyTVTotalStats] = useState<IWatchListWeeklyTVStat[]>([]);
+     const [watchListWeeklyTVTotalYearsStats, setWatchListWeeklyTVTotalYearsStats] = useState<[]>([]);
+     const [watchListWeeklyStatsLoadingCheck, setWatchListWeeklyStatsLoadingCheck] = useState(APIStatus.Idle);
+
+     /* States for Top Rated Stats */
+     const [watchListTopRatedStats, setWatchListTopRatedStats] = useState<IWatchListTopRatedStat[]>([]);
+     const [watchListTopRatedStatsLoadingCheck, setWatchListTopRatedStatsLoadingCheck] = useState(APIStatus.Idle);
 
      const watchListSourceDetailSortOptions: IWatchListSourceDetailSortOption = {
           WatchListID: "ID",
@@ -117,24 +99,23 @@ export default function WatchListStats() {
           if (demoMode) {
                const demoWatchListMovieTop10StatsPayload = require("../demo/index").demoWatchListMovieTop10Stats;
                setWatchListMovieTop10Stats(demoWatchListMovieTop10StatsPayload);
-               setWatchListMovieTop10StatsLoadingStarted(true);
-               setWatchListMovieTop10StatsLoadingComplete(true);
+               setWatchListMovieTop10StatsLoadingCheck(APIStatus.Success);
                return;
           }
 
-          if (!watchListMovieTop10StatsLoadingStarted && !watchListMovieCountStatsLoadingComplete) {
-               setWatchListMovieTop10StatsLoadingStarted(true);
+          if (watchListMovieTop10StatsLoadingCheck === APIStatus.Idle) {
+               setWatchListMovieTop10StatsLoadingCheck(APIStatus.Loading);
           }
-     }, [watchListMovieTop10StatsLoadingStarted, watchListMovieTop10StatsLoadingComplete]);
+     }, [watchListMovieTop10StatsLoadingCheck]);
 
      // Get WatchList Movie Top 10 Stats
      useEffect(() => {
-          if (watchListMovieTop10StatsLoadingStarted && !watchListMovieTop10StatsLoadingComplete) {
+          if (watchListMovieTop10StatsLoadingCheck === APIStatus.Loading) {
                axios.get(`/api/GetWatchListMovieTop10Stats`, { withCredentials: true })
                     .then((res: AxiosResponse<IWatchListMovieTop10Stat>) => {
                          if (res.data[0] === "OK") {
                               setWatchListMovieTop10Stats(res.data[1]);
-                              setWatchListMovieTop10StatsLoadingComplete(true);
+                              setWatchListMovieTop10StatsLoadingCheck(APIStatus.Success);
                          } else {
                               setErrorMessage(`The following error occurred getting the WatchList Movie Top 10 Stats: ${res.data[1]}`);
                               setIsError(true);
@@ -145,31 +126,30 @@ export default function WatchListStats() {
                          setIsError(true);
                     });
           }
-     }, [watchListMovieTop10StatsLoadingStarted, watchListMovieTop10StatsLoadingComplete]);
+     }, [watchListMovieTop10StatsLoadingCheck]);
 
      // Initiate start of fetching WatchList Movie Count Stats
      useEffect(() => {
           if (demoMode) {
                const demoWatchListMovieCountStatsPayload = require("../demo/index").demoWatchListMovieCountStats;
                setWatchListMovieCountStats(demoWatchListMovieCountStatsPayload);
-               setWatchListMovieCountStatsLoadingStarted(true);
-               setWatchListMovieCountStatsLoadingComplete(true);
+               setWatchListMovieCountStatsLoadingCheck(APIStatus.Success);
                return;
           }
 
-          if (!watchListMovieCountStatsLoadingStarted && !watchListMovieCountStatsLoadingComplete) {
-               setWatchListMovieCountStatsLoadingStarted(true);
+          if (watchListMovieCountStatsLoadingCheck === APIStatus.Idle) {
+               setWatchListMovieCountStatsLoadingCheck(APIStatus.Loading);
           }
-     }, [watchListMovieCountStatsLoadingStarted, watchListMovieCountStatsLoadingComplete]);
+     }, [watchListMovieCountStatsLoadingCheck]);
 
      // Get WatchList Movie Count Stats
      useEffect(() => {
-          if (watchListMovieCountStatsLoadingStarted && !watchListMovieCountStatsLoadingComplete) {
+          if (watchListMovieCountStatsLoadingCheck === APIStatus.Loading) {
                axios.get(`/api/GetWatchListMovieCountStats`, { withCredentials: true })
                     .then((res: AxiosResponse<IWatchListMovieCountStat>) => {
                          if (res.data[0] === "OK") {
                               setWatchListMovieCountStats(res.data[1]);
-                              setWatchListMovieCountStatsLoadingComplete(true);
+                              setWatchListMovieCountStatsLoadingCheck(APIStatus.Success);
                          } else {
                               setErrorMessage(`The following error occurred getting the WatchList Movie count stats: ${res.data[1]}`);
                               setIsError(true);
@@ -180,46 +160,44 @@ export default function WatchListStats() {
                          setIsError(true);
                     });
           }
-     }, [watchListMovieCountStatsLoadingStarted, watchListMovieCountStatsLoadingComplete]);
+     }, [watchListMovieCountStatsLoadingCheck]);
 
      // Initiate start of fetching WatchList Source Stats
      useEffect(() => {
           if (demoMode) {
                const demoWatchListSourceStatsPayload = require("../demo/index").demoWatchListSourceStats;
                setWatchListSourceStats(demoWatchListSourceStatsPayload);
-               setWatchListSourceStatsLoadingStarted(true);
-               setWatchListSourceStatsLoadingComplete(true);
+               setWatchListSourceStatsLoadingCheck(APIStatus.Success);
                return;
           }
 
-          if (!watchListSourceStatsLoadingStarted && !watchListSourceStatsLoadingComplete) {
-               setWatchListSourceStatsLoadingStarted(true);
+          if (watchListSourceStatsLoadingCheck === APIStatus.Idle) {
+               setWatchListSourceStatsLoadingCheck(APIStatus.Loading);
           }
-     }, [watchListSourceStatsLoadingStarted, watchListSourceStatsLoadingComplete]);
+     }, [watchListSourceStatsLoadingCheck]);
 
      // Initiate start of fetching WatchList Source Dtl Stats
      useEffect(() => {
           if (demoMode) {
                const demoWatchListSourceDtlStatsPayload = require("../demo/index").demoWatchListSourceDtlStats;
                setWatchListSourceDtlStats(demoWatchListSourceDtlStatsPayload);
-               setWatchListSourceDtlLoadingStarted(true);
-               setWatchListSourceDtlLoadingComplete(true);
+               setWatchListSourceDtlLoadingCheck(APIStatus.Success);
                return;
           }
 
-          if (!watchListSourceDtlLoadingStarted && !watchListSourceDtlLoadingComplete) {
-               setWatchListSourceDtlLoadingStarted(true);
+          if (watchListSourceDtlLoadingCheck === APIStatus.Idle) {
+               setWatchListSourceDtlLoadingCheck(APIStatus.Loading);
           }
-     }, [watchListSourceDtlLoadingStarted, watchListSourceDtlLoadingComplete]);
+     }, [watchListSourceDtlLoadingCheck]);
 
      // Get WatchList Source Dtl Stats
      useEffect(() => {
-          if (watchListSourceDtlLoadingStarted && !watchListSourceDtlLoadingComplete) {
+          if (watchListSourceDtlLoadingCheck === APIStatus.Loading) {
                axios.get(`/api/GetWatchListSourceStats?GetDetail=true`)
                     .then((res: AxiosResponse<IWatchListSourceStat>) => {
                          if (res.data[0] === "OK") {
                               setWatchListSourceDtlStats(res.data[1]);
-                              setWatchListSourceDtlLoadingComplete(true);
+                              setWatchListSourceDtlLoadingCheck(APIStatus.Success);
                          } else {
                               setErrorMessage(`The following error occurred getting the WatchList Source Stats: ${res.data[1]}`);
                               setIsError(true);
@@ -230,16 +208,16 @@ export default function WatchListStats() {
                          setIsError(true);
                     });
           }
-     }, [watchListSourceDtlLoadingStarted, watchListSourceDtlLoadingComplete]);
+     }, [watchListSourceDtlLoadingCheck]);
 
      // Get WatchList Source Stats
      useEffect(() => {
-          if (watchListSourceStatsLoadingStarted && !watchListSourceStatsLoadingComplete) {
+          if (watchListSourceStatsLoadingCheck === APIStatus.Loading) {
                axios.get(`/api/GetWatchListSourceStats`, { withCredentials: true })
                     .then((res: AxiosResponse<IWatchListSourceStat>) => {
                          if (res.data[0] === "OK") {
                               setWatchListSourceStats(res.data[1]);
-                              setWatchListSourceStatsLoadingComplete(true);
+                              setWatchListSourceStatsLoadingCheck(APIStatus.Success);
                          } else {
                               setErrorMessage(`The following error occurred getting the WatchList Source Stats: ${res.data[1]}`);
                               setIsError(true);
@@ -250,31 +228,30 @@ export default function WatchListStats() {
                          setIsError(true);
                     });
           }
-     }, [watchListSourceStatsLoadingStarted, watchListSourceStatsLoadingComplete]);
+     }, [watchListSourceStatsLoadingCheck]);
 
      // Initiate start of fetching WatchList Top Rated Stats
      useEffect(() => {
           if (demoMode) {
                const demoWatchListTopRatedStatsPayload = require("../demo/index").demoWatchListTopRatedStats;
                setWatchListTopRatedStats(demoWatchListTopRatedStatsPayload);
-               setWatchListTopRatedStatsLoadingStarted(true);
-               setWatchListTopRatedStatsLoadingComplete(true);
+               setWatchListTopRatedStatsLoadingCheck(APIStatus.Success);
                return;
           }
 
-          if (!watchListTopRatedStatsLoadingStarted && !watchListTopRatedStatsLoadingComplete) {
-               setWatchListTopRatedStatsLoadingStarted(true);
+          if (watchListTopRatedStatsLoadingCheck === APIStatus.Idle) {
+               setWatchListTopRatedStatsLoadingCheck(APIStatus.Loading);
           }
-     }, [watchListTopRatedStatsLoadingStarted, watchListTopRatedStatsLoadingComplete]);
+     }, [watchListTopRatedStatsLoadingCheck]);
 
      // Get WatchList Top Rated Stats
      useEffect(() => {
-          if (watchListTopRatedStatsLoadingStarted && !watchListTopRatedStatsLoadingComplete) {
+          if (watchListTVTop10StatsLoadingCheck === APIStatus.Loading) {
                axios.get(`/api/GetWatchListTopRatedStats`, { withCredentials: true })
                     .then((res: AxiosResponse<IWatchListTopRatedStat>) => {
                          if (res.data[0] === "OK") {
                               setWatchListTopRatedStats(res.data[1]);
-                              setWatchListTopRatedStatsLoadingComplete(true);
+                              setWatchListTVTop10StatsLoadingCheck(APIStatus.Success);
                          } else {
                               setErrorMessage(`The following error occurred getting the WatchList Top Rated Stats: ${res.data[1]}`);
                               setIsError(true);
@@ -285,31 +262,30 @@ export default function WatchListStats() {
                          setIsError(true);
                     });
           }
-     }, [watchListTopRatedStatsLoadingStarted, watchListTopRatedStatsLoadingComplete]);
+     }, [watchListTopRatedStatsLoadingCheck]);
 
      // Initiate start of fetching WatchList TV Top 10 Stats
      useEffect(() => {
           if (demoMode) {
                const demoWatchListTVTop10StatsPayload = require("../demo/index").demoWatchListTVTop10Stats;
                setWatchListTVTop10Stats(demoWatchListTVTop10StatsPayload);
-               setWatchListTVTop10StatsLoadingStarted(true);
-               setWatchListTVTop10StatsLoadingComplete(true);
+               setWatchListTVTop10StatsLoadingCheck(APIStatus.Success);
                return;
           }
 
-          if (!watchListTVTop10StatsLoadingStarted && !watchListTVTop10StatsLoadingComplete) {
-               setWatchListTVTop10StatsLoadingStarted(true);
+          if (watchListTVTop10StatsLoadingCheck === APIStatus.Idle) {
+               setWatchListTVTop10StatsLoadingCheck(APIStatus.Loading);
           }
-     }, [watchListTVTop10StatsLoadingStarted, watchListTVTop10StatsLoadingComplete]);
+     }, [watchListTVTop10StatsLoadingCheck]);
 
      // Get WatchList TV Top 10 Stats
      useEffect(() => {
-          if (watchListTVTop10StatsLoadingStarted && !watchListTVTop10StatsLoadingComplete) {
+          if (watchListTVTop10StatsLoadingCheck === APIStatus.Loading) {
                axios.get(`/api/GetWatchListTVTop10Stats`, { withCredentials: true })
                     .then((res: AxiosResponse<IWatchListTVTop10Stat>) => {
                          if (res.data[0] === "OK") {
                               setWatchListTVTop10Stats(res.data[1]);
-                              setWatchListTVTop10StatsLoadingComplete(true);
+                              setWatchListTVTop10StatsLoadingCheck(APIStatus.Success);
                          } else {
                               setErrorMessage(`The following error occurred getting the WatchList TV Top 10 Rated Stats: ${res.data[1]}`);
                               setIsError(true);
@@ -320,31 +296,30 @@ export default function WatchListStats() {
                          setIsError(true);
                     });
           }
-     }, [watchListTVTop10StatsLoadingStarted, watchListTVTop10StatsLoadingComplete]);
+     }, [watchListTVTop10StatsLoadingCheck]);
 
      // Initiate start of fetching WatchList TV Seasons Count Stats
      useEffect(() => {
           if (demoMode) {
                const demoWatchListTVSeasonsCountStatsPayload = require("../demo/index").demoWatchListTVSeasonsCountStats;
                setWatchListTVSeasonsCountStats(demoWatchListTVSeasonsCountStatsPayload);
-               setWatchListTVSeasonsCountStatsLoadingStarted(true);
-               setWatchListTVSeasonsCountStatsLoadingComplete(true);
+               setWatchListSeasonsCountStatsLoadingCheck(APIStatus.Success);
                return;
           }
 
-          if (!watchListTVSeasonsCountStatsLoadingStarted && !watchListTVSeasonsCountStatsLoadingComplete) {
-               setWatchListTVSeasonsCountStatsLoadingStarted(true);
+          if (watchListTVSeasonsCountStatsLoadingCheck === APIStatus.Idle) {
+               setWatchListSeasonsCountStatsLoadingCheck(APIStatus.Loading);
           }
-     }, [watchListTVSeasonsCountStatsLoadingStarted, watchListTVSeasonsCountStatsLoadingComplete]);
+     }, [watchListTVSeasonsCountStatsLoadingCheck]);
 
      // Get WatchList TV Seasons Count Stats
      useEffect(() => {
-          if (watchListTVSeasonsCountStatsLoadingStarted && !watchListTVSeasonsCountStatsLoadingComplete) {
+          if (watchListTVSeasonsCountStatsLoadingCheck === APIStatus.Loading) {
                axios.get(`/api/GetWatchListTVSeasonsCountStats`, { withCredentials: true })
                     .then((res: AxiosResponse<IWatchListTVSeasonsCountStat>) => {
                          if (res.data[0] === "OK") {
                               setWatchListTVSeasonsCountStats(res.data[1]);
-                              setWatchListTVSeasonsCountStatsLoadingComplete(true);
+                              setWatchListSeasonsCountStatsLoadingCheck(APIStatus.Success);
                          } else {
                               setErrorMessage(`The following error occurred getting the WatchList TV seasons count stats: ${res.data[1]}`);
                               setIsError(true);
@@ -355,31 +330,30 @@ export default function WatchListStats() {
                          setIsError(true);
                     });
           }
-     }, [watchListTVSeasonsCountStatsLoadingStarted, watchListTVSeasonsCountStatsLoadingComplete]);
+     }, [watchListTVSeasonsCountStatsLoadingCheck]);
 
      // Initiate start of fetching WatchList TV Total Count Stats
      useEffect(() => {
           if (demoMode) {
                const demoWatchListTVTotalCountStatsPayload = require("../demo/index").demoTVTotalStats;
                setWatchListTVTotalCountStats(demoWatchListTVTotalCountStatsPayload);
-               setWatchListTVTotalCountStatsLoadingStarted(true);
-               setWatchListTVTotalCountStatsLoadingComplete(true);
+               setWatchListTVTotalCountStatsLoadingCheck(APIStatus.Success);
                return;
           }
 
-          if (!watchListTVTotalCountStatsLoadingStarted && !watchListTVTotalCountStatsLoadingComplete) {
-               setWatchListTVTotalCountStatsLoadingStarted(true);
+          if (watchListTVTotalCountStatsLoadingCheck === APIStatus.Idle) {
+               setWatchListTVTotalCountStatsLoadingCheck(APIStatus.Loading);
           }
-     }, [watchListTVTotalCountStatsLoadingStarted, watchListTVTotalCountStatsLoadingComplete]);
+     }, [watchListTVTotalCountStatsLoadingCheck]);
 
      // Get WatchList TV Total Count Stats
      useEffect(() => {
-          if (watchListTVTotalCountStatsLoadingStarted && !watchListTVTotalCountStatsLoadingComplete) {
+          if (watchListTVTotalCountStatsLoadingCheck === APIStatus.Loading) {
                axios.get(`/api/GetWatchListTVTotalCountStats`, { withCredentials: true })
                     .then((res: AxiosResponse<IWatchListTVTotalCountStat>) => {
                          if (res.data[0] === "OK") {
                               setWatchListTVTotalCountStats(res.data[1]);
-                              setWatchListTVTotalCountStatsLoadingComplete(true);
+                              setWatchListTVTotalCountStatsLoadingCheck(APIStatus.Success);
                          } else {
                               setErrorMessage(`The following error occurred getting the WatchList TV total count stats: ${res.data[1]}`);
                               setIsError(true);
@@ -390,7 +364,7 @@ export default function WatchListStats() {
                          setIsError(true);
                     });
           }
-     }, [watchListTVTotalCountStatsLoadingStarted, watchListTVTotalCountStatsLoadingComplete]);
+     }, [watchListTVTotalCountStatsLoadingCheck]);
 
      // Initiate start of fetching WatchList Weekly Stats
      useEffect(() => {
@@ -399,54 +373,43 @@ export default function WatchListStats() {
 
                const uniqueTVSeasonsYears = demoWatchListWeeklyBreakDown[1].map((item: IWatchListWeeklyTVStat) => item.Year).filter((value: string, index: number, current_value: [string]) => { return current_value.indexOf(value) === index }).sort();
                setWatchListWeeklyTVSeasonsYearsStats(uniqueTVSeasonsYears);
-               //setWatchListWeeklyCurrentTVSeasonsYearStat(new Date().getFullYear());
                setWatchListWeeklyTVSeasonStats(demoWatchListWeeklyBreakDown[1]);
-               setWatchListWeeklyTVSeasonsStatsLoadingComplete(true);
 
                const uniqueTVTotalYears = demoWatchListWeeklyBreakDown[3].map((item: IWatchListWeeklyTVStat) => item.Year).filter((value: string, index: number, current_value: [string]) => { return current_value.indexOf(value) === index }).sort();
                setWatchListWeeklyTVTotalYearsStats(uniqueTVTotalYears);
-               //setWatchListWeeklyCurrentTVTotalYearStat(new Date().getFullYear());
                setWatchListWeeklyTVTotalStats(demoWatchListWeeklyBreakDown[3]);
-               setWatchListWeeklyTVTotalStatsLoadingComplete(true);
 
                const uniqueMovieYears = demoWatchListWeeklyBreakDown[2].map((item: IWatchListWeeklyMovieStat) => item.Year).filter((value: string, index: number, current_value: [string]) => { return current_value.indexOf(value) === index }).sort();
                setWatchListWeeklyMovieYearsStats(uniqueMovieYears);
-               //setWatchListWeeklyCurrentMovieYearStat(new Date().getFullYear());
                setWatchListWeeklyMovieStats(demoWatchListWeeklyBreakDown[2]);
-               setWatchListWeeklyMovieStatsLoadingComplete(true);
+
+               
+               setWatchListWeeklyStatsLoadingCheck(APIStatus.Success);
                return;
           }
 
-          if (!watchListWeeklyTVSeasonsStatsLoadingStarted && !watchListWeeklyTVSeasonsStatsLoadingComplete && !watchListWeeklyTVTotalStatsLoadingStarted && !watchListWeeklyTVTotalStatsLoadingComplete && !watchListWeeklyMovieStatsLoadingStarted && !watchListWeeklyMovieStatsLoadingComplete) {
-               setWatchListWeeklyTVSeasonsStatsLoadingStarted(true);
-               setWatchListWeeklyTVTotalStatsLoadingStarted(true);
-               setWatchListWeeklyMovieStatsLoadingStarted(true);
+          if (watchListWeeklyStatsLoadingCheck === APIStatus.Idle) {
+               setWatchListWeeklyStatsLoadingCheck(APIStatus.Loading);
           }
-     }, [watchListWeeklyTVSeasonsStatsLoadingStarted, watchListWeeklyTVSeasonsStatsLoadingComplete, watchListWeeklyTVTotalStatsLoadingStarted, watchListWeeklyTVTotalStatsLoadingComplete, watchListWeeklyMovieStatsLoadingStarted, watchListWeeklyMovieStatsLoadingComplete]);
+     }, [watchListWeeklyStatsLoadingCheck]);
 
      // Get WatchList Weekly Stats
      useEffect(() => {
-          if (watchListWeeklyTVSeasonsStatsLoadingStarted && !watchListWeeklyTVSeasonsStatsLoadingComplete && watchListWeeklyTVTotalStatsLoadingStarted && !watchListWeeklyTVTotalStatsLoadingComplete && watchListWeeklyMovieStatsLoadingStarted && !watchListWeeklyMovieStatsLoadingComplete) {
+          if (watchListWeeklyStatsLoadingCheck === APIStatus.Loading) {
                axios.get(`/api/GetWatchListWeeklyBreakdown`, { withCredentials: true })
                     .then((res: AxiosResponse<IWatchListWeeklyMovieStat>) => {
                          if (res.data[0] === "OK") {
                               const uniqueTVSeasonsYears = res.data[1].map((item: IWatchListWeeklyTVStat) => item.Year).filter((value: string, index: number, current_value: [string]) => { return current_value.indexOf(value) === index }).sort();
                               setWatchListWeeklyTVSeasonsYearsStats(uniqueTVSeasonsYears);
-                              //setWatchListWeeklyCurrentTVSeasonsYearStat(new Date().getFullYear());
                               setWatchListWeeklyTVSeasonStats(res.data[1]);
-                              setWatchListWeeklyTVSeasonsStatsLoadingComplete(true);
 
                               const uniqueMovieYears = res.data[2].map((item: IWatchListWeeklyMovieStat) => item.Year).filter((value: string, index: number, current_value: [string]) => { return current_value.indexOf(value) === index }).sort();
                               setWatchListWeeklyMovieYearsStats(uniqueMovieYears);
-                              //setWatchListWeeklyCurrentMovieYearStat(new Date().getFullYear());
                               setWatchListWeeklyMovieStats(res.data[2]);
-                              setWatchListWeeklyMovieStatsLoadingComplete(true);
 
                               const uniqueTVTotalYears = res.data[3].map((item: IWatchListWeeklyTVStat) => item.Year).filter((value: string, index: number, current_value: [string]) => { return current_value.indexOf(value) === index }).sort();
                               setWatchListWeeklyTVTotalYearsStats(uniqueTVTotalYears);
-                              //setWatchListWeeklyCurrentTVTotalYearStat(new Date().getFullYear());
                               setWatchListWeeklyTVTotalStats(res.data[3]);
-                              setWatchListWeeklyTVTotalStatsLoadingComplete(true);
                          } else {
                               setErrorMessage(`The following error occurred getting the WatchList weekly stats: ${res.data[1]}`);
                               setIsError(true);
@@ -457,7 +420,7 @@ export default function WatchListStats() {
                          setIsError(true);
                     });
           }
-     }, [watchListWeeklyTVSeasonsStatsLoadingStarted, watchListWeeklyTVSeasonsStatsLoadingComplete, watchListWeeklyTVTotalStatsLoadingStarted, watchListWeeklyTVTotalStatsLoadingComplete, watchListWeeklyMovieStatsLoadingStarted, watchListWeeklyMovieStatsLoadingComplete]);
+     }, [watchListWeeklyStatsLoadingCheck]);
 
      // Create array for Movie weekly breakdown
      useEffect(() => {

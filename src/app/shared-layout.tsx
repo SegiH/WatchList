@@ -8,7 +8,7 @@ import Settings from "./components/Settings";
 import IWatchListSource from "./interfaces/IWatchListSource";
 import IWatchListType from "./interfaces/IWatchListType";
 
-import { DataContext, DataContextType } from "./data-context";
+import { APIStatus, DataContext, DataContextType } from "./data-context";
 
 import "./page.css";
 import IUserOption from "./interfaces/IUserOption";
@@ -27,7 +27,7 @@ const SharedLayout = () => {
           isEnabled,
           isError,
           isLoading,
-          isLoggedIn,
+          loggedInCheck,
           openDetailClickHandler,
           routeList,
           saveOptions,
@@ -58,9 +58,9 @@ const SharedLayout = () => {
           watchListSortColumns,
           watchListSortDirection,
           watchListSources,
-          watchListSourcesLoadingComplete,
+          watchListSourcesLoadingCheck,
           watchListTypes,
-          watchListTypesLoadingComplete,
+          watchListTypesLoadingCheck
      } = useContext(DataContext) as DataContextType
 
      const [isClient, setIsClient] = useState(false);
@@ -142,13 +142,12 @@ const SharedLayout = () => {
           document.body.className = darkMode ? 'darkMode' : '';
      }, [darkMode]);
 
-     if (!isLoggedIn || !isClient) {
+     if (loggedInCheck !== APIStatus.Success || !isClient) {
           return <></>
      }
 
      return (
           <span>
-               <h1>active route {activeRoute}</h1>
                {!isError &&
                     <>
                          {isLoading &&
@@ -160,7 +159,7 @@ const SharedLayout = () => {
                               </div>
                          }
 
-                         {isLoggedIn && watchListSourcesLoadingComplete && watchListTypesLoadingComplete && !isLoading &&
+                         {loggedInCheck === APIStatus.Success && watchListSourcesLoadingCheck === APIStatus.Success && watchListTypesLoadingCheck === APIStatus.Success && !isLoading &&
                               <>
                                    <span className={`menuBar ${!darkMode ? "lightMode" : "darkMode"}`}>
                                         {demoMode &&
@@ -185,7 +184,7 @@ const SharedLayout = () => {
                                                        <Button variant="contained" className={`imdbButton ${searchInputVisible ? "visible" : ""}`} style={{ marginLeft: "30px" }} onClick={() => setSearchModalVisible(true)}>IMDB</Button>
                                                   }
 
-                                                  {isLoggedIn && !isError && (
+                                                  {!isError && (
                                                        <span className={`bottomMargin20 clickable customTopMargin leftMargin40 ${!darkMode ? " lightMode" : " darkMode"}`} onClick={() => openDetailClickHandler(-1)}>
                                                             {AddIconComponent}
                                                        </span>

@@ -1,9 +1,7 @@
 import axios, { AxiosResponse } from "axios";
 import Image from 'next/image';
-import PropTypes from 'prop-types';
-import exact from "prop-types-exact";
 import { useContext, useEffect, useState } from "react";
-import { DataContext, DataContextType } from "../data-context";
+import { APIStatus, DataContext, DataContextType } from "../data-context";
 import IRecommendation from "../interfaces/IRecommendation";
 
 const Recommendations = ({ queryTerm, setRecommendationName, setRecommendationType, setRecommendationsVisible, type }:
@@ -21,8 +19,7 @@ const Recommendations = ({ queryTerm, setRecommendationName, setRecommendationTy
 
      const [recommendations, setRecommendations] = useState<IRecommendation[]>([]);
      const [recommendationsError, setRecommendationsError] = useState(false);
-     const [recommendationsLoadingStarted, setRecommendationsLoadingStarted] = useState(false);
-     const [recommendationsLoadingComplete, setRecommendationsLoadingComplete] = useState(false);
+     const [recommendationsLoadingCheck, setRecommendationsLoadingCheck] = useState(APIStatus.Idle);
 
      const closeRecommendations = async () => {
           setRecommendationName("");
@@ -48,13 +45,13 @@ const Recommendations = ({ queryTerm, setRecommendationName, setRecommendationTy
      }
 
      useEffect(() => {
-          if (queryTerm !== "" && type !== "" && !recommendationsLoadingStarted) {
-               setRecommendationsLoadingStarted(true);
+          if (queryTerm !== "" && type !== "" && recommendationsLoadingCheck === APIStatus.Loading) {
+               setRecommendationsLoadingCheck(APIStatus.Loading)
 
                const url = `/api/Recommendations?SearchTerm=${encodeURIComponent(queryTerm)}&Type=${type}`;
 
                axios.get(url).then((res: AxiosResponse<IRecommendation>) => {
-                    setRecommendationsLoadingComplete(true);
+                    setRecommendationsLoadingCheck(APIStatus.Success);
 
                     if (res.data[0] === "OK") {
                          setRecommendations(res.data[1]);
@@ -68,18 +65,18 @@ const Recommendations = ({ queryTerm, setRecommendationName, setRecommendationTy
                     setRecommendationsError(true);
                });
           }
-     }, [queryTerm, recommendationsLoadingStarted, type]);
+     }, [queryTerm, recommendationsLoadingCheck, type]);
 
      return (
           <div className={`flex-container${!darkMode ? " lightMode" : " darkMode"}`}>
-               {recommendationsLoadingComplete &&
+               {recommendationsLoadingCheck === APIStatus.Success &&
                     <span className="clickable closeButton" onClick={closeRecommendations}>
                          X
                     </span>
                }
 
                <ul className="clickable show-list">
-                    {!recommendationsLoadingComplete &&
+                    {recommendationsLoadingCheck !== APIStatus.Success &&
                          <>
                               Loading
                               <div className="loader-container">
@@ -88,7 +85,7 @@ const Recommendations = ({ queryTerm, setRecommendationName, setRecommendationTy
                          </>
                     }
 
-                    {recommendationsLoadingComplete && recommendations && recommendations.length > 0 && recommendations.map((recommendation: IRecommendation, index: number) => {
+                    {recommendationsLoadingCheck === APIStatus.Success && recommendations && recommendations.length > 0 && recommendations.map((recommendation: IRecommendation, index: number) => {
                          return (
                               <li className="show-item" key={index}>
                                    <span>
@@ -123,7 +120,7 @@ const Recommendations = ({ queryTerm, setRecommendationName, setRecommendationTy
                          )
                     })}
 
-                    {recommendationsLoadingComplete && recommendations && recommendations.length === 0 &&
+                    {recommendationsLoadingCheck === APIStatus.Success && recommendations && recommendations.length === 0 &&
                          <li className="show-item no-border no-font">
                               <span>
                                    {!recommendationsError ? "No recommendations" : "Unable to get recommendations"}
@@ -134,14 +131,5 @@ const Recommendations = ({ queryTerm, setRecommendationName, setRecommendationTy
           </div>
      );
 };
-
-Recommendations.propTypes = exact({
-     BrokenImageIcon: PropTypes.object.isRequired,
-     queryTerm: PropTypes.string.isRequired,
-     setRecommendationName: PropTypes.func.isRequired,
-     setRecommendationType: PropTypes.func.isRequired,
-     setRecommendationsVisible: PropTypes.func.isRequired,
-     type: PropTypes.string.isRequired
-});
 
 export default Recommendations;

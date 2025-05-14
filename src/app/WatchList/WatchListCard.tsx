@@ -45,11 +45,11 @@ export default function WatchListCard({ currentWatchList }: WatchListCardProps) 
                 {currentWatchList?.Archived === 1 ? <span>&nbsp;(A)</span> : <></>}
             </div>
 
-            {currentWatchList?.WatchListTypeID === 2 && 
-            <div className={`${!darkMode ? "lightMode" : "darkMode"} show-season`}>
-                <div>Season {currentWatchList?.Season}</div>
-            </div>
-}
+            {currentWatchList?.WatchListTypeID === 2 &&
+                <div className={`${!darkMode ? "lightMode" : "darkMode"} show-season`}>
+                    <div>Season {currentWatchList?.Season}</div>
+                </div>
+            }
 
             <div className={`${!darkMode ? "lightMode" : "darkMode"} show-date`}>
                 {currentWatchList?.StartDate}

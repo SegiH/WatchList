@@ -99,28 +99,28 @@ export default function Setup() {
 
      return (
           <>
-          {loggedInCheck === APIStatus.Unauthorized && 
-               <div className={`login-page`}>
-                    <div className="form">
-                         <form className="login-form">
-                              <span className={`login-label ${!darkMode ? " lightMode" : " darkMode"}`}>WatchList Setup</span>
+               {loggedInCheck === APIStatus.Unauthorized &&
+                    <div className={`login-page`}>
+                         <div className="form">
+                              <form className="login-form">
+                                   <span className={`login-label ${!darkMode ? " lightMode" : " darkMode"}`}>WatchList Setup</span>
 
-                              <input type="text" autoFocus disabled={submitClicked} value={realname} placeholder="Name" required onChange={(event) => setRealname(event.target.value)} onKeyUp={handleKeyUp} />
-                              <input type="text" disabled={submitClicked} value={username} placeholder="Username" required onChange={(event) => setUsername(event.target.value)} onKeyUp={handleKeyUp} />
+                                   <input type="text" autoFocus disabled={submitClicked} value={realname} placeholder="Name" required onChange={(event) => setRealname(event.target.value)} onKeyUp={handleKeyUp} />
+                                   <input type="text" disabled={submitClicked} value={username} placeholder="Username" required onChange={(event) => setUsername(event.target.value)} onKeyUp={handleKeyUp} />
 
-                              <input type="password" disabled={submitClicked} value={password} placeholder="Password" required onChange={(event) => setPassword(event.target.value)} onKeyUp={handleKeyUp} />
+                                   <input type="password" disabled={submitClicked} value={password} placeholder="Password" required onChange={(event) => setPassword(event.target.value)} onKeyUp={handleKeyUp} />
 
-                              <input type="password" disabled={submitClicked} value={confirmPassword} placeholder="Confirm password" required onChange={(event) => setConfirmPassword(event.target.value)} onKeyUp={handleKeyUp} />
+                                   <input type="password" disabled={submitClicked} value={confirmPassword} placeholder="Confirm password" required onChange={(event) => setConfirmPassword(event.target.value)} onKeyUp={handleKeyUp} />
 
-                              {!submitClicked &&
-                                   <button type="button" onClick={setupClickHandler}>
-                                        Create new Account
-                                   </button>
-                              }
-                         </form>
+                                   {!submitClicked &&
+                                        <button type="button" onClick={setupClickHandler}>
+                                             Create new Account
+                                        </button>
+                                   }
+                              </form>
+                         </div>
                     </div>
-               </div>
-}
+               }
           </>
      )
 }

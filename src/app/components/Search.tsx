@@ -3,8 +3,6 @@
 import axios, { AxiosResponse } from "axios";
 import Image from 'next/image';
 import ISearchImdb from "../interfaces/ISearchImdb";
-import IWatchList from "../interfaces/IWatchList";
-import IWatchListItem from "../interfaces/IWatchListItem";
 
 import { useRouter } from 'next/navigation';
 import React, { useContext, useState } from "react";

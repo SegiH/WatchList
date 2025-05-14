@@ -170,7 +170,7 @@ export interface DataContextType {
      userData: IUserData;
      validatePassword: (value: string) => boolean;
      visibleSectionChoices: ISectionChoice[],
-     visibleSections: { name: string; id: number; }[],
+     visibleSections: ISectionChoice[],
      watchList: IWatchList[];
      watchListItems: IWatchListItem[];
      watchListItemsLoadingCheck: string;
@@ -315,8 +315,8 @@ const DataProvider = ({
      };
 
      const router = useRouter();
-     const visibleSectionChoices = [{ name: 'Items', id: 1 }, { name: 'Stats', id: 2 }, { name: 'Admin', id: 3 }, { name: 'BugLogs', id: 4 }];
-     const [visibleSections, setVisibleSections] = useState([{ name: 'Stats', id: 2 }, { name: 'Items', id: 1 }]);
+     const visibleSectionChoices = [{ value: "3", label: 'Admin' }, { value: "4", label: 'BugLogs' }, {value: "1", label: 'Items' }, { value: "2", label: 'Stats' }];
+     const [visibleSections, setVisibleSections] = useState([{ value: "2", label: 'Stats' }, {value: "1", label: 'Items' }]);
      const watchListSortColumns = {
           ID: "ID",
           Name: "Name",
@@ -447,6 +447,7 @@ const DataProvider = ({
                          pullToRefreshEnabled(false);
 
                          if (res.data[1] === false) {
+                              setLoggedInCheck(APIStatus.Unauthorized);
                               setActiveRoute("Setup");
                               setActiveRouteDisplayName("Setup");
                               router.push("/Setup");
@@ -484,7 +485,7 @@ const DataProvider = ({
                return false;
           }
 
-          const visibleResult = visibleSections?.filter((section) => section["name"] === sectionName);
+          const visibleResult = visibleSections?.filter((section) => section.label === sectionName);
 
           if (visibleResult.length === 1) {
                return true;
@@ -936,29 +937,14 @@ const DataProvider = ({
                return;
           }
 
-          // Not sure if this is still needed
-          /*if (!isLoggedIn && activeRoute !== "Login" && activeRoute !== "Setup") {
-               return;
-          }*/
-
           let newRoute = "";
 
-          // Since the code above exits when not logged in, that makes this if statement meaningless
-          /*if (!isLoggedIn) {
-               pullToRefreshEnabled(false);
-
-               if (activeRoute === "Setup" || activeRoute === "Login") {
-                    newRoute = activeRoute;
-               } else {
-                    newRoute = "Login";
-               }
-          } else {*/
           pullToRefreshEnabled(true);
 
           const currentPath = location.pathname !== "" ? location.pathname.replace("/", "") : "";
           const queryParams = location.search;
 
-          if (currentPath === routeList["Login"].Path) {
+          if (currentPath === routeList["Login"].Path.replace("/", "")) {
                newRoute = defaultRoute;
           } else if (currentPath !== "") {
                const findRouteByPath = Object.keys(routeList).filter((routeName) => routeList[routeName].Path === "/" + currentPath);
@@ -1069,8 +1055,6 @@ const DataProvider = ({
                     setBuildDate(newBuildDate);
                });
      }, []);
-
-     /* TODO: Fix this. Every time you go to a different tab this reloads the app */
 
      /* Visibility change useEffect */
      useEffect(() => {

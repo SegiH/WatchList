@@ -39,7 +39,6 @@
     "jest": "^29.7.0",
     "jest-environment-jsdom": "^29.7.0",
     "json5": "^2.2.3",
-    "multiselect-react-dropdown": "^2.0.25",
     "next": "15.3.2",
     "next-pwa": "^5.6.0",
     "next-router-mock": "^0.9.13",
@@ -47,6 +46,7 @@
     "prop-types-exact": "^1.2.0",
     "react": "19.1.0",
     "react-dom": "19.1.0",
+    "react-select": "^5.10.1",
     "tedious": "^18.2.3",
     "ts-node": "^10.9.2"
   },

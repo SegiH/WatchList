@@ -1,4 +1,4 @@
 export default interface ISectionChoice {
-     name: string;
-     id: number;
-}  
+     value: string;
+     label: string;
+}

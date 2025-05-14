@@ -1,8 +1,8 @@
-import Multiselect from 'multiselect-react-dropdown';
 import { useRouter } from 'next/navigation';
 import { useContext, useEffect, useState } from "react";
 import { APIStatus, DataContext, DataContextType } from "../data-context";
 import IUserOption from "../interfaces/IUserOption";
+import Select from 'react-select';
 
 const Settings = () => {
      const {
@@ -15,11 +15,9 @@ const Settings = () => {
           demoMode,
           getDisplayName,
           hideTabs,
-          isAdmin,
           loggedInCheck,
           LogOutIconComponent,
           pullToRefreshEnabled,
-          routeList,
           saveOptions,
           setActiveRoute,
           setActiveRouteDisplayName,
@@ -36,7 +34,6 @@ const Settings = () => {
      } = useContext(DataContext) as DataContextType
 
      const [formattedBuildDate, setFormattedBuildDate] = useState("");
-
      const router = useRouter();
 
      const addRemoveVisibleSectionChange = async (newList: []) => {
@@ -94,24 +91,6 @@ const Settings = () => {
           setFormattedBuildDate(buildDate);
      }, []);
 
-     const filteredVisibleSectionChoices = visibleSectionChoices?.filter(
-          (section) => {
-               const userIsAdmin = isAdmin();
-
-               return (
-                    (routeList[section["name"]].Name !== "Admin" && routeList[section["name"]].Name !== "BugLogs" && routeList[section["name"]].Enabled === true)
-                    || (routeList[section["name"]].Name === "Admin" && (userIsAdmin || (!userIsAdmin && demoMode)))
-                    || (routeList[section["name"]].Name === "BugLogs" && userIsAdmin)
-               )
-          }
-     );
-
-     const filteredVisibleSections = visibleSections?.filter(
-          (section) => {
-               return (isAdmin() || (!isAdmin() && section["name"] !== "Admin" && section["name"] !== "BugLogs") || demoMode)
-          }
-     );
-console.log(visibleSections)
      return (
           <div className="modal">
                <div className={`modal-content settingsPanel textLabel ${!darkMode ? " lightMode" : " darkMode"}`}>
@@ -127,13 +106,50 @@ console.log(visibleSections)
                               </span>
 
                               <span className="leftMargin" title="Show WatchList Items">
-                                   <Multiselect
-                                        className={`${!darkMode ? " lightMode" : " darkMode"}`}
-                                        options={filteredVisibleSectionChoices}
-                                        selectedValues={filteredVisibleSections}
-                                        onSelect={(newList) => addRemoveVisibleSectionChange(newList)}
-                                        onRemove={(newList) => addRemoveVisibleSectionChange(newList)}
-                                        displayValue="name"
+                                   <Select
+                                        isMulti
+                                        value={visibleSections as any}
+                                        defaultValue={visibleSections as any}
+                                        onChange={addRemoveVisibleSectionChange}
+                                        options={visibleSectionChoices as any}
+                                        className="custom-select"
+                                        styles={{
+                                             control: (provided) => ({
+                                                  ...provided,
+                                                  backgroundColor: 'white',  // Set background of the input field to white
+                                                  borderColor: 'black',      // Set border color of the input field to black
+                                                  color: 'black',            // Set text color of the input field to black
+                                             }),
+                                             singleValue: (provided) => ({
+                                                  ...provided,
+                                                  color: 'black',            // Set color of the selected value to black
+                                             }),
+                                             multiValue: (provided) => ({
+                                                  ...provided,
+                                                  backgroundColor: 'white',  // Set background color of the multi-value to white
+                                                  color: 'black',            // Set text color of the multi-value to black
+                                             }),
+                                             multiValueLabel: (provided) => ({
+                                                  ...provided,
+                                                  color: 'black',            // Set text color of the multi-value label to black
+                                             }),
+                                             menu: (provided) => ({
+                                                  ...provided,
+                                                  backgroundColor: 'white',  // Set background color of the dropdown to white
+                                             }),
+                                             option: (provided, state) => ({
+                                                  ...provided,
+                                                  backgroundColor: 'white',  // Set option background color on hover and select
+                                                  color: 'black',            // Set text color of options to black
+                                                  ':hover': {
+                                                       backgroundColor: 'lightgray',  // Set hover background to light gray
+                                                  },
+                                             }),
+                                             placeholder: (provided) => ({
+                                                  ...provided,
+                                                  color: 'black',
+                                             }),
+                                        }}
                                    />
                               </span>
                          </li>

@@ -160,7 +160,7 @@ export const getUserOptions = async (userID: number, isAdmin: boolean) => {
                const visibleSectionsDB = db.VisibleSections;
 
                const filteredVisibleSections = visibleSectionsDB.filter((visibleSection: ISectionChoice) => {
-                    return (visibleSection.name !== "Admin");
+                    return (visibleSection.label !== "Admin");
                });
 
                const filteredVisibleSectionsJSON = JSON.stringify(filteredVisibleSections);
@@ -245,7 +245,7 @@ export const login = async (username: string, password: string) => {
                return Response.json(["ERROR", "Invalid username or password"]);
           }
 
-          if (currentUser[0].Enabled !== 1) {
+          if (currentUser[0].Enabled !== true) {
                return Response.json(["ERROR", "This user account is not enabled"]);
           }
 
@@ -273,7 +273,7 @@ export const loginSuccessfullActions = async (currentUser: IUser) => {
                UserID: currentUser[0].UserID,
                Username: decrypt(currentUser[0].Username),
                Realname: decrypt(currentUser[0].Realname),
-               Admin: currentUser[0].Admin === 1 ? true : false,
+               Admin: currentUser[0].Admin,
                Options: userOptions
           }
 

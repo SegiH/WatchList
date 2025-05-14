@@ -28,7 +28,7 @@ export async function GET(request: NextRequest) {
                const visibleSectionsDB = db.VisibleSections;
 
                const filteredVisibleSections = visibleSectionsDB.filter((visibleSection: ISectionChoice) => {
-                    return (visibleSection.name !== "Admin" || (visibleSection.name === "Admin" && userSession.Admin));
+                    return (visibleSection.label !== "Admin" || (visibleSection.label === "Admin" && userSession.Admin));
                });
 
                const filteredVisibleSectionsJSON = JSON.stringify(filteredVisibleSections);

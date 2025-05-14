@@ -159,7 +159,7 @@ const SharedLayout = () => {
                               </div>
                          }
 
-                         {loggedInCheck === APIStatus.Success && watchListSourcesLoadingCheck === APIStatus.Success && watchListTypesLoadingCheck === APIStatus.Success && !isLoading &&
+                         {loggedInCheck === APIStatus.Success && watchListSourcesLoadingCheck === APIStatus.Success && watchListTypesLoadingCheck === APIStatus.Success && !isLoading && activeRoute !== "Stats" &&
                               <>
                                    <span className={`menuBar ${!darkMode ? "lightMode" : "darkMode"}`}>
                                         {demoMode &&

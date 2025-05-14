@@ -82,4 +82,4 @@ If you cannot log into WatchList with the admin account, you can reset the passw
 
 ## Known Issues:
 
-If you search for a movie or show that is pretty new, you may not be able to find it when searching and will have to add a WatchList Item manually. This happens because RapidAPI does not have new movies or shows in their database right away.
+If you search RapidAPI for a movie or show that is pretty new, you may not be able to find it when searching and will have to add a WatchList Item manually. This happens because RapidAPI does not have new movies or shows in their database right away.

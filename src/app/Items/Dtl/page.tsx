@@ -26,7 +26,7 @@ export default function WatchListItemsDtl() {
           setIsEditing,
           setIsError,
           setErrorMessage,
-          setWatchListItemsLoadingCheck,          
+          setWatchListItemsLoadingCheck,
           watchListTypes
      } = useContext(DataContext) as DataContextType
 
@@ -367,7 +367,7 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
 
                setAddWatchListItemDtl(newAddWatchListItemDtl);
 
-               setWatchListItemDtlLoadingCheck(APIStatus.Success);  
+               setWatchListItemDtlLoadingCheck(APIStatus.Success);
           }
      }, [demoMode, isAdding, setErrorMessage, setIsError, watchListItemDtlLoadingCheck, watchListItemDtl, watchListItemDtlID]);
 
@@ -456,18 +456,6 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
                                                        <span className="topMargin column">{typeof addWatchListItemDtl?.IMDB_Poster !== "undefined" && addWatchListItemDtl?.IMDB_Poster !== null && addWatchListItemDtl?.IMDB_Poster !== "" && addWatchListItemDtl?.IMDB_Poster_Error !== true && <Image className="poster-detail" width="175" height="200" alt="Image Not Available" src={addWatchListItemDtl.IMDB_Poster} />}</span>
                                                   }
                                              </div>
-
-                                             {/*{!isAdding && !isEditing &&
-                                                  <>
-                                                       <div className="narrow card"></div>
-
-                                                       <div className="narrow card"></div>
-
-                                                       <div className="narrow card">
-                                                            <div className="clickable hyperlink text-label rightAligned" onClick={recommendationsClickHandler}>Recommendations</div>
-                                                       </div>
-                                                  </>
-                                             }*/}
 
                                              <div className="narrow card">
                                                   <span className={`textLabel ${!darkMode ? " lightMode" : " darkMode"}`}>Name:&nbsp;</span>

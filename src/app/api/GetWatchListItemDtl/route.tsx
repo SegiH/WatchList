@@ -31,10 +31,6 @@ export async function GET(request: NextRequest) {
                     return (String(watchListType.WatchListTypeID) === String(watchListItem.WatchListTypeID));
                });
 
-               /*if (watchListType.length !== 1) { // This shouldn't ever happen
-                    return Response.json(["ERROR", `Unable to get WatchListType ${watchListItem[0].WatchListTypeID} for WatchListItemID ${watchListItem.WatchListItemID}`]);
-               }*/
-
                watchListItem.WatchListTypeName = watchListType.length > 0 ? watchListType[0].WatchListTypeName : "";
           });
 

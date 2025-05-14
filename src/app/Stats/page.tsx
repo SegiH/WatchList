@@ -34,6 +34,8 @@ export default function WatchListStats() {
           setErrorMessage
      } = useContext(DataContext) as DataContextType
 
+     const [hasStats, setHasStats] = useState(false);
+
      /* States for Movie Stats */
      const [watchListMovieTop10Stats, setWatchListMovieTop10Stats] = useState<IWatchListMovieTop10Stat[]>([]);
      const [watchListMovieTop10StatsLoadingCheck, setWatchListMovieTop10StatsLoadingCheck] = useState(APIStatus.Idle);
@@ -66,7 +68,7 @@ export default function WatchListStats() {
      const [watchListWeeklyTVSeasonsMaxWeek, setWatchListWeeklyTVSeasonsMaxWeek] = useState(-1);
      const [watchListWeeklyTVSeasonStats, setWatchListWeeklyTVSeasonStats] = useState<IWatchListWeeklyTVStat[]>([]);
      const [watchListWeeklyTVSeasonsYearsStats, setWatchListWeeklyTVSeasonsYearsStats] = useState<[]>([]);
-     const [watchListWeeklyTVTotalMaxWeek, setWatchListWeeklyTVTotalMaxWeek] = useState(-1);     
+     const [watchListWeeklyTVTotalMaxWeek, setWatchListWeeklyTVTotalMaxWeek] = useState(-1);
      const [watchListWeeklyTVTotalStats, setWatchListWeeklyTVTotalStats] = useState<IWatchListWeeklyTVStat[]>([]);
      const [watchListWeeklyTVTotalYearsStats, setWatchListWeeklyTVTotalYearsStats] = useState<[]>([]);
      const [watchListWeeklyStatsLoadingCheck, setWatchListWeeklyStatsLoadingCheck] = useState(APIStatus.Idle);
@@ -114,6 +116,10 @@ export default function WatchListStats() {
                axios.get(`/api/GetWatchListMovieTop10Stats`, { withCredentials: true })
                     .then((res: AxiosResponse<IWatchListMovieTop10Stat>) => {
                          if (res.data[0] === "OK") {
+                              if (res.data[1].length > 0) {
+                                   setHasStats(true);
+                              }
+
                               setWatchListMovieTop10Stats(res.data[1]);
                               setWatchListMovieTop10StatsLoadingCheck(APIStatus.Success);
                          } else {
@@ -148,6 +154,10 @@ export default function WatchListStats() {
                axios.get(`/api/GetWatchListMovieCountStats`, { withCredentials: true })
                     .then((res: AxiosResponse<IWatchListMovieCountStat>) => {
                          if (res.data[0] === "OK") {
+                              if (res.data[1][0].MovieCount !== 0) {
+                                   setHasStats(true);
+                              }
+
                               setWatchListMovieCountStats(res.data[1]);
                               setWatchListMovieCountStatsLoadingCheck(APIStatus.Success);
                          } else {
@@ -176,6 +186,30 @@ export default function WatchListStats() {
           }
      }, [watchListSourceStatsLoadingCheck]);
 
+     // Get WatchList Source Stats
+     useEffect(() => {
+          if (watchListSourceStatsLoadingCheck === APIStatus.Loading) {
+               axios.get(`/api/GetWatchListSourceStats`, { withCredentials: true })
+                    .then((res: AxiosResponse<IWatchListSourceStat>) => {
+                         if (res.data[0] === "OK") {
+                              if (res.data[1].length > 0) {
+                                   setHasStats(true);
+                              }
+
+                              setWatchListSourceStats(res.data[1]);
+                              setWatchListSourceStatsLoadingCheck(APIStatus.Success);
+                         } else {
+                              setErrorMessage(`The following error occurred getting the WatchList Source Stats: ${res.data[1]}`);
+                              setIsError(true);
+                         }
+                    })
+                    .catch((err: Error) => {
+                         setErrorMessage("Failed to get WatchList Source Stats with the error " + err.message);
+                         setIsError(true);
+                    });
+          }
+     }, [watchListSourceStatsLoadingCheck]);
+
      // Initiate start of fetching WatchList Source Dtl Stats
      useEffect(() => {
           if (demoMode) {
@@ -196,6 +230,10 @@ export default function WatchListStats() {
                axios.get(`/api/GetWatchListSourceStats?GetDetail=true`)
                     .then((res: AxiosResponse<IWatchListSourceStat>) => {
                          if (res.data[0] === "OK") {
+                              if (res.data[1].length > 0) {
+                                   setHasStats(true);
+                              }
+
                               setWatchListSourceDtlStats(res.data[1]);
                               setWatchListSourceDtlLoadingCheck(APIStatus.Success);
                          } else {
@@ -209,26 +247,6 @@ export default function WatchListStats() {
                     });
           }
      }, [watchListSourceDtlLoadingCheck]);
-
-     // Get WatchList Source Stats
-     useEffect(() => {
-          if (watchListSourceStatsLoadingCheck === APIStatus.Loading) {
-               axios.get(`/api/GetWatchListSourceStats`, { withCredentials: true })
-                    .then((res: AxiosResponse<IWatchListSourceStat>) => {
-                         if (res.data[0] === "OK") {
-                              setWatchListSourceStats(res.data[1]);
-                              setWatchListSourceStatsLoadingCheck(APIStatus.Success);
-                         } else {
-                              setErrorMessage(`The following error occurred getting the WatchList Source Stats: ${res.data[1]}`);
-                              setIsError(true);
-                         }
-                    })
-                    .catch((err: Error) => {
-                         setErrorMessage("Failed to get WatchList Source Stats with the error " + err.message);
-                         setIsError(true);
-                    });
-          }
-     }, [watchListSourceStatsLoadingCheck]);
 
      // Initiate start of fetching WatchList Top Rated Stats
      useEffect(() => {
@@ -250,6 +268,10 @@ export default function WatchListStats() {
                axios.get(`/api/GetWatchListTopRatedStats`, { withCredentials: true })
                     .then((res: AxiosResponse<IWatchListTopRatedStat>) => {
                          if (res.data[0] === "OK") {
+                              if (res.data[1].length > 0) {
+                                   setHasStats(true);
+                              }
+
                               setWatchListTopRatedStats(res.data[1]);
                               setWatchListTVTop10StatsLoadingCheck(APIStatus.Success);
                          } else {
@@ -284,6 +306,10 @@ export default function WatchListStats() {
                axios.get(`/api/GetWatchListTVTop10Stats`, { withCredentials: true })
                     .then((res: AxiosResponse<IWatchListTVTop10Stat>) => {
                          if (res.data[0] === "OK") {
+                              if (res.data[1].length > 0) {
+                                   setHasStats(true);
+                              }
+
                               setWatchListTVTop10Stats(res.data[1]);
                               setWatchListTVTop10StatsLoadingCheck(APIStatus.Success);
                          } else {
@@ -318,6 +344,10 @@ export default function WatchListStats() {
                axios.get(`/api/GetWatchListTVSeasonsCountStats`, { withCredentials: true })
                     .then((res: AxiosResponse<IWatchListTVSeasonsCountStat>) => {
                          if (res.data[0] === "OK") {
+                              if (res.data[1][0].length > 0) {
+                                   setHasStats(true);
+                              }
+
                               setWatchListTVSeasonsCountStats(res.data[1]);
                               setWatchListSeasonsCountStatsLoadingCheck(APIStatus.Success);
                          } else {
@@ -352,6 +382,10 @@ export default function WatchListStats() {
                axios.get(`/api/GetWatchListTVTotalCountStats`, { withCredentials: true })
                     .then((res: AxiosResponse<IWatchListTVTotalCountStat>) => {
                          if (res.data[0] === "OK") {
+                              if (res.data[1][0].length > 0) {
+                                   setHasStats(true);
+                              }
+
                               setWatchListTVTotalCountStats(res.data[1]);
                               setWatchListTVTotalCountStatsLoadingCheck(APIStatus.Success);
                          } else {
@@ -383,7 +417,6 @@ export default function WatchListStats() {
                setWatchListWeeklyMovieYearsStats(uniqueMovieYears);
                setWatchListWeeklyMovieStats(demoWatchListWeeklyBreakDown[2]);
 
-               
                setWatchListWeeklyStatsLoadingCheck(APIStatus.Success);
                return;
           }
@@ -399,6 +432,10 @@ export default function WatchListStats() {
                axios.get(`/api/GetWatchListWeeklyBreakdown`, { withCredentials: true })
                     .then((res: AxiosResponse<IWatchListWeeklyMovieStat>) => {
                          if (res.data[0] === "OK") {
+                              if (res.data[1].length > 0 || res.data[2].length > 0 || res.data[3].length > 0) {
+                                   setHasStats(true);
+                              }
+
                               const uniqueTVSeasonsYears = res.data[1].map((item: IWatchListWeeklyTVStat) => item.Year).filter((value: string, index: number, current_value: [string]) => { return current_value.indexOf(value) === index }).sort();
                               setWatchListWeeklyTVSeasonsYearsStats(uniqueTVSeasonsYears);
                               setWatchListWeeklyTVSeasonStats(res.data[1]);
@@ -410,6 +447,8 @@ export default function WatchListStats() {
                               const uniqueTVTotalYears = res.data[3].map((item: IWatchListWeeklyTVStat) => item.Year).filter((value: string, index: number, current_value: [string]) => { return current_value.indexOf(value) === index }).sort();
                               setWatchListWeeklyTVTotalYearsStats(uniqueTVTotalYears);
                               setWatchListWeeklyTVTotalStats(res.data[3]);
+
+                              setWatchListWeeklyStatsLoadingCheck(APIStatus.Success);
                          } else {
                               setErrorMessage(`The following error occurred getting the WatchList weekly stats: ${res.data[1]}`);
                               setIsError(true);
@@ -676,6 +715,10 @@ export default function WatchListStats() {
 
      return (
           <span className="topMarginContent">
+               {watchListMovieTop10StatsLoadingCheck === APIStatus.Success && watchListMovieCountStatsLoadingCheck === APIStatus.Success && watchListSourceDtlLoadingCheck === APIStatus.Success && watchListSourceStatsLoadingCheck === APIStatus.Success && watchListTVSeasonsCountStatsLoadingCheck === APIStatus.Success && watchListTVTop10StatsLoadingCheck === APIStatus.Success && watchListTVTotalCountStatsLoadingCheck === APIStatus.Success && watchListWeeklyStatsLoadingCheck == APIStatus.Success && !hasStats &&
+                    <h1>No Stats</h1>
+               }
+
                <div className={`flex-container${!darkMode ? " lightMode" : " darkMode"}`}>
                     <div className="col-1">
                          {sourceStats !== null && watchListSourceStats?.length > 0 &&
@@ -716,7 +759,7 @@ export default function WatchListStats() {
 
                <div className={`flex-container textLabel ${!darkMode ? " lightMode" : " darkMode"}`}>
                     <div className="col-4">
-                         {watchListMovieCountStats?.length > 0 && //watchListWeeklyCurrentMovieWeekGroupingStat.length === watchListWeeklyMovieMaxWeek &&
+                         {watchListMovieCountStats?.length > 0 && watchListMovieCountStats[0].MovieCount > 0 && //watchListWeeklyCurrentMovieWeekGroupingStat.length === watchListWeeklyMovieMaxWeek &&
                               <>
                                    <h1>Total Movies Watched</h1>
                                    <div>{watchListMovieCountStats[0].MovieCount}</div>

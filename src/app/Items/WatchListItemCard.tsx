@@ -19,12 +19,12 @@ export default function WatchListItemCard({ currentWatchListItem }: WatchListCar
         const newWatchListItems: IWatchListItem[] = Object.assign([], currentWatchListItem);
 
         const currentWatchListItemsResult: IWatchListItem[] = newWatchListItems?.filter((currentWatchListItems: IWatchListItem) => {
-             return String(currentWatchListItems.WatchListItemID) === String(watchListItemID);
+            return String(currentWatchListItems.WatchListItemID) === String(watchListItemID);
         });
 
         if (currentWatchListItemsResult.length === 0) {
-             // this shouldn't ever happen!
-             return;
+            // this shouldn't ever happen!
+            return;
         }
 
         const currentWatchListItems = currentWatchListItemsResult[0];
@@ -32,7 +32,7 @@ export default function WatchListItemCard({ currentWatchListItem }: WatchListCar
         currentWatchListItems["IMDB_Poster_Error"] = true;
 
         setFilteredWatchListItems(newWatchListItems);
-   };
+    };
 
     const IMDB_JSON = currentWatchListItem?.IMDB_JSON !== null && typeof currentWatchListItem?.IMDB_JSON !== "undefined" && currentWatchListItem?.IMDB_JSON !== "" ? JSON.parse(currentWatchListItem?.IMDB_JSON) : null;
 

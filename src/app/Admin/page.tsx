@@ -92,10 +92,3 @@ export default function Admin() {
           </>
      )
 }
-
-/*
-Using <CustomTabPanel> wrapper causes hydration warnings
-<CustomTabPanel value={selectedTab} index={0}>
-     <ManageUserAccounts />
-</CustomTabPanel>
-*/

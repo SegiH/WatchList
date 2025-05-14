@@ -20,11 +20,6 @@ export async function GET(request: NextRequest) {
      } else {
           const result = await getIMDBDetails(imdb_id);
 
-          /*if (result[0] === "OK" && result[1][0] === "OK") {
-               return Response.json(["OK", result[1][1]]); //, result
-          }*/
-
-          // Reenable when using local RapidAPI key
           return Response.json(["OK", result]);
      }
 }

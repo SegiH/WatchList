@@ -35,25 +35,13 @@ export async function GET(request: NextRequest) {
                     return (String(watchListItem.WatchListItemID) === String(watchList.WatchListItemID));
                });
 
-               /*if (watchListItem.length !== 1) { // This shouldn't ever happen
-                    return Response.json(["ERROR", `Unable to get WatchListItem ${watchListItem.WatchListTypeID} for WatchListID ${watchList.WatchListID}`]);
-               }*/
-
                const watchListSource = watchListSourcesDB.filter((watchListSource: IWatchListSource) => {
                     return (String(watchListSource.WatchListSourceID) === String(watchList.WatchListSourceID));
                });
 
-               /*if (watchListSource.length !== 1) { // This shouldn't ever happen
-                    return Response.json(["ERROR", `Unable to get WatchListSource ${watchList.WatchListSourceID} for WatchListID ${watchList.WatchListID}`]);
-               }*/
-
                const watchListType = watchListTypesDB.filter((watchListType: IWatchListType) => {
                     return (String(watchListType.WatchListTypeID) === String(watchListItem[0].WatchListTypeID));
                });
-
-               /*if (watchListType.length !== 1) { // This shouldn't ever happen
-                    return Response.json(["ERROR", `Unable to get WatchListType ${watchListItem[0].WatchListTypeID} for WatchListID ${watchList.WatchListID}`]);
-               }*/
 
                watchList.WatchListItemID = watchListItem.length > 0 ? parseInt(watchList.WatchListItemID, 10) : "";
                watchList.WatchListItemName = watchListItem.length > 0 ? watchListItem[0].WatchListItemName : "";

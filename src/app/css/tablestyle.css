@@ -1,20 +1,3 @@
-/*.data .watchList {
-    border-collapse: collapse;
-    font-family: Arial, Helvetica, sans-serif !important;
-    border: 0.025em solid #333 outset #999;    
-    -webkit-box-shadow: 2px 2px 5px rgba(0,0,0,0.4);
-    -moz-box-shadow: 2px 2px 5px rgba(0,0,0,0.4);
-    line-height: 1.5;
-    padding: 0.75em;
-    text-align: left;
-
-    padding-bottom: 50px;
-}*/
-
-/*.data.watchList tr {
-     background-color: #F1EBE4;
-}*/
-
 .datagrid {
     box-shadow: rgba(50, 50, 93, .1) 0 0 0 1px inset,rgba(50, 50, 93, .1) 0 2px 5px 0,rgba(0, 0, 0, .07) 0 2px 2px 0;
     position: relative;

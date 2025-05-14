@@ -1,1 +1,0 @@
-check id in wl /deletebuglog

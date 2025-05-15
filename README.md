@@ -62,7 +62,7 @@ The application has 5 different sections:
 
 WatchList: These are the records where you add a record any time you watch something.
 
-WatchListItems: These are the records that contain the movie, TV show or special which you only add once and then add a record in WatchList where you select the WatchListItem
+Items: These are the records that contain the movie, TV show or special which you only add once and then add a record in WatchList where you select the WatchListItem
 
 IMDB Search: Search IMDB and add the result in WatchList
 

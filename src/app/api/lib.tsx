@@ -290,6 +290,10 @@ export const loginSuccessfullActions = async (currentUser: IUser) => {
 }
 
 export const validateSettings = async () => {
+     if (!fs.existsSync(dbFile)) {
+          return `Database file is missing`;
+     }
+
      // Validate .env properties that are required
      if (process.env.SECRET === null || process.env.SECRET === "") {
           return `ENV error: Secret property is missing or not set`;

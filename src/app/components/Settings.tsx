@@ -30,7 +30,8 @@ const Settings = () => {
           setVisibleSections,
           signOut,
           visibleSectionChoices,
-          visibleSections
+          visibleSections,
+          watchListSortColumn
      } = useContext(DataContext) as DataContextType
 
      const [formattedBuildDate, setFormattedBuildDate] = useState("");
@@ -78,7 +79,8 @@ const Settings = () => {
                "AutoAdd": columnName === "AutoAdd" ? columnValue === true ? 1 : 0 : autoAdd ? 1 : 0,
                "DarkMode": columnName === "DarkMode" ? columnValue === true ? 1 : 0 : darkMode ? 1 : 0,
                "HideTabs": columnName === "HideTabs" ? columnValue === true ? 1 : 0 : hideTabs ? 1 : 0,
-               "ShowMissingArtwork": columnName === "ShowMissingArtwork" ? columnValue === true ? 1 : 0 : showMissingArtwork ? 1 : 0
+               "ShowMissingArtwork": columnName === "ShowMissingArtwork" ? columnValue === true ? 1 : 0 : showMissingArtwork ? 1 : 0,
+               "WatchListSortColumn": watchListSortColumn
           }
 
           setOptions(options);

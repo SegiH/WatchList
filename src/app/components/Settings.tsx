@@ -80,7 +80,8 @@ const Settings = () => {
                "DarkMode": columnName === "DarkMode" ? columnValue === true ? 1 : 0 : darkMode ? 1 : 0,
                "HideTabs": columnName === "HideTabs" ? columnValue === true ? 1 : 0 : hideTabs ? 1 : 0,
                "ShowMissingArtwork": columnName === "ShowMissingArtwork" ? columnValue === true ? 1 : 0 : showMissingArtwork ? 1 : 0,
-               "WatchListSortColumn": watchListSortColumn
+               "WatchListSortColumn": watchListSortColumn,
+               "VisibleSections": JSON.stringify(visibleSections)
           }
 
           setOptions(options);

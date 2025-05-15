@@ -457,6 +457,7 @@ const DataProvider = ({
                                    setErrorMessage(res.data[1]);
 
                                    setActiveRoute("404");
+
                                    setIsError(true);
 
                                    return;
@@ -1005,7 +1006,7 @@ const DataProvider = ({
      }, [defaultRoute, isError, loggedInCheck]); // Do not add activeRoute, getDisplayName, routeList, setActiveRoute, setActiveRouteDisplayName to dependencies. Causes dtl to close when you click on edit
 
      useEffect(() => {
-          if (currentPath == "/" && activeRoute === "404" && isError) {
+          if (currentPath != "/404" && activeRoute === "404" && isError) {
                router.push("/404");
           }
      }, [activeRoute]);

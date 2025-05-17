@@ -1,10 +1,9 @@
 "use client";
-// NOTE: If you run this script in VS Code in Docker, you HAVE to run the web app on port 8080 or websocket will stop working which breaks hot reloading
-//
+
 import axios, { AxiosResponse } from "axios";
 import { useRouter } from 'next/navigation';
 import { usePathname } from 'next/navigation';
-import React, { createContext, useCallback, useEffect, useMemo, useState } from "react";
+import React, { createContext, ReactNode, useCallback, useEffect, useMemo, useState } from "react";
 
 import IBugLog from "./interfaces/IBugLog";
 import IRecommendation from "./interfaces/IRecommendation";
@@ -69,7 +68,6 @@ const WatchListItemsIconComponent = <WatchListItemsIcon className="icon" />;
 
 export interface DataContextType {
      activeRoute: string;
-     activeRouteDisplayName: string;
      AddIconComponent: React.ReactNode;
      archivedVisible: boolean;
      autoAdd: boolean;
@@ -88,9 +86,6 @@ export interface DataContextType {
      errorMessage: string;
      filteredWatchList: IWatchList[];
      filteredWatchListItems: IWatchListItem[];
-     getFormattedDate: (value: string | null, separator: string | null) => string;
-     generateRandomPassword: () => string;
-     getDisplayName: (value: string) => string;
      getPath: (value: string) => string;
      hideTabs: boolean;
      imdbSearchEnabled: boolean;
@@ -117,7 +112,6 @@ export interface DataContextType {
      searchModalVisible: boolean;
      searchTerm: string;
      setActiveRoute: (value: string) => void;
-     setActiveRouteDisplayName: (value: string) => void;
      setArchivedVisible: (value: boolean) => void;
      setAutoAdd: (value: boolean) => void;
      setBugLogs: React.Dispatch<React.SetStateAction<IBugLog[]>>;
@@ -184,12 +178,13 @@ export interface DataContextType {
      watchListSourcesLoadingCheck: string;
      watchListTypes: IWatchListType[];
      watchListTypesLoadingCheck: string;
+     writeLog: (logMessage: string) => void;
 }
 
 const DataContext = createContext({} as DataContextType);
 
 interface DataProviderProps {
-     children?: any;
+     children?: ReactNode;
 }
 
 export const APIStatus = {
@@ -205,7 +200,6 @@ const DataProvider = ({
      children
 }: DataProviderProps) => {
      const [activeRoute, setActiveRoute] = useState("");
-     const [activeRouteDisplayName, setActiveRouteDisplayName] = useState("");
      const [archivedVisible, setArchivedVisible] = useState(false);
      const [autoAdd, setAutoAdd] = useState(true);
      const [buildDate, setBuildDate] = useState('');
@@ -263,66 +257,70 @@ const DataProvider = ({
      const demoPassword = "demo";
      const pageSize = 49;
 
-     const routeList = {
-          WatchList: {
-               Name: "WatchList",
-               DisplayName: "WatchList",
-               Path: "/WatchList",
-               Icon: WatchListIconComponent,
-               RequiresAuth: true,
-               Enabled: true
-          },
-          Items: {
-               Name: "Items",
-               DisplayName: "Items",
-               Path: "/Items",
-               Icon: WatchListItemsIconComponent,
-               RequiresAuth: true,
-               Enabled: true
-          },
-          Stats: {
-               Name: "Stats",
-               DisplayName: "Stats",
-               Path: "/Stats",
-               Icon: StatsIconComponent,
-               RequiresAuth: true,
-               Enabled: true
-          },
-          Admin: {
-               Name: "Admin",
-               DisplayName: "Admin",
-               Path: "/Admin",
-               Icon: AdminConsoleIconComponent,
-               RequiresAuth: true,
-               Enabled: true
-          },
-          Login: {
-               Name: "Login",
-               DisplayName: "Login",
-               Path: "/Login",
-               Icon: null,
-               RequiresAuth: false,
-               Enabled: true
-          },
-          BugLogs: {
-               Name: "BugLogs",
-               DisplayName: "Bug Logs",
-               Path: "/BugLogs",
-               Icon: BugReportIconComponent,
-               RequiresAuth: true,
-               Enabled: true
+     const routeList = useMemo(() => {
+          return {
+               WatchList: {
+                    Name: "WatchList",
+                    DisplayName: "WatchList",
+                    Path: "/WatchList",
+                    Icon: WatchListIconComponent,
+                    RequiresAuth: true,
+                    Enabled: true
+               },
+               Items: {
+                    Name: "Items",
+                    DisplayName: "Items",
+                    Path: "/Items",
+                    Icon: WatchListItemsIconComponent,
+                    RequiresAuth: true,
+                    Enabled: true
+               },
+               Stats: {
+                    Name: "Stats",
+                    DisplayName: "Stats",
+                    Path: "/Stats",
+                    Icon: StatsIconComponent,
+                    RequiresAuth: true,
+                    Enabled: true
+               },               
+               Login: {
+                    Name: "Login",
+                    DisplayName: "Login",
+                    Path: "/Login",
+                    Icon: null,
+                    RequiresAuth: false,
+                    Enabled: true
+               },
+               BugLogs: {
+                    Name: "BugLogs",
+                    DisplayName: "Bug Logs",
+                    Path: "/BugLogs",
+                    Icon: BugReportIconComponent,
+                    RequiresAuth: true,
+                    Enabled: true
+               },
+               Admin: {
+                    Name: "Admin",
+                    DisplayName: "Admin",
+                    Path: "/Admin",
+                    Icon: AdminConsoleIconComponent,
+                    RequiresAuth: true,
+                    Enabled: true
+               },
           }
-     };
+     }, []);
 
      const router = useRouter();
-     const visibleSectionChoices = [{ value: "3", label: 'Admin' }, { value: "4", label: 'BugLogs' }, {value: "1", label: 'Items' }, { value: "2", label: 'Stats' }];
-     const [visibleSections, setVisibleSections] = useState([{ value: "2", label: 'Stats' }, {value: "1", label: 'Items' }]);
+     const visibleSectionChoices = [{ value: "3", label: 'Admin' }, { value: "4", label: 'BugLogs' }, { value: "1", label: 'Items' }, { value: "2", label: 'Stats' }];
+     const [visibleSections, setVisibleSections] = useState([{ value: "2", label: 'Stats' }, { value: "1", label: 'Items' }]);
+
      const watchListSortColumns = {
           ID: "ID",
           Name: "Name",
           StartDate: "Start Date",
           EndDate: "End Date",
      };
+
      const watchListItemsSortColumns = useMemo(() => {
           return {
                ID: "ID",
@@ -330,60 +328,6 @@ const DataProvider = ({
                Type: "Type"
           }
      }, []);
-
-     const generateRandomPassword = () => {
-          const lowercaseChars = "abcdefghijklmnopqrstuvwxyz";
-          const uppercaseChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-          const digitChars = "0123456789";
-          const specialChars = "!@#$%^&*";
-          const allChars = lowercaseChars + uppercaseChars + digitChars + specialChars;
-
-          let randomString = "";
-
-          // Add one character from each character set to satisfy the regex
-          randomString += lowercaseChars[Math.floor(Math.random() * lowercaseChars.length)];
-          randomString += uppercaseChars[Math.floor(Math.random() * uppercaseChars.length)];
-          randomString += digitChars[Math.floor(Math.random() * digitChars.length)];
-          randomString += specialChars[Math.floor(Math.random() * specialChars.length)];
-
-          // Fill the rest of the string with random characters
-          while (randomString.length < 8) {
-               randomString += allChars[Math.floor(Math.random() * allChars.length)];
-          }
-
-          return randomString;
-     };
-
-     const getDisplayName = useCallback((routeName: string) => {
-          const matchingRoute = Object.keys(routeList).filter((currentRouteList) => routeList[currentRouteList].Name === routeName)
-
-          if (matchingRoute.length === 1) {
-               return routeList[matchingRoute[0]].DisplayName;
-          } else {
-               return "";
-          }
-     }, [routeList]);
-
-     // Returns date as mm/dd/yy or dd/mm/yy based on users' locale
-     const getFormattedDate = (dateStr: string, separator: string) => {
-          const language = typeof navigator.languages != undefined ? navigator.languages[0] : "en-us";
-
-          const dateObj = dateStr !== null && typeof dateStr !== "undefined" ? new Date(dateStr) : new Date();
-
-          const options: Intl.DateTimeFormatOptions = {
-               year: '2-digit',
-               month: '2-digit',
-               day: '2-digit',
-          };
-
-          const newFormattedDate = dateObj.toLocaleDateString(language, options);
-
-          if (separator === null) {
-               return newFormattedDate;
-          } else {
-               return newFormattedDate.replaceAll("/", separator);
-          }
-     };
 
      const getPath = useCallback((routeName: string) => {
           const matchingRoute = Object.keys(routeList).filter((currentRouteList) => routeList[currentRouteList].Name === routeName)
@@ -405,81 +349,7 @@ const DataProvider = ({
           if (loggedInCheck === APIStatus.Unauthorized) return false;
 
           return true;
-     }, [loggedInCheck]);
-
-     const isLoggedInApi = (noReroute: boolean = false) => {
-          if (isError) {
-               return;
-          }
-
-          let params = '';
-
-          axios.get(`/api/IsLoggedIn${params}`)
-               .then(async (res: AxiosResponse<IUser>) => {
-                    if (res.data[0] === "OK") {
-                         pullToRefreshEnabled(true);
-
-                         const newUserData = Object.assign({}, userData);
-                         newUserData.UserID = res.data[1].UserID;
-                         newUserData.Username = res.data[1].Username;
-                         newUserData.RealName = res.data[1].RealName;
-                         newUserData.Admin = res.data[1].Admin;
-
-                         if (newUserData.Admin) {
-                              routeList["Admin"].Enabled = true;
-                         }
-
-                         if (typeof res.data[1].Options !== "undefined") {
-                              setOptions(res.data[1].Options);
-                         }
-
-                         setLoggedInCheck(APIStatus.Success);
-                         setUserData(newUserData);
-
-                         if (!noReroute) {
-                              setActiveRoute("WatchList");
-                              setActiveRouteDisplayName("WatchList");
-                              setCurrentPage(1);
-
-                              router.push("/WatchList");
-                         }
-                    } else {
-                         pullToRefreshEnabled(false);
-
-                         if (res.data[1] === false) {
-                              setLoggedInCheck(APIStatus.Unauthorized);
-                              setActiveRoute("Setup");
-                              setActiveRouteDisplayName("Setup");
-                              router.push("/Setup");
-                              return;
-                         } else if (res.data[1] !== "") {
-                              if (typeof res.data[2] !== "undefined" && res.data[2] === true) {
-                                   setErrorMessage(res.data[1]);
-
-                                   setActiveRoute("404");
-
-                                   setIsError(true);
-
-                                   return;
-                              } else {
-                                   alert(res.data[1]);
-                              }
-                         }
-
-                         setActiveRoute("Login");
-                         setActiveRouteDisplayName("Login");
-
-                         setLoggedInCheck(APIStatus.Unauthorized);
-
-                         router.push("/Login");
-                    }
-               })
-               .catch(() => {
-                    setLoggedInCheck(APIStatus.Success);
-
-                    router.push("/Login");
-               });
-     }
+     }, [loggedInCheck]);     
 
      const isEnabled = (sectionName: string) => {
           if (visibleSections.length === 0) {
@@ -514,7 +384,7 @@ const DataProvider = ({
 
                router.push(`/Items/Dtl?WatchListItemID=${Id}`);
           }
-     }, [activeRoute, setIsAdding]);
+     }, [activeRoute, router, setIsAdding]);
 
      const pullToRefreshEnabled = (enabled: boolean) => {
           if (enabled) {
@@ -532,7 +402,7 @@ const DataProvider = ({
                });
      }
 
-     const setOptions = (newOptions: IUserOption) => {
+     const setOptions = useCallback((newOptions: IUserOption) => {
           const newArchivedVisible = typeof newOptions.ArchivedVisible !== "undefined" && newOptions.ArchivedVisible === 1 ? true : false;
           setArchivedVisible(newArchivedVisible);
 
@@ -565,7 +435,7 @@ const DataProvider = ({
 
           const newVisibleSections = typeof newOptions.VisibleSections !== "undefined" ? JSON.parse(newOptions.VisibleSections) : [{ name: 'Stats', id: 2 }];
           setVisibleSections(newVisibleSections);
-     }
+     }, [sourceFilter, typeFilter]);
 
      const showSearch = () => {
           setSearchModalVisible(true);
@@ -603,7 +473,6 @@ const DataProvider = ({
           newUserData.RealName = "";
 
           setUserData(newUserData);
-          setActiveRouteDisplayName("");
           setIsAdding(false);
           setIsEditing(false);
           setLoggedInCheck(APIStatus.Unauthorized);
@@ -637,6 +506,92 @@ const DataProvider = ({
           return strongRegex.test(value);
      };
 
+     const writeLog = useCallback((logMessage: string) => {
+          axios.put(`/api/WriteLog?LogMessage=${encodeURIComponent(logMessage)}`)
+               .then(async (res: AxiosResponse<IUser>) => {
+                    if (res.data[0] !== "OK") {
+                         writeLog(res.data[1]);
+                    }
+               })
+               .catch(() => {
+                    setLoggedInCheck(APIStatus.Success);
+
+                    router.push("/Login");
+               });
+     }, [router]);
+
+     // This method has a dependency on setOptions and writeLog
+     const isLoggedInApi = useCallback((noReroute: boolean = false) => {
+          if (isError) {
+               return;
+          }
+
+          let params = '';
+
+          axios.get(`/api/IsLoggedIn${params}`)
+               .then(async (res: AxiosResponse<IUser>) => {
+                    if (res.data[0] === "OK") {
+                         pullToRefreshEnabled(true);
+
+                         const newUserData = Object.assign({}, userData);
+                         newUserData.UserID = res.data[1].UserID;
+                         newUserData.Username = res.data[1].Username;
+                         newUserData.RealName = res.data[1].RealName;
+                         newUserData.Admin = res.data[1].Admin;
+
+                         if (newUserData.Admin) {
+                              routeList["Admin"].Enabled = true;
+                         }
+
+                         if (typeof res.data[1].Options !== "undefined") {
+                              setOptions(res.data[1].Options);
+                         }
+
+                         setLoggedInCheck(APIStatus.Success);
+                         setUserData(newUserData);
+
+                         if (!noReroute) {
+                              setActiveRoute("WatchList");
+                              setCurrentPage(1);
+
+                              router.push("/WatchList");
+                         }
+                    } else {
+                         pullToRefreshEnabled(false);
+
+                         if (res.data[1] === false) {
+                              setLoggedInCheck(APIStatus.Unauthorized);
+                              setActiveRoute("Setup");
+                              router.push("/Setup");
+                              return;
+                         } else if (res.data[1] !== "") {
+                              if (typeof res.data[2] !== "undefined" && res.data[2] === true) {
+                                   setErrorMessage(res.data[1]);
+
+                                   setActiveRoute("404");
+
+                                   setIsError(true);
+
+                                   return;
+                              } else {
+                                   alert(res.data[1]);
+                              }
+                         }
+
+                         setActiveRoute("Login");
+
+                         setLoggedInCheck(APIStatus.Unauthorized);
+
+                         router.push("/Login");
+                    }
+               })
+               .catch(() => {
+                    setLoggedInCheck(APIStatus.Success);
+
+                    router.push("/Login");
+               });
+     }, [isError, routeList, router, setOptions, userData]);
+
      // Check if user is logged in already
      useEffect(() => {
           if (clientCheck !== APIStatus.Success) {
@@ -647,14 +602,15 @@ const DataProvider = ({
                return;
           }
 
-          if (loggedInCheck === APIStatus.Loading) {
+          if (loggedInCheck === APIStatus.Idle) {
                setLoggedInCheck(APIStatus.Loading);
+               return;
           }
 
           if (loggedInCheck === APIStatus.Idle && !isError) {
                isLoggedInApi();
           }
-     }, [clientCheck, isClient, loggedInCheck, userData]);
+     }, [clientCheck, isClient, isError, isLoggedInApi, loggedInCheck, userData]);
 
      // Get WatchList
      useEffect(() => {
@@ -668,8 +624,6 @@ const DataProvider = ({
 
                return;
           }
-
-         
 
           const fetchWatchListData = async () => {
                if (watchListLoadingCheck === APIStatus.Idle) {
@@ -694,7 +648,7 @@ const DataProvider = ({
           };
 
           fetchWatchListData();
-     }, [isLoggedInCheck, userData, watchListLoadingCheck, watchListSortColumn, watchListSortDirection]);
+     }, [demoMode, isLoggedInCheck, userData, watchListLoadingCheck, watchListSortColumn, watchListSortDirection]);
 
      // Get WatchListItems
      useEffect(() => {
@@ -733,7 +687,7 @@ const DataProvider = ({
                          setIsError(true);
                     });
           }
-     }, [autoAdd, isLoggedInCheck, watchListLoadingCheck, watchListItemsLoadingCheck, watchListItemsSortColumns, watchListSortColumn, watchListSortDirection]);
+     }, [autoAdd, demoMode, isLoggedInCheck, watchListLoadingCheck, watchListItemsLoadingCheck, watchListItemsSortColumns, watchListSortColumn, watchListSortDirection]);
 
      // Get WatchListSources
      useEffect(() => {
@@ -776,7 +730,7 @@ const DataProvider = ({
                          setIsError(true);
                     });
           }
-     }, [isLoggedInCheck, watchListItemsLoadingCheck, watchListSourcesLoadingCheck]);
+     }, [demoMode, isLoggedInCheck, watchListItemsLoadingCheck, watchListSourcesLoadingCheck]);
 
      // Get WatchListTypes
      useEffect(() => {
@@ -810,7 +764,7 @@ const DataProvider = ({
                          setIsError(true);
                     });
           }
-     }, [isLoggedInCheck, watchListSourcesLoadingCheck, watchListTypesLoadingCheck]);
+     }, [demoMode, isLoggedInCheck, watchListSourcesLoadingCheck, watchListTypesLoadingCheck]);
 
      // WatchList filter and sort useEffect
      useEffect(() => {
@@ -866,7 +820,7 @@ const DataProvider = ({
           setFilteredWatchList(newWatchListPage);
 
           setIsLoading(false);
-     }, [activeRoute, archivedVisible, currentPage, searchTerm, stillWatching, sourceFilter, typeFilter, watchListLoadingCheck, watchListSortColumn, watchListSortDirection]);
+     }, [activeRoute, archivedVisible, currentPage, searchTerm, stillWatching, sourceFilter, typeFilter, watchList, watchListLoadingCheck, watchListSortColumn, watchListSortDirection]);
 
      // WatchListItems filter and sort useEffect
      useEffect(() => {
@@ -917,16 +871,7 @@ const DataProvider = ({
           setWatchListItemsSortingCheck(APIStatus.Success);
 
           setIsLoading(false);
-     }, [activeRoute, archivedVisible, currentPage, searchTerm, typeFilter, watchListItemsLoadingCheck, watchListSortColumn, watchListSortDirection]);
-
-     /* useEffect that does isClient check */
-     useEffect(() => {
-          const newIsClient = !window.location.href.endsWith("api-doc") && !window.location.href.endsWith("api-doc/") ? true : false;
-
-          setIsClient(newIsClient);
-
-          setClientCheck(APIStatus.Success);
-     }, []);
+     }, [activeRoute, archivedVisible, currentPage, searchTerm, showMissingArtwork, typeFilter, watchListItems, watchListItemsLoadingCheck, watchListSortColumn, watchListSortDirection, watchListItemSortingCheck]);
 
      /* useEffect that routes the current user */
      useEffect(() => {
@@ -986,7 +931,6 @@ const DataProvider = ({
           } else {
                newRoute = defaultRoute;
           }
-          //}
 
           if (newRoute === "WatchList" || newRoute === "Items") {
                setCurrentPage(1);
@@ -997,47 +941,34 @@ const DataProvider = ({
           const path = getPath(newRoute);
 
           router.push(path);
+     // eslint-disable-next-line react-hooks/exhaustive-deps
+     }, [defaultRoute, isClient, isError, loggedInCheck]); // Do not add activeRoute, getPath, isEnabled, openDetailClickHandler, routeList, router to dependencies. Causes extra network requests
 
-          const displayName = getDisplayName(newRoute);
-
-          if (displayName !== "") {
-               setActiveRouteDisplayName(displayName);
-          }
-     }, [defaultRoute, isError, loggedInCheck]); // Do not add activeRoute, getDisplayName, routeList, setActiveRoute, setActiveRouteDisplayName to dependencies. Causes dtl to close when you click on edit
-
+     /* 404 error routing */
      useEffect(() => {
           if (currentPath != "/404" && activeRoute === "404" && isError) {
                router.push("/404");
           }
-     }, [activeRoute]);
+     }, [activeRoute, currentPath, isError, router]);
 
-     /* UseEffect that checks if IMDB search is enabled */
+     /* Pull to refresh */
      useEffect(() => {
-          axios.get(`/api/IsIMDBSearchEnabled`)
-               .then((res: AxiosResponse<ISearchImdb>) => {
-                    if (res.data[0] === "OK") {
-                         setImdbSearchEnabled(true);
-                    }
-               })
-               .catch((err: Error) => {
-               });
-     }, []);
+          if (isAdding || isEditing) {
+               pullToRefreshEnabled(false);
+          } else {
+               pullToRefreshEnabled(true);
+          }
+     }, [isAdding, isEditing]);
 
-     /* UseEffect that checks if Recommendations is enabled */
      useEffect(() => {
-          axios.get(`/api/IsRecommendationsEnabled`)
-               .then((res: AxiosResponse<IRecommendation>) => {
-                    if (res.data[0] === "OK") {
-                         setRecommendationsEnabled(true);
-                    }
-               })
-               .catch((err: Error) => {
-               });
-     }, []);
+          /* isClient check */
+          const newIsClient = !window.location.href.endsWith("api-doc") && !window.location.href.endsWith("api-doc/") ? true : false;
 
-     /* UseEffect that gets the build date from the JSON file generated by the scripts section in package.json */
-     useEffect(() => {
-          // Fetch the build date from the JSON file
+          setIsClient(newIsClient);
+
+          setClientCheck(APIStatus.Success);
+
+          /* Gets the build date from the JSON file generated by the scripts section in package.json */
           fetch('/build-info.json')
                .then((response) => response.json())
                .then((data) => {
@@ -1055,36 +986,33 @@ const DataProvider = ({
 
                     setBuildDate(newBuildDate);
                });
-     }, []);
 
-     /* Visibility change useEffect */
-     useEffect(() => {
-          const handleVisibilityChange = () => {
-               if (!document.hidden && !isError) {
-                    isLoggedInApi(true);
-               }
-          };
+          /* Checks if IMDB search */
+          axios.get(`/api/IsIMDBSearchEnabled`)
+               .then((res: AxiosResponse<ISearchImdb>) => {
+                    if (res.data[0] === "OK") {
+                         setImdbSearchEnabled(true);
+                    }
+               })
+               .catch((err: Error) => {
+               });
 
-          // Add event listener for visibility change
-          document.addEventListener('visibilitychange', handleVisibilityChange);
+          /* Checks if Recommendations is enabled */
+          axios.get(`/api/IsRecommendationsEnabled`)
+               .then((res: AxiosResponse<IRecommendation>) => {
+                    if (res.data[0] === "OK") {
+                         setRecommendationsEnabled(true);
+                    }
+               })
+               .catch((err: Error) => {
+               });
 
-          // Cleanup event listener when the component unmounts
-          return () => {
-               document.removeEventListener('visibilitychange', handleVisibilityChange);
-          };
-     }, []);
-
-     useEffect(() => {
-          if (isAdding || isEditing) {
-               pullToRefreshEnabled(false);
-          } else {
-               pullToRefreshEnabled(true);
-          }
-     }, [isAdding, isEditing]);
+          isLoggedInApi(true);
+     // eslint-disable-next-line react-hooks/exhaustive-deps
+     }, []); // Do not add isLoggedInApi as a dependency. It causes an ends loop of network requests
 
      const dataContextProps = {
           activeRoute,
-          activeRouteDisplayName,
           AddIconComponent,
           APIStatus,
           archivedVisible,
@@ -1103,9 +1031,6 @@ const DataProvider = ({
           EditIconComponent,
           filteredWatchList,
           filteredWatchListItems,
-          getFormattedDate,
-          generateRandomPassword,
-          getDisplayName,
           getPath,
           hideTabs,
           imdbSearchEnabled,
@@ -1133,7 +1058,6 @@ const DataProvider = ({
           searchModalVisible,
           searchTerm,
           setActiveRoute,
-          setActiveRouteDisplayName,
           setArchivedVisible,
           setAutoAdd,
           setBugLogs,
@@ -1199,7 +1123,8 @@ const DataProvider = ({
           watchListSources,
           watchListSourcesLoadingCheck,
           watchListTypes,
-          watchListTypesLoadingCheck
+          watchListTypesLoadingCheck,
+          writeLog
      };
 
      return (

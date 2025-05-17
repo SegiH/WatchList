@@ -14,7 +14,8 @@ const Recommendations = ({ queryTerm, setRecommendationName, setRecommendationTy
      }) => {
      const {
           BrokenImageIconComponent,
-          darkMode
+          darkMode,
+          writeLog
      } = useContext(DataContext) as DataContextType
 
      const [recommendations, setRecommendations] = useState<IRecommendation[]>([]);
@@ -35,7 +36,7 @@ const Recommendations = ({ queryTerm, setRecommendationName, setRecommendationTy
           });
 
           if (newRecommendations.length === 0) {
-               console.log("Unable to find recommendation");
+               writeLog("Unable to find recommendation");
                return;
           }
 
@@ -56,16 +57,16 @@ const Recommendations = ({ queryTerm, setRecommendationName, setRecommendationTy
                     if (res.data[0] === "OK") {
                          setRecommendations(res.data[1]);
                     } else { // I do not want to display an alert if the recommendations returns an error
-                         console.log(`The error ${res.data[1].length} occurred while searching for recommendations`);
+                         writeLog(`The error ${res.data[1].length} occurred while searching for recommendations`);
 
                          setRecommendationsError(true);
                     }
                }).catch((err: Error) => {
-                    console.log(err.message);
+                    writeLog(err.message);
                     setRecommendationsError(true);
                });
           }
-     }, [queryTerm, recommendationsLoadingCheck, type]);
+     }, [queryTerm, recommendationsLoadingCheck, type, writeLog]);
 
      return (
           <div className={`flex-container${!darkMode ? " lightMode" : " darkMode"}`}>

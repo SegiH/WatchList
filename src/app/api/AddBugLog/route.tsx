@@ -1,5 +1,5 @@
 import { NextRequest } from 'next/server';
-import { getDB, isLoggedIn, writeDB } from "../lib";
+import { getDB, isLoggedIn, logMessage, writeDB } from "../lib";
 
 export async function PUT(request: NextRequest) {
      const searchParams = request.nextUrl.searchParams;

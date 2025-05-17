@@ -1,5 +1,5 @@
 import { NextRequest } from 'next/server';
-import { getDB, getIMDBDetails, isLoggedIn, writeDB } from "../lib";
+import { getDB, getIMDBDetails, isLoggedIn, logMessage, writeDB } from "../lib";
 import IWatchListItem from '@/app/interfaces/IWatchListItem';
 
 export async function PUT(request: NextRequest) {
@@ -35,7 +35,7 @@ export async function PUT(request: NextRequest) {
                          return Response.json(["ERROR-ALREADY-EXISTS", `The URL ${imdb_url} already exists with the name ${existingWatchListItem[0].WatchListItemName} and the ID ${existingWatchListItem[0].WatchListItemID}. It was NOT added!`]);
                     }
                } catch (e) {
-                    console.log(e)
+                    logMessage(e)
                     return Response.json(["OK", []]);
                }
           }
@@ -78,7 +78,7 @@ export async function PUT(request: NextRequest) {
 
                return Response.json(["OK", watchListItemsDB.length]); // New ID
           } catch (e) {
-               console.log(e.message);
+               logMessage(e.message);
                return Response.json(["ERROR", e.message]);
           }
      }

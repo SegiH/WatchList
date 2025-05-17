@@ -1,4 +1,4 @@
-import { getDB, defaultSources, isLoggedIn, writeDB } from "../lib";
+import { getDB, defaultSources, isLoggedIn, writeDB, logMessage } from "../lib";
 import { NextRequest } from 'next/server';
 
 export async function GET(request: NextRequest) {
@@ -27,7 +27,7 @@ export async function GET(request: NextRequest) {
 
           return Response.json(["OK", db.WatchListSources]);
      } catch (e) {
-          console.log(e)
+          logMessage(e)
           return Response.json(["OK", []]);
      }
 }

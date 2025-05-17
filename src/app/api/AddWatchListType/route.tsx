@@ -1,5 +1,5 @@
 import { NextRequest } from 'next/server';
-import { getDB, isLoggedIn, writeDB } from "../lib";
+import { getDB, isLoggedIn, logMessage, writeDB } from "../lib";
 
 export async function PUT(request: NextRequest) {
      if (!isLoggedIn(request)) {
@@ -30,7 +30,7 @@ export async function PUT(request: NextRequest) {
 
           return Response.json(["OK", watchListTypesDB.length]); // New ID
      } catch (e) {
-          console.log(e.message);
+          logMessage(e.message);
           return Response.json(["ERROR", e.message]);
      }
 }

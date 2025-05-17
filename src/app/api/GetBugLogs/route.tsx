@@ -1,5 +1,5 @@
 import { NextRequest } from 'next/server';
-import { getDB, isLoggedIn } from '../lib';
+import { getDB, isLoggedIn, logMessage } from '../lib';
 import IBugLog from '@/app/interfaces/IBugLog';
 
 export async function GET(request: NextRequest) {
@@ -21,7 +21,7 @@ export async function GET(request: NextRequest) {
 
           return Response.json(["OK", filteredBugLogs]);
      } catch (e) {
-          console.log(e.message);
+          logMessage(e.message);
           return Response.json(["ERROR", e.message]);
      }
 }

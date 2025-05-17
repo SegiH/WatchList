@@ -1,5 +1,5 @@
 import { NextRequest } from 'next/server';
-import { getDB, getUserID } from "../lib";
+import { getDB, getUserID, logMessage } from "../lib";
 import IWatchList from '@/app/interfaces/IWatchList';
 import IWatchListType from '@/app/interfaces/IWatchListType';
 import IWatchListItem from '@/app/interfaces/IWatchListItem';
@@ -41,7 +41,7 @@ export async function GET(request: NextRequest) {
 
           return Response.json(["OK", [{ MovieCount: allMovieWatchList.length }]]);
      } catch (e) {
-          console.log(e.message);
+          logMessage(e.message);
           return Response.json(["ERROR", e.message]);
      }
 }

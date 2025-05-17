@@ -1,6 +1,6 @@
 'use server'
 import { NextRequest } from 'next/server';
-import { getDB, getUserOptions, getUserSession, validateSettings } from "../lib";
+import { getDB, getUserOptions, getUserSession, logMessage, validateSettings } from "../lib";
 
 export async function GET(request: NextRequest) {
      const searchParams = request.nextUrl.searchParams;
@@ -18,7 +18,7 @@ export async function GET(request: NextRequest) {
                return Response.json(["ERROR", false]);
           }
      } catch (e) {
-          console.log(e.message)
+          logMessage(e.message)
           return Response.json(["ERROR", e.message]);
      }
 

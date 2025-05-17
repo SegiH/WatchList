@@ -1,5 +1,5 @@
 import { NextRequest } from 'next/server';
-import { getDB, decrypt, getUserID, isUserAdmin } from "../lib";
+import { getDB, decrypt, getUserID, isUserAdmin, logMessage } from "../lib";
 import IUser from '../../interfaces/IUser';
 
 export async function GET(request: NextRequest) {
@@ -55,7 +55,7 @@ export async function GET(request: NextRequest) {
 
           return Response.json(["OK", decryptedUsers]);
      } catch (e) {
-          console.log(e.message);
+          logMessage(e.message);
           return Response.json(["ERROR", e.message]);
      }
 }

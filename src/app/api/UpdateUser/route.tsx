@@ -1,5 +1,5 @@
 import { NextRequest } from 'next/server';
-import { encrypt, getDB, isUserAdmin, writeDB } from "../lib";
+import { encrypt, getDB, isUserAdmin, logMessage, writeDB } from "../lib";
 import IUser from '@/app/interfaces/IUser';
 
 export async function PUT(request: NextRequest) {
@@ -62,7 +62,7 @@ export async function PUT(request: NextRequest) {
 
           return Response.json(["OK"]);
      } catch (e) {
-          console.log(e.message)
+          logMessage(e.message)
           return Response.json(["ERROR", e.message]);
      }
 }

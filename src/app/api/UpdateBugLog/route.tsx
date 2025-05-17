@@ -1,5 +1,5 @@
 import { NextRequest } from 'next/server';
-import { getDB, isLoggedIn, writeDB } from '../lib';
+import { getDB, isLoggedIn, logMessage, writeDB } from '../lib';
 import IBugLog from '@/app/interfaces/IBugLog';
 
 export async function PUT(request: NextRequest) {
@@ -54,7 +54,7 @@ export async function PUT(request: NextRequest) {
 
         return Response.json(["OK"]);
     } catch (e) {
-        console.log(e.message)
+        logMessage(e.message)
         return Response.json(["ERROR", e.message]);
     }
 }

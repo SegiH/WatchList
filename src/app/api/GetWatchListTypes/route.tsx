@@ -1,5 +1,5 @@
 import { NextRequest } from 'next/server';
-import { getDB } from '../lib';
+import { getDB, logMessage } from '../lib';
 
 export async function GET(request: NextRequest) {
      // This needs to be here even though this endpoint doesn't take any parameters because without this,
@@ -12,7 +12,7 @@ export async function GET(request: NextRequest) {
 
           return Response.json(["OK", db.WatchListTypes]);
      } catch (e) {
-          console.log(e)
+          logMessage(e)
           return Response.json(["OK", []]);
      }
 }

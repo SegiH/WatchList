@@ -95,7 +95,7 @@ export default function Setup() {
           if (activeRoute !== "Setup") {
                router.push(defaultRoute);
           }
-     }, []);
+     }, [activeRoute, defaultRoute, router]);
 
      return (
           <>

@@ -1,5 +1,52 @@
 WatchList can be run as a regular web application, a Progressive Web Application (PWA) or in a Docker container.
 
+# WatchList explanation
+
+WatchList - WatchList is used to refer to the log that you add to record a movie or TV show that you have watched. You would usually add the date you started watching it, when you finished watching it, where you watched it and your rating of the movie/show.
+
+Items - The record of the movie or TV show. You would only add a WatchListItem once to add a specific movie/tv show or special. The WatchListItem includes information like the name of the movie/show, type (movie/TV show/special), link to IMDB and image from IMDB. By default WatchList Items are hidden and you only see WatchList which shows what you have watched. You can show WatchList items by clicking on the Settings gear and showing it in Visible Sections.
+
+# WatchList sections
+The application has 5 different sections:
+
+WatchList: These are the records where you add a record any time you watch something.
+
+Items: These are the records that contain the movie, TV show or special which you only add once and then add a record in WatchList where you select the WatchListItem
+
+IMDB Search: Search IMDB and add the result in WatchList
+
+WatchList Stats: Stats of the movies and shows that you have watched over time
+
+Admin: If you are an administrator, you will have access to the admin section where you can manage users, add sources and add types.;
+
+# Tips
+There are different options available in WatchList. Some of options are only available in certain tabs.
+
+These options are available at the bar at the top of WatchList:
+
+Still Watching - When you add a WatchList, if you do not enter an end date, WatchList will consider that record to be "still watching" whih means that you are still watching that movie/show. When "Still Watching" is enabled, you will only see movies or shows that do not have an end date. Turn this off to see everything that you have already watched. This is available in the WatchList tab
+
+Source - You can filter WatchList by the source where you watched the movie or show at (lke Netflix, Amazon etc) by clicking on the Settings and selecting from the Source dropdown.
+
+Type - You can also filter by Type by clicking on the Settings and selecting from the Type dropdown.
+
+Sort By - Sort WatchList or WatchList items
+
+Sort Order - Sort direction which is ascending or descending
+
+
+These options are available in Settings:
+
+Visible Sections - All of the sections except for WatchList can be hidden or shown. Tap on an empty area under Visible Section to show a section.
+
+Dark Mode - Toggle dark or light mode. This is on by default.
+
+Archived - If you add a WatchList record and decide not to continue watching the movie or TV show, you can archive that WatchList record. The WatchList record will not be visible any more in WatchList. If you want to find it again, enable the "Archived" toggle.
+
+Auto Add - After you add a WatchListItem, if you want to immediately add a WatchList record to record when you watched a movie or show, enable this feature. If it is off, you will need to click on the plus sign in WatchList to add a new record.
+
+No Image (Only available in Items) - If you add a WatchList Item record for a movie or TV show and the image does not display, go to Items, then enable "No Image" to see Items with missing images.
+
 Requirements: Node 18.19.1 or higher
 
 # Installation

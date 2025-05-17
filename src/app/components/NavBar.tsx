@@ -1,6 +1,4 @@
-"use client"
-
-import { act, useContext } from "react";
+import { useContext } from "react";
 
 import { DataContext, DataContextType } from "../data-context";
 

@@ -24,6 +24,8 @@ import { APIStatus, DataContext, DataContextType } from "../data-context";
 
 import "../css/tablestyle.css";
 import "./watchliststats.css";
+import WatchListItems from "../Items/page";
+import IWatchListItem from "../interfaces/IWatchListItem";
 
 export default function WatchListStats() {
      const {
@@ -31,7 +33,8 @@ export default function WatchListStats() {
           demoMode,
           ratingMax,
           setIsError,
-          setErrorMessage
+          setErrorMessage,
+          watchListItems
      } = useContext(DataContext) as DataContextType
 
      const [hasStats, setHasStats] = useState(false);
@@ -108,7 +111,7 @@ export default function WatchListStats() {
           if (watchListMovieTop10StatsLoadingCheck === APIStatus.Idle) {
                setWatchListMovieTop10StatsLoadingCheck(APIStatus.Loading);
           }
-     }, [watchListMovieTop10StatsLoadingCheck]);
+     }, [demoMode, watchListMovieTop10StatsLoadingCheck]);
 
      // Get WatchList Movie Top 10 Stats
      useEffect(() => {
@@ -120,7 +123,20 @@ export default function WatchListStats() {
                                    setHasStats(true);
                               }
 
-                              setWatchListMovieTop10Stats(res.data[1]);
+                              const newMovieTop10Stats: any = [];
+
+                              res.data[1].map((stat: any) => {
+                                   newMovieTop10Stats.push(
+                                        {
+                                             WatchListItemName: watchListItems.filter((watchListItem: IWatchListItem) => {
+                                                  return watchListItem.WatchListItemID === stat.WatchListItemID
+                                             })[0].WatchListItemName,
+                                             ItemCount: stat.count
+                                        }
+                                   )
+                              });
+
+                              setWatchListMovieTop10Stats(newMovieTop10Stats);
                               setWatchListMovieTop10StatsLoadingCheck(APIStatus.Success);
                          } else {
                               setErrorMessage(`The following error occurred getting the WatchList Movie Top 10 Stats: ${res.data[1]}`);
@@ -132,7 +148,7 @@ export default function WatchListStats() {
                          setIsError(true);
                     });
           }
-     }, [watchListMovieTop10StatsLoadingCheck]);
+     }, [setErrorMessage, setIsError, watchListItems, watchListMovieTop10StatsLoadingCheck]);
 
      // Initiate start of fetching WatchList Movie Count Stats
      useEffect(() => {
@@ -146,7 +162,7 @@ export default function WatchListStats() {
           if (watchListMovieCountStatsLoadingCheck === APIStatus.Idle) {
                setWatchListMovieCountStatsLoadingCheck(APIStatus.Loading);
           }
-     }, [watchListMovieCountStatsLoadingCheck]);
+     }, [demoMode, watchListMovieCountStatsLoadingCheck]);
 
      // Get WatchList Movie Count Stats
      useEffect(() => {
@@ -170,7 +186,7 @@ export default function WatchListStats() {
                          setIsError(true);
                     });
           }
-     }, [watchListMovieCountStatsLoadingCheck]);
+     }, [setErrorMessage, setIsError, watchListMovieCountStatsLoadingCheck]);
 
      // Initiate start of fetching WatchList Source Stats
      useEffect(() => {
@@ -184,7 +200,7 @@ export default function WatchListStats() {
           if (watchListSourceStatsLoadingCheck === APIStatus.Idle) {
                setWatchListSourceStatsLoadingCheck(APIStatus.Loading);
           }
-     }, [watchListSourceStatsLoadingCheck]);
+     }, [demoMode, watchListSourceStatsLoadingCheck]);
 
      // Get WatchList Source Stats
      useEffect(() => {
@@ -208,7 +224,7 @@ export default function WatchListStats() {
                          setIsError(true);
                     });
           }
-     }, [watchListSourceStatsLoadingCheck]);
+     }, [setErrorMessage, setIsError, watchListSourceStatsLoadingCheck]);
 
      // Initiate start of fetching WatchList Source Dtl Stats
      useEffect(() => {
@@ -222,7 +238,7 @@ export default function WatchListStats() {
           if (watchListSourceDtlLoadingCheck === APIStatus.Idle) {
                setWatchListSourceDtlLoadingCheck(APIStatus.Loading);
           }
-     }, [watchListSourceDtlLoadingCheck]);
+     }, [demoMode, watchListSourceDtlLoadingCheck]);
 
      // Get WatchList Source Dtl Stats
      useEffect(() => {
@@ -246,7 +262,7 @@ export default function WatchListStats() {
                          setIsError(true);
                     });
           }
-     }, [watchListSourceDtlLoadingCheck]);
+     }, [setErrorMessage, setIsError, watchListSourceDtlLoadingCheck]);
 
      // Initiate start of fetching WatchList Top Rated Stats
      useEffect(() => {
@@ -260,7 +276,7 @@ export default function WatchListStats() {
           if (watchListTopRatedStatsLoadingCheck === APIStatus.Idle) {
                setWatchListTopRatedStatsLoadingCheck(APIStatus.Loading);
           }
-     }, [watchListTopRatedStatsLoadingCheck]);
+     }, [demoMode, watchListTopRatedStatsLoadingCheck]);
 
      // Get WatchList Top Rated Stats
      useEffect(() => {
@@ -284,7 +300,7 @@ export default function WatchListStats() {
                          setIsError(true);
                     });
           }
-     }, [watchListTopRatedStatsLoadingCheck]);
+     }, [setErrorMessage, setIsError, watchListTVTop10StatsLoadingCheck, watchListTopRatedStatsLoadingCheck]);
 
      // Initiate start of fetching WatchList TV Top 10 Stats
      useEffect(() => {
@@ -298,7 +314,7 @@ export default function WatchListStats() {
           if (watchListTVTop10StatsLoadingCheck === APIStatus.Idle) {
                setWatchListTVTop10StatsLoadingCheck(APIStatus.Loading);
           }
-     }, [watchListTVTop10StatsLoadingCheck]);
+     }, [demoMode, watchListTVTop10StatsLoadingCheck]);
 
      // Get WatchList TV Top 10 Stats
      useEffect(() => {
@@ -322,7 +338,7 @@ export default function WatchListStats() {
                          setIsError(true);
                     });
           }
-     }, [watchListTVTop10StatsLoadingCheck]);
+     }, [setErrorMessage, setIsError, watchListTVTop10StatsLoadingCheck]);
 
      // Initiate start of fetching WatchList TV Seasons Count Stats
      useEffect(() => {
@@ -336,7 +352,7 @@ export default function WatchListStats() {
           if (watchListTVSeasonsCountStatsLoadingCheck === APIStatus.Idle) {
                setWatchListSeasonsCountStatsLoadingCheck(APIStatus.Loading);
           }
-     }, [watchListTVSeasonsCountStatsLoadingCheck]);
+     }, [demoMode, watchListTVSeasonsCountStatsLoadingCheck]);
 
      // Get WatchList TV Seasons Count Stats
      useEffect(() => {
@@ -360,7 +376,7 @@ export default function WatchListStats() {
                          setIsError(true);
                     });
           }
-     }, [watchListTVSeasonsCountStatsLoadingCheck]);
+     }, [setErrorMessage, setIsError, watchListTVSeasonsCountStatsLoadingCheck]);
 
      // Initiate start of fetching WatchList TV Total Count Stats
      useEffect(() => {
@@ -374,7 +390,7 @@ export default function WatchListStats() {
           if (watchListTVTotalCountStatsLoadingCheck === APIStatus.Idle) {
                setWatchListTVTotalCountStatsLoadingCheck(APIStatus.Loading);
           }
-     }, [watchListTVTotalCountStatsLoadingCheck]);
+     }, [demoMode, watchListTVTotalCountStatsLoadingCheck]);
 
      // Get WatchList TV Total Count Stats
      useEffect(() => {
@@ -398,7 +414,7 @@ export default function WatchListStats() {
                          setIsError(true);
                     });
           }
-     }, [watchListTVTotalCountStatsLoadingCheck]);
+     }, [setErrorMessage, setIsError, watchListTVTotalCountStatsLoadingCheck]);
 
      // Initiate start of fetching WatchList Weekly Stats
      useEffect(() => {
@@ -424,7 +440,7 @@ export default function WatchListStats() {
           if (watchListWeeklyStatsLoadingCheck === APIStatus.Idle) {
                setWatchListWeeklyStatsLoadingCheck(APIStatus.Loading);
           }
-     }, [watchListWeeklyStatsLoadingCheck]);
+     }, [demoMode, watchListWeeklyStatsLoadingCheck]);
 
      // Get WatchList Weekly Stats
      useEffect(() => {
@@ -459,7 +475,7 @@ export default function WatchListStats() {
                          setIsError(true);
                     });
           }
-     }, [watchListWeeklyStatsLoadingCheck]);
+     }, [setErrorMessage, setIsError, watchListWeeklyStatsLoadingCheck]);
 
      // Create array for Movie weekly breakdown
      useEffect(() => {

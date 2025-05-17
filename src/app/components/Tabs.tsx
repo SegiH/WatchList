@@ -12,7 +12,6 @@ const Tabs = () => {
           activeRoute,
           darkMode,
           demoMode,
-          getDisplayName,
           getPath,
           hideTabs,
           isAdding,
@@ -26,7 +25,6 @@ const Tabs = () => {
           pullToRefreshEnabled,
           routeList,
           setActiveRoute,
-          setActiveRouteDisplayName,
           setCurrentPage,
           setSearchInputVisible,
           setSearchTerm,
@@ -53,12 +51,6 @@ const Tabs = () => {
           }
 
           router.push(path);
-
-          const displayName = getDisplayName(tabClicked.replace("/", ""));
-
-          if (displayName !== "") {
-               setActiveRouteDisplayName(displayName);
-          }
      };
 
      return (

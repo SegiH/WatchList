@@ -18,7 +18,6 @@ export default function Login() {
           demoUsername,
           loggedInCheck,
           setActiveRoute,
-          setActiveRouteDisplayName,
           setDemoMode,
           setLoggedInCheck,
           setOptions,
@@ -64,7 +63,6 @@ export default function Login() {
                const newUserData: IUser = require("../demo/index").demoUsers[0];
 
                setActiveRoute("WatchList");
-               setActiveRouteDisplayName("WatchList");
                setUserData(newUserData);
                setLoggedInCheck(APIStatus.Success);
 
@@ -124,7 +122,6 @@ export default function Login() {
                setPassword("");
 
                setActiveRoute(defaultRoute);
-               setActiveRouteDisplayName(defaultRoute);
                setUserData(newUserData);
 
                if (typeof response.Options !== "undefined" && response.Options.length === 1) {
@@ -137,13 +134,13 @@ export default function Login() {
                     router.push("/WatchList");
                }, 1000);
           } catch (err) { }
-     }, [defaultRoute, setActiveRoute, setLoggedInCheck, setUserData]);
+     }, [defaultRoute, router, setActiveRoute, setLoggedInCheck, setOptions, setUserData]);
 
      useEffect(() => {
           if (loggedInCheck === APIStatus.Success && activeRoute === "Login") {
                router.push(defaultRoute);
           }
-     }, []);
+     }, [activeRoute, defaultRoute, loggedInCheck, router]);
 
      useEffect(() => {
           if (userNameNeedsFocus && usernameRef.current) {

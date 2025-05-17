@@ -25,7 +25,7 @@ export default function WatchList() {
           setActiveRoute("WatchList");
           setIsAdding(false);
           setIsEditing(false);
-     }, []);
+     }, [setActiveRoute, setIsAdding, setIsEditing]);
 
      return (
           <>

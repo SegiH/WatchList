@@ -103,7 +103,6 @@ table.simpleTable {
      width: fit-content;
      margin: 20px 0;
      font-family: Arial, sans-serif;
-     /*background-color: #f9f9f9;*/
      border: 1px solid black;
      border-collapse: collapse;
      border-radius: 8px;
@@ -262,7 +261,6 @@ table.simpleTable:last-child {
      border-radius: 50%;
      color: #07051a;
      font-size: 1.2em;
-     /*transition: all 1s;*/
 }
 
 .fade-in {
@@ -316,7 +314,6 @@ table.simpleTable:last-child {
 .image-crop img {
      border-radius: 15px;
      width:80%;
-     /*width: 128px;*/
      text-align: center;
      margin-right: 10px;
 }
@@ -387,7 +384,6 @@ table.simpleTable:last-child {
      height: 1vh;
      position: fixed;
      margin-top: 50px;
-     /*background: rgba(0,0,0,0.5) url("https://media.giphy.com/media/8agqybiK5LW8qrG3vJ/giphy.gif") center no-repeat;*/
      z-index: 1;
 }
 
@@ -587,16 +583,6 @@ table.simpleTable:last-child {
      transform: translate(-50%, -50%);
      transition: all 1s;
      min-width: 400px !important;
-     /*height: 50px;
-     box-sizing: border-box;
-     border-radius: 25px;
-     commented out on 03-19 to fix weird css issue
-     */
-     /*padding: 5px;*/
-     /*border-width: 1px !important;
-     border-style: solid !important;
-     commented out on 03-19 to fix weird css issue
-     */
 }
 
 .searchContainer:hover,
@@ -611,7 +597,6 @@ table.simpleTable:last-child {
 }
 
 .searchHeader {
-     /*background-color: #f1ebdf;*/
      border-radius: 15px;
 }
 
@@ -704,6 +689,7 @@ table.simpleTable:last-child {
 
 .show-date {
      height: 35px;
+     margin-bottom: 25px;
 }
 
 .show-item {
@@ -719,11 +705,6 @@ table.simpleTable:last-child {
      list-style: none;
      width: 175px;
 }
-
-/* Scales better with this commented out */
-/*.show-item div {
-     margin-left: 15px;
-}*/
 
 .show-link {
      text-align: center;

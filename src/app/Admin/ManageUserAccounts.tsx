@@ -217,7 +217,7 @@ const ManageUserAccounts = () => {
                          setIsError(true);
                     });
           }
-     }, [usersLoadingCheck]);
+     }, [defaultRoute, demoMode, isAdmin, router, setErrorMessage, setIsError, setUsers, usersLoadingCheck]);
 
      return (
           <>

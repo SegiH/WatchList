@@ -145,7 +145,7 @@ const ManageWatchListTypes = () => {
           if (!isAdmin() && !demoMode) {
                router.push(defaultRoute)
           }
-     }, []);
+     }, [defaultRoute, demoMode, isAdmin, router]);
 
      return (
           <span>

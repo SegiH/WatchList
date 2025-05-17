@@ -62,7 +62,7 @@ export default function Admin() {
           }
 
           setIsMounted(true);
-     }, []);
+     }, [isAdmin, demoMode, router, defaultRoute]);
 
      return (
           <>

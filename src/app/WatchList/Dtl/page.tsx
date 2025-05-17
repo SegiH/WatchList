@@ -32,6 +32,7 @@ export default function WatchListDetail() {
           darkMode,
           demoMode,
           EditIconComponent,
+          imdbSearchEnabled,
           isAdding,
           isLoading,
           isEditing,
@@ -614,7 +615,7 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
           if (isClosing) {
                router.push("/WatchList");
           }
-     }, [isClosing]);
+     }, [isClosing, router]);
 
      return (
           <>
@@ -736,7 +737,7 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
                                              }
 
                                              <div className="narrow card">
-                                                  {((isAdding && addWatchListDtl) || isEditing) &&
+                                                  {((isAdding && addWatchListDtl) || isEditing) && imdbSearchEnabled &&
                                                        <div className="clickable hyperlink text-label rightAligned" onClick={addNewChangeHandler}>Add</div>
                                                   }
                                              </div>

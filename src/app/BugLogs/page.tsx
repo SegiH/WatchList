@@ -182,11 +182,10 @@ export default function BugLog() {
      }
 
      useEffect(() => {
-          if (bugLogsLoadingCheck === APIStatus.Loading) {
+          if (bugLogsLoadingCheck === APIStatus.Idle) {
+               setBugLogsLoadingCheck(APIStatus.Loading);
                return;
           }
-
-          setBugLogsLoadingCheck(APIStatus.Loading);
 
           axios.get(`/api/GetBugLogs`)
                .then((res) => {
@@ -209,7 +208,7 @@ export default function BugLog() {
                     setErrorMessage(`The fatal error ${err.message} occurred while getting the bug logs`);
                     setIsError(true);
                });
-     }, [bugLogsLoadingCheck]);
+     }, [bugLogsLoadingCheck, setBugLogs, setErrorMessage, setIsError]);
 
      useEffect(() => {
           // Make sure current user is an admin
@@ -218,7 +217,7 @@ export default function BugLog() {
           }
 
           setIsMounted(true);
-     }, []);
+     }, [defaultRoute, isAdmin, router, setIsMounted]);
 
      return (
           <>

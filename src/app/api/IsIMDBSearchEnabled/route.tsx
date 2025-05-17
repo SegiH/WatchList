@@ -6,9 +6,9 @@ export async function GET(request: NextRequest) {
           return Response.json(["ERROR", "Error. Not signed in"]);
      }
 
-     const rapidapi_key = getRapidAPIKey();
+     const rapidapi_key = await getRapidAPIKey();
 
-     if (rapidapi_key === null) {
+     if (rapidapi_key === "") {
           return Response.json(["ERROR", "API key is not set"]);
      } else {
          return Response.json(["OK"]);

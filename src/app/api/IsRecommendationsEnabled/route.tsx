@@ -6,9 +6,9 @@ export async function GET(request: NextRequest) {
           return Response.json(["ERROR", "Error. Not signed in"]);
      }
 
-     const recommendationsAPIKey = getRecommendationsAPIKey();
+     const recommendationsAPIKey = await getRecommendationsAPIKey();
 
-     if (recommendationsAPIKey === null) {
+     if (recommendationsAPIKey === "") {
           return Response.json(["ERROR", "Recommendations API key is not set"]);
      } else {
          return Response.json(["OK"]);

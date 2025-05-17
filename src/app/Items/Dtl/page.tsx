@@ -399,7 +399,7 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
                     router.push("/WatchList");
                }
           }
-     }, [isClosing]);
+     }, [isClosing, isEnabled, router]);
 
      return (
           <>

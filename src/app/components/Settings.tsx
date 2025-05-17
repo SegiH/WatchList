@@ -13,14 +13,12 @@ const Settings = () => {
           darkMode,
           defaultRoute,
           demoMode,
-          getDisplayName,
           hideTabs,
           loggedInCheck,
           LogOutIconComponent,
           pullToRefreshEnabled,
           saveOptions,
           setActiveRoute,
-          setActiveRouteDisplayName,
           setCurrentPage,
           setOptions,
           setSettingsVisible,
@@ -43,12 +41,6 @@ const Settings = () => {
           // Handle situation where activeRoute is no longer visible
           if (newList.filter((section) => section["name"] === activeRoute).length === 0) {
                setActiveRoute(defaultRoute);
-
-               const displayName = getDisplayName(defaultRoute);
-
-               if (displayName !== "") {
-                    setActiveRouteDisplayName(displayName);
-               }
 
                router.push("/" + defaultRoute);
           }
@@ -92,7 +84,7 @@ const Settings = () => {
 
      useEffect(() => {
           setFormattedBuildDate(buildDate);
-     }, []);
+     }, [buildDate]);
 
      return (
           <div className="modal">

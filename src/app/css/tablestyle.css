@@ -36,10 +36,3 @@
 .data li .detailColumn * {
     margin-bottom: 25px;
 }
-/*.datagrid tr:nth-child(even) td:not(.header){
-    background-color: #eee;
-}
-
-.datagrid tr:nth-child(even) td:not(.header){
-    background-color: #eee;
-}*/

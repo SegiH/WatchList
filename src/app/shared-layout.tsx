@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useContext, useEffect, useRef, useState } from "react";
 
-import Search from "./components/Search";
+import SearchIMDB from "./components/SearchIMDB";
 import Settings from "./components/Settings";
 import IWatchListSource from "./interfaces/IWatchListSource";
 import IWatchListType from "./interfaces/IWatchListType";
@@ -20,7 +20,6 @@ const SharedLayout = () => {
           AddIconComponent,
           darkMode,
           demoMode,
-          getDisplayName,
           hideTabs,
           imdbSearchEnabled,
           isAdmin,
@@ -35,7 +34,6 @@ const SharedLayout = () => {
           searchInputVisible,
           searchModalVisible,
           searchTerm,
-          setActiveRouteDisplayName,
           setSourceFilter,
           setStillWatching,
           SettingsIconComponent,
@@ -111,10 +109,6 @@ const SharedLayout = () => {
           }
 
           router.push("/" + newTab);
-
-          const displayName = getDisplayName(newTab);
-
-          setActiveRouteDisplayName(displayName);
      }
 
      const toggleSearch = () => {
@@ -326,7 +320,7 @@ const SharedLayout = () => {
                                    </span>
 
                                    {searchModalVisible &&
-                                        <Search />
+                                        <SearchIMDB />
                                    }
 
                                    {settingsVisible &&

@@ -4,7 +4,6 @@ import { Inter } from 'next/font/google';
 import Tabs from './components/Tabs';
 import { DataProvider } from "./data-context";
 import SharedLayout from "./shared-layout";
-import NavBar from './components/NavBar';
 
 const inter = Inter({ subsets: ['latin'] })
 

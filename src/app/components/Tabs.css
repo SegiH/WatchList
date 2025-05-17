@@ -1,7 +1,4 @@
 .active {
-     /*border-color: cornflowerblue !important;
-    font-weight: bold !important;
-    border-width: 2px;*/
      background-color: deepskyblue !important;
      border-radius: 8px;
 }
@@ -20,11 +17,9 @@
 .tabBar {
      border: 1px solid lightgray;
      bottom: 0;
-     /* Critical */
      box-sizing: border-box;
      height: 56px;
      position: fixed;
-     /* Critical */
      text-align: center;
      width: 100%;
      display: flex;
@@ -45,7 +40,6 @@
      margin-left: auto;
      margin-right: auto;
      transform: scale(0.8);
-     /*width: 80px;*/
 }
 
 .tab:last-child {

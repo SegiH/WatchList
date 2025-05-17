@@ -11,7 +11,6 @@ import path from "path";
 const dbFile = "./database.json";
 
 export const defaultSources = ['Amazon', 'Hulu', 'Movie Theatre', 'Netflix', 'Plex', 'Prime', 'Web'];
-export const defaultTypes = ['Movie', 'Other', 'Special', 'TV'];
 
 const secretKey = typeof process.env.SECRET !== "undefined" ? String(process.env.SECRET) : "";
 const sessionDuration = 604800000;
@@ -64,7 +63,7 @@ export const addUser = async (request: NextRequest, isNewInstance = false) => {
 
           return Response.json(["OK", usersDB.length]);
      } catch (e) {
-          console.log(e.message)
+          logMessage(e.message)
           return Response.json(["ERROR", e.message]);
      }
 }
@@ -141,7 +140,6 @@ export const getUserID = async (req: NextRequest) => {
 }
 
 export const getUserOptions = async (userID: number, isAdmin: boolean) => {
-     // Get Users' options
      try {
           const db = getDB();
 
@@ -153,7 +151,7 @@ export const getUserOptions = async (userID: number, isAdmin: boolean) => {
 
           if (existingWatchListItemResult.length !== 1) {
                if (existingWatchListItemResult.length !== 0) {// Should never happen. Means theres more than 1 result
-                    console.log("Fatal error! more than 1 option for this user id");
+                    logMessage("Fatal error! more than 1 option for this user id");
                     return Response.json(["ERROR", "Fatal error! more than 1 option for this user id"]);
                }
 
@@ -193,7 +191,7 @@ export const getUserOptions = async (userID: number, isAdmin: boolean) => {
                return existingWatchListItemResult[0];
           }
      } catch (e) {
-          console.log(e)
+          logMessage(e)
           return null;
      }
 }
@@ -251,21 +249,14 @@ export const login = async (username: string, password: string) => {
 
           return loginSuccessfullActions(currentUser);
 
-     } catch (err: any) {
-          return Response.json(["ERROR", `The error ${err.message} occurred logging in`]);
+     } catch (err) {
+          if (err instanceof Error) {
+               return Response.json(["ERROR", `The error ${err.message} occurred logging in`]);
+          }
      }
 }
 
-export const logMessage = async (message) => {
-     message = new Date().toISOString() + " " + message
-     fs.appendFile('app.log', message + '\n', (err) => {
-          if (err) {
-               console.error('Error appending to log file:', err);
-          }
-     });
-};
-
-export const loginSuccessfullActions = async (currentUser: IUser) => {
+const loginSuccessfullActions = async (currentUser: IUser) => {
      try {
           const userOptions = await getUserOptions(currentUser[0].UserID, currentUser[0].Admin);
 
@@ -287,6 +278,20 @@ export const loginSuccessfullActions = async (currentUser: IUser) => {
      } catch (e) {
           return Response.json(["ERROR", `An error occurred getting the options with the error ${e.message}`]);
      }
+}
+
+export const logMessage = async (message) => {
+     let formattedDate = new Date().toISOString().replace("T", " ").replace("Z", "");
+
+     // Strip milliseconds
+     formattedDate = formattedDate.slice(0, formattedDate.indexOf("."));
+
+     message = formattedDate + " " + message
+     fs.appendFile('watchlist.log', message + '\n', (err) => {
+          if (err) {
+               console.error('Error appending to log file:', err);
+          }
+     });
 }
 
 export const validateSettings = async () => {

@@ -5,7 +5,7 @@ You can use this app to track how many times you watched something, where you wa
 
 After adding information for a while, WatchList will generate statistics to show you trends for favorite movies and tv shows and more.
 
-It is possible to search IMDB for a movie or TV show (if you provide an API key. More info in INSTALL.md).
+It is possible to add a WatchList record by searching IMDB if you provide an API key. More info is available in INSTALL.md.
 
 WatchList uses a JSON database to store your logged movie and TV shows.
 

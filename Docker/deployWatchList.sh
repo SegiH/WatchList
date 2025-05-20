@@ -70,22 +70,20 @@ fi
  
 pushd $DESTINATION_DIR > /dev/null
  
-npm install
-
-npm run build
-
 cp -r public .next/standalone
  
 cp -r .next/static .next/standalone/.next
- 
-cp "$ENV" .next/standalone/.env
+
+cp "database-template.json" .next/standalone/database.json
+
+cp "package-lock.json" .next/standalone/
+
+cp "$ENV" .env
  
 cp "$DBFILE" .next/standalone
  
-cp "$DOCKER_FILE" ./.next/standalone/Dockerfile
- 
-cd .next/standalone
- 
+cp "$DOCKER_FILE" ./Dockerfile
+  
 docker buildx build . -t watchlist
  
 for CURR_COMMAND in "${DOCKER_COMMANDS[@]}"

@@ -688,22 +688,32 @@ table.simpleTable:last-child {
 }
 
 .show-date {
-     height: 35px;
-     margin-bottom: 25px;
+    height: auto; /* Let it grow based on content */
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    white-space: normal; /* Allow line breaks */
+    text-align: center;  /* Center the multiline content */
+    flex-direction: column; /* Stack the lines vertically */
+    line-height: 1.4;
 }
 
 .show-item {
-     border-style: dashed;
-     border-radius: 15px;
-     border-width: 1px;
-     font-family: "Brush Script MT", cursive;
-     margin-bottom: 45px;
-     margin-right: 55px;
-     overflow: hidden;
-     text-align: center;
-     vertical-align: top;
-     list-style: none;
-     width: 175px;
+    border-style: dashed;
+    border-radius: 15px;
+    border-width: 1px;
+    font-family: "Brush Script MT", cursive;
+    margin-bottom: 45px;
+    margin-right: 55px;
+    overflow: hidden;
+    text-align: center;
+    vertical-align: top;
+    list-style: none;
+    width: 175px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .show-link {
@@ -723,21 +733,31 @@ table.simpleTable:last-child {
 }
 
 .show-season {
-     height: 35px;
+    height: 25px; /* Unified height for alignment */
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
+.show-type,
 .show-source {
-     height: 25px;
+    height: 25px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .show-title {
-     display: inline-flex;
-     word-wrap: break-word;
-     min-height: 50px;
-}
-
-.show-type {
-     height: 25px;
+    display: inline-flex;
+    word-wrap: break-word;
+    min-height: 40px; /* Adjusted */
+    max-height: 50px;
+    line-height: 1.2;
+    overflow: hidden;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 0 5px;
 }
 
 .simpleTable th {

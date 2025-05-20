@@ -11,27 +11,32 @@ export default function WatchListItemCard({ currentWatchListItem }: WatchListCar
     const {
         BrokenImageIconComponent,
         darkMode,
+        filteredWatchListItems,
         openDetailClickHandler,
         setFilteredWatchListItems
     } = useContext(DataContext) as DataContextType;
 
     const showDefaultSrc = (watchListItemID: number): void => {
-        const newWatchListItems: IWatchListItem[] = Object.assign([], currentWatchListItem);
+        const newFilteredWatchListItems: IWatchListItem[] = Object.assign([], filteredWatchListItems);
 
-        const currentWatchListItemsResult: IWatchListItem[] = newWatchListItems?.filter((currentWatchListItems: IWatchListItem) => {
+        const newWatchListItemsResult: IWatchListItem[] = newFilteredWatchListItems?.filter((currentWatchListItems: IWatchListItem) => {
             return String(currentWatchListItems.WatchListItemID) === String(watchListItemID);
         });
 
-        if (currentWatchListItemsResult.length === 0) {
+        if (newWatchListItemsResult.length === 0) {
             // this shouldn't ever happen!
             return;
         }
 
-        const currentWatchListItems = currentWatchListItemsResult[0];
+        const newWatchListItem = newWatchListItemsResult[0];
 
-        currentWatchListItems["IMDB_Poster_Error"] = true;
+        if (newWatchListItem["IMDB_Poster_Error"] == true) {
+            return;
+        }
 
-        setFilteredWatchListItems(newWatchListItems);
+        newWatchListItem["IMDB_Poster_Error"] = true;
+
+        setFilteredWatchListItems(newFilteredWatchListItems);
     };
 
     const IMDB_JSON = currentWatchListItem?.IMDB_JSON !== null && typeof currentWatchListItem?.IMDB_JSON !== "undefined" && currentWatchListItem?.IMDB_JSON !== "" ? JSON.parse(currentWatchListItem?.IMDB_JSON) : null;

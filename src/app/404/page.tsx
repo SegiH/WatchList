@@ -1,15 +1,25 @@
 "use client"
 
 import { useContext } from "react";
+import { useRouter } from 'next/navigation';
 
 import { DataContext, DataContextType } from "../data-context";
 
 export default function ErrorPage() {
      const {
           darkMode,
+          defaultRoute,
           errorMessage,
           setActiveRoute
      } = useContext(DataContext) as DataContextType
+
+     const router = useRouter();
+
+     const goHomeClick = () => {
+          setActiveRoute(defaultRoute);
+
+          router.push("/" + defaultRoute);
+     }
 
      return (
           <div className={`${!darkMode ? " lightMode" : " darkMode"}`}>
@@ -18,7 +28,7 @@ export default function ErrorPage() {
 
                     <br /><br />
 
-                    <a className={`clickable largeText ${!darkMode ? " lightMode" : " darkMode"}`} onClick={() => setActiveRoute("")}>Go Home</a>
+                    <a className={`clickable largeText ${!darkMode ? " lightMode" : " darkMode"}`} onClick={goHomeClick}>Go Home</a>
 
                     <h1>{errorMessage}</h1>
                </span>

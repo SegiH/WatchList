@@ -879,6 +879,10 @@ const DataProvider = ({
                return;
           }
 
+          if (activeRoute === "") {
+               return;
+          }
+
           if (loggedInCheck !== APIStatus.Success) {
                return;
           }

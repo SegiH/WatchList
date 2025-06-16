@@ -55,7 +55,7 @@ const Tabs = () => {
 
      return (
           <>
-               {isClient && loggedInCheck === APIStatus.Success && !isError && !hideTabs && !isLoading && !isAdding && !isEditing && (
+               {isClient && loggedInCheck === APIStatus.Success && !isError && !hideTabs && !isLoading && !isAdding && !isEditing && activeRoute !== "" && (
                     <div className={`tabBar ${!darkMode ? "lightMode" : "darkMode"}`}>
                          {Object.keys(routeList)
                               .filter((routeName) => {

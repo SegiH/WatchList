@@ -142,7 +142,7 @@ const SharedLayout = () => {
 
      return (
           <span>
-               {!isError &&
+               {!isError && activeRoute !== "" &&
                     <>
                          {isLoading &&
                               <div className="bouncing-loader">

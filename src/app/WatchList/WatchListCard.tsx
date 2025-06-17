@@ -11,6 +11,7 @@ type WatchListCardProps = {
 export default function WatchListCard({ currentWatchList }: WatchListCardProps) {
     const {
         BrokenImageIconComponent,
+        cacheIMDBPosterImage,
         darkMode,
         filteredWatchList,
         openDetailClickHandler,
@@ -50,7 +51,9 @@ export default function WatchListCard({ currentWatchList }: WatchListCardProps) 
 
             <a className="clickable image-crop show-link" onClick={() => openDetailClickHandler(currentWatchList?.WatchListID, "WatchList")}>
                 <div>
-                    {typeof currentWatchList?.IMDB_Poster !== "undefined" && currentWatchList?.IMDB_Poster !== null && currentWatchList?.IMDB_Poster !== "" && currentWatchList?.IMDB_Poster_Error !== true && <Image width="128" height="187" alt={currentWatchList?.WatchListItemName ?? ""} src={currentWatchList?.IMDB_Poster ?? ""} onError={() => showDefaultSrc(currentWatchList.WatchListID)} />}
+                    {typeof currentWatchList?.IMDB_Poster !== "undefined" && currentWatchList?.IMDB_Poster !== null && currentWatchList?.IMDB_Poster !== "" && currentWatchList?.IMDB_Poster_Error !== true &&
+                        <Image width="128" height="187" alt={currentWatchList?.WatchListItemName ?? ""} src={currentWatchList?.IMDB_Poster_Image ?? currentWatchList?.IMDB_Poster ?? ""} onLoad={() => cacheIMDBPosterImage(currentWatchList.WatchListItemID)} onError={() => showDefaultSrc(currentWatchList.WatchListID)} />
+                    }
 
                     {currentWatchList?.IMDB_Poster_Error === true && <>{BrokenImageIconComponent}</>}
                 </div>

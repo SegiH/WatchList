@@ -4,6 +4,7 @@ export default interface WatchListItem {
      WatchListTypeID: number,
      IMDB_URL: string,
      IMDB_Poster: string,
+     IMDB_Poster_Image?: string, // Cached image
      IMDB_Poster_Error?: boolean,
      WatchListTypeName?: string, // Type are joined with WLI when selecing WLI
      IMDB_JSON?: string,

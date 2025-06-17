@@ -4,7 +4,6 @@ import IWatchList from '@/app/interfaces/IWatchList';
 import IWatchListItem from '@/app/interfaces/IWatchListItem';
 import IWatchListType from '@/app/interfaces/IWatchListType';
 import IWatchListSource from '@/app/interfaces/IWatchListSource';
-import { watch } from 'fs';
 
 export async function GET(request: NextRequest) {
      const userID = await getUserID(request);
@@ -52,16 +51,19 @@ export async function GET(request: NextRequest) {
                     return (String(watchListType.WatchListTypeID) === String(watchListItem[0].WatchListTypeID));
                });
 
-               watchList.WatchListItemID = watchListItem.length > 0 ? parseInt(watchList.WatchListItemID, 10) : "";
-               watchList.WatchListItemName = watchListItem.length > 0 ? watchListItem[0].WatchListItemName : "";
-               watchList.WatchListTypeID = watchListItem.length > 0 ? watchListItem[0].WatchListTypeID : "";
-               watchList.WatchListTypeName = watchListType.length > 0 ? watchListType[0].WatchListTypeName : "";
-               watchList.IMDB_URL = watchListItem.length > 0 ? watchListItem[0].IMDB_URL : "";
-               watchList.IMDB_Poster = watchListItem.length > 0 ? watchListItem[0].IMDB_Poster : "";
-               watchList.ItemNotes = watchListItem.length > 0 ? watchListItem[0].ItemNotes : "";
-               watchList.IMDBArchived = watchListItem.length > 0 ? watchListItem[0].Archived : "";
-               watchList.IMDB_JSON = watchListItem.length > 0 ? watchListItem[0].IMDB_JSON : "";
-               watchList.WatchListSourceName = watchListItem.length > 0 ? watchListSource[0]?.WatchListSourceName : "";
+               if (watchListItem.length > 0) {
+                    watchList.WatchListItemID = parseInt(watchList.WatchListItemID, 10);
+                    watchList.WatchListItemName = watchListItem[0].WatchListItemName;
+                    watchList.WatchListTypeID =  watchListItem[0].WatchListTypeID;
+                    watchList.WatchListTypeName = watchListType[0].WatchListTypeName;
+                    watchList.IMDB_URL = watchListItem[0].IMDB_URL;
+                    watchList.IMDB_Poster = watchListItem[0].IMDB_Poster;
+                    watchList.IMDB_Poster_Image = watchListItem[0].IMDB_Poster_Image;
+                    watchList.ItemNotes = watchListItem[0].ItemNotes;
+                    watchList.IMDBArchived = watchListItem[0].Archived;
+                    watchList.IMDB_JSON = watchListItem[0].IMDB_JSON;
+                    watchList.WatchListSourceName = watchListSource[0]?.WatchListSourceName;
+               }
           });
 
           return Response.json(["OK", filteredWatchList]);

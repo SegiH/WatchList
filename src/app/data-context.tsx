@@ -74,6 +74,7 @@ export interface DataContextType {
      buildDate: string;
      bugLogs: IBugLog[];
      BrokenImageIconComponent: React.ReactNode;
+     cacheIMDBPosterImage: (watchListItemID: number) => void;
      CancelIconComponent: React.ReactNode;
      currentPage: number;
      darkMode: boolean;
@@ -282,7 +283,7 @@ const DataProvider = ({
                     Icon: StatsIconComponent,
                     RequiresAuth: true,
                     Enabled: true
-               },               
+               },
                Login: {
                     Name: "Login",
                     DisplayName: "Login",
@@ -329,6 +330,47 @@ const DataProvider = ({
           }
      }, []);
 
+     const cacheIMDBPosterImage = (watchListItemID: number) => {
+          const newWatchListItems: IWatchListItem[] = Object.assign([], watchListItems);
+
+          const newWatchListItemsResult: IWatchListItem[] = newWatchListItems?.filter((currentWatchListItem: IWatchListItem) => {
+               return String(currentWatchListItem.WatchListItemID) === String(watchListItemID);
+          });
+
+          if (newWatchListItemsResult.length === 0) {
+               // this shouldn't ever happen!
+               return;
+          }
+
+          const newWatchListItem = newWatchListItemsResult[0];
+
+          if ((typeof newWatchListItem.IMDB_Poster_Image === "undefined" || newWatchListItem.IMDB_Poster_Image === null || newWatchListItem.IMDB_Poster_Image === "") && (typeof newWatchListItem.IMDB_Poster !== "undefined" && newWatchListItem.IMDB_Poster !== null && newWatchListItem.IMDB_Poster !== "")) {
+               fetch(newWatchListItem.IMDB_Poster)
+                    .then(response => response.blob())
+                    .then(blob => new Promise((resolve, reject) => {
+                         const reader = new FileReader();
+                         reader.onloadend = () => resolve(reader.result);
+                         reader.onerror = reject;
+                         reader.readAsDataURL(blob);
+                    }))
+                    .then((base64data: string) => {
+                         const queryURL = `/api/UpdateWatchListItem?WatchListItemID=${watchListItemID}`;
+
+                         axios.put(queryURL, { IMDB_Poster_Image: encodeURIComponent(base64data) }, {
+                              headers: {
+                                   'Content-Type': 'application/json',
+                              }
+                         }).then((res: AxiosResponse<IWatchListItem>) => {
+                              if (res.data[0] === "ERROR") {
+                                   alert(`The error ${res.data[1]} occurred while updating the item detail`);
+                              }
+                         }).catch((err: Error) => {
+                              alert(`The error ${err.message} occurred while updating the item detail`);
+                         });
+                    })
+          }
+     }
+
      const getPath = useCallback((routeName: string) => {
           const matchingRoute = Object.keys(routeList).filter((currentRouteList) => routeList[currentRouteList].Name === routeName)
 
@@ -349,7 +391,7 @@ const DataProvider = ({
           if (loggedInCheck === APIStatus.Unauthorized) return false;
 
           return true;
-     }, [loggedInCheck]);     
+     }, [loggedInCheck]);
 
      const isEnabled = (sectionName: string) => {
           if (visibleSections.length === 0) {
@@ -945,7 +987,7 @@ const DataProvider = ({
           const path = getPath(newRoute);
 
           router.push(path);
-     // eslint-disable-next-line react-hooks/exhaustive-deps
+          // eslint-disable-next-line react-hooks/exhaustive-deps
      }, [defaultRoute, isClient, isError, loggedInCheck]); // Do not add activeRoute, getPath, isEnabled, openDetailClickHandler, routeList, router to dependencies. Causes extra network requests
 
      /* 404 error routing */
@@ -1012,7 +1054,7 @@ const DataProvider = ({
                });
 
           isLoggedInApi(true);
-     // eslint-disable-next-line react-hooks/exhaustive-deps
+          // eslint-disable-next-line react-hooks/exhaustive-deps
      }, []); // Do not add isLoggedInApi as a dependency. It causes an ends loop of network requests
 
      const dataContextProps = {
@@ -1024,6 +1066,7 @@ const DataProvider = ({
           BrokenImageIconComponent,
           bugLogs,
           buildDate,
+          cacheIMDBPosterImage,
           CancelIconComponent,
           currentPage,
           darkMode,

@@ -7,6 +7,8 @@ After adding information for a while, WatchList will generate statistics to show
 
 It is possible to add a WatchList record by searching IMDB if you provide an API key. More info is available in INSTALL.md.
 
+When you are online, images are cached so that they do not need to be downloaded again.
+
 WatchList uses a JSON database to store your logged movie and TV shows.
 
 WatchList can be run as a web app. If you use Google Chrome or Edge, you can also install WatchList as a desktop application by installing it as a [Progressive Web Application](https://developer.mozilla.org/en-US/docs/Web/Progressive_web_apps) (PWA) where it runs on a desktop or mobile device and looks like a native desktop application. See INSTALL.MD for details.

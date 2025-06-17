@@ -866,7 +866,7 @@ const DataProvider = ({
 
      // WatchListItems filter and sort useEffect
      useEffect(() => {
-          if (watchListItemsLoadingCheck !== APIStatus.Success || watchListItemSortingCheck !== APIStatus.Idle) {
+          if (watchListItemsLoadingCheck !== APIStatus.Success || (watchListItemSortingCheck !== APIStatus.Idle && watchListItemSortingCheck !== APIStatus.Success)) {
                return;
           }
 

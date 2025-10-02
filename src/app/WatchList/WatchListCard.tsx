@@ -20,6 +20,25 @@ export default function WatchListCard({ currentWatchList }: WatchListCardProps) 
 
     const IMDB_JSON = currentWatchList?.IMDB_JSON !== null && typeof currentWatchList?.IMDB_JSON !== "undefined" && currentWatchList?.IMDB_JSON !== "" ? JSON.parse(currentWatchList?.IMDB_JSON) : null;
 
+    function formatWatchListDates(startDate: string, endDate: string) {
+        // Helper function to format a date string from "yyyy-mm-dd" to "mm/dd/yy"
+        function formatDate(dateStr: string) {
+            const [year, month, day] = dateStr.split("-");
+            const shortYear = year.slice(-2); // Get last 2 digits of the year
+            return `${month}/${day}/${shortYear}`;
+        }
+
+        if (!startDate) return ""; // Optional: handle missing startDate gracefully
+
+        const formattedStart = formatDate(startDate);
+
+        if (!endDate) {
+            return `${formattedStart}-`;
+        }
+
+        const formattedEnd = formatDate(endDate);
+        return `${formattedStart}-${formattedEnd}`;
+    }
     const showDefaultSrc = (watchListID: number): void => {
         const newFilteredWatchList: IWatchList[] = Object.assign([], filteredWatchList);
 
@@ -81,10 +100,14 @@ export default function WatchListCard({ currentWatchList }: WatchListCardProps) 
                 <div className="show-season">{/* Placeholder to align */}</div>
             )}
 
-            <div className={`${!darkMode ? "lightMode" : "darkMode"} show-date`}>
+            {/*<div className={`${!darkMode ? "lightMode" : "darkMode"} show-date`}>
                 {currentWatchList?.EndDate !== null && currentWatchList?.EndDate !== currentWatchList?.StartDate
                     ? <>{currentWatchList?.StartDate} <br />-<br /> {currentWatchList?.EndDate}</>
                     : currentWatchList?.StartDate}
+            </div>*/}
+
+            <div className={`${!darkMode ? "lightMode" : "darkMode"} show-date`}>
+                {formatWatchListDates(currentWatchList?.StartDate, currentWatchList?.EndDate)}
             </div>
 
             <div className={`${!darkMode ? "lightMode" : "darkMode"} show-type`}>

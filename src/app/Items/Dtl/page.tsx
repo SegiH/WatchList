@@ -158,7 +158,7 @@ export default function WatchListItemsDtl() {
                if (queryURL != "") {
                     queryURL = `/api/UpdateWatchListItem?WatchListItemID=${watchListItemDtl?.WatchListItemID}${queryURL}`;
 
-                    axios.put(queryURL)
+                    axios.put(queryURL, { IMDB_Poster_Image: typeof watchListItemDtl?.IMDB_Poster !== "undefined" ? encodeURIComponent(watchListItemDtl?.IMDB_Poster) : null })
                          .then((res: AxiosResponse<IWatchListItem>) => {
                               if (res.data[0] === "ERROR") {
                                    alert(`The error ${res.data[1]} occurred while updating the item detail`);

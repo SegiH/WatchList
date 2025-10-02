@@ -901,10 +901,16 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
 
                                                   {(isEditing || (isAdding && addWatchListDtl)) &&
                                                        <span className={`customTopMargin clickable ${!darkMode ? "lightMode" : "darkMode"}`}>
-                                                            <span className={`favoriteIcon ratingsBorder ${!darkMode ? "lightMode" : "darkMode"}`}>
+                                                            <span className={`favoriteIcon ${!darkMode ? "lightMode" : "darkMode"}`}>
                                                                  <Rating
                                                                       name="hover-feedback"
                                                                       value={watchListDtl?.Rating}
+                                                                      sx={{
+                                                                           padding: 1,
+                                                                           '& .MuiRating-iconEmpty': {
+                                                                                color: 'white' // Change the empty star color. Important when dark mode is enabled
+                                                                           }
+                                                                      }}
                                                                       precision={0.5}
                                                                       emptyIcon={<StarIcon style={{ opacity: 0.55 }} fontSize="inherit" />}
                                                                       onChange={(event, newValue) => {

@@ -529,23 +529,6 @@ table.simpleTable:last-child {
      color: rgb(25, 118, 210)
 }
 
-.ratingsBorder > * {
-     position: relative;
-     top: 5px;
-}
-
-.ratingsBorder.darkMode {
-     border-color: var(--dark-mode-foregroundColor) !important;
-     border-width: 1px;
-     border-style: solid;
-}
-
-.ratingsBorder.lightMode {
-     color: var(--light-mode-foregroundColor) !important;
-     border-width: 1px;
-     border-style: solid;
-}
-
 .rightAligned {
      display: block;
      margin-left: auto;

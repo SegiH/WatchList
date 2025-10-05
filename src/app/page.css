@@ -866,6 +866,10 @@ table.simpleTable:last-child {
      margin-top: 50px !important;
 }
 
+.topMargin100 {
+     margin-top: 100px !important;
+}
+
 .topMarginContent {
      position: relative;
      top: 50px !important;

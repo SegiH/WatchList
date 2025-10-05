@@ -28,7 +28,7 @@ export default function WatchListItems() {
 
      return (
           <>
-               {!isLoading &&
+               {!isLoading && filteredWatchListItems && filteredWatchListItems.length > 0 &&
                     <>
                          {!searchModalVisible &&
                               <span className="top">
@@ -50,6 +50,10 @@ export default function WatchListItems() {
                               <NavBar />
                          </span>
                     </>
+               }
+
+               {!isLoading && filteredWatchListItems.length === 0 &&
+                    <h3 className="topMargin100">No Items</h3>
                }
           </>
      )

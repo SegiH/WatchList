@@ -29,7 +29,7 @@ export default function WatchList() {
 
      return (
           <>
-               {!isLoading &&
+               {!isLoading && filteredWatchList && filteredWatchList.length > 0 &&
                     <>
                          <span className="top">
                               <NavBar />
@@ -49,6 +49,10 @@ export default function WatchList() {
                               <NavBar />
                          </span>
                     </>
+               }
+
+               {!isLoading && filteredWatchList.length === 0 &&
+                    <h3 className="topMargin100">No WatchList</h3>
                }
           </>
      )

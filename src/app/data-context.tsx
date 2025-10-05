@@ -344,7 +344,7 @@ const DataProvider = ({
 
           const newWatchListItem = newWatchListItemsResult[0];
 
-          if ((typeof newWatchListItem.IMDB_Poster_Image === "undefined" || newWatchListItem.IMDB_Poster_Image === null || newWatchListItem.IMDB_Poster_Image === "") && (typeof newWatchListItem.IMDB_Poster !== "undefined" && newWatchListItem.IMDB_Poster !== null && newWatchListItem.IMDB_Poster !== "")) {
+          if (typeof newWatchListItem.IMDB_Poster !== "undefined" && newWatchListItem.IMDB_Poster !== null && newWatchListItem.IMDB_Poster !== "" && (typeof newWatchListItem.IMDB_Poster_Image === "undefined" || newWatchListItem.IMDB_Poster_Image === null || newWatchListItem.IMDB_Poster_Image === "") && (typeof newWatchListItem.IMDB_Poster !== "undefined" && newWatchListItem.IMDB_Poster !== null && newWatchListItem.IMDB_Poster !== "")) {
                fetch(newWatchListItem.IMDB_Poster)
                     .then(response => response.blob())
                     .then(blob => new Promise((resolve, reject) => {

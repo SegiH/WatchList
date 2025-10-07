@@ -60,7 +60,7 @@ export async function GET(request: NextRequest) {
                     watchList.IMDB_Poster = watchListItem[0].IMDB_Poster;
                     watchList.IMDB_Poster_Image = watchListItem[0].IMDB_Poster_Image;
                     watchList.ItemNotes = watchListItem[0].ItemNotes;
-                    watchList.IMDBArchived = watchListItem[0].Archived;
+                    watchList.Archived = watchListItem[0].Archived;
                     watchList.IMDB_JSON = watchListItem[0].IMDB_JSON;
                     watchList.WatchListSourceName = watchListSource[0]?.WatchListSourceName;
                }

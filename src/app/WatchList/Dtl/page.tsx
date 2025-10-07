@@ -36,16 +36,18 @@ export default function WatchListDetail() {
           isAdding,
           isLoading,
           isEditing,
+          pullToRefreshEnabled,
           recommendationsEnabled,
           SaveIconComponent,
           setIsAdding,
           setIsEditing,
           setIsError,
           setErrorMessage,
+          setStillWatching,
           setWatchListLoadingCheck,
           setWatchListSortingCheck,
           showSearch,
-          pullToRefreshEnabled,
+          stillWatching,
           watchListItems,
           watchListSortDirection,
           watchListSources
@@ -266,6 +268,7 @@ export default function WatchListDetail() {
                     queryURL += `&Notes=${addWatchListDtl.Notes}`;
                }
 
+
                axios.put(queryURL).then((res: AxiosResponse<IWatchList>) => {
                     if (res.data[0] === "ERROR") {
                          alert(`The error ${res.data[1]} occurred while adding the detail`);
@@ -274,6 +277,10 @@ export default function WatchListDetail() {
                          setWatchListLoadingCheck(APIStatus.Idle); // Initiate WL to re downlaod the data
                          setWatchListSortingCheck(APIStatus.Idle);
                          addingStarted = false;
+
+                         if (typeof addWatchListDtl.EndDate !== "undefined" && !stillWatching) {
+                              setStillWatching(true);
+                         }
 
                          router.push("/WatchList");
                     }

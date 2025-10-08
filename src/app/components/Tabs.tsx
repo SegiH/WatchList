@@ -62,10 +62,12 @@ const Tabs = () => {
                                    return routeList[routeName].RequiresAuth === true
                                         && routeName !== "Setup"
                                         && routeName !== "Search"
+                                        && (routeName !== "Data" || (routeName === "Data" && String(process.env.NEXT_PUBLIC_DATA_ROUTE_ENABLED) === "true" && visibleSections.filter((section) => { return section.label === "Data" }).length > 0))
                                         && (routeName !== "Admin" || (routeName === "Admin" && ((isAdmin() === true && visibleSections.filter((section) => { return section.label === "Admin" }).length > 0) || demoMode))) // You cannot dynamically set Enabled on this route so don't call isEnabled()
                                         && (routeName !== "Items" || (routeName === "Items" && isEnabled("Items")))
                                         && (routeName !== "BugLogs" || (routeName === "BugLogs" && !demoMode && isAdmin() === true && visibleSections.filter(section => { return section.label === "BugLogs" }).length === 1))  // You cannot dynamically set Enabled on this route so don't call isEnabled()
-                                        && (routeName !== "Stats" || (routeName === "Stats" && isEnabled("Stats")))
+                                        && (routeName !== "Stats" || (routeName === "Stats" && isEnabled("Stats"))
+                                   )
                               }
                               )
                               .map((routeName, index) => {

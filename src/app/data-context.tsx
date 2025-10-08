@@ -300,6 +300,14 @@ const DataProvider = ({
                     RequiresAuth: true,
                     Enabled: true
                },
+               Data: {
+                    Name: "Data",
+                    DisplayName: "Data",
+                    Path: "/Data",
+                    Icon: AdminConsoleIconComponent,
+                    RequiresAuth: true,
+                    Enabled: true
+               },
                Admin: {
                     Name: "Admin",
                     DisplayName: "Admin",
@@ -307,13 +315,19 @@ const DataProvider = ({
                     Icon: AdminConsoleIconComponent,
                     RequiresAuth: true,
                     Enabled: true
-               },
+               }
           }
      }, []);
 
      const router = useRouter();
-     const visibleSectionChoices = [{ value: "3", label: 'Admin' }, { value: "4", label: 'BugLogs' }, { value: "1", label: 'Items' }, { value: "2", label: 'Stats' }];
-     const [visibleSections, setVisibleSections] = useState([{ value: "2", label: 'Stats' }, { value: "1", label: 'Items' }]);
+     const visibleSectionChoices = [
+          { value: "3", label: 'Admin' },
+          { value: "4", label: 'BugLogs' },
+          { value: "1", label: 'Items' },
+          { value: "2", label: 'Stats' },
+          ...(String(process.env.NEXT_PUBLIC_DATA_ROUTE_ENABLED) === "true" ? [{ value: "5", label: 'Data' }] : []),
+     ];
+     const [visibleSections, setVisibleSections] = useState([{ value: "2", label: 'Stats' }, { value: "1", label: 'Items' }, ...(String(process.env.NEXT_PUBLIC_DATA_ROUTE_ENABLED) === "true" ? [{ value: "5", label: 'Data' }] : [])]);
 
      const watchListSortColumns = {
           ID: "ID",

@@ -936,6 +936,7 @@ const DataProvider = ({
           }
 
           if (activeRoute === "") {
+               setActiveRoute(defaultRoute)
                return;
           }
 

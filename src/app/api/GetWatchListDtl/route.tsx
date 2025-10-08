@@ -50,7 +50,7 @@ export async function GET(request: NextRequest) {
                watchList.IMDB_URL = watchListItem.length > 0 ? watchListItem[0].IMDB_URL : "";
                watchList.IMDB_Poster = watchListItem.length > 0 ? watchListItem[0].IMDB_Poster : "";
                watchList.ItemNotes = watchListItem.length > 0 ? watchListItem[0].ItemNotes : "";
-               watchList.IMDBArchived = watchListItem.length > 0 ? watchListItem[0].Archived : "";
+               watchList.Archived = watchListItem.length > 0 ? watchListItem[0].Archived : "";
                watchList.IMDB_JSON = watchListItem.length > 0 ? watchListItem[0].IMDB_JSON : "";
                watchList.WatchListSourceName = watchListItem.length > 0 ? watchListSource[0]?.WatchListSourceName : "";
           });

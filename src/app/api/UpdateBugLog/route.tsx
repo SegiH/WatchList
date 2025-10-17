@@ -20,7 +20,7 @@ export async function PUT(request: NextRequest) {
     }
 
     try {
-        const db = getDB();
+        const db: any = await getDB();
 
         const buglogsDB = db.BugLogs;
 

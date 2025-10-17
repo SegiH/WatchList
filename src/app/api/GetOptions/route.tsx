@@ -16,7 +16,7 @@ export async function GET(request: NextRequest) {
 
      try {
           // There may be no options the first time ever getting the options
-          const db = getDB()
+          const db: any = await getDB();
 
           const optionsDB = db.Options;
 

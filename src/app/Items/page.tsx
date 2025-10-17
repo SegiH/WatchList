@@ -1,7 +1,7 @@
 "use client"
 
 import { useContext, useEffect } from "react";
-import { DataContext, DataContextType } from "../data-context";
+import { APIStatus, DataContext, DataContextType } from "../data-context";
 import IWatchListItem from "../interfaces/IWatchListItem";
 import React from "react";
 import NavBar from "../components/NavBar";
@@ -17,7 +17,8 @@ export default function WatchListItems() {
           searchModalVisible,
           setActiveRoute,
           setIsAdding,
-          setIsEditing
+          setIsEditing,
+          watchListItemsSortingCheck
      } = useContext(DataContext) as DataContextType;
 
      useEffect(() => {
@@ -28,7 +29,7 @@ export default function WatchListItems() {
 
      return (
           <>
-               {!isLoading && filteredWatchListItems && filteredWatchListItems.length > 0 &&
+               {!isLoading && watchListItemsSortingCheck === APIStatus.Success &&
                     <>
                          {!searchModalVisible &&
                               <span className="top">
@@ -52,8 +53,8 @@ export default function WatchListItems() {
                     </>
                }
 
-               {!isLoading && filteredWatchListItems.length === 0 &&
-                    <h3 className="topMargin100">No Items</h3>
+               {!isLoading && watchListItemsSortingCheck === APIStatus.Success && filteredWatchListItems && filteredWatchListItems.length === 0 &&
+                    <h1>No results</h1>
                }
           </>
      )

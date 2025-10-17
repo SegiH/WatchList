@@ -15,7 +15,7 @@ export async function GET(request: NextRequest) {
           return Response.json(["ERROR", "User ID is not set"]);
      }
 
-     const db = getDB();
+     const db: any = await getDB();
 
      const watchListDB = db.WatchList;
      const watchListItemsDB = db.WatchListItems;

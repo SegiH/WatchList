@@ -12,7 +12,7 @@ export async function GET(request: NextRequest) {
      }
 
      try {
-          const db = getDB();
+          const db: any = await getDB();
 
           if (db.SetupComplete !== true) {
                return Response.json(["ERROR", false]);

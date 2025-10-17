@@ -11,7 +11,7 @@ export async function GET(request: NextRequest) {
      const getActiveBugLogs = searchParams.get("GetActiveBugLogs");
 
      try {
-          const db = getDB();
+          const db: any = await getDB();
 
           const buglogsDB = db.BugLogs;
 

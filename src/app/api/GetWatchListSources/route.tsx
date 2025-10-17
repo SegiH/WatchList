@@ -12,7 +12,7 @@ export async function GET(request: NextRequest) {
      const searchParams = request.nextUrl.searchParams;
 
      try {
-          const db = getDB();
+          const db:any = await getDB();
 
           if (db.WatchListSources.length === 0) {
                defaultSources.forEach(async (element, index) => {

@@ -17,7 +17,7 @@ export async function GET(request: NextRequest) {
      }
 
      try {
-          const db = getDB();
+          const db: any = await getDB();
 
           const watchListItemsDB = db.WatchListItems;
           const watchListTypesDB = db.WatchListTypes;

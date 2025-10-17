@@ -13,6 +13,7 @@ import { APIStatus, DataContext, DataContextType } from "./data-context";
 import "./page.css";
 import IUserOption from "./interfaces/IUserOption";
 import { Button } from "@mui/material";
+import Loader from "./components/Loader";
 
 const SharedLayout = () => {
      const {
@@ -62,9 +63,15 @@ const SharedLayout = () => {
      } = useContext(DataContext) as DataContextType
 
      const [isClient, setIsClient] = useState(false);
+     const [newSearchTerm, setNewSearchTerm] = useState("");
 
      const inputRef = useRef<HTMLInputElement>(null);
      const router = useRouter();
+
+     const searchTermGoClickHandler = async () => {
+          setSearchTerm(newSearchTerm);
+          //setNewSearchTerm("");
+     }
 
      const settingChangeHandler = async (name: string, value: string | number | boolean) => {
           const options: IUserOption = {}
@@ -129,6 +136,8 @@ const SharedLayout = () => {
           const newIsClient = !window.location.href.endsWith("api-doc") && !window.location.href.endsWith("api-doc/") ? true : false;
 
           setIsClient(newIsClient);
+
+          inputRef.current?.focus();
      }, []);
 
      // This is the only way to really set the body class based on dark mode
@@ -145,12 +154,7 @@ const SharedLayout = () => {
                {!isError && activeRoute !== "" &&
                     <>
                          {isLoading &&
-                              <div className="bouncing-loader">
-                                   <span className="bouncing-loader-text">Loading</span>
-                                   <div className="bubble"></div>
-                                   <div className="bubble"></div>
-                                   <div className="bubble"></div>
-                              </div>
+                              <Loader />
                          }
 
                          {loggedInCheck === APIStatus.Success && watchListSourcesLoadingCheck === APIStatus.Success && watchListTypesLoadingCheck === APIStatus.Success && !isLoading && activeRoute !== "Stats" &&
@@ -158,18 +162,6 @@ const SharedLayout = () => {
                                    <span className={`menuBar ${!darkMode ? "lightMode" : "darkMode"}`}>
                                         {demoMode &&
                                              <span className={`leftMargin menuBarActiveRoute${!darkMode ? " lightMode" : " darkMode"}`}>Demo</span>
-                                        }
-
-                                        {(activeRoute === "WatchList" || activeRoute === "Items") &&
-                                             <>
-                                                  <span className={`clickable leftMargin50${!darkMode ? " lightMode" : " darkMode"}`} onClick={toggleSearch}>
-                                                       {SearchIconComponent}
-                                                  </span>
-
-                                                  <span className={`clickable leftMargin${!darkMode ? " lightMode" : " darkMode"} searchInputStyle ${searchInputVisible ? "visible" : ""}`}>
-                                                       <input className={`inputStyle lightMode`} ref={inputRef} value={searchTerm} onChange={(event) => setSearchTerm(event.target.value)} />
-                                                  </span>
-                                             </>
                                         }
 
                                         {(activeRoute === "WatchList" || activeRoute === "Items") &&
@@ -183,6 +175,20 @@ const SharedLayout = () => {
                                                             {AddIconComponent}
                                                        </span>
                                                   )}
+                                             </>
+                                        }
+
+                                        {(activeRoute === "WatchList" || activeRoute === "Items") &&
+                                             <>
+                                                  <span className={`clickable leftMargin50${!darkMode ? " lightMode" : " darkMode"}`} onClick={toggleSearch}>
+                                                       {SearchIconComponent}
+                                                  </span>
+
+                                                  <span className={`clickable leftMargin${!darkMode ? " lightMode" : " darkMode"} searchInputStyle ${searchInputVisible ? "visible" : ""}`}>
+                                                       <input className={`inputStyle lightMode`} ref={inputRef} value={newSearchTerm} onChange={(event) => setNewSearchTerm(event.target.value)} />
+                                                  </span>
+
+                                                  <Button variant="contained" className={`searchButton ${searchInputVisible ? "visible" : ""}`} style={{ marginLeft: "30px" }} onClick={() => searchTermGoClickHandler()}>Go</Button>
                                              </>
                                         }
 

@@ -26,7 +26,7 @@ export default function WatchListItemsDtl() {
           setIsEditing,
           setIsError,
           setErrorMessage,
-          setWatchListItemsLoadingCheck,
+          setWatchListItemsSortingCheck,
           watchListTypes
      } = useContext(DataContext) as DataContextType
 
@@ -79,7 +79,7 @@ export default function WatchListItemsDtl() {
           setOriginalWatchListItemDtl(null);
 
           if (addModified || editModified) {
-               setWatchListItemsLoadingCheck(APIStatus.Idle);
+               setWatchListItemsSortingCheck(APIStatus.Idle);
           }
 
           pullToRefreshEnabled(true);
@@ -246,7 +246,7 @@ export default function WatchListItemsDtl() {
                     if (addNewWatchListPrompt) {
                          setIsAdding(true);
                          router.push(`/WatchList/Dtl?WatchListItemID=${res.data[1]}`);
-                         setWatchListItemsLoadingCheck(APIStatus.Idle);
+                         setWatchListItemsSortingCheck(APIStatus.Idle);
                     }
                }
           })

@@ -1,7 +1,7 @@
 "use client"
 
 import { useContext, useEffect } from "react";
-import { DataContext, DataContextType } from "../data-context";
+import { APIStatus, DataContext, DataContextType } from "../data-context";
 import IWatchList from "../interfaces/IWatchList";
 import React from "react";
 
@@ -18,7 +18,8 @@ export default function WatchList() {
           isLoading,
           setActiveRoute,
           setIsAdding,
-          setIsEditing
+          setIsEditing,
+          watchListSortingCheck
      } = useContext(DataContext) as DataContextType;
 
      useEffect(() => {
@@ -51,8 +52,8 @@ export default function WatchList() {
                     </>
                }
 
-               {!isLoading && filteredWatchList.length === 0 &&
-                    <h3 className="topMargin100">No WatchList</h3>
+               {!isLoading && watchListSortingCheck === APIStatus.Success && filteredWatchList && filteredWatchList.length === 0 &&
+                    <h1 className="topMargin100">No results</h1>
                }
           </>
      )

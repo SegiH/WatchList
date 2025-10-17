@@ -4,6 +4,7 @@ import axios, { AxiosResponse } from "axios";
 import { useRouter } from 'next/navigation';
 import { usePathname } from 'next/navigation';
 import React, { createContext, ReactNode, useCallback, useEffect, useMemo, useState } from "react";
+import { gunzipSync } from 'zlib';
 
 import IBugLog from "./interfaces/IBugLog";
 import IRecommendation from "./interfaces/IRecommendation";
@@ -144,9 +145,8 @@ export interface DataContextType {
      setUsers: React.Dispatch<React.SetStateAction<IUser[]>>;
      setVisibleSections: (value: []) => void;
      setWatchListItems: React.Dispatch<React.SetStateAction<IWatchListItem[]>>;
-     setWatchListItemsLoadingCheck: (value: string) => void;
-     setWatchListLoadingCheck: (value: string) => void;
      setWatchListSortingCheck: (value: string) => void;
+     setWatchListItemsSortingCheck: (value: string) => void;
      setWatchListSortColumn: (value: string) => void;
      setWatchListSortDirection: (value: string) => void;
      setWatchListSources: React.Dispatch<React.SetStateAction<IWatchListSource[]>>;
@@ -168,9 +168,8 @@ export interface DataContextType {
      visibleSections: ISectionChoice[],
      watchList: IWatchList[];
      watchListItems: IWatchListItem[];
-     watchListItemsLoadingCheck: string;
      watchListItemsSortColumns: IWatchListSortColumn;
-     watchListLoadingCheck: string;
+     watchListItemsSortingCheck: string;
      watchListSortColumn: string;
      watchListSortColumns: IWatchListSortColumn;
      watchListSortDirection: string;
@@ -233,14 +232,12 @@ const DataProvider = ({
      const [userData, setUserData] = useState({ UserID: 0, Username: "", RealName: "", Admin: false }); // cannot use iUserEmpty() here
 
      const [watchList, setWatchList] = useState<IWatchList[]>([]);
-     const [watchListLoadingCheck, setWatchListLoadingCheck] = useState(APIStatus.Idle);
      const [filteredWatchList, setFilteredWatchList] = useState<IWatchList[]>([]);
      const [watchListSortingCheck, setWatchListSortingCheck] = useState(APIStatus.Idle);
 
      const [watchListItems, setWatchListItems] = useState<IWatchListItem[]>([]);
-     const [watchListItemsLoadingCheck, setWatchListItemsLoadingCheck] = useState(APIStatus.Idle);
      const [filteredWatchListItems, setFilteredWatchListItems] = useState<IWatchListItem[]>([]);
-     const [watchListItemSortingCheck, setWatchListItemsSortingCheck] = useState(APIStatus.Idle);
+     const [watchListItemsSortingCheck, setWatchListItemsSortingCheck] = useState(APIStatus.Idle);
 
      const [watchListSources, setWatchListSources] = useState<IWatchListSource[]>([]);
      const [watchListSourcesLoadingCheck, setWatchListSourcesLoadingCheck] = useState(APIStatus.Idle);
@@ -248,8 +245,8 @@ const DataProvider = ({
      const [watchListTypes, setWatchListTypes] = useState<IWatchListType[]>([]);
      const [watchListTypesLoadingCheck, setWatchListTypesLoadingCheck] = useState(APIStatus.Idle);
 
-     const [watchListSortColumn, setWatchListSortColumn] = useState("Name");
-     const [watchListSortDirection, setWatchListSortDirection] = useState("ASC");
+     const [watchListSortColumn, setWatchListSortColumn] = useState("");
+     const [watchListSortDirection, setWatchListSortDirection] = useState("");
 
      /* static values */
      const currentPath = usePathname();
@@ -537,11 +534,9 @@ const DataProvider = ({
           setTypeFilter(-1);
 
           setWatchList([]);
-          setWatchListLoadingCheck(APIStatus.Idle);
+          setWatchListSortingCheck(APIStatus.Idle);
 
           setWatchListItems([]);
-          setWatchListItemsLoadingCheck(APIStatus.Idle);
-
           setWatchListSources([]);
           setWatchListSourcesLoadingCheck(APIStatus.Idle);
 
@@ -676,35 +671,49 @@ const DataProvider = ({
                const demoWatchListPayload = require("./demo/index").demoWatchListPayload;
 
                setWatchList(demoWatchListPayload);
-               setWatchListLoadingCheck(APIStatus.Success);
+               setWatchListSortingCheck(APIStatus.Success);
 
                return;
           }
+     }, [demoMode, isLoggedInCheck]);
 
-          const fetchWatchListData = async () => {
-               if (watchListLoadingCheck === APIStatus.Idle) {
-                    setWatchListLoadingCheck(APIStatus.Loading);
+     // WatchList filter and sort useEffect
+     useEffect(() => {
+          if (activeRoute !== "WatchList" || (activeRoute === "WatchList" && watchListSortingCheck === APIStatus.Loading || watchListSortColumn === "" || watchListSortDirection === "")) {
+               return;
+          }
 
-                    axios.get(`/api/GetWatchList`, { withCredentials: true })
-                         .then((res: AxiosResponse<IWatchList>) => {
-                              if (res.data[0] !== "OK") {
-                                   setErrorMessage("Failed to get WatchList with the error " + res.data[1])
-                                   setIsError(true);
-                                   return;
-                              }
+          setIsLoading(true);
+          setWatchListSortingCheck(APIStatus.Loading);
 
-                              setWatchList(res.data[1]);
-                              setWatchListLoadingCheck(APIStatus.Success);
-                         })
-                         .catch((err: Error) => {
-                              setErrorMessage("Failed to get WatchList with the error " + err.message);
-                              setIsError(true);
-                         });
-               }
-          };
+          const newSliceStart = (currentPage - 1) * pageSize;
+          const newSliceEnd = newSliceStart + pageSize;
 
-          fetchWatchListData();
-     }, [demoMode, isLoggedInCheck, userData, watchListLoadingCheck, watchListSortColumn, watchListSortDirection]);
+          axios.get(`/api/GetWatchList?StartIndex=${newSliceStart}&EndIndex=${newSliceEnd}&StillWatching=${stillWatching}&SortColumn=${watchListSortColumn}&SortDirection=${watchListSortDirection}&ArchivedVisible=${archivedVisible}${sourceFilter !== null && sourceFilter !== -1 ? `&SourceFilter=${sourceFilter}` : ``}${typeFilter !== null && typeFilter !== -1 ? `&TypeFilter=${typeFilter}` : ``}${(searchTerm !== "" ? `&SearchTerm=${searchTerm}` : ``)}`, { withCredentials: true })
+               .then((res: AxiosResponse<IWatchList>) => {
+                    setIsLoading(false);
+
+                    if (res.data[0] !== "OK") {
+                         setErrorMessage("Failed to get WatchList with the error " + res.data[1])
+                         setIsError(true);
+                         return;
+                    }
+
+                    if (activeRoute === "WatchList" && res.data[1].length < pageSize ) {
+                         setLastPage(true);
+                    } else {
+                         setLastPage(false);
+                    }
+
+                    setFilteredWatchList(res.data[1]);
+                    setWatchListSortingCheck(APIStatus.Success);
+               })
+               .catch((err: Error) => {
+                    setErrorMessage("Failed to get WatchList with the error " + err.message);
+                    
+                    setIsError(true);
+               });
+     }, [activeRoute, archivedVisible, currentPage, searchTerm, stillWatching, sourceFilter, typeFilter, watchListSortColumn, watchListSortDirection]);
 
      // Get WatchListItems
      useEffect(() => {
@@ -714,36 +723,48 @@ const DataProvider = ({
                const demoWatchListItemsPayload = require("./demo/index").demoWatchListItemsPayload;
 
                setWatchListItems(demoWatchListItemsPayload);
-               setWatchListItemsLoadingCheck(APIStatus.Success);
+               return;
+          }
+     }, [demoMode, isLoggedInCheck]);
 
+     // WatchListItems filter and sort useEffect
+     useEffect(() => {
+          if (activeRoute !== "Items" || (activeRoute === "Items" && watchListItemsSortingCheck === APIStatus.Loading || watchListSortColumn === "" || watchListSortDirection === "")) {
                return;
           }
 
-          if (watchListItemsLoadingCheck === APIStatus.Loading) {
-               return;
-          }
+          setIsLoading(true);
+          setWatchListItemsSortingCheck(APIStatus.Loading);
 
-          if (watchListLoadingCheck === APIStatus.Success && watchListItemsLoadingCheck === APIStatus.Idle) {
-               setWatchListItemsLoadingCheck(APIStatus.Loading);
+          const newSliceStart = (currentPage - 1) * pageSize;
+          const newSliceEnd = newSliceStart + pageSize;
 
-               axios.get(`/api/GetWatchListItems${Object.keys(watchListItemsSortColumns).includes(watchListSortColumn) ? `?SortColumn=${watchListSortColumn}&SortDirection=${watchListSortDirection}` : ``}`, { withCredentials: true })
-                    .then((res: AxiosResponse<IWatchListItem>) => {
-                         if (res.data[0] !== "OK") {
-                              setErrorMessage("Failed to get WatchList Items with the error " + res.data[1]);
-                              setIsError(true);
-                              return;
-                         }
+          axios.get(`/api/GetWatchListItems?StartIndex=${newSliceStart}&EndIndex=${newSliceEnd}&SortColumn=${watchListSortColumn}&SortDirection=${watchListSortDirection}&ArchivedVisible=${archivedVisible}&ShowMissingArtwork=${showMissingArtwork}${typeFilter !== null && typeFilter !== -1 ? `&TypeFilter=${typeFilter}` : ``}${(searchTerm !== "" ? `&SearchTerm=${searchTerm}` : ``)}`, { withCredentials: true })
+               .then((res: AxiosResponse<IWatchListItem>) => {
+                    setIsLoading(false);
 
-                         setWatchListItems(res.data[1]);
-                         setWatchListItemsLoadingCheck(APIStatus.Success);
-                    })
-                    .catch((err: Error) => {
-                         setErrorMessage("Failed to get WatchList Items with the error " + err.message);
-
+                    if (res.data[0] !== "OK") {
+                         setErrorMessage("Failed to get WatchList Items with the error " + res.data[1]);
                          setIsError(true);
-                    });
-          }
-     }, [autoAdd, demoMode, isLoggedInCheck, watchListLoadingCheck, watchListItemsLoadingCheck, watchListItemsSortColumns, watchListSortColumn, watchListSortDirection]);
+                         return;
+                    }
+
+                    if (activeRoute === "Items" && res.data[1].length < pageSize) {
+                         setLastPage(true);
+                    } else {
+                         setLastPage(false);
+                    }
+
+                    setFilteredWatchListItems(res.data[1]);
+
+                    setWatchListItemsSortingCheck(APIStatus.Success);
+               })
+               .catch((err: Error) => {
+                    setErrorMessage("Failed to get WatchList Items with the error " + err.message);
+
+                    setIsError(true);
+               });
+     }, [activeRoute, archivedVisible, currentPage, searchTerm, showMissingArtwork, typeFilter, watchListSortColumn, watchListSortDirection, watchListItems]);
 
      // Get WatchListSources
      useEffect(() => {
@@ -758,7 +779,7 @@ const DataProvider = ({
                return;
           }
 
-          if (watchListItemsLoadingCheck === APIStatus.Success && watchListSourcesLoadingCheck === APIStatus.Idle) {
+          if (watchListSourcesLoadingCheck === APIStatus.Idle) {
                setWatchListSourcesLoadingCheck(APIStatus.Success);
 
                axios.get(`/api/GetWatchListSources`, { withCredentials: true })
@@ -786,7 +807,7 @@ const DataProvider = ({
                          setIsError(true);
                     });
           }
-     }, [demoMode, isLoggedInCheck, watchListItemsLoadingCheck, watchListSourcesLoadingCheck]);
+     }, [demoMode, isLoggedInCheck, watchListSourcesLoadingCheck]);
 
      // Get WatchListTypes
      useEffect(() => {
@@ -814,6 +835,8 @@ const DataProvider = ({
 
                          setWatchListTypes(res.data[1]);
                          setWatchListTypesLoadingCheck(APIStatus.Success);
+
+                         setIsLoading(false);
                     })
                     .catch((err: Error) => {
                          setErrorMessage("Failed to get WatchList Types with the error " + err.message);
@@ -821,113 +844,6 @@ const DataProvider = ({
                     });
           }
      }, [demoMode, isLoggedInCheck, watchListSourcesLoadingCheck, watchListTypesLoadingCheck]);
-
-     // WatchList filter and sort useEffect
-     useEffect(() => {
-          if (watchListLoadingCheck !== APIStatus.Success) {
-               return;
-          }
-
-          setIsLoading(true);
-
-          const newWatchList = watchList.filter(
-               (currentWatchList: IWatchList) =>
-                    (
-                         (currentWatchList?.Archived === 1 && archivedVisible === true) || (currentWatchList?.Archived === 0 && archivedVisible === false))
-                    &&
-                    ((stillWatching === false && currentWatchList?.EndDate !== null) || (stillWatching === true && currentWatchList?.EndDate === null && currentWatchList?.Archived === 0))
-                    &&
-                    (searchTerm === "" || (searchTerm !== "" && currentWatchList?.WatchListItemName?.toLowerCase().includes(searchTerm.toLowerCase())))
-                    &&
-                    (sourceFilter === -1 || sourceFilter === null || (sourceFilter !== -1 && sourceFilter !== null && currentWatchList?.WatchListSourceID === sourceFilter))
-                    &&
-                    (typeFilter === -1 || (typeFilter !== -1 && String(currentWatchList?.WatchListTypeID) === String(typeFilter)))
-          ).sort((a: IWatchList, b: IWatchList) => {
-               switch (watchListSortColumn) {
-                    case "ID":
-                         return a.WatchListID > b.WatchListID ? (watchListSortDirection === "ASC" ? 1 : -1) : watchListSortDirection === "ASC" ? -1 : 1;
-                    case "Name":
-                         const aName = a.WatchListItemName;
-                         const bName = b.WatchListItemName;
-
-                         return String(aName) > String(bName) ? (watchListSortDirection === "ASC" ? 1 : -1) : watchListSortDirection === "ASC" ? -1 : 1;
-                    case "StartDate":
-                         return parseFloat(new Date(a.StartDate).valueOf().toString()) > parseFloat(new Date(b.StartDate).valueOf().toString()) ? (watchListSortDirection === "ASC" ? 1 : -1) : watchListSortDirection === "ASC" ? -1 : 1;
-                    case "EndDate":
-                         return parseFloat(new Date(a.EndDate).valueOf().toString()) > parseFloat(new Date(b.EndDate).valueOf().toString()) ? (watchListSortDirection === "ASC" ? 1 : -1) : watchListSortDirection === "ASC" ? -1 : 1;
-                    default:
-                         return 0;
-               }
-          });
-
-          const sliceStart = (currentPage - 1) * pageSize;
-          const sliceEnd = sliceStart + pageSize;
-
-          const newWatchListPage = newWatchList.slice(sliceStart, sliceEnd);
-
-          if (activeRoute === "WatchList") {
-               if (newWatchListPage.length < pageSize) {
-                    setLastPage(true);
-               } else {
-                    setLastPage(false);
-               }
-          }
-
-          setFilteredWatchList(newWatchListPage);
-
-          setIsLoading(false);
-     }, [activeRoute, archivedVisible, currentPage, searchTerm, stillWatching, sourceFilter, typeFilter, watchList, watchListLoadingCheck, watchListSortColumn, watchListSortDirection]);
-
-     // WatchListItems filter and sort useEffect
-     useEffect(() => {
-          if (watchListItemsLoadingCheck !== APIStatus.Success || (watchListItemSortingCheck !== APIStatus.Idle && watchListItemSortingCheck !== APIStatus.Success)) {
-               return;
-          }
-
-          setWatchListItemsSortingCheck(APIStatus.Loading);
-
-          setIsLoading(true);
-
-          const newWatchListItems = watchListItems.filter(
-               (currentWatchListItem: IWatchListItem) =>
-                    ((currentWatchListItem?.Archived === 1 && archivedVisible === true) || (currentWatchListItem?.Archived === 0 && archivedVisible === false))
-                    &&
-                    (searchTerm === "" || (searchTerm !== "" && (String(currentWatchListItem.WatchListItemName).toLowerCase().includes(searchTerm.toLowerCase()) || String(currentWatchListItem.IMDB_URL) == searchTerm || String(currentWatchListItem.IMDB_Poster) == searchTerm))) &&
-                    (typeFilter === -1 || (typeFilter !== -1 && String(currentWatchListItem.WatchListTypeID) === String(typeFilter)))
-                    && (showMissingArtwork === false || (showMissingArtwork === true && (currentWatchListItem.IMDB_Poster_Error === true || currentWatchListItem.IMDB_Poster === null)))
-          ).sort((a: IWatchListItem, b: IWatchListItem) => {
-               switch (watchListSortColumn) {
-                    case "ID":
-                         return a.WatchListItemID > b.WatchListItemID
-                              ? (watchListSortDirection === "ASC" ? 1 : -1)
-                              : watchListSortDirection === "ASC" ? -1 : 1;
-                    case "Name":
-                         return String(a.WatchListItemName) > String(b.WatchListItemName) ? (watchListSortDirection === "ASC" ? 1 : -1) : watchListSortDirection === "ASC" ? -1 : 1;
-                    //case "Type":
-                    //     return String(a.WatchListItemName) > String(b.WatchListItemName) ? (watchListSortDirection === "ASC" ? 1 : -1) : watchListSortDirection === "ASC" ? -1 : 1;     
-                    default:
-                         return 0;
-               }
-          });
-
-          const sliceStart = (currentPage - 1) * pageSize;
-          const sliceEnd = sliceStart + pageSize;
-
-          const newWatchListItemsPage = newWatchListItems.slice(sliceStart, sliceEnd);
-
-          if (activeRoute === "Items") {
-               if (newWatchListItemsPage.length < pageSize) {
-                    setLastPage(true);
-               } else {
-                    setLastPage(false);
-               }
-          }
-
-          setFilteredWatchListItems(newWatchListItemsPage);
-          setWatchListItemsSortingCheck(APIStatus.Success);
-
-          setIsLoading(false);
-     }, [activeRoute, archivedVisible, currentPage, searchTerm, showMissingArtwork, typeFilter, watchListItems, watchListItemsLoadingCheck, watchListSortColumn, watchListSortDirection, watchListItemSortingCheck]);
 
      /* useEffect that routes the current user */
      useEffect(() => {
@@ -1151,8 +1067,7 @@ const DataProvider = ({
           setUserData,
           setVisibleSections,
           setWatchListItems,
-          setWatchListItemsLoadingCheck,
-          setWatchListLoadingCheck,
+          setWatchListItemsSortingCheck,
           setWatchListSortColumn,
           setWatchListSortDirection,
           setWatchListSortingCheck,
@@ -1175,9 +1090,8 @@ const DataProvider = ({
           visibleSections,
           watchList,
           watchListItems,
-          watchListItemsLoadingCheck,
           watchListItemsSortColumns,
-          watchListLoadingCheck,
+          watchListItemsSortingCheck: watchListItemsSortingCheck,
           watchListSortColumn,
           watchListSortColumns,
           watchListSortDirection,

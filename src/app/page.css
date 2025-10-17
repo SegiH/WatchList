@@ -622,12 +622,12 @@ table.simpleTable:last-child {
      top: -20px;
 }
 
-.searchInputStyle, .imdbButton {
-     display: none;
+.searchInputStyle, .imdbButton, .searchButton {
+     display: none !important;
 }
 
-.searchInputStyle.visible, .imdbButton.visible {
-     display: block;
+.searchInputStyle.visible, .imdbButton.visible, .searchButton.visible {
+     display: block !important;
      animation: fadeInAnimation 2s linear;
 }
 

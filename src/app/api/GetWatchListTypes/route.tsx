@@ -8,7 +8,7 @@ export async function GET(request: NextRequest) {
      const searchParams = request.nextUrl.searchParams;
 
      try {
-          const db = getDB();
+          const db: any = await getDB();
 
           return Response.json(["OK", db.WatchListTypes]);
      } catch (e) {

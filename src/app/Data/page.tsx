@@ -32,8 +32,7 @@ export default function BugLog() {
     const [usersLoadingCheck, setUsersLoadingCheck] = useState(APIStatus.Idle);
 
     const router = useRouter();
-
-    // COntinue here. Add users (need to fetch data), Options 
+ 
     const dataSchema = {
         WatchList: [{
             "WatchListID": "ID",
@@ -53,6 +52,7 @@ export default function BugLog() {
             "WatchListTypeName": "Type",
             "IMDB_URL": "URL",
             "IMDB_Poster": "Image",
+            "IMDB_Poster_Image": "Image Base 64",
             "ItemNotes": "Notes",
             "Archived": "Archived",
             "Enabled": "Enabled",

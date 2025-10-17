@@ -20,7 +20,7 @@ export async function GET(request: NextRequest) {
     const newUserOptions: [] = JSON.parse(options.toString());
 
     try {
-        const db = getDB();
+        const db: any = await getDB();
 
         const optionsDB = db.Options;
 

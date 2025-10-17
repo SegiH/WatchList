@@ -13,11 +13,12 @@ const NavBar = () => {
         isLoading,
         hideTabs,
         lastPage,
-        setCurrentPage
+        setCurrentPage,
+        watchListSortDirection
     } = useContext(DataContext) as DataContextType;
 
     const pageClickHandler = (adjustValue: number) => {
-        setCurrentPage(currentPage + adjustValue);
+        setCurrentPage(currentPage + (watchListSortDirection === "ASC" ? adjustValue * -1 : adjustValue));
     }
 
     return (

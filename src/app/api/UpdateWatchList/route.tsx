@@ -24,7 +24,7 @@ export async function PUT(request: NextRequest) {
      }
 
      try {
-          const db = getDB();
+          const db: any = await getDB();
 
           const watchListDB = db.WatchList
 
@@ -59,7 +59,7 @@ export async function PUT(request: NextRequest) {
           }
 
           if (archived !== null) {
-               watchList.Archived = archived;
+               watchList.Archived = archived === "1" ? 1 : 0;
           }
 
           if (rating !== null) {
@@ -70,7 +70,7 @@ export async function PUT(request: NextRequest) {
                watchList.Notes = notes;
           }
 
-          writeDB(db);
+          await writeDB(db);
 
           return Response.json(["OK"]);
      } catch (e) {

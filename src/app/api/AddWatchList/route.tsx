@@ -27,7 +27,7 @@ export async function PUT(request: NextRequest) {
           return Response.json(["Start Date was not provided"]);
      } else {
           try {
-               const db = getDB();
+               const db: any = await getDB();
 
                const watchListDB = db.WatchList;
 

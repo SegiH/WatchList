@@ -44,7 +44,6 @@ export default function WatchListDetail() {
           setIsError,
           setErrorMessage,
           setStillWatching,
-          setWatchListLoadingCheck,
           setWatchListSortingCheck,
           showSearch,
           stillWatching,
@@ -83,7 +82,7 @@ export default function WatchListDetail() {
      // When you go to add a WL, if you forgot to add the WLI, the Add Link will show the search so you can add it immediately. This only applies to adding a WL, not editing one.
      const addNewChangeHandler = () => {
           if (addModified && (addWatchListDtl?.WatchListItemID !== -1 || addWatchListDtl.StartDate !== getLocaleDate() || addWatchListDtl.EndDate !== "" || addWatchListDtl.WatchListSourceID !== -1 || addWatchListDtl.Season !== 0 || addWatchListDtl.Rating !== 0 || addWatchListDtl.Notes !== "")) {
-               const confirmLeave = confirm("You have started to add a record. Are you sure you weant to leave ?");
+               const confirmLeave = confirm("You have started to add a record. Are you sure you want to leave ?");
 
                if (!confirmLeave) {
                     return;
@@ -171,7 +170,6 @@ export default function WatchListDetail() {
           setOriginalWatchListDtl(null);
 
           if (addModified || editModified) {
-               setWatchListLoadingCheck(APIStatus.Idle);
                setWatchListSortingCheck(APIStatus.Idle)
           }
 
@@ -274,8 +272,7 @@ export default function WatchListDetail() {
                          alert(`The error ${res.data[1]} occurred while adding the detail`);
                     } else {
                          setIsAdding(false);
-                         setWatchListLoadingCheck(APIStatus.Idle); // Initiate WL to re downlaod the data
-                         setWatchListSortingCheck(APIStatus.Idle);
+                         setWatchListSortingCheck(APIStatus.Idle); // Initiate WL to re download the data
                          addingStarted = false;
 
                          if (typeof addWatchListDtl.EndDate !== "undefined" && !stillWatching) {
@@ -320,7 +317,7 @@ export default function WatchListDetail() {
                     return;
                }
 
-               if (watchListDtl.StartDate === "") {
+               if (watchListDtl.StartDate === "" && watchListDtl.Archived !== 1) {
                     alert("Please enter the start date");
                     return;
                }

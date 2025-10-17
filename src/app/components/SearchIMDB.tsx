@@ -17,8 +17,7 @@ export default function SearchIMDB() {
           SearchIconComponent,
           setIsAdding,
           setSearchCount,
-          setSearchModalVisible,
-          setWatchListItemsLoadingCheck
+          setSearchModalVisible
      } = useContext(DataContext) as DataContextType
 
      const [imdbSearchResults, setIMDBSearchResults] = useState<ISearchImdb[]>([]);
@@ -65,8 +64,6 @@ export default function SearchIMDB() {
                     } else if (res.data[0] === "ERROR-ALREADY-EXISTS") {
                          alert(res.data[1]);
                     } else {
-                         setWatchListItemsLoadingCheck(APIStatus.Idle);
-
                          if (autoAdd) {
                               setIsAdding(true);
                               router.push(`/WatchList/Dtl?WatchListItemID=${res.data[1]}`);

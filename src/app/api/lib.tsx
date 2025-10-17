@@ -580,7 +580,7 @@ const loginSuccessfullActions = async (currentUser: IUser) => {
                Realname: decrypt(currentUser[0].Realname),
                Admin: currentUser[0].Admin,
                Options: userOptions
-          } 
+          }
 
           const expires = new Date(Date.now() + sessionDuration);
 
@@ -597,7 +597,7 @@ const loginSuccessfullActions = async (currentUser: IUser) => {
 export const logMessage = async (message, noDate = false) => { // No Date says don't write the date to allow for more flexibility to write multiple logs at once and have each line have its own date time stamp
      const now = new Date();
      let formattedDate = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')} ` +
-                      `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`;
+          `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`;
      //new Date().toISOString().replace("T", " ").replace("Z", "");
 
      // Strip milliseconds
@@ -626,7 +626,6 @@ export const validateSettings = async () => {
 
      return "";
 }
-
 
 export const writeDB = (newDB) => {
      return new Promise((resolve, reject) => {
@@ -665,13 +664,19 @@ export const writeDB = (newDB) => {
                     return;
                }
                // Everything succeeded — replace the original
-               fs.rename(tmpFile, dbFile, (err) => {
+               fs.copyFile(tmpFile, dbFile, (err) => {
                     if (err) {
-                         console.error('[writeDB] Rename failed:', err);
+                         console.error('[writeDB] Copy failed:', err);
                          reject(err);
-                    } else {
-                         resolve(null);
+                         return;
                     }
+
+                    fs.unlink(tmpFile, (unlinkErr) => {
+                         if (unlinkErr) {
+                              console.warn('[writeDB] Warning: temp file was not deleted:', unlinkErr);
+                         }
+                         resolve(null);
+                    });
                });
           });
 

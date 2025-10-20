@@ -1,28 +1,18 @@
 "use client"
 
 import React, { useContext, useEffect, useState } from "react";
-import { APIStatus, DataContext, DataContextType } from "../data-context";
+import { APIStatus, DataContext } from "../data-context";
 import { useRouter } from 'next/navigation';
 
 import "../page.css";
 import axios, { AxiosResponse } from "axios";
 import IBugLog from "../interfaces/IBugLog";
 import IUser from "../interfaces/IUser";
+import { DataContextType } from "../interfaces/contexts/DataContextType";
 
-export default function BugLog() {
+export default function Data() {
     const {
-        bugLogs,
-        darkMode,
-        defaultRoute,
-        setIsError,
-        setErrorMessage,
-        userData,
-        visibleSections,
-        watchList,
-        watchListItems,
-        watchListSources,
-        watchListTypes,
-        isAdmin
+        bugLogs, darkMode, defaultRoute, getWatchList, getWatchListItems, isAdmin, setIsError, setErrorMessage, visibleSections, watchList, watchListSortingCheck, watchListItems, watchListItemsSortingCheck, watchListSources, watchListTypes,
     } = useContext(DataContext) as DataContextType;
 
     const [activeSection, setActiveSection] = useState("");
@@ -32,7 +22,7 @@ export default function BugLog() {
     const [usersLoadingCheck, setUsersLoadingCheck] = useState(APIStatus.Idle);
 
     const router = useRouter();
- 
+
     const dataSchema = {
         WatchList: [{
             "WatchListID": "ID",
@@ -52,7 +42,6 @@ export default function BugLog() {
             "WatchListTypeName": "Type",
             "IMDB_URL": "URL",
             "IMDB_Poster": "Image",
-            "IMDB_Poster_Image": "Image Base 64",
             "ItemNotes": "Notes",
             "Archived": "Archived",
             "Enabled": "Enabled",
@@ -109,10 +98,21 @@ export default function BugLog() {
 
         switch (newActiveSection) {
             case "WatchList":
-                setDataSource(watchList);
+                if (watchList.length === 0 || watchListSortingCheck !== APIStatus.Success) {
+                    const result = await getWatchList();
+                    setDataSource(result);
+                } else {
+                    setDataSource(watchList);
+                }
+
                 break;
             case "Items":
-                setDataSource(watchListItems);
+                if (watchListItems.length == 0 || watchListItemsSortingCheck !== APIStatus.Success) {
+                    const result = await getWatchListItems();
+                    setDataSource(result);
+                } else {
+                    setDataSource(watchListItems);
+                }
                 break;
             case "BugLogs":
                 if (bugLogs.length === 0) {
@@ -123,8 +123,8 @@ export default function BugLog() {
                     break;
                 }
             //case "Options": // TODO: Fix me
-                //setDataSource(userData.)
-                //break;
+            //setDataSource(userData.)
+            //break;
             case "VisibleSections":
                 setDataSource(visibleSections);
                 break;

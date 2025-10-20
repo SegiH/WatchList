@@ -8,7 +8,7 @@ import Settings from "./components/Settings";
 import IWatchListSource from "./interfaces/IWatchListSource";
 import IWatchListType from "./interfaces/IWatchListType";
 
-import { APIStatus, DataContext, DataContextType } from "./data-context";
+import { APIStatus, SharedLayoutContext, SharedLayoutContextType } from "./data-context";
 
 import "./page.css";
 import IUserOption from "./interfaces/IUserOption";
@@ -17,50 +17,8 @@ import Loader from "./components/Loader";
 
 const SharedLayout = () => {
      const {
-          activeRoute,
-          AddIconComponent,
-          darkMode,
-          demoMode,
-          hideTabs,
-          imdbSearchEnabled,
-          isAdmin,
-          isEnabled,
-          isError,
-          isLoading,
-          loggedInCheck,
-          openDetailClickHandler,
-          routeList,
-          saveOptions,
-          SearchIconComponent,
-          searchInputVisible,
-          searchModalVisible,
-          searchTerm,
-          setSourceFilter,
-          setStillWatching,
-          SettingsIconComponent,
-          settingsVisible,
-          setActiveRoute,
-          setCurrentPage,
-          setIsLoading,
-          setSearchInputVisible,
-          setSearchModalVisible,
-          setSearchTerm,
-          setTypeFilter,
-          setWatchListSortColumn,
-          setWatchListSortDirection,
-          showSettings,
-          sourceFilter,
-          typeFilter,
-          stillWatching,
-          watchListItemsSortColumns,
-          watchListSortColumn,
-          watchListSortColumns,
-          watchListSortDirection,
-          watchListSources,
-          watchListSourcesLoadingCheck,
-          watchListTypes,
-          watchListTypesLoadingCheck
-     } = useContext(DataContext) as DataContextType
+          AddIconComponent, SearchIconComponent, SettingsIconComponent, activeRoute, darkMode, demoMode, hideTabs, imdbSearchEnabled, isAdmin, isEnabled, isError, isLoading, loggedInCheck, openDetailClickHandler, routeList, saveOptions, searchInputVisible, searchModalVisible, setActiveRoute, setCurrentPage, setIsLoading, setSearchInputVisible, setSearchModalVisible, setSearchTerm, setSourceFilter, setStillWatching, setTypeFilter, setWatchListSortColumn, setWatchListSortDirection, settingsVisible, showSettings, sourceFilter, stillWatching, typeFilter, watchListItemsSortColumns, watchListSortColumn, watchListSortColumns, watchListSortDirection, watchListSources, watchListSourcesLoadingCheck, watchListTypes, watchListTypesLoadingCheck
+     } = useContext(SharedLayoutContext) as SharedLayoutContextType
 
      const [isClient, setIsClient] = useState(false);
      const [newSearchTerm, setNewSearchTerm] = useState("");

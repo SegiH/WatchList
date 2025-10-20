@@ -3,20 +3,15 @@
 import axios, { AxiosResponse } from "axios";
 import { useRouter } from "next/navigation";
 import React, { useContext, useEffect, useState } from "react";
-import { APIStatus, DataContext, DataContextType } from "../data-context";
+import { APIStatus, SetupContext, SetupContextType } from "../data-context";
 
 import "../Login/Login.css";
 import IUser from "../interfaces/IUser";
 
 export default function Setup() {
      const {
-          activeRoute,
-          defaultRoute,
-          darkMode,
-          demoUsername,
-          loggedInCheck,
-          validatePassword
-     } = useContext(DataContext) as DataContextType
+          activeRoute, defaultRoute, darkMode, demoUsername, loggedInCheck, validatePassword
+     } = useContext(SetupContext) as SetupContextType
 
      const router = useRouter();
 

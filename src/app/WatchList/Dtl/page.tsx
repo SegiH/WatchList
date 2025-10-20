@@ -17,7 +17,7 @@ import IWatchListSource from "../../interfaces/IWatchListSource";
 
 import "../../page.css";
 
-import { APIStatus, DataContext, DataContextType } from "../../data-context";
+import { APIStatus, WatchListDtlContext, WatchListDtlContextType } from "../../data-context";
 
 // I have a very specific use case here where I'm using a custom type for the Auto Complete dropdown that only has these 2 properties and is only used here so the interface is created here
 interface AutoCompleteWatchListItem {
@@ -25,32 +25,10 @@ interface AutoCompleteWatchListItem {
      WatchListItemName: string;
 }
 
-export default function WatchListDetail() {
+export default function WatchListDtl() {
      const {
-          BrokenImageIconComponent,
-          CancelIconComponent,
-          darkMode,
-          demoMode,
-          EditIconComponent,
-          imdbSearchEnabled,
-          isAdding,
-          isLoading,
-          isEditing,
-          pullToRefreshEnabled,
-          recommendationsEnabled,
-          SaveIconComponent,
-          setIsAdding,
-          setIsEditing,
-          setIsError,
-          setErrorMessage,
-          setStillWatching,
-          setWatchListSortingCheck,
-          showSearch,
-          stillWatching,
-          watchListItems,
-          watchListSortDirection,
-          watchListSources
-     } = useContext(DataContext) as DataContextType
+          BrokenImageIconComponent,CancelIconComponent,EditIconComponent,SaveIconComponent,darkMode,demoMode,imdbSearchEnabled,isAdding,isEditing,isLoading,pullToRefreshEnabled,recommendationsEnabled,setErrorMessage,setIsAdding,setIsEditing,setIsError,setStillWatching,setWatchListSortingCheck,showSearch,stillWatching,watchListItems,watchListSortDirection,watchListSources
+     } = useContext(WatchListDtlContext) as WatchListDtlContextType
 
      const currentDate = new Date().toLocaleDateString();
 

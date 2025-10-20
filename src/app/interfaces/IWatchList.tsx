@@ -15,7 +15,6 @@ export default interface WatchList {
      WatchListSourceName?: string, // WL sources is joined with WL in the SQL when getting WL
      IMDB_JSON?: string // WLI is joined with WL in the SQL when getting WL,
      IMDB_Poster: string // WLI is joined with WL in the SQL when getting WL,
-     IMDB_Poster_Image?: string, // Cached image
      IMDB_Poster_Error?: boolean, // WLI is joined with WL in the SQL when getting WL,
      IMDB_URL?: string, // WLI is joined with WL in the SQL when getting WL,
      IsModified?: boolean, // Virtual field

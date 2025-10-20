@@ -5,30 +5,15 @@ import TextField from "@mui/material/TextField";
 import axios, { AxiosResponse } from "axios";
 import { useRouter } from 'next/navigation';
 import React, { useContext, useEffect, useState } from "react";
-import { APIStatus, DataContext, DataContextType } from "../data-context";
+import { APIStatus, ManageUserAccountsContext, ManageUserAccountsContextType } from "../data-context";
 import IUser from "../interfaces/IUser";
 
 import "../page.css";
 
 const ManageUserAccounts = () => {
      const {
-          CancelIconComponent,
-          darkMode,
-          defaultRoute,
-          demoMode,
-          EditIconComponent,
-          isAdding,
-          isAdmin,
-          isEditing,
-          SaveIconComponent,
-          setIsAdding,
-          setIsEditing,
-          setIsError,
-          setErrorMessage,
-          setUsers,
-          users,
-          validatePassword
-     } = useContext(DataContext) as DataContextType;
+          CancelIconComponent, darkMode, defaultRoute, demoMode, EditIconComponent, isAdding, isAdmin, isEditing, SaveIconComponent, setIsAdding, setIsEditing, setIsError, setErrorMessage, setUsers, users, validatePassword
+     } = useContext(ManageUserAccountsContext) as ManageUserAccountsContextType;
 
      const [addingUser, setAddingUser] = useState<IUser>({} as IUser);
      const [editingUser, setEditingUser] = useState<IUser>({} as IUser);

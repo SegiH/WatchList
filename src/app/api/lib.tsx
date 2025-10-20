@@ -10,10 +10,6 @@ import IUserOption from "../interfaces/IUserOption";
 import path from "path";
 import IWatchListItem from "../interfaces/IWatchListItem";
 
-import { JsonStreamStringify } from 'json-stream-stringify';
-import { parser } from 'stream-json';
-import { streamValues } from 'stream-json/streamers/StreamValues';
-
 const dbFile = "./database.json";
 
 export const defaultSources = ['Amazon', 'Hulu', 'Movie Theatre', 'Netflix', 'Plex', 'Prime', 'Web'];
@@ -103,92 +99,7 @@ export const getCurrentDate = () => {
      return formattedDate;
 }
 
-const getImageBase64 = async (URL: string) => {
-
-     const response = await fetch(URL);
-
-     if (!response.ok) {
-          return new Response('Failed to fetch image.', { status: 500 });
-     }
-
-     const arrayBuffer = await response.arrayBuffer();
-     const base64 = Buffer.from(arrayBuffer).toString('base64');
-
-     // Get the MIME type from headers, default to image/jpeg if unknown
-     const contentType = response.headers.get('content-type') || 'image/jpeg';
-
-     const base64Data = `data:${contentType};base64,${base64}`;
-
-     return base64Data;
-}
-
 export const getDB = () => {
-     return new Promise((resolve) => {
-          const filePath = path.join(process.cwd(), dbFile);
-
-          const fileStream = fs.createReadStream(filePath, { encoding: 'utf8' });
-          const jsonParser = parser();
-          const jsonStream = fileStream.pipe(jsonParser).pipe(streamValues());
-
-          let isArray: any = null;
-
-          const result = isArray === null ? (null) : (isArray ? [] : {});
-
-          // We'll rebuild the entire object/array progressively:
-          // For a top-level array, streamValues emits each item.
-          // For a top-level object, it emits {key, value} pairs.
-          // So we accumulate those to reconstruct the DB.
-
-          let topLevelValue: any = null; // Will hold the full DB if primitive
-
-          // We buffer object properties if the root is an object
-          let objectAccumulator = {};
-
-          let hasItems = false;
-
-          jsonStream.on('data', ({ key, value }) => {
-               hasItems = true;
-
-               if (isArray === null) {
-                    // Detect root type:
-                    isArray = key === null; // For arrays, key is null
-                    if (isArray) {
-                         topLevelValue = [];
-                    } else {
-                         objectAccumulator = {};
-                    }
-               }
-
-               if (isArray) {
-                    topLevelValue.push(value);
-               } else {
-                    objectAccumulator[key] = value;
-               }
-          });
-
-
-          jsonStream.on('end', () => {
-               if (hasItems) {
-                    resolve(isArray ? topLevelValue as any : objectAccumulator[0]);
-               } else {
-                    // Empty file or no data
-                    resolve({});
-               }
-          });
-
-          jsonStream.on('error', (err) => {
-               console.error('Error parsing JSON:', err.message);
-               resolve({});  // fallback like your original method
-          });
-
-          fileStream.on('error', (err) => {
-               console.error('Error reading file:', err.message);
-               resolve({});  // fallback like your original method
-          });
-     });
-};
-
-export const getDB2 = () => {
      try {
           const filePath = path.join(process.cwd(), dbFile);
 
@@ -320,17 +231,15 @@ export const getMissingArtwork = async (watchListItemID: number) => {
                );
 
                if (imgMatch && imgMatch[1]) {
-                    thisWLI.IMDB_Poster = imgMatch[1];
-
-                    const base64Data = await getImageBase64(imgMatch[1]);
+                    //thisWLI.IMDB_Poster = imgMatch[1];
 
                     const newResult = {
                          ID: thisWLI.WatchListItemID,
                          Name: thisWLI.WatchListItemName,
                          IMDB_URL: thisWLI.IMDB_URL,
+                         IMDB_Poster: imgMatch[1],
                          Status: "OK",
                          Message: "Matched by css class",
-                         IMDB_Poster_Image: base64Data.toString()
                     };
 
                     logText += `\n${getCurrentDate()}: Matched by css class for ${thisWLI.WatchListItemID} ${thisWLI.WatchListItemName} ${thisWLI.IMDB_Poster}`;
@@ -358,19 +267,13 @@ export const getMissingArtwork = async (watchListItemID: number) => {
                                         if (srcIndexStart != -1 && srcIndexEnd != -1) {
                                              const newURL = imgHtml.substring(srcIndexStart + 5, srcIndexEnd);
 
-                                             //thisWLI.IMDB_Poster = newURL;
-
-                                             const base64Data = await getImageBase64(newURL);
-
-                                             //thisWLI.IMDB_Poster_Image = base64Data.toString();
-
                                              const newResult = {
                                                   ID: thisWLI.WatchListItemID,
                                                   Name: thisWLI.WatchListItemName,
                                                   IMDB_URL: thisWLI.IMDB_URL,
+                                                  IMDB_Poster: newURL,
                                                   Status: "OK",
-                                                  Message: "Fuzzy match",
-                                                  IMDB_Poster_Image: base64Data.toString()
+                                                  Message: "Fuzzy match"
                                              };
 
                                              logText += `\n${getCurrentDate()}: Fuzzy match for ${thisWLI.WatchListItemID} ${thisWLI.WatchListItemName} ${thisWLI.IMDB_Poster}`;
@@ -387,7 +290,6 @@ export const getMissingArtwork = async (watchListItemID: number) => {
                                              IMDB_URL: thisWLI.IMDB_URL,
                                              Status: "ERROR",
                                              Message: "Fuzzy match failed",
-                                             IMDB_Poster_Image: ""
                                         };
 
                                         logText += `\n${getCurrentDate()}: Fuzzy match failed for ${thisWLI.WatchListItemID} ${thisWLI.WatchListItemName} ${thisWLI.IMDB_URL}`;
@@ -403,8 +305,7 @@ export const getMissingArtwork = async (watchListItemID: number) => {
                               Name: thisWLI.WatchListItemName,
                               IMDB_URL: thisWLI.IMDB_URL,
                               Status: "ERROR",
-                              Message: "No match by CSS class",
-                              IMDB_Poster_Image: ""
+                              Message: "No match by CSS class"
                          };
 
                          logText += `\n${getCurrentDate()}: No match by CSS class for ${thisWLI.WatchListItemID} ${thisWLI.WatchListItemName} ${thisWLI.IMDB_URL}`;
@@ -420,8 +321,7 @@ export const getMissingArtwork = async (watchListItemID: number) => {
                Name: thisWLI.WatchListItemName,
                IMDB_URL: thisWLI.IMDB_URL,
                Status: "ERROR",
-               Message: "No match by anchor tag",
-               IMDB_Poster_Image: ""
+               Message: "No match by anchor tag"
           };
 
           logText += `\n${getCurrentDate()}: No match by anchor tag for ${thisWLI.WatchListItemID} ${thisWLI.WatchListItemName} ${thisWLI.IMDB_URL}`;
@@ -628,6 +528,87 @@ export const validateSettings = async () => {
 }
 
 export const writeDB = (newDB) => {
+     try {
+          fs.writeFileSync(dbFile, JSON.stringify(newDB));
+     } catch (e) {
+          console.log(`The error ${e.message} occurred while saving the DB`);
+          //console.log(newDB);
+     }
+}
+
+/*
+
+import { JsonStreamStringify } from 'json-stream-stringify';
+import { parser } from 'stream-json';
+import { streamValues } from 'stream-json/streamers/StreamValues';
+
+export const getDB_delete_me = () => {
+     return new Promise((resolve) => {
+          const filePath = path.join(process.cwd(), dbFile);
+
+          const fileStream = fs.createReadStream(filePath, { encoding: 'utf8' });
+          const jsonParser = parser();
+          const jsonStream = fileStream.pipe(jsonParser).pipe(streamValues());
+
+          let isArray: any = null;
+
+          const result = isArray === null ? (null) : (isArray ? [] : {});
+
+          // We'll rebuild the entire object/array progressively:
+          // For a top-level array, streamValues emits each item.
+          // For a top-level object, it emits {key, value} pairs.
+          // So we accumulate those to reconstruct the DB.
+
+          let topLevelValue: any = null; // Will hold the full DB if primitive
+
+          // We buffer object properties if the root is an object
+          let objectAccumulator = {};
+
+          let hasItems = false;
+
+          jsonStream.on('data', ({ key, value }) => {
+               hasItems = true;
+
+               if (isArray === null) {
+                    // Detect root type:
+                    isArray = key === null; // For arrays, key is null
+                    if (isArray) {
+                         topLevelValue = [];
+                    } else {
+                         objectAccumulator = {};
+                    }
+               }
+
+               if (isArray) {
+                    topLevelValue.push(value);
+               } else {
+                    objectAccumulator[key] = value;
+               }
+          });
+
+
+          jsonStream.on('end', () => {
+               if (hasItems) {
+                    resolve(isArray ? topLevelValue as any : objectAccumulator[0]);
+               } else {
+                    // Empty file or no data
+                    resolve({});
+               }
+          });
+
+          jsonStream.on('error', (err) => {
+               console.error('Error parsing JSON:', err.message);
+               resolve({});  // fallback like your original method
+          });
+
+          fileStream.on('error', (err) => {
+               console.error('Error reading file:', err.message);
+               resolve({});  // fallback like your original method
+          });
+     });
+};
+
+export const writeDB_delete_me = (newDB) => {
      return new Promise((resolve, reject) => {
           if (typeof newDB !== 'object' || newDB === null) {
                return reject(new Error('newDB must be a non-null object or array'));
@@ -654,7 +635,7 @@ export const writeDB = (newDB) => {
                hadError = true;
                console.error('[writeDB] Writable error:', err);
                // Clean up: remove tmp file if exists
-               try { fs.unlinkSync(tmpFile); } catch (e) { /* ignore */ }
+               try { fs.unlinkSync(tmpFile); } catch (e) { // ignore
                reject(err);
           });
 
@@ -695,16 +676,25 @@ export const writeDB = (newDB) => {
      });
 };
 
+const getImageBase64 = async (URL: string) => {
 
-export const writeDBold = (newDB) => {
-     try {
-          fs.writeFileSync(dbFile, JSON.stringify(newDB));
-     } catch (e) {
-          console.log(`The error ${e.message} occurred while saving the DB`);
-          //console.log(newDB);
+     const response = await fetch(URL);
+
+     if (!response.ok) {
+          return new Response('Failed to fetch image.', { status: 500 });
      }
-}
 
+     const arrayBuffer = await response.arrayBuffer();
+     const base64 = Buffer.from(arrayBuffer).toString('base64');
+
+     // Get the MIME type from headers, default to image/jpeg if unknown
+     const contentType = response.headers.get('content-type') || 'image/jpeg';
+
+     const base64Data = `data:${contentType};base64,${base64}`;
+
+     return base64Data;
+}
+*/
 // writes in chunks
 // Generator that chunks a string into smaller pieces
 /*function* chunkString(str, size = 65536) {

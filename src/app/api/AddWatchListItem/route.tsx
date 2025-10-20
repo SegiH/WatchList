@@ -63,34 +63,12 @@ export async function PUT(request: NextRequest) {
 
                const highestWatchListItemID = Math.max(...watchListItemsDB.map(o => o.WatchListItemID));
 
-               // Try to fetch image
-               let imdb_poster_image = "";
-
-               if (typeof imdb_poster !== "undefined" && imdb_poster !== null && imdb_poster !== "") {
-                    try {
-                         await fetch(imdb_poster)
-                              .then(response => response.blob())
-                              .then(blob => new Promise((resolve, reject) => {
-                                   const reader = new FileReader();
-                                   reader.onloadend = () => resolve(reader.result);
-                                   reader.onerror = reject;
-                                   reader.readAsDataURL(blob);
-                              }))
-                              .then((base64data: string) => {
-                                   imdb_poster_image = base64data;
-                              })
-                    } catch (e) {
-
-                    }
-               }
-
                watchListItemsDB.push({
                     "WatchListItemID": (highestWatchListItemID !== null ? highestWatchListItemID : 0) + 1,
                     "WatchListItemName": name,
                     "WatchListTypeID": parseInt(type, 10),
                     "IMDB_URL": imdb_url,
                     "IMDB_Poster": imdb_poster,
-                    "IMDB_Poster_Image": imdb_poster_image !== "" ? imdb_poster_image : null,
                     "IMDB_JSON": imdb_json,
                     "ItemNotes": notes,
                     "Archived": parseInt(archived as string, 10),

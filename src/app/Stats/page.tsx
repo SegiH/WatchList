@@ -20,22 +20,16 @@ import IWatchListTVTotalCountStat from "../interfaces/IWatchListTVTotalCountStat
 import IWatchListWeeklyMovieStat from "../interfaces/IWatchListWeeklyMovieStat";
 import IWatchListWeeklyTVStat from "../interfaces/IWatchListWeeklyTVStat";
 
-import { APIStatus, DataContext, DataContextType } from "../data-context";
+import { APIStatus, WatchListStatsContext, WatchListStatsContextType } from "../data-context";
 
 import "../css/tablestyle.css";
 import "./watchliststats.css";
-import WatchListItems from "../Items/page";
 import IWatchListItem from "../interfaces/IWatchListItem";
 
 export default function WatchListStats() {
      const {
-          darkMode,
-          demoMode,
-          ratingMax,
-          setIsError,
-          setErrorMessage,
-          watchListItems
-     } = useContext(DataContext) as DataContextType
+          darkMode, demoMode, ratingMax, setIsError, setErrorMessage, watchListItems
+     } = useContext(WatchListStatsContext) as WatchListStatsContextType
 
      const [hasStats, setHasStats] = useState(false);
 

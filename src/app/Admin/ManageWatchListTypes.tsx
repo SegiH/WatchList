@@ -4,27 +4,13 @@ import axios, { AxiosResponse } from "axios";
 import { useRouter } from 'next/navigation';
 import React, { useContext, useEffect, useState } from "react";
 
-import { APIStatus, DataContext, DataContextType } from "../data-context";
+import { APIStatus, ManageWatchListTypesContext, ManageWatchListTypesContextType } from "../data-context";
 import IWatchListType from "../interfaces/IWatchListType";
 
 const ManageWatchListTypes = () => {
      const {
-          CancelIconComponent,
-          darkMode,
-          defaultRoute,
-          DeleteIconComponent,
-          demoMode,
-          EditIconComponent,
-          isAdding,
-          isAdmin,
-          isEditing,
-          SaveIconComponent,
-          setIsAdding,
-          setIsEditing,
-          setWatchListTypesLoadingCheck,
-          watchListTypes,
-          watchListTypesLoadingCheck
-     } = useContext(DataContext) as DataContextType;
+          CancelIconComponent, darkMode, defaultRoute, DeleteIconComponent, demoMode, EditIconComponent, isAdding, isAdmin, isEditing, SaveIconComponent, setIsAdding, setIsEditing, setWatchListTypesLoadingCheck, watchListTypes, watchListTypesLoadingCheck
+     } = useContext(ManageWatchListTypesContext) as ManageWatchListTypesContextType;
 
      const [addingType, setAddingType] = useState<IWatchListType | null>(null);
      const [editingType, setEditingType] = useState<IWatchListType | null>(null);

@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "baseUrl": ".",
     "types": ["jest", "node"],
     "target": "es5",
     "lib": [
@@ -37,7 +38,7 @@
     ".next/types/**/*.ts",
     "build/types/**/*.ts",
     "__tests__/*.tsx"
-  ],
+, "middleware.tsx.unused"  ],
   "exclude": [
     "node_modules"
   ]

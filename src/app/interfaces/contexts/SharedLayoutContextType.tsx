@@ -1,0 +1,50 @@
+import IRouteList from "../IRoute";
+import IUserOption from "../IUserOption";
+import IWatchListSortColumn from "../IWatchListSortColumn";
+import IWatchListSource from "../IWatchListSource";
+import IWatchListType from "../IWatchListType";
+
+export interface SharedLayoutContextType {
+     activeRoute: string;
+     AddIconComponent: React.ReactNode;
+     darkMode: boolean;
+     demoMode: boolean;
+     hideTabs: boolean;
+     imdbSearchEnabled: boolean;
+     isAdmin: () => boolean;
+     isEnabled: (value: string) => boolean;
+     isError: boolean;
+     isLoading: boolean;
+     loggedInCheck: string;
+     openDetailClickHandler: (value: number, activeRouteOverride?: string) => void;
+     routeList: IRouteList;
+     saveOptions: (newOptions: IUserOption) => void;
+     SearchIconComponent: React.ReactNode;
+     searchInputVisible: boolean,
+     searchModalVisible: boolean;
+     setActiveRoute: (value: string) => void;
+     setCurrentPage: (value: number) => void;
+     setIsLoading: (value: boolean) => void;
+     setSearchInputVisible: (value: boolean) => void;
+     setSearchModalVisible: (value: boolean) => void;
+     setSearchTerm: (value: string) => void;
+     setSourceFilter: (value: number) => void;
+     setStillWatching: (value: boolean) => void;
+     SettingsIconComponent: React.ReactNode;
+     settingsVisible: boolean;
+     setTypeFilter: (value: number) => void;
+     setWatchListSortColumn: (value: string) => void;
+     setWatchListSortDirection: (value: string) => void;
+     showSettings: () => void;
+     sourceFilter: number;
+     typeFilter: number;
+     stillWatching: boolean;
+     watchListItemsSortColumns: IWatchListSortColumn;
+     watchListSortColumn: string;
+     watchListSortColumns: IWatchListSortColumn;
+     watchListSortDirection: string;
+     watchListSources: IWatchListSource[];
+     watchListSourcesLoadingCheck: string;
+     watchListTypes: IWatchListType[];
+     watchListTypesLoadingCheck: string;
+}

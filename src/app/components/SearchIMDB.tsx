@@ -5,20 +5,12 @@ import ISearchImdb from "../interfaces/ISearchImdb";
 import { useRouter } from 'next/navigation';
 import React, { useContext, useState } from "react";
 
-import { APIStatus, DataContext, DataContextType } from "../data-context";
+import { APIStatus, SearchIMDBContext, SearchIMDBContextType } from "../data-context";
 
 export default function SearchIMDB() {
      const {
-          AddIconComponent,
-          autoAdd,
-          BrokenImageIconComponent,
-          darkMode,
-          searchCount,
-          SearchIconComponent,
-          setIsAdding,
-          setSearchCount,
-          setSearchModalVisible
-     } = useContext(DataContext) as DataContextType
+          AddIconComponent, autoAdd, BrokenImageIconComponent, darkMode, searchCount, SearchIconComponent, setIsAdding, setSearchCount, setSearchModalVisible
+     } = useContext(SearchIMDBContext) as SearchIMDBContextType
 
      const [imdbSearchResults, setIMDBSearchResults] = useState<ISearchImdb[]>([]);
      const [searchLoadingCheck, setSearchLoadingCheck] = useState(APIStatus.Idle);

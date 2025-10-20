@@ -1,36 +1,13 @@
 import { useRouter } from 'next/navigation';
 import { useContext, useEffect, useState } from "react";
-import { APIStatus, DataContext, DataContextType } from "../data-context";
+import { APIStatus, SettingsContext, SettingsContextType } from "../data-context";
 import IUserOption from "../interfaces/IUserOption";
 import Select from 'react-select';
 
 const Settings = () => {
      const {
-          activeRoute,
-          archivedVisible,
-          autoAdd,
-          buildDate,
-          darkMode,
-          defaultRoute,
-          demoMode,
-          hideTabs,
-          loggedInCheck,
-          LogOutIconComponent,
-          pullToRefreshEnabled,
-          saveOptions,
-          setActiveRoute,
-          setCurrentPage,
-          setOptions,
-          setSettingsVisible,
-          setShowMissingArtwork,
-          setStillWatching,
-          showMissingArtwork,
-          setVisibleSections,
-          signOut,
-          visibleSectionChoices,
-          visibleSections,
-          watchListSortColumn
-     } = useContext(DataContext) as DataContextType
+          activeRoute, archivedVisible, autoAdd, buildDate, darkMode, defaultRoute, demoMode, hideTabs, loggedInCheck, LogOutIconComponent, pullToRefreshEnabled, saveOptions, setActiveRoute, setCurrentPage, setOptions, setSettingsVisible, setShowMissingArtwork, setStillWatching, setVisibleSections, showMissingArtwork, signOut, visibleSectionChoices, visibleSections, watchListSortColumn
+     } = useContext(SettingsContext) as SettingsContextType
 
      const [formattedBuildDate, setFormattedBuildDate] = useState("");
      const router = useRouter();

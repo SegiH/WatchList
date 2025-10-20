@@ -4,7 +4,7 @@ import Tab from "@mui/material/Tab";
 import Tabs from "@mui/material/Tabs";
 import { useRouter } from 'next/navigation';
 import React, { useContext, useEffect, useState } from "react";
-import { DataContext, DataContextType } from "../data-context";
+import { AdminContext, AdminContextType } from "../data-context";
 import ManageUserAccounts from "./ManageUserAccounts";
 import ManageWatchListSources from "./ManageWatchListSources";
 import ManageWatchListTypes from "./ManageWatchListTypes";
@@ -13,13 +13,8 @@ import "../page.css";
 
 export default function Admin() {
      const {
-          darkMode,
-          defaultRoute,
-          demoMode,
-          isAdding,
-          isAdmin,
-          isEditing
-     } = useContext(DataContext) as DataContextType
+          darkMode, defaultRoute, demoMode, isAdding, isAdmin, isEditing
+     } = useContext(AdminContext) as AdminContextType
 
      const [isMounted, setIsMounted] = useState(false);
      const [selectedTab, setSelectedTab] = useState<number>(0);

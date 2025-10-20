@@ -4,6 +4,7 @@ import IWatchList from '@/app/interfaces/IWatchList';
 import IWatchListItem from '@/app/interfaces/IWatchListItem';
 import IWatchListType from '@/app/interfaces/IWatchListType';
 import IWatchListSource from '@/app/interfaces/IWatchListSource';
+//import { sendCompressedJsonBrotli, sendCompressedJsonGZip } from '@/app/middleware';
 
 export async function GET(request: NextRequest) {
      if (!isLoggedIn(request)) {
@@ -87,12 +88,6 @@ export async function GET(request: NextRequest) {
                     const watchListItem = watchListItemsDB.filter((watchListItem: IWatchListItem) => {
                          return (
                               (String(watchListItem.WatchListItemID) === String(watchList.WatchListItemID))
-                              &&
-                              (searchTerm === null || searchTerm === "") || (searchTerm !== null && searchTerm !== "" && (watchListItem.WatchListItemName?.toString().includes(searchTerm.toString()) || watchListItem.ItemNotes?.toString().includes(searchTerm.toString())))
-                              &&
-                              ((archivedVisible === "true" || (archivedVisible !== "true" && watchListItem.Archived === 0)))
-                              &&
-                              (typeFilter === null || (typeFilter !== null && watchListItem.WatchListTypeID.toString() === typeFilter))
                          );
                     });
 
@@ -111,7 +106,6 @@ export async function GET(request: NextRequest) {
                          watchList.WatchListTypeName = watchListType[0].WatchListTypeName;
                          watchList.IMDB_URL = watchListItem[0].IMDB_URL;
                          watchList.IMDB_Poster = watchListItem[0].IMDB_Poster;
-                         watchList.IMDB_Poster_Image = watchListItem[0].IMDB_Poster_Image;
                          watchList.Archived = watchListItem[0].Archived;
                          watchList.IMDB_JSON = watchListItem[0].IMDB_JSON;
                          watchList.WatchListSourceName = watchListSource[0]?.WatchListSourceName;
@@ -126,3 +120,24 @@ export async function GET(request: NextRequest) {
           return Response.json(["ERROR", e.message]);
      }
 }
+
+// Return gzipped results
+/*const compressedData = await sendCompressedJsonBrotli(["OK", result]);
+
+return new Response(compressedData as unknown as BodyInit, {
+     status: 200,
+     headers: {
+          'Content-Type': 'application/json',
+          'Content-Encoding': 'br', // use 'gzip' when using gzip
+     },
+});*/
+
+/* const compressedData = await sendCompressedJsonGZip(["OK", result]);
+
+ return new Response(compressedData as unknown as BodyInit, {
+      status: 200,
+      headers: {
+           'Content-Type': 'application/json',
+           'Content-Encoding': 'gzip',
+      },
+ });*/

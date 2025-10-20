@@ -4,19 +4,14 @@ import axios, { AxiosResponse } from "axios";
 import { useRouter } from 'next/navigation';
 import { usePathname } from 'next/navigation';
 import React, { createContext, ReactNode, useCallback, useEffect, useMemo, useState } from "react";
-import { gunzipSync } from 'zlib';
 
 import IBugLog from "./interfaces/IBugLog";
 import IRecommendation from "./interfaces/IRecommendation";
-import IRouteList from "./interfaces/IRoute";
 import ISearchImdb from "./interfaces/ISearchImdb";
-import ISectionChoice from "./interfaces/ISectionChoice";
 import IUser from "./interfaces/IUser";
-import IUserData from './interfaces/IUserData';
 import IUserOption from "./interfaces/IUserOption";
 import IWatchList from "./interfaces/IWatchList";
 import IWatchListItem from "./interfaces/IWatchListItem";
-import IWatchListSortColumn from './interfaces/IWatchListSortColumn';
 import IWatchListSource from "./interfaces/IWatchListSource";
 import IWatchListType from "./interfaces/IWatchListType";
 
@@ -46,8 +41,8 @@ const EditIconComponent = <EditIcon />;
 import LogOutIcon from "@mui/icons-material/Logout";
 const LogOutIconComponent = <LogOutIcon className="icon" />;
 
-import RemoveIcon from "@mui/icons-material/Remove";
-const RemoveIconComponent = <RemoveIcon className="icon" />;
+//import RemoveIcon from "@mui/icons-material/Remove";
+//const RemoveIconComponent = <RemoveIcon className="icon" />;
 
 import SaveIcon from "@mui/icons-material/Save";
 const SaveIconComponent = <SaveIcon />;
@@ -65,123 +60,52 @@ import WatchListIcon from "@mui/icons-material/Movie";
 const WatchListIconComponent = <WatchListIcon className="icon" />;
 
 import WatchListItemsIcon from "@mui/icons-material/SmartDisplay";
+import { DataContextType } from "./interfaces/contexts/DataContextType";
+import { ManageUserAccountsContextType } from "./interfaces/contexts/ManageUserAccountsContextType";
+import { ManageWatchListSourcesContextType } from "./interfaces/contexts/ManageWatchListSourcesContextType";
+import { ManageWatchListTypesContextType } from "./interfaces/contexts/ManageWatchListTypesContextType";
+import { AdminContextType } from "./interfaces/contexts/AdminContextType";
+import { BugLogsContextType } from "./interfaces/contexts/BugLogsContextType";
+import { ErrorContextType } from "./interfaces/contexts/ErrorContextType";
+import { ItemsCardContextType } from "./interfaces/contexts/ItemsCardContextType";
+import { ItemsContextType } from "./interfaces/contexts/ItemsContextType";
+import { ItemsDtlContextType } from "./interfaces/contexts/ItemsDtlContextType";
+import { LoginContextType } from "./interfaces/contexts/LoginContextType";
+import { NavBarContextType } from "./interfaces/contexts/NavBarContextType";
+import { RecommendationsContextType } from "./interfaces/contexts/RecommendationsContextType";
+import { SearchIMDBContextType } from "./interfaces/contexts/SearchIMDBContextType";
+import { SettingsContextType } from "./interfaces/contexts/SettingsContextType";
+import { SetupContextType } from "./interfaces/contexts/SetupContextType";
+import { SharedLayoutContextType } from "./interfaces/contexts/SharedLayoutContextType";
+import { TabsContextType } from "./interfaces/contexts/TabsContextType";
+import { WatchListCardContextType } from "./interfaces/contexts/WatchListCardContextType";
+import { WatchListContextType } from "./interfaces/contexts/WatchListContextType";
+import { WatchListDtlContextType } from "./interfaces/contexts/WatchListDtlContextType";
+import { WatchListStatsContextType } from "./interfaces/contexts/WatchListStatsContextType";
 const WatchListItemsIconComponent = <WatchListItemsIcon className="icon" />;
 
-export interface DataContextType {
-     activeRoute: string;
-     AddIconComponent: React.ReactNode;
-     archivedVisible: boolean;
-     autoAdd: boolean;
-     buildDate: string;
-     bugLogs: IBugLog[];
-     BrokenImageIconComponent: React.ReactNode;
-     cacheIMDBPosterImage: (watchListItemID: number) => void;
-     CancelIconComponent: React.ReactNode;
-     currentPage: number;
-     darkMode: boolean;
-     defaultRoute: string;
-     DeleteIconComponent: React.ReactNode;
-     demoMode: boolean;
-     demoPassword: string;
-     demoUsername: string;
-     EditIconComponent: React.ReactNode;
-     errorMessage: string;
-     filteredWatchList: IWatchList[];
-     filteredWatchListItems: IWatchListItem[];
-     getPath: (value: string) => string;
-     hideTabs: boolean;
-     imdbSearchEnabled: boolean;
-     isAdding: boolean;
-     isAdmin: () => boolean;
-     isClient: boolean;
-     isEnabled: (value: string) => boolean;
-     isEditing: boolean;
-     isError: boolean;
-     isLoading: boolean;
-     lastPage: boolean,
-     LogOutIconComponent: React.ReactNode;
-     loggedInCheck: string;
-     openDetailClickHandler: (value: number, activeRouteOverride?: string) => void;
-     ratingMax: number;
-     recommendationsEnabled: boolean,
-     RemoveIconComponent: React.ReactNode;
-     routeList: IRouteList;
-     SaveIconComponent: React.ReactNode;
-     saveOptions: (newOptions: IUserOption) => void;
-     searchCount: number;
-     SearchIconComponent: React.ReactNode;
-     searchInputVisible: boolean,
-     searchModalVisible: boolean;
-     searchTerm: string;
-     setActiveRoute: (value: string) => void;
-     setArchivedVisible: (value: boolean) => void;
-     setAutoAdd: (value: boolean) => void;
-     setBugLogs: React.Dispatch<React.SetStateAction<IBugLog[]>>;
-     setCurrentPage: (value: number) => void;
-     setDarkMode: (value: boolean) => void;
-     setDemoMode: (value: boolean) => void;
-     setFilteredWatchList: React.Dispatch<React.SetStateAction<IWatchList[]>>;
-     setFilteredWatchListItems: React.Dispatch<React.SetStateAction<IWatchListItem[]>>;
-     setHideTabs: (value: boolean) => void;
-     setIsAdding: (value: boolean) => void;
-     setIsEditing: (value: boolean) => void;
-     setIsError: (value: boolean) => void;
-     setErrorMessage: (value: string) => void;
-     setIsLoading: (value: boolean) => void;
-     setLoggedInCheck: (value: string) => void;
-     setOptions: (value: IUserOption) => void;
-     setShowMissingArtwork: (value: boolean) => void;
-     setSearchCount: (value: number) => void;
-     setSearchInputVisible: (value: boolean) => void;
-     setSearchTerm: (value: string) => void;
-     setSearchModalVisible: (value: boolean) => void;
-     setSettingsVisible: (value: boolean) => void;
-     setSourceFilter: (value: number) => void;
-     setStillWatching: (value: boolean) => void;
-     setTypeFilter: (value: number) => void;
-     SettingsIconComponent: React.ReactNode;
-     settingsVisible: boolean;
-     setUserData: React.Dispatch<React.SetStateAction<IUserData>>;
-     setUsers: React.Dispatch<React.SetStateAction<IUser[]>>;
-     setVisibleSections: (value: []) => void;
-     setWatchListItems: React.Dispatch<React.SetStateAction<IWatchListItem[]>>;
-     setWatchListSortingCheck: (value: string) => void;
-     setWatchListItemsSortingCheck: (value: string) => void;
-     setWatchListSortColumn: (value: string) => void;
-     setWatchListSortDirection: (value: string) => void;
-     setWatchListSources: React.Dispatch<React.SetStateAction<IWatchListSource[]>>;
-     setWatchListSourcesLoadingCheck: (value: string) => void;
-     setWatchListTypes: React.Dispatch<React.SetStateAction<IWatchListType[]>>;
-     setWatchListTypesLoadingCheck: (value: string) => void;
-     showMissingArtwork: boolean;
-     showSearch: () => void;
-     showSettings: () => void;
-     signOut: () => void;
-     sourceFilter: number;
-     stillWatching: boolean;
-     pullToRefreshEnabled: (value: boolean) => void;
-     typeFilter: number;
-     users: IUser[],
-     userData: IUserData;
-     validatePassword: (value: string) => boolean;
-     visibleSectionChoices: ISectionChoice[],
-     visibleSections: ISectionChoice[],
-     watchList: IWatchList[];
-     watchListItems: IWatchListItem[];
-     watchListItemsSortColumns: IWatchListSortColumn;
-     watchListItemsSortingCheck: string;
-     watchListSortColumn: string;
-     watchListSortColumns: IWatchListSortColumn;
-     watchListSortDirection: string;
-     watchListSortingCheck: string;
-     watchListSources: IWatchListSource[];
-     watchListSourcesLoadingCheck: string;
-     watchListTypes: IWatchListType[];
-     watchListTypesLoadingCheck: string;
-     writeLog: (logMessage: string) => void;
-}
-
 const DataContext = createContext({} as DataContextType);
+const ErrorContext = createContext({} as ErrorContextType);
+const ManageUserAccountsContext = createContext({} as ManageUserAccountsContextType);
+const ManageWatchListSourcesContext = createContext({} as ManageWatchListSourcesContextType);
+const ManageWatchListTypesContext = createContext({} as ManageWatchListTypesContextType);
+const AdminContext = createContext({} as AdminContextType);
+const BugLogsContext = createContext({} as BugLogsContextType);
+const NavBarContext = createContext({} as NavBarContextType);
+const RecommendationsContext = createContext({} as RecommendationsContextType);
+const SearchIMDBContext = createContext({} as SearchIMDBContextType);
+const SettingsContext = createContext({} as SettingsContextType);
+const TabsContext = createContext({} as TabsContextType);
+const ItemsContext = createContext({} as ItemsContextType);
+const ItemsDtlContext = createContext({} as ItemsDtlContextType);
+const ItemsCardContext = createContext({} as ItemsCardContextType);
+const LoginContext = createContext({} as LoginContextType);
+const SetupContext = createContext({} as SetupContextType);
+const WatchListStatsContext = createContext({} as WatchListStatsContextType);
+const WatchListContext = createContext({} as WatchListContextType);
+const WatchListDtlContext = createContext({} as WatchListDtlContextType);
+const WatchListCardContext = createContext({} as WatchListCardContextType);
+const SharedLayoutContext = createContext({} as SharedLayoutContextType);
 
 interface DataProviderProps {
      children?: ReactNode;
@@ -317,6 +241,7 @@ const DataProvider = ({
      }, []);
 
      const router = useRouter();
+
      const visibleSectionChoices = [
           { value: "3", label: 'Admin' },
           { value: "4", label: 'BugLogs' },
@@ -341,45 +266,16 @@ const DataProvider = ({
           }
      }, []);
 
-     const cacheIMDBPosterImage = (watchListItemID: number) => {
-          const newWatchListItems: IWatchListItem[] = Object.assign([], watchListItems);
-
-          const newWatchListItemsResult: IWatchListItem[] = newWatchListItems?.filter((currentWatchListItem: IWatchListItem) => {
-               return String(currentWatchListItem.WatchListItemID) === String(watchListItemID);
+     const getMissingPoster = async (watchListItemID: number) => {
+          return axios.get(`/api/UpdateMissingPosters?IDs=${watchListItemID}`).then((res: AxiosResponse<IWatchListItem>) => {
+               if (res.data[0] === "OK") {
+                    return res.data[1];
+               } else {
+                    //alert(`The error ${res.data[1]} occurred while updating the item detail`);
+               }
+          }).catch((err: Error) => {
+               //alert(`The error ${err.message} occurred while updating the item detail`);
           });
-
-          if (newWatchListItemsResult.length === 0) {
-               // this shouldn't ever happen!
-               return;
-          }
-
-          const newWatchListItem = newWatchListItemsResult[0];
-
-          if (typeof newWatchListItem.IMDB_Poster !== "undefined" && newWatchListItem.IMDB_Poster !== null && newWatchListItem.IMDB_Poster !== "" && (typeof newWatchListItem.IMDB_Poster_Image === "undefined" || newWatchListItem.IMDB_Poster_Image === null || newWatchListItem.IMDB_Poster_Image === "") && (typeof newWatchListItem.IMDB_Poster !== "undefined" && newWatchListItem.IMDB_Poster !== null && newWatchListItem.IMDB_Poster !== "")) {
-               fetch(newWatchListItem.IMDB_Poster)
-                    .then(response => response.blob())
-                    .then(blob => new Promise((resolve, reject) => {
-                         const reader = new FileReader();
-                         reader.onloadend = () => resolve(reader.result);
-                         reader.onerror = reject;
-                         reader.readAsDataURL(blob);
-                    }))
-                    .then((base64data: string) => {
-                         const queryURL = `/api/UpdateWatchListItem?WatchListItemID=${watchListItemID}`;
-
-                         axios.put(queryURL, { IMDB_Poster_Image: encodeURIComponent(base64data) }, {
-                              headers: {
-                                   'Content-Type': 'application/json',
-                              }
-                         }).then((res: AxiosResponse<IWatchListItem>) => {
-                              if (res.data[0] === "ERROR") {
-                                   alert(`The error ${res.data[1]} occurred while updating the item detail`);
-                              }
-                         }).catch((err: Error) => {
-                              alert(`The error ${err.message} occurred while updating the item detail`);
-                         });
-                    })
-          }
      }
 
      const getPath = useCallback((routeName: string) => {
@@ -391,6 +287,77 @@ const DataProvider = ({
                return "";
           }
      }, [routeList]);
+
+     const getWatchList = async () => {
+          setIsLoading(true);
+          setWatchListSortingCheck(APIStatus.Loading);
+
+          const newSliceStart = (currentPage - 1) * pageSize;
+          const newSliceEnd = newSliceStart + pageSize;
+
+          return axios.get(`/api/GetWatchList?StartIndex=${newSliceStart}&EndIndex=${newSliceEnd}&StillWatching=${stillWatching}&SortColumn=${watchListSortColumn}&SortDirection=${watchListSortDirection}&ArchivedVisible=${archivedVisible}${sourceFilter !== null && sourceFilter !== -1 ? `&SourceFilter=${sourceFilter}` : ``}${typeFilter !== null && typeFilter !== -1 ? `&TypeFilter=${typeFilter}` : ``}${(searchTerm !== "" ? `&SearchTerm=${searchTerm}` : ``)}`, { withCredentials: true })
+               .then((res: AxiosResponse<IWatchList>) => {
+                    setIsLoading(false);
+
+                    if (res.data[0] !== "OK") {
+                         setErrorMessage("Failed to get WatchList with the error " + res.data[1])
+                         setIsError(true);
+                         return;
+                    }
+
+                    if (activeRoute === "WatchList" && res.data[1].length < pageSize) {
+                         setLastPage(true);
+                    } else {
+                         setLastPage(false);
+                    }
+
+                    setFilteredWatchList(res.data[1]);
+                    setWatchListSortingCheck(APIStatus.Success);
+
+                    return res.data[1]; // Return in case its needed by the calling method
+               })
+               .catch((err: Error) => {
+                    setErrorMessage("Failed to get WatchList with the error " + err.message);
+
+                    setIsError(true);
+               });
+     }
+
+     const getWatchListItems = async () => {
+          setIsLoading(true);
+          setWatchListItemsSortingCheck(APIStatus.Loading);
+
+          const newSliceStart = (currentPage - 1) * pageSize;
+          const newSliceEnd = newSliceStart + pageSize;
+
+          return axios.get(`/api/GetWatchListItems?StartIndex=${newSliceStart}&EndIndex=${newSliceEnd}&SortColumn=${watchListSortColumn}&SortDirection=${watchListSortDirection}&ArchivedVisible=${archivedVisible}&ShowMissingArtwork=${showMissingArtwork}${typeFilter !== null && typeFilter !== -1 ? `&TypeFilter=${typeFilter}` : ``}${(searchTerm !== "" ? `&SearchTerm=${searchTerm}` : ``)}`, { withCredentials: true })
+               .then((res: AxiosResponse<IWatchListItem>) => {
+                    setIsLoading(false);
+
+                    if (res.data[0] !== "OK") {
+                         setErrorMessage("Failed to get WatchList Items with the error " + res.data[1]);
+                         setIsError(true);
+                         return;
+                    }
+
+                    if (activeRoute === "Items" && res.data[1].length < pageSize) {
+                         setLastPage(true);
+                    } else {
+                         setLastPage(false);
+                    }
+
+                    setFilteredWatchListItems(res.data[1]);
+
+                    setWatchListItemsSortingCheck(APIStatus.Success);
+
+                    return res.data[1]; // Return in case its needed by the calling method
+               })
+               .catch((err: Error) => {
+                    setErrorMessage("Failed to get WatchList Items with the error " + err.message);
+
+                    setIsError(true);
+               });
+     }
 
      const isAdmin = () => {
           return userData.Admin;
@@ -683,36 +650,7 @@ const DataProvider = ({
                return;
           }
 
-          setIsLoading(true);
-          setWatchListSortingCheck(APIStatus.Loading);
-
-          const newSliceStart = (currentPage - 1) * pageSize;
-          const newSliceEnd = newSliceStart + pageSize;
-
-          axios.get(`/api/GetWatchList?StartIndex=${newSliceStart}&EndIndex=${newSliceEnd}&StillWatching=${stillWatching}&SortColumn=${watchListSortColumn}&SortDirection=${watchListSortDirection}&ArchivedVisible=${archivedVisible}${sourceFilter !== null && sourceFilter !== -1 ? `&SourceFilter=${sourceFilter}` : ``}${typeFilter !== null && typeFilter !== -1 ? `&TypeFilter=${typeFilter}` : ``}${(searchTerm !== "" ? `&SearchTerm=${searchTerm}` : ``)}`, { withCredentials: true })
-               .then((res: AxiosResponse<IWatchList>) => {
-                    setIsLoading(false);
-
-                    if (res.data[0] !== "OK") {
-                         setErrorMessage("Failed to get WatchList with the error " + res.data[1])
-                         setIsError(true);
-                         return;
-                    }
-
-                    if (activeRoute === "WatchList" && res.data[1].length < pageSize ) {
-                         setLastPage(true);
-                    } else {
-                         setLastPage(false);
-                    }
-
-                    setFilteredWatchList(res.data[1]);
-                    setWatchListSortingCheck(APIStatus.Success);
-               })
-               .catch((err: Error) => {
-                    setErrorMessage("Failed to get WatchList with the error " + err.message);
-                    
-                    setIsError(true);
-               });
+          getWatchList();
      }, [activeRoute, archivedVisible, currentPage, searchTerm, stillWatching, sourceFilter, typeFilter, watchListSortColumn, watchListSortDirection]);
 
      // Get WatchListItems
@@ -733,37 +671,7 @@ const DataProvider = ({
                return;
           }
 
-          setIsLoading(true);
-          setWatchListItemsSortingCheck(APIStatus.Loading);
-
-          const newSliceStart = (currentPage - 1) * pageSize;
-          const newSliceEnd = newSliceStart + pageSize;
-
-          axios.get(`/api/GetWatchListItems?StartIndex=${newSliceStart}&EndIndex=${newSliceEnd}&SortColumn=${watchListSortColumn}&SortDirection=${watchListSortDirection}&ArchivedVisible=${archivedVisible}&ShowMissingArtwork=${showMissingArtwork}${typeFilter !== null && typeFilter !== -1 ? `&TypeFilter=${typeFilter}` : ``}${(searchTerm !== "" ? `&SearchTerm=${searchTerm}` : ``)}`, { withCredentials: true })
-               .then((res: AxiosResponse<IWatchListItem>) => {
-                    setIsLoading(false);
-
-                    if (res.data[0] !== "OK") {
-                         setErrorMessage("Failed to get WatchList Items with the error " + res.data[1]);
-                         setIsError(true);
-                         return;
-                    }
-
-                    if (activeRoute === "Items" && res.data[1].length < pageSize) {
-                         setLastPage(true);
-                    } else {
-                         setLastPage(false);
-                    }
-
-                    setFilteredWatchListItems(res.data[1]);
-
-                    setWatchListItemsSortingCheck(APIStatus.Success);
-               })
-               .catch((err: Error) => {
-                    setErrorMessage("Failed to get WatchList Items with the error " + err.message);
-
-                    setIsError(true);
-               });
+          getWatchListItems();
      }, [activeRoute, archivedVisible, currentPage, searchTerm, showMissingArtwork, typeFilter, watchListSortColumn, watchListSortDirection, watchListItems]);
 
      // Get WatchListSources
@@ -988,124 +896,103 @@ const DataProvider = ({
           // eslint-disable-next-line react-hooks/exhaustive-deps
      }, []); // Do not add isLoggedInApi as a dependency. It causes an ends loop of network requests
 
-     const dataContextProps = {
-          activeRoute,
-          AddIconComponent,
-          APIStatus,
-          archivedVisible,
-          autoAdd,
-          BrokenImageIconComponent,
-          bugLogs,
-          buildDate,
-          cacheIMDBPosterImage,
-          CancelIconComponent,
-          currentPage,
-          darkMode,
-          defaultRoute,
-          DeleteIconComponent,
-          demoMode,
-          demoPassword,
-          demoUsername,
-          EditIconComponent,
-          filteredWatchList,
-          filteredWatchListItems,
-          getPath,
-          hideTabs,
-          imdbSearchEnabled,
-          isAdding,
-          isAdmin,
-          isClient,
-          isEditing,
-          isEnabled,
-          isError,
-          errorMessage,
-          isLoading,
-          lastPage,
-          loggedInCheck,
-          LogOutIconComponent,
-          openDetailClickHandler,
-          ratingMax,
-          recommendationsEnabled,
-          RemoveIconComponent,
-          routeList,
-          SaveIconComponent,
-          saveOptions,
-          searchCount,
-          SearchIconComponent,
-          searchInputVisible,
-          searchModalVisible,
-          searchTerm,
-          setActiveRoute,
-          setArchivedVisible,
-          setAutoAdd,
-          setBugLogs,
-          setCurrentPage,
-          setDarkMode,
-          setDemoMode,
-          setErrorMessage,
-          setFilteredWatchList,
-          setFilteredWatchListItems,
-          setHideTabs,
-          setIsAdding,
-          setIsEditing,
-          setIsError,
-          setIsLoading,
-          setLoggedInCheck,
-          setOptions,
-          setSearchCount,
-          setSearchTerm,
-          setSearchInputVisible,
-          setSearchModalVisible,
-          setSettingsVisible,
-          setShowMissingArtwork,
-          setStillWatching,
-          setSourceFilter,
-          setUsers,
-          SettingsIconComponent,
-          settingsVisible,
-          setTypeFilter,
-          setUserData,
-          setVisibleSections,
-          setWatchListItems,
-          setWatchListItemsSortingCheck,
-          setWatchListSortColumn,
-          setWatchListSortDirection,
-          setWatchListSortingCheck,
-          setWatchListSources,
-          setWatchListSourcesLoadingCheck,
-          setWatchListTypes,
-          setWatchListTypesLoadingCheck,
-          showMissingArtwork,
-          showSearch,
-          showSettings,
-          signOut,
-          sourceFilter,
-          stillWatching,
-          pullToRefreshEnabled,
-          typeFilter,
-          users,
-          userData: userData,
-          validatePassword,
-          visibleSectionChoices,
-          visibleSections,
-          watchList,
-          watchListItems,
-          watchListItemsSortColumns,
-          watchListItemsSortingCheck: watchListItemsSortingCheck,
-          watchListSortColumn,
-          watchListSortColumns,
-          watchListSortDirection,
-          watchListSortingCheck,
-          watchListSources,
-          watchListSourcesLoadingCheck,
-          watchListTypes,
-          watchListTypesLoadingCheck,
-          writeLog
-     };
-
      return (
-          <DataContext.Provider value={dataContextProps}>{children}</DataContext.Provider>
+          <LoginContext.Provider value={{ activeRoute, darkMode, defaultRoute, demoPassword, demoUsername, loggedInCheck, setActiveRoute, setDemoMode, setLoggedInCheck, setOptions, setUserData }}>
+               <DataContext.Provider value={{ bugLogs, darkMode, defaultRoute, getWatchList, getWatchListItems, isAdmin, setIsError, setErrorMessage, visibleSections, watchList, watchListSortingCheck, watchListItems, watchListItemsSortingCheck, watchListSources, watchListTypes, }}>
+                    <SharedLayoutContext.Provider value={{ AddIconComponent, SearchIconComponent, SettingsIconComponent, activeRoute, darkMode, demoMode, hideTabs, imdbSearchEnabled, isAdmin, isEnabled, isError, isLoading, loggedInCheck, openDetailClickHandler, routeList, saveOptions, searchInputVisible, searchModalVisible, setActiveRoute, setCurrentPage, setIsLoading, setSearchInputVisible, setSearchModalVisible, setSearchTerm, setSourceFilter, setStillWatching, setTypeFilter, setWatchListSortColumn, setWatchListSortDirection, settingsVisible, showSettings, sourceFilter, stillWatching, typeFilter, watchListItemsSortColumns, watchListSortColumn, watchListSortColumns, watchListSortDirection, watchListSources, watchListSourcesLoadingCheck, watchListTypes, watchListTypesLoadingCheck }}>
+                         <NavBarContext.Provider value={{ activeRoute, currentPage, darkMode, isAdding, isLoading, hideTabs, lastPage, setCurrentPage, watchListSortDirection }}>
+                              <TabsContext.Provider value={{ activeRoute, darkMode, demoMode, getPath, hideTabs, isAdding, isAdmin, isClient, isEditing, isEnabled, isError, isLoading, loggedInCheck, pullToRefreshEnabled, routeList, setActiveRoute, setCurrentPage, setSearchInputVisible, setSearchTerm, visibleSections }}>
+                                   <WatchListContext.Provider value={{ darkMode, filteredWatchList, hideTabs, isLoading, setActiveRoute, setIsAdding, setIsEditing, watchListSortingCheck }}>
+                                        <WatchListDtlContext.Provider value={{ BrokenImageIconComponent, CancelIconComponent, EditIconComponent, SaveIconComponent, darkMode, demoMode, imdbSearchEnabled, isAdding, isEditing, isLoading, pullToRefreshEnabled, recommendationsEnabled, setErrorMessage, setIsAdding, setIsEditing, setIsError, setStillWatching, setWatchListSortingCheck, showSearch, stillWatching, watchListItems, watchListSortDirection, watchListSources }}>
+                                             <WatchListCardContext.Provider value={{ BrokenImageIconComponent, darkMode, filteredWatchList, getMissingPoster,openDetailClickHandler, setFilteredWatchList }}>
+                                                  <WatchListStatsContext.Provider value={{ darkMode, demoMode, ratingMax, setIsError, setErrorMessage, watchListItems }}>
+                                                       <ItemsContext.Provider value={{ darkMode, filteredWatchListItems, hideTabs, isLoading, searchModalVisible, setActiveRoute, setIsAdding, setIsEditing, watchListItemsSortingCheck }}>
+                                                            <ItemsDtlContext.Provider value={{ BrokenImageIconComponent, CancelIconComponent, EditIconComponent, SaveIconComponent, darkMode, demoMode, isAdding, isEditing, isEnabled, isLoading, pullToRefreshEnabled, setErrorMessage, setIsAdding, setIsEditing, setIsError, setWatchListItemsSortingCheck, watchListTypes }}>
+                                                                 <ItemsCardContext.Provider value={{ BrokenImageIconComponent, darkMode, filteredWatchListItems, getMissingPoster, openDetailClickHandler, setFilteredWatchListItems }}>
+                                                                      <SearchIMDBContext.Provider value={{ AddIconComponent, autoAdd, BrokenImageIconComponent, darkMode, searchCount, SearchIconComponent, setIsAdding, setSearchCount, setSearchModalVisible }}>
+                                                                           <RecommendationsContext.Provider value={{ BrokenImageIconComponent, darkMode, writeLog }}>
+                                                                                <SettingsContext.Provider value={{ activeRoute, archivedVisible, autoAdd, buildDate, darkMode, defaultRoute, demoMode, hideTabs, loggedInCheck, LogOutIconComponent, pullToRefreshEnabled, saveOptions, setActiveRoute, setCurrentPage, setOptions, setSettingsVisible, setShowMissingArtwork, setStillWatching, setVisibleSections, showMissingArtwork, signOut, visibleSectionChoices, visibleSections, watchListSortColumn }}>
+                                                                                     <SetupContext.Provider value={{ activeRoute, defaultRoute, darkMode, demoUsername, loggedInCheck, validatePassword }}>
+                                                                                          <RecommendationsContext.Provider value={{ BrokenImageIconComponent, darkMode, writeLog }}>
+                                                                                               <SearchIMDBContext value={{ AddIconComponent, autoAdd, BrokenImageIconComponent, darkMode, searchCount, SearchIconComponent, setIsAdding, setSearchCount, setSearchModalVisible }}>
+                                                                                                    <BugLogsContext.Provider value={{ bugLogs, CancelIconComponent, darkMode, defaultRoute, DeleteIconComponent, EditIconComponent, isAdding, isAdmin, isEditing, SaveIconComponent, setBugLogs, setIsError, setErrorMessage, setIsAdding, setIsEditing }}>
+                                                                                                         <ErrorContext.Provider value={{ darkMode, defaultRoute, errorMessage, setActiveRoute }}>
+                                                                                                              {userData.Admin ?
+                                                                                                                   <ManageUserAccountsContext.Provider value={{ CancelIconComponent, darkMode, defaultRoute, demoMode, EditIconComponent, isAdding, isAdmin, isEditing, SaveIconComponent, setIsAdding, setIsEditing, setIsError, setErrorMessage, setUsers, users, validatePassword }}>
+                                                                                                                        <ManageWatchListSourcesContext.Provider value={{ CancelIconComponent, darkMode, defaultRoute, DeleteIconComponent, demoMode, EditIconComponent, isAdding, isAdmin, isEditing, SaveIconComponent, setIsAdding, setIsEditing, setWatchListSourcesLoadingCheck, watchListSourcesLoadingCheck, watchListSources }}>
+                                                                                                                             <ManageWatchListTypesContext.Provider value={{ CancelIconComponent, darkMode, defaultRoute, DeleteIconComponent, demoMode, EditIconComponent, isAdding, isAdmin, isEditing, SaveIconComponent, setIsAdding, setIsEditing, setWatchListTypesLoadingCheck, watchListTypes, watchListTypesLoadingCheck }}>
+                                                                                                                                  <AdminContext.Provider value={{ darkMode, defaultRoute, demoMode, isAdding, isAdmin, isEditing }}>
+                                                                                                                                       <BugLogsContext.Provider value={{ bugLogs, CancelIconComponent, darkMode, defaultRoute, DeleteIconComponent, EditIconComponent, isAdding, isAdmin, isEditing, SaveIconComponent, setBugLogs, setIsError, setErrorMessage, setIsAdding, setIsEditing }}>
+                                                                                                                                            {children}
+                                                                                                                                       </BugLogsContext.Provider>
+                                                                                                                                  </AdminContext.Provider>
+                                                                                                                             </ManageWatchListTypesContext.Provider>
+                                                                                                                        </ManageWatchListSourcesContext.Provider>
+                                                                                                                   </ManageUserAccountsContext.Provider>
+                                                                                                                   :
+                                                                                                                   <>{children}</>}
+                                                                                                         </ErrorContext.Provider>
+                                                                                                    </BugLogsContext.Provider>
+                                                                                               </SearchIMDBContext>
+                                                                                          </RecommendationsContext.Provider>
+                                                                                     </SetupContext.Provider>
+                                                                                </SettingsContext.Provider>
+                                                                           </RecommendationsContext.Provider>
+                                                                      </SearchIMDBContext.Provider>
+                                                                 </ItemsCardContext.Provider>
+                                                            </ItemsDtlContext.Provider>
+                                                       </ItemsContext.Provider>
+                                                  </WatchListStatsContext.Provider>
+                                             </WatchListCardContext.Provider>
+                                        </WatchListDtlContext.Provider>
+                                   </WatchListContext.Provider>
+                              </TabsContext.Provider>
+                         </NavBarContext.Provider>
+                    </SharedLayoutContext.Provider>
+               </DataContext.Provider>
+          </LoginContext.Provider>
      )
 }
 
-export { DataContext, DataProvider };
+export { AdminContext, BugLogsContext, DataContext, DataProvider, ErrorContext, ItemsContext, ItemsCardContext, ItemsDtlContext, LoginContext, ManageUserAccountsContext, ManageWatchListSourcesContext, ManageWatchListTypesContext, NavBarContext, RecommendationsContext, SearchIMDBContext, SettingsContext, SetupContext, SharedLayoutContext, TabsContext, WatchListContext, WatchListCardContext, WatchListDtlContext, WatchListStatsContext };
+
+/*const cacheIMDBPosterImage = (watchListItemID: number) => {
+     const newWatchListItems: IWatchListItem[] = Object.assign([], watchListItems);
+
+     const newWatchListItemsResult: IWatchListItem[] = newWatchListItems?.filter((currentWatchListItem: IWatchListItem) => {
+          return String(currentWatchListItem.WatchListItemID) === String(watchListItemID);
+     });
+
+     if (newWatchListItemsResult.length === 0) {
+          // this shouldn't ever happen!
+          return;
+     }
+
+     const newWatchListItem = newWatchListItemsResult[0];
+
+     if (typeof newWatchListItem.IMDB_Poster !== "undefined" && newWatchListItem.IMDB_Poster !== null && newWatchListItem.IMDB_Poster !== "" && (typeof newWatchListItem.IMDB_Poster_Image === "undefined" || newWatchListItem.IMDB_Poster_Image === null || newWatchListItem.IMDB_Poster_Image === "") && (typeof newWatchListItem.IMDB_Poster !== "undefined" && newWatchListItem.IMDB_Poster !== null && newWatchListItem.IMDB_Poster !== "")) {
+          fetch(newWatchListItem.IMDB_Poster)
+               .then(response => response.blob())
+               .then(blob => new Promise((resolve, reject) => {
+                    const reader = new FileReader();
+                    reader.onloadend = () => resolve(reader.result);
+                    reader.onerror = reject;
+                    reader.readAsDataURL(blob);
+               }))
+               .then((base64data: string) => {
+                    const queryURL = `/api/UpdateWatchListItem?WatchListItemID=${watchListItemID}`;
+
+                    axios.put(queryURL, { IMDB_Poster_Image: encodeURIComponent(base64data) }, {
+                         headers: {
+                              'Content-Type': 'application/json',
+                         }
+                    }).then((res: AxiosResponse<IWatchListItem>) => {
+                         if (res.data[0] === "ERROR") {
+                              alert(`The error ${res.data[1]} occurred while updating the item detail`);
+                         }
+                    }).catch((err: Error) => {
+                         alert(`The error ${err.message} occurred while updating the item detail`);
+                    });
+               })
+     }
+}*/

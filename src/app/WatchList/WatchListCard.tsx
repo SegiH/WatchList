@@ -1,7 +1,7 @@
 import { Rating } from "@mui/material";
 import IWatchList from "../interfaces/IWatchList";
 import Image from "next/image";
-import { DataContext, DataContextType } from "../data-context";
+import { WatchListCardContext, WatchListCardContextType } from "../data-context";
 import { useContext } from "react";
 
 type WatchListCardProps = {
@@ -10,13 +10,8 @@ type WatchListCardProps = {
 
 export default function WatchListCard({ currentWatchList }: WatchListCardProps) {
     const {
-        BrokenImageIconComponent,
-        cacheIMDBPosterImage,
-        darkMode,
-        filteredWatchList,
-        openDetailClickHandler,
-        setFilteredWatchList
-    } = useContext(DataContext) as DataContextType;
+        BrokenImageIconComponent, darkMode, filteredWatchList, getMissingPoster, openDetailClickHandler, setFilteredWatchList
+    } = useContext(WatchListCardContext) as WatchListCardContextType;
 
     const IMDB_JSON = currentWatchList?.IMDB_JSON !== null && typeof currentWatchList?.IMDB_JSON !== "undefined" && currentWatchList?.IMDB_JSON !== "" ? JSON.parse(currentWatchList?.IMDB_JSON) : null;
 
@@ -39,7 +34,7 @@ export default function WatchListCard({ currentWatchList }: WatchListCardProps) 
         const formattedEnd = formatDate(endDate);
         return `${formattedStart}-${formattedEnd}`;
     }
-    const showDefaultSrc = (watchListID: number): void => {
+    const showDefaultSrc = async (watchListID: number) => {
         const newFilteredWatchList: IWatchList[] = Object.assign([], filteredWatchList);
 
         const newWatchListResult: IWatchList[] = newFilteredWatchList?.filter((currentWatchList: IWatchList) => {
@@ -53,11 +48,18 @@ export default function WatchListCard({ currentWatchList }: WatchListCardProps) 
 
         const newWatchList = newWatchListResult[0];
 
-        if (newWatchList["IMDB_Poster_Error"] == true) {
+        /*if (newWatchList["IMDB_Poster_Error"] == true) {
             return;
-        }
+        }*/
 
-        newWatchList["IMDB_Poster_Error"] = true;
+        const result = await getMissingPoster(currentWatchList.WatchListItemID);
+
+        if (result[0].Status === "OK") {
+            newWatchList["IMDB_Poster"] = result[0].IMDB_Poster;
+            newWatchList["IMDB_Poster_Error"] = false;
+        } else {
+            newWatchList["IMDB_Poster_Error"] = true;
+        }
 
         setFilteredWatchList(newFilteredWatchList);
     };
@@ -68,10 +70,10 @@ export default function WatchListCard({ currentWatchList }: WatchListCardProps) 
                 <div>{currentWatchList?.WatchListID}</div>
             </span>
 
-            <a className="clickable image-crop show-link" onClick={() => openDetailClickHandler(currentWatchList?.WatchListID, "WatchList")}>
+            <a className="clickable show-link" onClick={() => openDetailClickHandler(currentWatchList?.WatchListID, "WatchList")}>
                 <div>
                     {typeof currentWatchList?.IMDB_Poster !== "undefined" && currentWatchList?.IMDB_Poster !== null && currentWatchList?.IMDB_Poster !== "" && currentWatchList?.IMDB_Poster_Error !== true &&
-                        <Image width="128" height="187" alt={currentWatchList?.WatchListItemName ?? ""} src={currentWatchList?.IMDB_Poster_Image ?? currentWatchList?.IMDB_Poster ?? ""} onLoad={() => cacheIMDBPosterImage(currentWatchList.WatchListItemID)} onError={() => showDefaultSrc(currentWatchList.WatchListID)} />
+                        <Image width="128" height="187" alt={currentWatchList?.WatchListItemName ?? ""} src={currentWatchList?.IMDB_Poster ?? currentWatchList?.IMDB_Poster ?? BrokenImageIconComponent} onError={() => showDefaultSrc(currentWatchList.WatchListID)} />
                     }
 
                     {currentWatchList?.IMDB_Poster_Error === true && <>{BrokenImageIconComponent}</>}

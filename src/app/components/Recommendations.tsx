@@ -1,7 +1,7 @@
 import axios, { AxiosResponse } from "axios";
 import Image from 'next/image';
 import { useContext, useEffect, useState } from "react";
-import { APIStatus, DataContext, DataContextType } from "../data-context";
+import { APIStatus, RecommendationsContext, RecommendationsContextType } from "../data-context";
 import IRecommendation from "../interfaces/IRecommendation";
 
 const Recommendations = ({ queryTerm, setRecommendationName, setRecommendationType, setRecommendationsVisible, type }:
@@ -13,10 +13,8 @@ const Recommendations = ({ queryTerm, setRecommendationName, setRecommendationTy
           type: string
      }) => {
      const {
-          BrokenImageIconComponent,
-          darkMode,
-          writeLog
-     } = useContext(DataContext) as DataContextType
+          BrokenImageIconComponent, darkMode, writeLog
+     } = useContext(RecommendationsContext) as RecommendationsContextType
 
      const [recommendations, setRecommendations] = useState<IRecommendation[]>([]);
      const [recommendationsError, setRecommendationsError] = useState(false);
@@ -100,7 +98,7 @@ const Recommendations = ({ queryTerm, setRecommendationName, setRecommendationTy
 
                                    <br />
 
-                                   <span className="image-crop">
+                                   <span>
                                         {!recommendation.Image_Error && recommendation.poster_path !== null &&
                                              <Image width="128" height="187" alt="image not available" src={`https://image.tmdb.org/t/p/w500${recommendation.poster_path}`} onError={() => showDefaultSrc(recommendation.id)} />
                                         }

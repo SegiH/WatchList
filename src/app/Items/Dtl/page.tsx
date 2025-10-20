@@ -5,30 +5,14 @@ import Image from "next/image";
 import { useRouter } from 'next/navigation';
 import React, { useContext, useEffect, useState } from "react";
 import Recommendations from "../../components/Recommendations";
-import { APIStatus, DataContext, DataContextType } from "../../data-context";
+import { APIStatus, ItemsDtlContext, ItemsDtlContextType } from "../../data-context";
 import IWatchListItem from "../../interfaces/IWatchListItem";
 import IWatchListType from "../../interfaces/IWatchListType";
 
-export default function WatchListItemsDtl() {
+export default function ItemsDtl() {
      const {
-          BrokenImageIconComponent,
-          CancelIconComponent,
-          darkMode,
-          demoMode,
-          EditIconComponent,
-          isAdding,
-          isEnabled,
-          isEditing,
-          isLoading,
-          pullToRefreshEnabled,
-          SaveIconComponent,
-          setIsAdding,
-          setIsEditing,
-          setIsError,
-          setErrorMessage,
-          setWatchListItemsSortingCheck,
-          watchListTypes
-     } = useContext(DataContext) as DataContextType
+          BrokenImageIconComponent, CancelIconComponent, EditIconComponent, SaveIconComponent, darkMode, demoMode, isAdding, isEditing, isEnabled, isLoading, pullToRefreshEnabled, setErrorMessage, setIsAdding, setIsEditing, setIsError, setWatchListItemsSortingCheck, watchListTypes
+     } = useContext(ItemsDtlContext) as ItemsDtlContextType
 
      const [addWatchListItemDtl, setAddWatchListItemDtl] = useState<IWatchListItem | null>();
      const [editModified, setEditModified] = useState(false);
@@ -158,7 +142,7 @@ export default function WatchListItemsDtl() {
                if (queryURL != "") {
                     queryURL = `/api/UpdateWatchListItem?WatchListItemID=${watchListItemDtl?.WatchListItemID}${queryURL}`;
 
-                    axios.put(queryURL, { IMDB_Poster_Image: typeof watchListItemDtl?.IMDB_Poster !== "undefined" ? encodeURIComponent(watchListItemDtl?.IMDB_Poster) : null })
+                    axios.put(queryURL)
                          .then((res: AxiosResponse<IWatchListItem>) => {
                               if (res.data[0] === "ERROR") {
                                    alert(`The error ${res.data[1]} occurred while updating the item detail`);

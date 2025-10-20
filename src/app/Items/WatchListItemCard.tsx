@@ -1,6 +1,6 @@
 import IWatchListItem from "../interfaces/IWatchListItem";
 import Image from "next/image";
-import { DataContext, DataContextType } from "../data-context";
+import { ItemsCardContext, ItemsCardContextType } from "../data-context";
 import { useContext } from "react";
 
 type WatchListCardProps = {
@@ -9,14 +9,10 @@ type WatchListCardProps = {
 
 export default function WatchListItemCard({ currentWatchListItem }: WatchListCardProps) {
     const {
-        BrokenImageIconComponent,
-        darkMode,
-        filteredWatchListItems,
-        openDetailClickHandler,
-        setFilteredWatchListItems
-    } = useContext(DataContext) as DataContextType;
+        BrokenImageIconComponent, darkMode, filteredWatchListItems, getMissingPoster, openDetailClickHandler, setFilteredWatchListItems
+    } = useContext(ItemsCardContext) as ItemsCardContextType;
 
-    const showDefaultSrc = (watchListItemID: number): void => {
+    const showDefaultSrc = async (watchListItemID: number) => {
         const newFilteredWatchListItems: IWatchListItem[] = Object.assign([], filteredWatchListItems);
 
         const newWatchListItemsResult: IWatchListItem[] = newFilteredWatchListItems?.filter((currentWatchListItems: IWatchListItem) => {
@@ -30,11 +26,14 @@ export default function WatchListItemCard({ currentWatchListItem }: WatchListCar
 
         const newWatchListItem = newWatchListItemsResult[0];
 
-        if (newWatchListItem["IMDB_Poster_Error"] == true) {
-            return;
-        }
+        const result = await getMissingPoster(currentWatchListItem.WatchListItemID);
 
-        newWatchListItem["IMDB_Poster_Error"] = true;
+        if (result[0].Status === "OK") {
+            newWatchListItem["IMDB_Poster"] = result[0].IMDB_Poster;
+            newWatchListItem["IMDB_Poster_Error"] = false;
+        } else {
+            newWatchListItem["IMDB_Poster_Error"] = true;
+        }
 
         setFilteredWatchListItems(newFilteredWatchListItems);
     };
@@ -48,12 +47,8 @@ export default function WatchListItemCard({ currentWatchListItem }: WatchListCar
             </span>
 
             <a className="show-link" onClick={() => openDetailClickHandler(currentWatchListItem?.WatchListItemID, "Items")}>
-                <div className="clickable image-crop">{/* onLoad={() => cacheIMDBPosterImage(currentWatchListItem.WatchListItemID)}  */}
-                    {typeof currentWatchListItem?.IMDB_Poster_Image !== "undefined" && currentWatchListItem?.IMDB_Poster_Image !== null && currentWatchListItem?.IMDB_Poster_Image !== "" && currentWatchListItem?.IMDB_Poster_Error !== true &&
-                        <Image width="128" height="187" alt={currentWatchListItem?.WatchListItemName} src={currentWatchListItem.IMDB_Poster_Image}  unoptimized onError={() => showDefaultSrc(currentWatchListItem.WatchListItemID)} />
-                    }
-
-                    {currentWatchListItem?.IMDB_Poster_Image === null && currentWatchListItem?.IMDB_Poster !== null && currentWatchListItem?.IMDB_Poster_Error !== true &&
+                <div className="clickable">
+                    {currentWatchListItem?.IMDB_Poster !== null && currentWatchListItem?.IMDB_Poster_Error !== true &&
                         <Image width="128" height="187" alt={currentWatchListItem?.WatchListItemName} src={currentWatchListItem?.IMDB_Poster ?? currentWatchListItem?.IMDB_Poster ?? ""} onError={() => showDefaultSrc(currentWatchListItem.WatchListItemID)} />
                     }
 

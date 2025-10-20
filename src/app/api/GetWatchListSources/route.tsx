@@ -1,5 +1,6 @@
 import { getDB, defaultSources, isLoggedIn, writeDB, logMessage } from "../lib";
 import { NextRequest } from 'next/server';
+//import { sendCompressedJsonBrotli, sendCompressedJsonGZip } from '@/app/middleware';
 
 export async function GET(request: NextRequest) {
      if (!isLoggedIn(request)) {
@@ -31,3 +32,16 @@ export async function GET(request: NextRequest) {
           return Response.json(["OK", []]);
      }
 }
+
+/*
+// Return gzipped results
+          const compressedData = await sendCompressedJsonBrotli(["OK", db.WatchListSources]);
+
+          return new Response(compressedData as unknown as BodyInit, {
+               status: 200,
+               headers: {
+                    'Content-Type': 'application/json',
+                    'Content-Encoding': 'br', // usse 'gzip' when using gzip
+               },
+          });
+*/

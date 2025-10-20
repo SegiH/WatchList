@@ -15,7 +15,6 @@ export async function PUT(request: NextRequest) {
      const typeID = searchParams.get("WatchListTypeID");
      const imdb_url = searchParams.get("IMDB_URL");
      const imdb_poster = searchParams.get("IMDB_Poster");
-     const imdb_poster_image = typeof body.IMDB_Poster_Image !== "undefined" ? decodeURIComponent(body.IMDB_Poster_Image) : null;
      const notes = searchParams.get("ItemNotes");
      const archived = searchParams.get("Archived");
      const imdb_json = searchParams.get("IMDB_JSON");
@@ -53,10 +52,6 @@ export async function PUT(request: NextRequest) {
 
           if (imdb_poster !== null) {
                watchListItem.IMDB_Poster = imdb_poster;
-          }
-
-          if (imdb_poster_image !== null) {
-               watchListItem.IMDB_Poster_Image = imdb_poster_image;
           }
 
           if (imdb_json !== null) {

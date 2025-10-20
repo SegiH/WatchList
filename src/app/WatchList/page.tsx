@@ -1,7 +1,7 @@
 "use client"
 
 import { useContext, useEffect } from "react";
-import { APIStatus, DataContext, DataContextType } from "../data-context";
+import { APIStatus, WatchListContext, WatchListContextType } from "../data-context";
 import IWatchList from "../interfaces/IWatchList";
 import React from "react";
 
@@ -12,15 +12,8 @@ const WatchListCard = React.lazy(() => import('./WatchListCard'));
 
 export default function WatchList() {
      const {
-          darkMode,
-          filteredWatchList,
-          hideTabs,
-          isLoading,
-          setActiveRoute,
-          setIsAdding,
-          setIsEditing,
-          watchListSortingCheck
-     } = useContext(DataContext) as DataContextType;
+          darkMode, filteredWatchList, hideTabs, isLoading, setActiveRoute, setIsAdding, setIsEditing, watchListSortingCheck
+     } = useContext(WatchListContext) as WatchListContextType;
 
      useEffect(() => {
           setActiveRoute("WatchList");

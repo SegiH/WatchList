@@ -1,7 +1,7 @@
 "use client"
 
 import { useContext, useEffect } from "react";
-import { APIStatus, DataContext, DataContextType } from "../data-context";
+import { APIStatus, ItemsContext, ItemsContextType } from "../data-context";
 import IWatchListItem from "../interfaces/IWatchListItem";
 import React from "react";
 import NavBar from "../components/NavBar";
@@ -10,16 +10,8 @@ const WatchListItemCard = React.lazy(() => import('./WatchListItemCard'));
 
 export default function WatchListItems() {
      const {
-          darkMode,
-          filteredWatchListItems,
-          hideTabs,
-          isLoading,
-          searchModalVisible,
-          setActiveRoute,
-          setIsAdding,
-          setIsEditing,
-          watchListItemsSortingCheck
-     } = useContext(DataContext) as DataContextType;
+          darkMode, filteredWatchListItems, hideTabs, isLoading, searchModalVisible, setActiveRoute, setIsAdding, setIsEditing, watchListItemsSortingCheck
+     } = useContext(ItemsContext) as ItemsContextType;
 
      useEffect(() => {
           setActiveRoute("Items");

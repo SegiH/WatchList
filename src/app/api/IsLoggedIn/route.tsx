@@ -1,6 +1,7 @@
 'use server'
 import { NextRequest } from 'next/server';
 import { getDB, getUserOptions, getUserSession, logMessage, validateSettings } from "../lib";
+//import { sendCompressedJsonBrotli, sendCompressedJsonGZip } from '@/app/middleware';
 
 export async function GET(request: NextRequest) {
      const searchParams = request.nextUrl.searchParams;
@@ -27,6 +28,7 @@ export async function GET(request: NextRequest) {
      const userOptions = await getUserOptions(userSession?.UserID, userSession?.Admin);
 
      if (typeof userSession && userSession?.UserID) {
+
           return Response.json([
                "OK",
                {
@@ -41,3 +43,22 @@ export async function GET(request: NextRequest) {
           return Response.json(["ERROR", ""]);
      }
 }
+
+/*
+// Return gzipped results
+          const compressedData = await sendCompressedJsonBrotli(["OK", {
+               UserID: userSession?.UserID,
+               Username: userSession?.Username,
+               RealName: userSession?.Realname,
+               Admin: userSession?.Admin,
+               Options: userOptions
+          }]);
+
+          return new Response(compressedData as unknown as BodyInit, {
+               status: 200,
+               headers: {
+                    'Content-Type': 'application/json',
+                    'Content-Encoding': 'br', // usse 'gzip' when using gzip
+               },
+          });
+*/

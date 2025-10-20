@@ -3,33 +3,14 @@
 import { useRouter } from 'next/navigation';
 import { useContext } from "react";
 
-import { APIStatus, DataContext, DataContextType } from "../data-context";
+import { APIStatus, TabsContext, TabsContextType } from "../data-context";
 
 import "./Tabs.css";
 
 const Tabs = () => {
      const {
-          activeRoute,
-          darkMode,
-          demoMode,
-          getPath,
-          hideTabs,
-          isAdding,
-          isAdmin,
-          isClient,
-          isEditing,
-          isEnabled,
-          isError,
-          isLoading,
-          loggedInCheck,
-          pullToRefreshEnabled,
-          routeList,
-          setActiveRoute,
-          setCurrentPage,
-          setSearchInputVisible,
-          setSearchTerm,
-          visibleSections
-     } = useContext(DataContext) as DataContextType;
+          activeRoute, darkMode, demoMode, getPath, hideTabs, isAdding, isAdmin, isClient, isEditing, isEnabled, isError, isLoading, loggedInCheck, pullToRefreshEnabled, routeList, setActiveRoute, setCurrentPage, setSearchInputVisible, setSearchTerm, visibleSections
+     } = useContext(TabsContext) as TabsContextType;
 
      const router = useRouter();
 
@@ -67,7 +48,7 @@ const Tabs = () => {
                                         && (routeName !== "Items" || (routeName === "Items" && isEnabled("Items")))
                                         && (routeName !== "BugLogs" || (routeName === "BugLogs" && !demoMode && isAdmin() === true && visibleSections.filter(section => { return section.label === "BugLogs" }).length === 1))  // You cannot dynamically set Enabled on this route so don't call isEnabled()
                                         && (routeName !== "Stats" || (routeName === "Stats" && isEnabled("Stats"))
-                                   )
+                                        )
                               }
                               )
                               .map((routeName, index) => {

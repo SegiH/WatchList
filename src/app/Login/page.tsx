@@ -3,7 +3,7 @@
 import axios, { AxiosResponse } from "axios";
 import { useRouter } from "next/navigation";
 import React, { useCallback, useContext, useEffect, useRef, useState } from "react";
-import { APIStatus, DataContext, DataContextType } from "../data-context";
+import { APIStatus, LoginContext, LoginContextType } from "../data-context";
 import IUser from "../interfaces/IUser";
 import IUserData from "../interfaces/IUserData";
 
@@ -11,18 +11,8 @@ import "./Login.css";
 
 export default function Login() {
      const {
-          activeRoute,
-          darkMode,
-          defaultRoute,
-          demoPassword,
-          demoUsername,
-          loggedInCheck,
-          setActiveRoute,
-          setDemoMode,
-          setLoggedInCheck,
-          setOptions,
-          setUserData
-     } = useContext(DataContext) as DataContextType
+          activeRoute, darkMode, defaultRoute, demoPassword, demoUsername, loggedInCheck, setActiveRoute, setDemoMode, setLoggedInCheck, setOptions, setUserData
+     } = useContext(LoginContext) as LoginContextType
 
      const [password, setPassword] = useState("");
      const [username, setUsername] = useState("");

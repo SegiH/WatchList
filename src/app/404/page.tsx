@@ -3,15 +3,12 @@
 import { useContext } from "react";
 import { useRouter } from 'next/navigation';
 
-import { DataContext, DataContextType } from "../data-context";
+import { ErrorContext, ErrorContextType } from "../data-context";
 
 export default function ErrorPage() {
      const {
-          darkMode,
-          defaultRoute,
-          errorMessage,
-          setActiveRoute
-     } = useContext(DataContext) as DataContextType
+          darkMode, defaultRoute, errorMessage, setActiveRoute
+     } = useContext(ErrorContext) as ErrorContextType
 
      const router = useRouter();
 

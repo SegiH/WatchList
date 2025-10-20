@@ -5,29 +5,15 @@ import TextField from "@mui/material/TextField";
 import axios, { AxiosResponse } from "axios";
 import { useRouter } from 'next/navigation';
 import React, { useContext, useEffect, useState } from "react";
-import { APIStatus, DataContext, DataContextType } from "../data-context";
+import { APIStatus, BugLogsContext, BugLogsContextType } from "../data-context";
 import IBugLog from "../interfaces/IBugLog";
 
 import "../page.css";
 
-export default function BugLog() {
+export default function BugLogs() {
      const {
-          bugLogs,
-          CancelIconComponent,
-          darkMode,
-          defaultRoute,
-          DeleteIconComponent,
-          EditIconComponent,
-          isAdding,
-          isAdmin,
-          isEditing,
-          SaveIconComponent,
-          setBugLogs,
-          setIsError,
-          setErrorMessage,
-          setIsAdding,
-          setIsEditing
-     } = useContext(DataContext) as DataContextType;
+          bugLogs,CancelIconComponent, darkMode, defaultRoute, DeleteIconComponent, EditIconComponent, isAdding, isAdmin, isEditing, SaveIconComponent, setBugLogs, setIsError, setErrorMessage, setIsAdding, setIsEditing
+     } = useContext(BugLogsContext) as BugLogsContextType;
 
      const [addingBugLog, setAddingBugLog] = useState<IBugLog>({} as IBugLog);
      const [editingBugLog, setEditingBugLog] = useState<IBugLog>({} as IBugLog);

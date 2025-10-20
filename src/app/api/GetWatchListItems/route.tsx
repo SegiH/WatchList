@@ -1,7 +1,8 @@
 import { NextRequest } from 'next/server';
-import { getDB, isLoggedIn, logMessage } from "../lib";
+import { getDB, isLoggedIn, logMessage,writeDB } from "../lib";
 import IWatchListType from '@/app/interfaces/IWatchListType';
 import IWatchListItem from '@/app/interfaces/IWatchListItem';
+//import { sendCompressedJsonBrotli, sendCompressedJsonGZip } from '../../../../middleware.tsx.unused';
 
 export async function GET(request: NextRequest) {
      if (!isLoggedIn(request)) {
@@ -35,6 +36,8 @@ export async function GET(request: NextRequest) {
           const watchListItemsDB = db.WatchListItems;
           const watchListTypesDB = db.WatchListTypes;
 
+          let dbModified = false;
+
           const result = await watchListItemsDB
                .sort((a: IWatchListItem, b: IWatchListItem) => {
                     switch (sortColumn) {
@@ -54,7 +57,7 @@ export async function GET(request: NextRequest) {
                     return (
                          ((searchTerm === null || searchTerm === "") || (searchTerm !== null && searchTerm !== "" && (watchListItem.WatchListItemName?.toString().includes(searchTerm.toString()) || watchListItem.ItemNotes?.toString().includes(searchTerm.toString()))))
                          &&
-                         (showMissingArtwork !== "true" || (showMissingArtwork === "true" && (typeof watchListItem.IMDB_Poster_Image === "undefined" || watchListItem.IMDB_Poster_Image === null || watchListItem.IMDB_Poster_Image === "")))
+                         (showMissingArtwork !== "true" || (showMissingArtwork === "true" && (typeof watchListItem.IMDB_Poster === "undefined" || watchListItem.IMDB_Poster === null || watchListItem.IMDB_Poster === "")))
                          &&
                          ((archivedVisible !== "true" || (archivedVisible === "true" && watchListItem.Archived === 1)))
                          &&
@@ -65,16 +68,23 @@ export async function GET(request: NextRequest) {
                     const watchListType = watchListTypesDB.filter((watchListType: IWatchListType) => {
                          return (
                               String(watchListType.WatchListTypeID) === String(watchListItem.WatchListTypeID)
-                              || (typeFilter !== null && String(watchListType.WatchListTypeID) === String(typeFilter))
-                              || ((searchTerm === null || searchTerm === "") || (searchTerm !== null && searchTerm !== "" && watchListType.WatchListTypeName?.toString().includes(searchTerm.toString())))
                          );
                     });
 
                     watchListItem.WatchListTypeName = watchListType.length > 0 ? watchListType[0].WatchListTypeName : "";
 
+                    if (typeof watchListItem["IMDB_Poster_Image"] !== "undefined") {
+                         dbModified = true;
+                         logMessage(`Deleting poster image for ${watchListItem.WatchListItemID}`);
+                         delete watchListItem["IMDB_Poster_Image"];
+                    }
+
                     return watchListItem;
                }).slice(startIndex, endIndex)
 
+          if (dbModified) {
+               writeDB(db);
+          }
           return Response.json(["OK", result]);
      } catch (e) {
           logMessage(e.message);
@@ -82,14 +92,13 @@ export async function GET(request: NextRequest) {
      }
 }
 
-               /*.map((watchListItem: IWatchListItem) => {
-                    if (typeof watchListItem.IMDB_Poster_Image === "undefined" || watchListItem.IMDB_Poster_Image === null || watchListItem.IMDB_Poster_Image === "") {
-                         const missingPosterResult = getMissingArtwork([watchListItem.WatchListItemID]);
+// Return gzipped results
+/*const compressedData = await sendCompressedJsonBrotli(["OK", result]);
 
-                         if (typeof missingPosterResult[1] !== "undefined") {
-                              watchListItem.IMDB_Poster_Image = missingPosterResult[1];
-                         }
-                    }
-
-                    return watchListItem;
-               });*/
+return new Response(compressedData as unknown as BodyInit, {
+     status: 200,
+     headers: {
+          'Content-Type': 'application/json',
+          'Content-Encoding': 'br', // usse 'gzip' when using gzip
+     },
+});*/

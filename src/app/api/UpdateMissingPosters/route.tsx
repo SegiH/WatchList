@@ -5,6 +5,14 @@ import IWatchListItem from '@/app/interfaces/IWatchListItem';
 //const delayInSeconds = 2;
 
 export async function GET(request: NextRequest) {
+     const searchParams = request.nextUrl.searchParams;
+
+     const watchListItemsProcessIds = searchParams.get("IDs");
+
+     const parseNumberList = str => str.split(',').map(s => { if (isNaN(s = s.trim()) || s === '') throw new Error(`Invalid number: "${s}"`); return Number(s); });
+
+     const processIds = watchListItemsProcessIds !== null ? parseNumberList(watchListItemsProcessIds) : null;
+
      try {
           const db: any = await getDB();
 
@@ -16,7 +24,9 @@ export async function GET(request: NextRequest) {
 
           const missingPosters = await watchListItemsDB.filter((watchListItem: IWatchListItem) => {
                return (
-                    typeof watchListItem.IMDB_Poster_Image === "undefined" || watchListItem.IMDB_Poster_Image === null || watchListItem.IMDB_Poster_Image === ""
+                    (watchListItem.IMDB_URL !== null && watchListItem.IMDB_URL !== "") &&
+                    ((typeof watchListItem.IMDB_Poster === "undefined" || watchListItem.IMDB_Poster === null || watchListItem.IMDB_Poster === "") ||
+                    (processIds === null || (processIds !== null && processIds.includes(watchListItem.WatchListItemID))))
                )
           });
 
@@ -35,13 +45,10 @@ export async function GET(request: NextRequest) {
 
                const missingPosterResult: any = await getMissingArtwork(missingPosters[i].WatchListItemID);
 
-               if (missingPosterResult.Status === "OK" && typeof missingPosterResult.IMDB_Poster_Image !== "undefined") {
-                    missingPosters[i].IMDB_Poster_Image = missingPosterResult.IMDB_Poster_Image;
+               if (missingPosterResult.Status === "OK" && typeof missingPosterResult.IMDB_Poster !== "undefined") {
+                    missingPosters[i].IMDB_Poster = missingPosterResult.IMDB_Poster;
 
-                    // Do not include the base 64 image in the results
-                    const { IMDB_Poster_Image, ...cleanedResult } = missingPosterResult;
-
-                    resultsSummary.push(cleanedResult);
+                    resultsSummary.push(missingPosterResult);
                     dbModified = true;
                } else {
                     resultsSummary.push(missingPosterResult);

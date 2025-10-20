@@ -5,9 +5,10 @@ import Image from "next/image";
 import { useRouter } from 'next/navigation';
 import React, { useContext, useEffect, useState } from "react";
 import Recommendations from "../../components/Recommendations";
-import { APIStatus, ItemsDtlContext, ItemsDtlContextType } from "../../data-context";
+import { APIStatus, ItemsDtlContext } from "../../data-context";
 import IWatchListItem from "../../interfaces/IWatchListItem";
 import IWatchListType from "../../interfaces/IWatchListType";
+import { ItemsDtlContextType } from "@/app/interfaces/contexts/ItemsDtlContextType";
 
 export default function ItemsDtl() {
      const {

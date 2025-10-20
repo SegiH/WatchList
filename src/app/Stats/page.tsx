@@ -20,11 +20,12 @@ import IWatchListTVTotalCountStat from "../interfaces/IWatchListTVTotalCountStat
 import IWatchListWeeklyMovieStat from "../interfaces/IWatchListWeeklyMovieStat";
 import IWatchListWeeklyTVStat from "../interfaces/IWatchListWeeklyTVStat";
 
-import { APIStatus, WatchListStatsContext, WatchListStatsContextType } from "../data-context";
+import { APIStatus, WatchListStatsContext } from "../data-context";
 
 import "../css/tablestyle.css";
 import "./watchliststats.css";
 import IWatchListItem from "../interfaces/IWatchListItem";
+import { WatchListStatsContextType } from "../interfaces/contexts/WatchListStatsContextType";
 
 export default function WatchListStats() {
      const {

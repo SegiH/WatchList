@@ -1,14 +1,15 @@
 "use client"
 
 import { useContext, useEffect } from "react";
-import { APIStatus, WatchListContext, WatchListContextType } from "../data-context";
+import { APIStatus, WatchListContext } from "../data-context";
 import IWatchList from "../interfaces/IWatchList";
 import React from "react";
 
 import "../page.css";
 import NavBar from "../components/NavBar";
+import { WatchListContextType } from "../interfaces/contexts/WatchListContextType";
 
-const WatchListCard = React.lazy(() => import('./WatchListCard'));
+import WatchListCard from "./WatchListCard";
 
 export default function WatchList() {
      const {

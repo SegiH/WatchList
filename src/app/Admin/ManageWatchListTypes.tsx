@@ -4,8 +4,9 @@ import axios, { AxiosResponse } from "axios";
 import { useRouter } from 'next/navigation';
 import React, { useContext, useEffect, useState } from "react";
 
-import { APIStatus, ManageWatchListTypesContext, ManageWatchListTypesContextType } from "../data-context";
+import { APIStatus, ManageWatchListTypesContext } from "../data-context";
 import IWatchListType from "../interfaces/IWatchListType";
+import { ManageWatchListTypesContextType } from "../interfaces/contexts/ManageWatchListTypesContextType";
 
 const ManageWatchListTypes = () => {
      const {

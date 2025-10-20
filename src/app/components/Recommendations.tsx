@@ -1,8 +1,9 @@
 import axios, { AxiosResponse } from "axios";
 import Image from 'next/image';
 import { useContext, useEffect, useState } from "react";
-import { APIStatus, RecommendationsContext, RecommendationsContextType } from "../data-context";
+import { APIStatus, RecommendationsContext } from "../data-context";
 import IRecommendation from "../interfaces/IRecommendation";
+import { RecommendationsContextType } from "../interfaces/contexts/RecommendationsContextType";
 
 const Recommendations = ({ queryTerm, setRecommendationName, setRecommendationType, setRecommendationsVisible, type }:
      {

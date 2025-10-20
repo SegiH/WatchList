@@ -1,8 +1,9 @@
 import { Rating } from "@mui/material";
 import IWatchList from "../interfaces/IWatchList";
 import Image from "next/image";
-import { WatchListCardContext, WatchListCardContextType } from "../data-context";
+import { WatchListCardContext } from "../data-context";
 import { useContext } from "react";
+import { WatchListCardContextType } from "../interfaces/contexts/WatchListCardContextType";
 
 type WatchListCardProps = {
     currentWatchList: IWatchList

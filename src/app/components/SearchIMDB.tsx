@@ -5,7 +5,8 @@ import ISearchImdb from "../interfaces/ISearchImdb";
 import { useRouter } from 'next/navigation';
 import React, { useContext, useState } from "react";
 
-import { APIStatus, SearchIMDBContext, SearchIMDBContextType } from "../data-context";
+import { APIStatus, SearchIMDBContext } from "../data-context";
+import { SearchIMDBContextType } from "../interfaces/contexts/SearchIMDBContextType";
 
 export default function SearchIMDB() {
      const {

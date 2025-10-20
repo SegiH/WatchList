@@ -5,10 +5,11 @@ import TextField from "@mui/material/TextField";
 import axios, { AxiosResponse } from "axios";
 import { useRouter } from 'next/navigation';
 import React, { useContext, useEffect, useState } from "react";
-import { APIStatus, BugLogsContext, BugLogsContextType } from "../data-context";
+import { APIStatus, BugLogsContext } from "../data-context";
 import IBugLog from "../interfaces/IBugLog";
 
 import "../page.css";
+import { BugLogsContextType } from "../interfaces/contexts/BugLogsContextType";
 
 export default function BugLogs() {
      const {

@@ -17,7 +17,8 @@ import IWatchListSource from "../../interfaces/IWatchListSource";
 
 import "../../page.css";
 
-import { APIStatus, WatchListDtlContext, WatchListDtlContextType } from "../../data-context";
+import { APIStatus, WatchListDtlContext } from "../../data-context";
+import { WatchListDtlContextType } from "@/app/interfaces/contexts/WatchListDtlContextType";
 
 // I have a very specific use case here where I'm using a custom type for the Auto Complete dropdown that only has these 2 properties and is only used here so the interface is created here
 interface AutoCompleteWatchListItem {

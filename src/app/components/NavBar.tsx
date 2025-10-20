@@ -1,8 +1,9 @@
 import { useContext } from "react";
 
-import { NavBarContext, NavBarContextType } from "../data-context";
+import { NavBarContext } from "../data-context";
 
 import "./NavBar.css";
+import { NavBarContextType } from "../interfaces/contexts/NavBarContextType";
 
 const NavBar = () => {
     const {

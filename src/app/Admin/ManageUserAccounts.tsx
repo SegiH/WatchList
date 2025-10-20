@@ -5,10 +5,11 @@ import TextField from "@mui/material/TextField";
 import axios, { AxiosResponse } from "axios";
 import { useRouter } from 'next/navigation';
 import React, { useContext, useEffect, useState } from "react";
-import { APIStatus, ManageUserAccountsContext, ManageUserAccountsContextType } from "../data-context";
+import { APIStatus, ManageUserAccountsContext } from "../data-context";
 import IUser from "../interfaces/IUser";
 
 import "../page.css";
+import { ManageUserAccountsContextType } from "../interfaces/contexts/ManageUserAccountsContextType";
 
 const ManageUserAccounts = () => {
      const {

@@ -1,8 +1,9 @@
 import { useRouter } from 'next/navigation';
 import { useContext, useEffect, useState } from "react";
-import { APIStatus, SettingsContext, SettingsContextType } from "../data-context";
+import { APIStatus, SettingsContext } from "../data-context";
 import IUserOption from "../interfaces/IUserOption";
 import Select from 'react-select';
+import { SettingsContextType } from '../interfaces/contexts/SettingsContextType';
 
 const Settings = () => {
      const {

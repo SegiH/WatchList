@@ -1,7 +1,8 @@
 import IWatchListItem from "../interfaces/IWatchListItem";
 import Image from "next/image";
-import { ItemsCardContext, ItemsCardContextType } from "../data-context";
+import { ItemsCardContext } from "../data-context";
 import { useContext } from "react";
+import { ItemsCardContextType } from "../interfaces/contexts/ItemsCardContextType";
 
 type WatchListCardProps = {
     currentWatchListItem: IWatchListItem

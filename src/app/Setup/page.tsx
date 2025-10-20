@@ -3,10 +3,11 @@
 import axios, { AxiosResponse } from "axios";
 import { useRouter } from "next/navigation";
 import React, { useContext, useEffect, useState } from "react";
-import { APIStatus, SetupContext, SetupContextType } from "../data-context";
+import { APIStatus, SetupContext } from "../data-context";
 
 import "../Login/Login.css";
 import IUser from "../interfaces/IUser";
+import { SetupContextType } from "../interfaces/contexts/SetupContextType";
 
 export default function Setup() {
      const {

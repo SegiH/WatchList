@@ -9,6 +9,7 @@ import axios, { AxiosResponse } from "axios";
 import IBugLog from "../interfaces/IBugLog";
 import IUser from "../interfaces/IUser";
 import { DataContextType } from "../interfaces/contexts/DataContextType";
+import IWatchListItem from "../interfaces/IWatchListItem";
 
 export default function Data() {
     const {
@@ -99,8 +100,23 @@ export default function Data() {
         switch (newActiveSection) {
             case "WatchList":
                 if (watchList.length === 0 || watchListSortingCheck !== APIStatus.Success) {
-                    const result = await getWatchList();
-                    setDataSource(result);
+                    axios.get(`/api/GetWatchList?AllData=true`, { withCredentials: true })
+                        .then((res: AxiosResponse<IWatchListItem>) => {
+                            if (res.data[0] !== "OK") {
+                                setErrorMessage("Failed to get WatchList with the error " + res.data[1]);
+                                setIsError(true);
+                                return;
+                            } else {
+                                setDataSource(res.data[1]);
+                            }
+                        })
+                        .catch((err: Error) => {
+                            setErrorMessage("Failed to get WatchList with the error " + err.message);
+
+                            setIsError(true);
+                        });
+                    //const result = await getWatchList();
+                    //setDataSource(result);
                 } else {
                     setDataSource(watchList);
                 }

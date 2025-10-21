@@ -7,6 +7,7 @@ export interface WatchListDtlContextType {
      darkMode: boolean;
      demoMode: boolean;
      EditIconComponent: React.ReactNode;
+     getWatchListItems: () => void;
      imdbSearchEnabled: boolean;
      isAdding: boolean;
      isEditing: boolean;
@@ -22,7 +23,6 @@ export interface WatchListDtlContextType {
      setWatchListSortingCheck: (value: string) => void;
      showSearch: () => void;
      stillWatching: boolean;
-     watchListItems: IWatchListItem[];
      watchListSortDirection: string;
      watchListSources: IWatchListSource[];
 }

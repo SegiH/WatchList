@@ -28,7 +28,7 @@ interface AutoCompleteWatchListItem {
 
 export default function WatchListDtl() {
      const {
-          BrokenImageIconComponent,CancelIconComponent,EditIconComponent,SaveIconComponent,darkMode,demoMode,imdbSearchEnabled,isAdding,isEditing,isLoading,pullToRefreshEnabled,recommendationsEnabled,setErrorMessage,setIsAdding,setIsEditing,setIsError,setStillWatching,setWatchListSortingCheck,showSearch,stillWatching,watchListItems,watchListSortDirection,watchListSources
+          BrokenImageIconComponent, CancelIconComponent, EditIconComponent, SaveIconComponent, darkMode, demoMode, imdbSearchEnabled, isAdding, isEditing, isLoading, pullToRefreshEnabled, recommendationsEnabled, setErrorMessage, setIsAdding, setIsEditing, setIsError, setStillWatching, setWatchListSortingCheck, showSearch, stillWatching, watchListSortDirection, watchListSources
      } = useContext(WatchListDtlContext) as WatchListDtlContextType
 
      const currentDate = new Date().toLocaleDateString();
@@ -48,6 +48,7 @@ export default function WatchListDtl() {
      const [watchListDtlID, setWatchListDtlID] = useState<number>(-1);
      const [watchListDtlLoadingCheck, setWatchListDtlLoadingCheck] = useState(APIStatus.Idle);
      const [watchListItemDtlID, setWatchListItemDtlID] = useState<number>(0);
+     const [watchListItems, setWatchListItems] = useState<IWatchListItem[]>([]);
 
      const router = useRouter();
 
@@ -498,79 +499,109 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
      }, [demoMode, getLocaleDate, isAdding, setErrorMessage, setIsError, watchListDtl, watchListDtlID, watchListDtlLoadingCheck, watchListItemDtlID]);
 
      useEffect(() => {
-          if (watchListItems.length > 0) {
-               // Generate names for auto complete
-               const namesOnlyItems: IAutoCompleteOption[] = watchListItems.map((watchListItem: IWatchListItem) => {
-                    const IMDB_JSON = watchListItem?.IMDB_JSON !== null && typeof watchListItem?.IMDB_JSON !== "undefined" ? JSON.parse(watchListItem?.IMDB_JSON) : null;
+          if (formattedNames.length == 0) {
+               axios.get(`/api/GetWatchListItems?AllData=true`, { withCredentials: true })
+                    .then((res: AxiosResponse<IWatchListItem>) => {
+                         if (res.data[0] !== "OK") {
+                              setErrorMessage("Failed to get WatchList Items with the error " + res.data[1]);
+                              setIsError(true);
+                              return;
+                         }
 
-                    let itemName = watchListItem.WatchListItemName + (IMDB_JSON !== null && IMDB_JSON.Year !== null ? ` (${IMDB_JSON.Year})` : ``);
+                         setWatchListItems(res.data[1]);
+
+                         // Generate names for auto complete
+                         const namesOnlyItems: IAutoCompleteOption[] = res.data[1].map((watchListItem: IWatchListItem) => {
+                              const IMDB_JSON = watchListItem?.IMDB_JSON !== null && typeof watchListItem?.IMDB_JSON !== "undefined" ? JSON.parse(watchListItem?.IMDB_JSON) : null;
+
+                              let itemName = watchListItem.WatchListItemName + (IMDB_JSON !== null && IMDB_JSON.Year !== null ? ` (${IMDB_JSON.Year})` : ``);
 
 
-                    if (watchListItems?.filter((watchListItemDupe: IWatchListItem) => {
-                         return String(watchListItemDupe.WatchListItemName) === String(watchListItem.WatchListItemName);
-                    }).length > 1) {
-                         itemName += ` (${watchListItem.WatchListTypeName})`;
-                    }
+                              if (res.data[1]?.filter((watchListItemDupe: IWatchListItem) => {
+                                   return String(watchListItemDupe.WatchListItemName) === String(watchListItem.WatchListItemName);
+                              }).length > 1) {
+                                   itemName += ` (${watchListItem.WatchListTypeName})`;
+                              }
 
-                    return { name: itemName };
-               });
+                              return { name: itemName };
+                         });
 
-               const namesWithIdSorted = namesOnlyItems.sort((a: any, b: any) => {
-                    // Convert names to lowercase for case-insensitive sorting
-                    const nameA = a.name.toLowerCase().trim();
-                    const nameB = b.name.toLowerCase().trim();
+                         const namesSorted = namesOnlyItems.sort((a: any, b: any) => {
+                              // Convert names to lowercase for case-insensitive sorting
+                              const nameA = a.name.toLowerCase().trim();
+                              const nameB = b.name.toLowerCase().trim();
 
-                    // Compare the names
-                    if (nameA < nameB) {
-                         return -1;
-                    }
-                    if (nameA > nameB) {
-                         return 1;
-                    }
+                              // Compare the names
+                              if (nameA < nameB) {
+                                   return -1;
+                              }
+                              if (nameA > nameB) {
+                                   return 1;
+                              }
 
-                    // Names are equal
-                    return 0;
-               });
+                              // Names are equal
+                              return 0;
+                         });
 
-               setFormattedNames(namesWithIdSorted);
+                         const seenNames = new Map<string, number>();
+                         const duplicateMessages: string[] = [];
 
-               const namesWithIdItems = watchListItems.map((watchListItem: IWatchListItem) => {
-                    let itemName = watchListItem.WatchListItemName
+                         namesSorted.forEach((item, index) => {
+                              if (seenNames.has(item.name)) {
+                                   duplicateMessages.push(`Duplicate found for "${item.name}"`);
+                              }
+                              seenNames.set(item.name, index); // Overwrite to keep the last occurrence
+                         });
 
-                    if (watchListItems?.filter((watchListItemDupe: IWatchListItem) => {
-                         return String(watchListItemDupe.WatchListItemName) === String(watchListItem.WatchListItemName);
-                    }).length > 1) {
-                         itemName += " (" + watchListItem.WatchListTypeName + ")"
-                    }
+                         if (duplicateMessages.length > 0) {
+                              console.log(duplicateMessages.join("\n"));
+                         }
 
-                    let newItem: AutoCompleteWatchListItem = {
-                         WatchListItemID: watchListItem.WatchListItemID,
-                         WatchListItemName: itemName
-                    }
+                         setFormattedNames(namesSorted);
 
-                    return newItem;
-               });
+                         const namesWithIdItems = res.data[1].map((watchListItem: IWatchListItem) => {
+                              let itemName = watchListItem.WatchListItemName
 
-               const namesWithIdItemsSorted = namesWithIdItems.sort((a: IWatchListItem, b: IWatchListItem) => {
-                    // Convert names to lowercase for case-insensitive sorting
-                    const nameA = a.WatchListItemName.toLowerCase().trim();
-                    const nameB = b.WatchListItemName.toLowerCase().trim();
+                              if (watchListItems?.filter((watchListItemDupe: IWatchListItem) => {
+                                   return String(watchListItemDupe.WatchListItemName) === String(watchListItem.WatchListItemName);
+                              }).length > 1) {
+                                   itemName += " (" + watchListItem.WatchListTypeName + ")"
+                              }
 
-                    // Compare the names
-                    if (nameA < nameB) {
-                         return -1;
-                    }
-                    if (nameA > nameB) {
-                         return 1;
-                    }
+                              let newItem: AutoCompleteWatchListItem = {
+                                   WatchListItemID: watchListItem.WatchListItemID,
+                                   WatchListItemName: itemName
+                              }
 
-                    // Names are equal
-                    return 0;
-               });
+                              return newItem;
+                         });
 
-               setFormattedNamesWithId(namesWithIdItemsSorted);
+                         const namesWithIdItemsSorted = namesWithIdItems.sort((a: IWatchListItem, b: IWatchListItem) => {
+                              // Convert names to lowercase for case-insensitive sorting
+                              const nameA = a.WatchListItemName.toLowerCase().trim();
+                              const nameB = b.WatchListItemName.toLowerCase().trim();
+
+                              // Compare the names
+                              if (nameA < nameB) {
+                                   return -1;
+                              }
+                              if (nameA > nameB) {
+                                   return 1;
+                              }
+
+                              // Names are equal
+                              return 0;
+                         });
+
+                         setFormattedNamesWithId(namesWithIdItemsSorted);
+                    })
+                    .catch((err: Error) => {
+                         setErrorMessage("Failed to get WatchList Items with the error " + err.message);
+
+                         setIsError(true);
+                    });
           }
-     }, [watchListItems]);
+     }, [formattedNames]);
 
      useEffect(() => {
           if (recommendationName !== "" && recommendationType !== "") {

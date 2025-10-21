@@ -1,6 +1,6 @@
 import { getDB, defaultSources, isLoggedIn, writeDB, logMessage } from "../lib";
 import { NextRequest } from 'next/server';
-//import { sendCompressedJsonBrotli, sendCompressedJsonGZip } from '@/app/middleware';
+import { sendCompressedJsonBrotli, sendCompressedJsonGZip } from '@/app/middleware';
 
 export async function GET(request: NextRequest) {
      if (!isLoggedIn(request)) {
@@ -13,7 +13,7 @@ export async function GET(request: NextRequest) {
      const searchParams = request.nextUrl.searchParams;
 
      try {
-          const db:any = await getDB();
+          const db: any = await getDB();
 
           if (db.WatchListSources.length === 0) {
                defaultSources.forEach(async (element, index) => {
@@ -26,15 +26,7 @@ export async function GET(request: NextRequest) {
                writeDB(db);
           }
 
-          return Response.json(["OK", db.WatchListSources]);
-     } catch (e) {
-          logMessage(e)
-          return Response.json(["OK", []]);
-     }
-}
-
-/*
-// Return gzipped results
+          // Return gzipped results
           const compressedData = await sendCompressedJsonBrotli(["OK", db.WatchListSources]);
 
           return new Response(compressedData as unknown as BodyInit, {
@@ -44,4 +36,9 @@ export async function GET(request: NextRequest) {
                     'Content-Encoding': 'br', // usse 'gzip' when using gzip
                },
           });
-*/
+          //return Response.json(["OK", db.WatchListSources]);
+     } catch (e) {
+          logMessage(e)
+          return Response.json(["OK", []]);
+     }
+}

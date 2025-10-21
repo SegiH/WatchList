@@ -274,6 +274,7 @@ const DataProvider = ({
                     //alert(`The error ${res.data[1]} occurred while updating the item detail`);
                }
           }).catch((err: Error) => {
+               console.log(`No result when getting missing poster for ID ${watchListItemID}`)
                //alert(`The error ${err.message} occurred while updating the item detail`);
           });
      }
@@ -289,7 +290,6 @@ const DataProvider = ({
      }, [routeList]);
 
      const getWatchList = async () => {
-          setIsLoading(true);
           setWatchListSortingCheck(APIStatus.Loading);
 
           const newSliceStart = (currentPage - 1) * pageSize;
@@ -297,8 +297,6 @@ const DataProvider = ({
 
           return axios.get(`/api/GetWatchList?StartIndex=${newSliceStart}&EndIndex=${newSliceEnd}&StillWatching=${stillWatching}&SortColumn=${watchListSortColumn}&SortDirection=${watchListSortDirection}&ArchivedVisible=${archivedVisible}${sourceFilter !== null && sourceFilter !== -1 ? `&SourceFilter=${sourceFilter}` : ``}${typeFilter !== null && typeFilter !== -1 ? `&TypeFilter=${typeFilter}` : ``}${(searchTerm !== "" ? `&SearchTerm=${searchTerm}` : ``)}`, { withCredentials: true })
                .then((res: AxiosResponse<IWatchList>) => {
-                    setIsLoading(false);
-
                     if (res.data[0] !== "OK") {
                          setErrorMessage("Failed to get WatchList with the error " + res.data[1])
                          setIsError(true);
@@ -324,7 +322,6 @@ const DataProvider = ({
      }
 
      const getWatchListItems = async () => {
-          setIsLoading(true);
           setWatchListItemsSortingCheck(APIStatus.Loading);
 
           const newSliceStart = (currentPage - 1) * pageSize;
@@ -332,8 +329,6 @@ const DataProvider = ({
 
           return axios.get(`/api/GetWatchListItems?StartIndex=${newSliceStart}&EndIndex=${newSliceEnd}&SortColumn=${watchListSortColumn}&SortDirection=${watchListSortDirection}&ArchivedVisible=${archivedVisible}&ShowMissingArtwork=${showMissingArtwork}${typeFilter !== null && typeFilter !== -1 ? `&TypeFilter=${typeFilter}` : ``}${(searchTerm !== "" ? `&SearchTerm=${searchTerm}` : ``)}`, { withCredentials: true })
                .then((res: AxiosResponse<IWatchListItem>) => {
-                    setIsLoading(false);
-
                     if (res.data[0] !== "OK") {
                          setErrorMessage("Failed to get WatchList Items with the error " + res.data[1]);
                          setIsError(true);
@@ -903,8 +898,8 @@ const DataProvider = ({
                          <NavBarContext.Provider value={{ activeRoute, currentPage, darkMode, isAdding, isLoading, hideTabs, lastPage, setCurrentPage, watchListSortDirection }}>
                               <TabsContext.Provider value={{ activeRoute, darkMode, demoMode, getPath, hideTabs, isAdding, isAdmin, isClient, isEditing, isEnabled, isError, isLoading, loggedInCheck, pullToRefreshEnabled, routeList, setActiveRoute, setCurrentPage, setSearchInputVisible, setSearchTerm, visibleSections }}>
                                    <WatchListContext.Provider value={{ darkMode, filteredWatchList, hideTabs, isLoading, setActiveRoute, setIsAdding, setIsEditing, watchListSortingCheck }}>
-                                        <WatchListDtlContext.Provider value={{ BrokenImageIconComponent, CancelIconComponent, EditIconComponent, SaveIconComponent, darkMode, demoMode, imdbSearchEnabled, isAdding, isEditing, isLoading, pullToRefreshEnabled, recommendationsEnabled, setErrorMessage, setIsAdding, setIsEditing, setIsError, setStillWatching, setWatchListSortingCheck, showSearch, stillWatching, watchListItems, watchListSortDirection, watchListSources }}>
-                                             <WatchListCardContext.Provider value={{ BrokenImageIconComponent, darkMode, filteredWatchList, getMissingPoster,openDetailClickHandler, setFilteredWatchList }}>
+                                        <WatchListDtlContext.Provider value={{ BrokenImageIconComponent, CancelIconComponent, EditIconComponent, getWatchListItems, SaveIconComponent, darkMode, demoMode, imdbSearchEnabled, isAdding, isEditing, isLoading, pullToRefreshEnabled, recommendationsEnabled, setErrorMessage, setIsAdding, setIsEditing, setIsError, setStillWatching, setWatchListSortingCheck, showSearch, stillWatching, watchListSortDirection, watchListSources }}>
+                                             <WatchListCardContext.Provider value={{ BrokenImageIconComponent, darkMode, filteredWatchList, getMissingPoster, openDetailClickHandler, setFilteredWatchList }}>
                                                   <WatchListStatsContext.Provider value={{ darkMode, demoMode, ratingMax, setIsError, setErrorMessage, watchListItems }}>
                                                        <ItemsContext.Provider value={{ darkMode, filteredWatchListItems, hideTabs, isLoading, searchModalVisible, setActiveRoute, setIsAdding, setIsEditing, watchListItemsSortingCheck }}>
                                                             <ItemsDtlContext.Provider value={{ BrokenImageIconComponent, CancelIconComponent, EditIconComponent, SaveIconComponent, darkMode, demoMode, isAdding, isEditing, isEnabled, isLoading, pullToRefreshEnabled, setErrorMessage, setIsAdding, setIsEditing, setIsError, setWatchListItemsSortingCheck, watchListTypes }}>

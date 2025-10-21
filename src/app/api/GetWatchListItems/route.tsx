@@ -1,8 +1,8 @@
 import { NextRequest } from 'next/server';
-import { getDB, isLoggedIn, logMessage,writeDB } from "../lib";
+import { getDB, isLoggedIn, logMessage, writeDB } from "../lib";
 import IWatchListType from '@/app/interfaces/IWatchListType';
 import IWatchListItem from '@/app/interfaces/IWatchListItem';
-//import { sendCompressedJsonBrotli, sendCompressedJsonGZip } from '../../../../middleware.tsx.unused';
+import { sendCompressedJsonBrotli, sendCompressedJsonGZip } from '@/app/middleware';
 
 export async function GET(request: NextRequest) {
      if (!isLoggedIn(request)) {
@@ -10,6 +10,8 @@ export async function GET(request: NextRequest) {
      }
 
      const searchParams = request.nextUrl.searchParams;
+
+     const allData = searchParams.get("AllData");
 
      // Filter params
      const archivedVisible = searchParams.get("ArchivedVisible");
@@ -25,7 +27,7 @@ export async function GET(request: NextRequest) {
      const startIndex = searchParams.get("StartIndex");
      const endIndex = searchParams.get("EndIndex");
 
-     if (startIndex === null || endIndex === null) {
+     if (allData === null && (startIndex === null || endIndex === null)) {
           return Response.json(["ERROR", "Both start and end index need to be provided"]);
      }
 
@@ -36,9 +38,7 @@ export async function GET(request: NextRequest) {
           const watchListItemsDB = db.WatchListItems;
           const watchListTypesDB = db.WatchListTypes;
 
-          let dbModified = false;
-
-          const result = await watchListItemsDB
+          let results = await watchListItemsDB
                .sort((a: IWatchListItem, b: IWatchListItem) => {
                     switch (sortColumn) {
                          case "ID":
@@ -50,18 +50,25 @@ export async function GET(request: NextRequest) {
                          //case "Type":
                          //     return String(a.WatchListItemName) > String(b.WatchListItemName) ? (watchListSortDirection === "ASC" ? 1 : -1) : watchListSortDirection === "ASC" ? -1 : 1;     
                          default:
-                              return 0;
+                              if (allData === "true") { // SORT DESC
+                                   return b.WatchListItemID > a.WatchListItemID ? 1 : -1;
+                              } else {
+                                   return 0;
+                              }
                     }
                })
                .filter((watchListItem: IWatchListItem) => {
                     return (
-                         ((searchTerm === null || searchTerm === "") || (searchTerm !== null && searchTerm !== "" && (watchListItem.WatchListItemName?.toString().includes(searchTerm.toString()) || watchListItem.ItemNotes?.toString().includes(searchTerm.toString()))))
-                         &&
-                         (showMissingArtwork !== "true" || (showMissingArtwork === "true" && (typeof watchListItem.IMDB_Poster === "undefined" || watchListItem.IMDB_Poster === null || watchListItem.IMDB_Poster === "")))
-                         &&
-                         ((archivedVisible !== "true" || (archivedVisible === "true" && watchListItem.Archived === 1)))
-                         &&
-                         (typeFilter === null || (typeFilter !== null && String(watchListItem.WatchListTypeID) === String(typeFilter)))
+                         (allData === "true") ||
+                         (
+                              ((searchTerm === null || searchTerm === "") || (searchTerm !== null && searchTerm !== "" && (watchListItem.WatchListItemName?.toString().includes(searchTerm.toString()) || watchListItem.ItemNotes?.toString().includes(searchTerm.toString()))))
+                              &&
+                              (showMissingArtwork !== "true" || (showMissingArtwork === "true" && (typeof watchListItem.IMDB_Poster === "undefined" || watchListItem.IMDB_Poster === null || watchListItem.IMDB_Poster === "")))
+                              &&
+                              ((archivedVisible !== "true" || (archivedVisible === "true" && watchListItem.Archived === 1)))
+                              &&
+                              (typeFilter === null || (typeFilter !== null && String(watchListItem.WatchListTypeID) === String(typeFilter)))
+                         )
                     )
                })
                .map((watchListItem: IWatchListItem) => {
@@ -73,19 +80,23 @@ export async function GET(request: NextRequest) {
 
                     watchListItem.WatchListTypeName = watchListType.length > 0 ? watchListType[0].WatchListTypeName : "";
 
-                    if (typeof watchListItem["IMDB_Poster_Image"] !== "undefined") {
-                         dbModified = true;
-                         logMessage(`Deleting poster image for ${watchListItem.WatchListItemID}`);
-                         delete watchListItem["IMDB_Poster_Image"];
-                    }
-
                     return watchListItem;
-               }).slice(startIndex, endIndex)
+               })
 
-          if (dbModified) {
-               writeDB(db);
+          if (allData != "true" && startIndex != null && endIndex !== null && results.length > (parseInt(endIndex, 10) - parseInt(startIndex, 10))) {
+               results = results.slice(startIndex, endIndex);
           }
-          return Response.json(["OK", result]);
+
+          const compressedData = await sendCompressedJsonBrotli(["OK", results]);
+
+          return new Response(compressedData as unknown as BodyInit, {
+               status: 200,
+               headers: {
+                    'Content-Type': 'application/json',
+                    'Content-Encoding': 'br', // usse 'gzip' when using gzip
+               },
+          });
+          //return Response.json(["OK", result]);
      } catch (e) {
           logMessage(e.message);
           return Response.json(["ERROR", e.message]);

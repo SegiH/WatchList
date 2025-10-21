@@ -1,6 +1,6 @@
 import { NextRequest } from 'next/server';
 import { getDB, logMessage } from '../lib';
-//import { sendCompressedJsonBrotli, sendCompressedJsonGZip } from '@/app/middleware';
+import { sendCompressedJsonBrotli, sendCompressedJsonGZip } from '@/app/middleware';
 
 export async function GET(request: NextRequest) {
      // This needs to be here even though this endpoint doesn't take any parameters because without this,
@@ -11,15 +11,7 @@ export async function GET(request: NextRequest) {
      try {
           const db: any = await getDB();
 
-          return Response.json(["OK", db.WatchListTypes]);
-     } catch (e) {
-          logMessage(e)
-          return Response.json(["OK", []]);
-     }
-}
-
-/*
-// Return gzipped results
+          // Return gzipped results
           const compressedData = await sendCompressedJsonBrotli(["OK", db.WatchListTypes]);
 
           return new Response(compressedData as unknown as BodyInit, {
@@ -29,4 +21,9 @@ export async function GET(request: NextRequest) {
                     'Content-Encoding': 'br', // usse 'gzip' when using gzip
                },
           });
-*/
+          //return Response.json(["OK", db.WatchListTypes]);
+     } catch (e) {
+          logMessage(e)
+          return Response.json(["OK", []]);
+     }
+}

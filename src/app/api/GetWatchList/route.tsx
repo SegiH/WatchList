@@ -4,7 +4,7 @@ import IWatchList from '@/app/interfaces/IWatchList';
 import IWatchListItem from '@/app/interfaces/IWatchListItem';
 import IWatchListType from '@/app/interfaces/IWatchListType';
 import IWatchListSource from '@/app/interfaces/IWatchListSource';
-//import { sendCompressedJsonBrotli, sendCompressedJsonGZip } from '@/app/middleware';
+import { sendCompressedJsonBrotli } from '@/app/middleware';
 
 export async function GET(request: NextRequest) {
      if (!isLoggedIn(request)) {
@@ -14,6 +14,8 @@ export async function GET(request: NextRequest) {
      const userID = await getUserID(request);
 
      const searchParams = request.nextUrl.searchParams;
+
+     const allData = searchParams.get("AllData");
 
      // Filter params
      const archivedVisible = searchParams.get("ArchivedVisible"); // WLI.Archive
@@ -34,7 +36,7 @@ export async function GET(request: NextRequest) {
           return Response.json(["User ID is not set"]);
      }
 
-     if (startIndex === null || endIndex === null) {
+     if (allData === null && (startIndex === null || endIndex === null)) {
           return Response.json(["ERROR", "Both start and end index need to be provided"]);
      }
 
@@ -46,7 +48,7 @@ export async function GET(request: NextRequest) {
           const watchListSourcesDB = db.WatchListSources;
           const watchListTypesDB = db.WatchListTypes;
 
-          const result = await watchListDB
+          let results = await watchListDB
                .sort((a: IWatchList, b: IWatchList) => {
                     switch (sortColumn) {
                          case "ID":
@@ -61,12 +63,17 @@ export async function GET(request: NextRequest) {
                          case "EndDate":
                               return parseFloat(new Date(a.EndDate).valueOf().toString()) > parseFloat(new Date(b.EndDate).valueOf().toString()) ? (sortDirection === "ASC" ? 1 : -1) : sortDirection === "ASC" ? -1 : 1;
                          default:
-                              return 0;
+                              if (allData === "true") { // SORT DESC
+                                   return b.WatchListID > a.WatchListID ? 1 : -1 ;
+                              } else {
+                                   return 0;
+                              }
                     }
                })
                .filter((watchList: IWatchList) => {
                     return (
                          (
+                              (allData == "true") ||
                               (searchTerm === null || searchTerm === "")
                               || (searchTerm !== null && searchTerm !== ""
                                    && (watchList.WatchListItemName?.toString().includes(searchTerm.toString())
@@ -112,9 +119,22 @@ export async function GET(request: NextRequest) {
                     }
 
                     return watchList;
-               }).slice(startIndex, endIndex);
+               });
 
-          return Response.json(["OK", result]);
+          if (allData != "true" && startIndex != null && endIndex !== null && results.length > (parseInt(endIndex, 10) - parseInt(startIndex, 10))) {
+               results = results.slice(startIndex, endIndex);
+          }
+
+          const compressedData = await sendCompressedJsonBrotli(["OK", results]);
+
+          return new Response(compressedData as unknown as BodyInit, {
+               status: 200,
+               headers: {
+                    'Content-Type': 'application/json',
+                    'Content-Encoding': 'br',
+               },
+          });
+          //return Response.json(["OK", result]);
      } catch (e) {
           logMessage(e.message);
           return Response.json(["ERROR", e.message]);

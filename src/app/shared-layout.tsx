@@ -27,9 +27,16 @@ const SharedLayout = () => {
      const inputRef = useRef<HTMLInputElement>(null);
      const router = useRouter();
 
+     const handleKeyUp = (event: React.KeyboardEvent<HTMLDivElement>) => {
+          if (event.key === 'Enter') {
+               // Submit search when enter is pressed
+               setSearchTerm(newSearchTerm)
+          }
+     }
+
+
      const searchTermGoClickHandler = async () => {
           setSearchTerm(newSearchTerm);
-          //setNewSearchTerm("");
      }
 
      const settingChangeHandler = async (name: string, value: string | number | boolean) => {
@@ -144,7 +151,7 @@ const SharedLayout = () => {
                                                   </span>
 
                                                   <span className={`clickable leftMargin${!darkMode ? " lightMode" : " darkMode"} searchInputStyle ${searchInputVisible ? "visible" : ""}`}>
-                                                       <input className={`inputStyle lightMode`} ref={inputRef} value={newSearchTerm} onChange={(event) => setNewSearchTerm(event.target.value)} />
+                                                       <input className={`inputStyle lightMode`} ref={inputRef} value={newSearchTerm} onKeyUp={handleKeyUp} onChange={(event) => setNewSearchTerm(event.target.value)} />
                                                   </span>
 
                                                   <Button variant="contained" className={`searchButton ${searchInputVisible ? "visible" : ""}`} style={{ marginLeft: "30px" }} onClick={() => searchTermGoClickHandler()}>Go</Button>

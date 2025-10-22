@@ -177,7 +177,7 @@ const DataProvider = ({
      const defaultRoute = "WatchList";
      const demoUsername = "demo";
      const demoPassword = "demo";
-     const pageSize = 49;
+     const pageSize = typeof window !== 'undefined' && window.innerWidth <= 768 ? 10 : 49; //const pageSize = 49;
 
      const routeList = useMemo(() => {
           return {

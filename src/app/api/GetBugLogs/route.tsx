@@ -15,10 +15,13 @@ export async function GET(request: NextRequest) {
 
           const buglogsDB = db.BugLogs;
 
-          const filteredBugLogs = buglogsDB.filter((currentBuglog: IBugLog) => {
-               return getActiveBugLogs === null || (getActiveBugLogs === "true" && currentBuglog.CompletedDate == null)
-          });
-
+          const filteredBugLogs = buglogsDB
+               .filter((currentBuglog: IBugLog) => {
+                    return getActiveBugLogs === null || (getActiveBugLogs === "true" && currentBuglog.CompletedDate == null)
+               })
+               .sort((a: IBugLog, b: IBugLog) => {
+                    return b.BugLogId < a.BugLogId ? -1 : 1;
+               })
           return Response.json(["OK", filteredBugLogs]);
      } catch (e) {
           logMessage(e.message);

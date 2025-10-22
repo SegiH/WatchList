@@ -64,7 +64,7 @@ export async function GET(request: NextRequest) {
                               return parseFloat(new Date(a.EndDate).valueOf().toString()) > parseFloat(new Date(b.EndDate).valueOf().toString()) ? (sortDirection === "ASC" ? 1 : -1) : sortDirection === "ASC" ? -1 : 1;
                          default:
                               if (allData === "true") { // SORT DESC
-                                   return b.WatchListID > a.WatchListID ? 1 : -1 ;
+                                   return b.WatchListID > a.WatchListID ? 1 : -1;
                               } else {
                                    return 0;
                               }
@@ -72,12 +72,12 @@ export async function GET(request: NextRequest) {
                })
                .filter((watchList: IWatchList) => {
                     return (
+                         (allData == "true") ||
                          (
-                              (allData == "true") ||
                               (searchTerm === null || searchTerm === "")
                               || (searchTerm !== null && searchTerm !== ""
-                                   && (watchList.WatchListItemName?.toString().includes(searchTerm.toString())
-                                        || watchList.Notes?.toString().includes(searchTerm.toString())
+                                   && (watchList.WatchListItemName?.toString().toLowerCase().includes(searchTerm.toString().toLowerCase())
+                                        || watchList.Notes?.toString().toLowerCase().includes(searchTerm.toString().toLowerCase())
                                    )
                               )
                          )

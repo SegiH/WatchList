@@ -61,7 +61,13 @@ export async function GET(request: NextRequest) {
                     return (
                          (allData === "true") ||
                          (
-                              ((searchTerm === null || searchTerm === "") || (searchTerm !== null && searchTerm !== "" && (watchListItem.WatchListItemName?.toString().includes(searchTerm.toString()) || watchListItem.ItemNotes?.toString().includes(searchTerm.toString()))))
+                              ((searchTerm === null || searchTerm === "")
+                                   || (searchTerm !== null && searchTerm !== ""
+                                        && (watchListItem.WatchListItemName?.toString().toLowerCase().includes(searchTerm.toString().toLowerCase())
+                                             || watchListItem.ItemNotes?.toString().toLowerCase().includes(searchTerm.toString().toLowerCase())
+                                        )
+                                   )
+                              )
                               &&
                               (showMissingArtwork !== "true" || (showMissingArtwork === "true" && (typeof watchListItem.IMDB_Poster === "undefined" || watchListItem.IMDB_Poster === null || watchListItem.IMDB_Poster === "")))
                               &&

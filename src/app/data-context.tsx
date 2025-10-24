@@ -41,9 +41,6 @@ const EditIconComponent = <EditIcon />;
 import LogOutIcon from "@mui/icons-material/Logout";
 const LogOutIconComponent = <LogOutIcon className="icon" />;
 
-//import RemoveIcon from "@mui/icons-material/Remove";
-//const RemoveIconComponent = <RemoveIcon className="icon" />;
-
 import SaveIcon from "@mui/icons-material/Save";
 const SaveIconComponent = <SaveIcon />;
 
@@ -358,14 +355,6 @@ const DataProvider = ({
           return userData.Admin;
      }
 
-     const isLoggedInCheck = useCallback(() => {
-          if (loggedInCheck == APIStatus.Error || loggedInCheck == APIStatus.Idle || loggedInCheck == APIStatus.Loading || loggedInCheck == APIStatus.Unauthorized) return false;
-
-          if (loggedInCheck === APIStatus.Unauthorized) return false;
-
-          return true;
-     }, [loggedInCheck]);
-
      const isEnabled = (sectionName: string) => {
           if (visibleSections.length === 0) {
                return false;
@@ -379,6 +368,14 @@ const DataProvider = ({
                return false;
           }
      }
+
+     const isLoggedInCheck = useCallback(() => {
+          if (loggedInCheck == APIStatus.Error || loggedInCheck == APIStatus.Idle || loggedInCheck == APIStatus.Loading || loggedInCheck == APIStatus.Unauthorized) return false;
+
+          if (loggedInCheck === APIStatus.Unauthorized) return false;
+
+          return true;
+     }, [loggedInCheck]);
 
      const openDetailClickHandler = useCallback((Id: number, activeRouteOverride: string = "") => {
           // Disable pull to refresh
@@ -533,7 +530,7 @@ const DataProvider = ({
                });
      }, [router]);
 
-     // This method has a dependency on setOptions and writeLog
+     // This method has a dependency on setOptions and writeLog and has to be defined after these functions
      const isLoggedInApi = useCallback((noReroute: boolean = false) => {
           if (isError) {
                return;
@@ -625,7 +622,7 @@ const DataProvider = ({
           }
      }, [clientCheck, isClient, isError, isLoggedInApi, loggedInCheck, userData]);
 
-     // Get WatchList
+     // Initiate getting WatchList
      useEffect(() => {
           if (!isLoggedInCheck()) return;
 
@@ -639,7 +636,7 @@ const DataProvider = ({
           }
      }, [demoMode, isLoggedInCheck]);
 
-     // WatchList filter and sort useEffect
+     // Get WatchList
      useEffect(() => {
           if (activeRoute !== "WatchList" || (activeRoute === "WatchList" && watchListSortingCheck === APIStatus.Loading || watchListSortColumn === "" || watchListSortDirection === "")) {
                return;
@@ -648,7 +645,7 @@ const DataProvider = ({
           getWatchList();
      }, [activeRoute, archivedVisible, currentPage, searchTerm, stillWatching, sourceFilter, typeFilter, watchListSortColumn, watchListSortDirection]);
 
-     // Get WatchListItems
+     // Initiate getting WatchListItems
      useEffect(() => {
           if (!isLoggedInCheck()) return;
 
@@ -660,7 +657,7 @@ const DataProvider = ({
           }
      }, [demoMode, isLoggedInCheck]);
 
-     // WatchListItems filter and sort useEffect
+     // Get WatchListItems
      useEffect(() => {
           if (activeRoute !== "Items" || (activeRoute === "Items" && watchListItemsSortingCheck === APIStatus.Loading || watchListSortColumn === "" || watchListSortDirection === "")) {
                return;

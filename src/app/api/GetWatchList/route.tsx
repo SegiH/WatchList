@@ -125,39 +125,22 @@ export async function GET(request: NextRequest) {
                results = results.slice(startIndex, endIndex);
           }
 
-          const compressedData = await sendCompressedJsonBrotli(["OK", results]);
+          if (process.env.NODE_ENV === 'development') {
+               return Response.json(["OK", results]);
+          } else {
+               // Return gzipped results
+               const compressedData = await sendCompressedJsonBrotli(["OK", results]);
 
-          return new Response(compressedData as unknown as BodyInit, {
-               status: 200,
-               headers: {
-                    'Content-Type': 'application/json',
-                    'Content-Encoding': 'br',
-               },
-          });
-          //return Response.json(["OK", result]);
+               return new Response(compressedData as unknown as BodyInit, {
+                    status: 200,
+                    headers: {
+                         'Content-Type': 'application/json',
+                         'Content-Encoding': 'br',
+                    },
+               });
+          }
      } catch (e) {
           logMessage(e.message);
           return Response.json(["ERROR", e.message]);
      }
 }
-
-// Return gzipped results
-/*const compressedData = await sendCompressedJsonBrotli(["OK", result]);
-
-return new Response(compressedData as unknown as BodyInit, {
-     status: 200,
-     headers: {
-          'Content-Type': 'application/json',
-          'Content-Encoding': 'br', // use 'gzip' when using gzip
-     },
-});*/
-
-/* const compressedData = await sendCompressedJsonGZip(["OK", result]);
-
- return new Response(compressedData as unknown as BodyInit, {
-      status: 200,
-      headers: {
-           'Content-Type': 'application/json',
-           'Content-Encoding': 'gzip',
-      },
- });*/

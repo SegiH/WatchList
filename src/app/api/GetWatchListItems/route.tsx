@@ -93,16 +93,19 @@ export async function GET(request: NextRequest) {
                results = results.slice(startIndex, endIndex);
           }
 
-          const compressedData = await sendCompressedJsonBrotli(["OK", results]);
+          if (process.env.NODE_ENV === 'development') {
+               return Response.json(["OK", results]);
+          } else {
+               const compressedData = await sendCompressedJsonBrotli(["OK", results]);
 
-          return new Response(compressedData as unknown as BodyInit, {
-               status: 200,
-               headers: {
-                    'Content-Type': 'application/json',
-                    'Content-Encoding': 'br', // usse 'gzip' when using gzip
-               },
-          });
-          //return Response.json(["OK", result]);
+               return new Response(compressedData as unknown as BodyInit, {
+                    status: 200,
+                    headers: {
+                         'Content-Type': 'application/json',
+                         'Content-Encoding': 'br', // usse 'gzip' when using gzip
+                    },
+               });
+          }
      } catch (e) {
           logMessage(e.message);
           return Response.json(["ERROR", e.message]);

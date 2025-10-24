@@ -26,17 +26,20 @@ export async function GET(request: NextRequest) {
                writeDB(db);
           }
 
-          // Return gzipped results
-          const compressedData = await sendCompressedJsonBrotli(["OK", db.WatchListSources]);
+          if (process.env.NODE_ENV === 'development') {
+               return Response.json(["OK", db.WatchListSources]);
+          } else {
+               // Return gzipped results
+               const compressedData = await sendCompressedJsonBrotli(["OK", db.WatchListSources]);
 
-          return new Response(compressedData as unknown as BodyInit, {
-               status: 200,
-               headers: {
-                    'Content-Type': 'application/json',
-                    'Content-Encoding': 'br', // usse 'gzip' when using gzip
-               },
-          });
-          //return Response.json(["OK", db.WatchListSources]);
+               return new Response(compressedData as unknown as BodyInit, {
+                    status: 200,
+                    headers: {
+                         'Content-Type': 'application/json',
+                         'Content-Encoding': 'br', // use 'gzip' when using gzip
+                    },
+               });
+          }
      } catch (e) {
           logMessage(e)
           return Response.json(["OK", []]);

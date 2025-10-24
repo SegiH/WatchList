@@ -6,22 +6,6 @@ import { promisify } from 'util';
 
 const gzipAsync = promisify(gzip);
 
-// Helper to run middleware
-/*export function runMiddleware(
-     req: NextRequest,
-     res: NextResponse,
-     fn: Function
-): Promise<void> {
-     return new Promise((resolve, reject) => {
-          fn(req, res, (result: any) => {
-               if (result instanceof Error) {
-                    return reject(result);
-               }
-               return resolve(result);
-          });
-     });
-}*/
-
 export async function sendCompressedJsonBrotli(data: any): Promise<Uint8Array> {
      const json = JSON.stringify(data);
 

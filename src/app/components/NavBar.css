@@ -8,6 +8,11 @@
     justify-content: space-between;
 }
 
+.navBar.bottom {
+    position: relative;
+    bottom: 0.4px;
+}
+
 span.bottom {
     bottom: 56px;
     position: sticky;

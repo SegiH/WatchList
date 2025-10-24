@@ -41,7 +41,7 @@ export default function WatchList() {
                          </span>
 
                          <span className="bottom">
-                              <NavBar />
+                              <NavBar IsBottomNav={true} />
                          </span>
                     </>
                }

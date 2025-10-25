@@ -4,7 +4,7 @@ import IWatchList from '@/app/interfaces/IWatchList';
 import IWatchListItem from '@/app/interfaces/IWatchListItem';
 import IWatchListType from '@/app/interfaces/IWatchListType';
 import IWatchListSource from '@/app/interfaces/IWatchListSource';
-import { sendCompressedJsonBrotli } from '@/app/middleware';
+import { sendCompressedJsonBrotli } from '@/app/proxy';
 
 export async function GET(request: NextRequest) {
      if (!isLoggedIn(request)) {

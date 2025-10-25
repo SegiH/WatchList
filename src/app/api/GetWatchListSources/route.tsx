@@ -1,6 +1,6 @@
 import { getDB, defaultSources, isLoggedIn, writeDB, logMessage } from "../lib";
 import { NextRequest } from 'next/server';
-import { sendCompressedJsonBrotli, sendCompressedJsonGZip } from '@/app/middleware';
+import { sendCompressedJsonBrotli, sendCompressedJsonGZip } from '@/app/proxy';
 
 export async function GET(request: NextRequest) {
      if (!isLoggedIn(request)) {

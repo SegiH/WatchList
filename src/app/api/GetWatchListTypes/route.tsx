@@ -1,6 +1,6 @@
 import { NextRequest } from 'next/server';
 import { getDB, logMessage } from '../lib';
-import { sendCompressedJsonBrotli, sendCompressedJsonGZip } from '@/app/middleware';
+import { sendCompressedJsonBrotli, sendCompressedJsonGZip } from '@/app/proxy';
 
 export async function GET(request: NextRequest) {
      // This needs to be here even though this endpoint doesn't take any parameters because without this,

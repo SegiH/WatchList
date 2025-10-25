@@ -1,10 +1,14 @@
 /** @type {import('next').NextConfig} */
-
+const path = require('path')
 const withPWA = require("next-pwa");
 
 const nextConfig = {
      output: "standalone",
+     outputFileTracingRoot: path.join(__dirname),
      devIndicators: false,
+     turbopack: {
+          root: path.join(__dirname, '..'),
+     },
      images: {
           remotePatterns: [
                {

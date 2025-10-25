@@ -13,14 +13,13 @@ import IWatchListItem from "../interfaces/IWatchListItem";
 
 export default function Data() {
     const {
-        bugLogs, darkMode, defaultRoute, getWatchList, getWatchListItems, isAdmin, setIsError, setErrorMessage, visibleSections, watchList, watchListSortingCheck, watchListItems, watchListItemsSortingCheck, watchListSources, watchListTypes,
+        bugLogs, darkMode, defaultRoute, isAdmin, setIsError, setErrorMessage, visibleSections, watchList, watchListSortingCheck, watchListItems, watchListItemsSortingCheck, watchListSources, watchListTypes,
     } = useContext(DataContext) as DataContextType;
 
     const [activeSection, setActiveSection] = useState("");
     const [dataSource, setDataSource] = useState<any>([]);
     const [isMounted, setIsMounted] = useState(false);
     const [users, setUsers] = useState<IUser[]>([]);
-    const [usersLoadingCheck, setUsersLoadingCheck] = useState(APIStatus.Idle);
 
     const router = useRouter();
 
@@ -54,6 +53,10 @@ export default function Data() {
             "AddDate": "Added On",
             "CompletedDate": "Completed On",
             "ResolutionNotes": "Resolution Notes"
+        }],
+        Logs: [{
+            "Date": "Date",
+            "Message": "Message"
         }],
         /*Options: [{
             "OptionID": "ID",
@@ -115,8 +118,6 @@ export default function Data() {
 
                             setIsError(true);
                         });
-                    //const result = await getWatchList();
-                    //setDataSource(result);
                 } else {
                     setDataSource(watchList);
                 }
@@ -124,8 +125,21 @@ export default function Data() {
                 break;
             case "Items":
                 if (watchListItems.length == 0 || watchListItemsSortingCheck !== APIStatus.Success) {
-                    const result = await getWatchListItems();
-                    setDataSource(result);
+                    axios.get(`/api/GetWatchListItems?AllData=true`, { withCredentials: true })
+                        .then((res: AxiosResponse<IWatchListItem>) => {
+                            if (res.data[0] !== "OK") {
+                                setErrorMessage("Failed to get WatchList Items with the error " + res.data[1]);
+                                setIsError(true);
+                                return;
+                            } else {
+                                setDataSource(res.data[1]);
+                            }
+                        })
+                        .catch((err: Error) => {
+                            setErrorMessage("Failed to get WatchList Items with the error " + err.message);
+
+                            setIsError(true);
+                        });
                 } else {
                     setDataSource(watchListItems);
                 }
@@ -141,6 +155,23 @@ export default function Data() {
             //case "Options": // TODO: Fix me
             //setDataSource(userData.)
             //break;
+            case "Logs":
+                axios.get(`/api/GetLogs`, { withCredentials: true })
+                    .then((res: AxiosResponse<IWatchListItem>) => {
+                        if (res.data[0] !== "OK") {
+                            setErrorMessage("Failed to get logs with the error " + res.data[1]);
+                            setIsError(true);
+                            return;
+                        } else {
+                            setDataSource(res.data[1]);
+                        }
+                    })
+                    .catch((err: Error) => {
+                        setErrorMessage("Failed to get logs with the error " + err.message);
+
+                        setIsError(true);
+                    });
+                break;
             case "VisibleSections":
                 setDataSource(visibleSections);
                 break;
@@ -166,8 +197,6 @@ export default function Data() {
                             setErrorMessage(res.data[1]);
                             setIsError(true);
                         }
-
-                        setUsersLoadingCheck(APIStatus.Success);
                     })
                     .catch((err: Error) => {
                         setErrorMessage("Failed to get users with the error " + err.message);
@@ -220,7 +249,7 @@ export default function Data() {
                         <span>Select section</span>
                     </span>
 
-                    <select className="selectStyle editing" value={activeSection} onChange={(event) => activeSectionCHangeHandler(event.target.value)}>
+                    <select className="leftMargin selectStyle editing" value={activeSection} onChange={(event) => activeSectionCHangeHandler(event.target.value)}>
                         <option value="">Please select</option>
 
                         {Object.keys(dataSchema).map((sectionName: any, index: number) => {

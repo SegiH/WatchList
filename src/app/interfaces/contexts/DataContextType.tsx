@@ -9,8 +9,6 @@ export interface DataContextType {
      bugLogs: IBugLog[];
      darkMode: boolean;
      defaultRoute: string;
-     getWatchList: () => void;
-     getWatchListItems: () => void;
      isAdmin: () => boolean;
      setIsError: (value: boolean) => void;
      setErrorMessage: (value: string) => void;

@@ -13,6 +13,10 @@ export async function GET(request: NextRequest) {
 
      const processIds = watchListItemsProcessIds !== null ? parseNumberList(watchListItemsProcessIds) : null;
 
+     if (processIds === null || processIds.length === 0) {
+          return Response.json(["OK"]);
+     }
+
      try {
           const db: any = await getDB();
 

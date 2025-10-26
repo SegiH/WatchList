@@ -215,6 +215,7 @@ export const getMissingArtwork = async (watchListItemID: number) => {
                     ID: thisWLI.WatchListItemID,
                     Name: thisWLI.WatchListItemName,
                     IMDB_URL: thisWLI.IMDB_URL,
+                    ImageURL: newImageURL,
                     Status: "ERROR",
                     Message: imageResponse.statusText
                };
@@ -231,87 +232,87 @@ export const getMissingArtwork = async (watchListItemID: number) => {
                );
 
                if (imgMatch && imgMatch[1]) {
-                    //thisWLI.IMDB_Poster = imgMatch[1];
-
                     const newResult = {
                          ID: thisWLI.WatchListItemID,
                          Name: thisWLI.WatchListItemName,
                          IMDB_URL: thisWLI.IMDB_URL,
+                         ImageURL: newImageURL,
                          IMDB_Poster: imgMatch[1],
                          Status: "OK",
-                         Message: "Matched by css class",
+                         Message: "Matched by css class regex",
                     };
 
-                    logText += `\n${getCurrentDate()}: Matched by css class for ${thisWLI.WatchListItemID} ${thisWLI.WatchListItemName} ${thisWLI.IMDB_Poster}`;
+                    logText += `\n${getCurrentDate()}: Matched by css class regex for ${thisWLI.WatchListItemID} ${thisWLI.WatchListItemName} ${thisWLI.IMDB_Poster}`;
                     logMessage(logText, true);
 
                     return newResult;
                } else {
-                    const firstClassIndex = imgHtml.indexOf("sc-b66608db-0 AEgTx");
+                    const imgClasses = ["sc-b66608db-2 cEjYQy", "sc-b66608db-0 AEgTx", "sc-b66608db-0 AEgTx", "sc-b66608db-1 eKTNqk"];
 
-                    const secondClassIndex = imgHtml.indexOf("sc-b66608db-1 eKTNqk");
+                    for (let i = 0; i < imgClasses.length; i++) {
+                         let startIndex = imgHtml.indexOf(imgClasses[i]);
 
-                    const startIndex = (firstClassIndex !== -1 ? firstClassIndex : secondClassIndex !== -1 ? secondClassIndex : -1);
+                         if (startIndex !== -1) {
+                              let matched = false;
 
-                    if (startIndex !== -1) {
-                         let matched = false;
+                              // find Img
+                              for (let i = startIndex; i >= 4; i--) {
+                                   if (imgHtml.substring(i - 4, i) === "<img") {
+                                        // find src=""
+                                        const srcIndexStart = imgHtml.indexOf("src=\"", i - 4);
 
-                         // find Img
-                         for (let i = startIndex; i >= 4; i--) {
-                              if (imgHtml.substring(i - 4, i) === "<img") {
-                                   // find src=""
-                                   const srcIndexStart = imgHtml.indexOf("src=\"", i - 4);
-                                   if (srcIndexStart != -1) {
-                                        const srcIndexEnd = imgHtml.indexOf('"', srcIndexStart + 6);
+                                        if (srcIndexStart != -1) {
+                                             const srcIndexEnd = imgHtml.indexOf('"', srcIndexStart + 6);
 
-                                        if (srcIndexStart != -1 && srcIndexEnd != -1) {
-                                             const newURL = imgHtml.substring(srcIndexStart + 5, srcIndexEnd);
+                                             if (srcIndexStart != -1 && srcIndexEnd != -1) {
+                                                  const newURL = imgHtml.substring(srcIndexStart + 5, srcIndexEnd);
 
+                                                  const newResult = {
+                                                       ID: thisWLI.WatchListItemID,
+                                                       Name: thisWLI.WatchListItemName,
+                                                       IMDB_URL: thisWLI.IMDB_URL,
+                                                       IMDB_Poster: newURL,
+                                                       Status: "OK",
+                                                       Message: `Fuzzy match on CSS class ${imgClasses[i]}`
+                                                  };
+
+                                                  logText += `\n${getCurrentDate()}: Fuzzy match on CSS class ${imgClasses[i]} for ${thisWLI.WatchListItemID} ${thisWLI.WatchListItemName} ${thisWLI.IMDB_Poster}`;
+                                                  logMessage(logText, true);
+
+                                                  return newResult;
+                                             }
+                                        }
+
+                                        if (!matched) {
                                              const newResult = {
                                                   ID: thisWLI.WatchListItemID,
                                                   Name: thisWLI.WatchListItemName,
                                                   IMDB_URL: thisWLI.IMDB_URL,
-                                                  IMDB_Poster: newURL,
-                                                  Status: "OK",
-                                                  Message: "Fuzzy match"
+                                                  Status: "ERROR",
+                                                  Message: `Fuzzy match failed on CSS class ${imgClasses[i]}`,
                                              };
 
-                                             logText += `\n${getCurrentDate()}: Fuzzy match for ${thisWLI.WatchListItemID} ${thisWLI.WatchListItemName} ${thisWLI.IMDB_Poster}`;
+                                             logText += `\n${getCurrentDate()}: Fuzzy match on CSS class ${imgClasses[i]} failed for ${thisWLI.WatchListItemID} ${thisWLI.WatchListItemName} ${thisWLI.IMDB_URL}`;
                                              logMessage(logText, true);
 
                                              return newResult;
                                         }
                                    }
-
-                                   if (!matched) {
-                                        const newResult = {
-                                             ID: thisWLI.WatchListItemID,
-                                             Name: thisWLI.WatchListItemName,
-                                             IMDB_URL: thisWLI.IMDB_URL,
-                                             Status: "ERROR",
-                                             Message: "Fuzzy match failed",
-                                        };
-
-                                        logText += `\n${getCurrentDate()}: Fuzzy match failed for ${thisWLI.WatchListItemID} ${thisWLI.WatchListItemName} ${thisWLI.IMDB_URL}`;
-                                        logMessage(logText, true);
-
-                                        return newResult;
-                                   }
                               }
+                         } else {
+                              const newResult = {
+                                   ID: thisWLI.WatchListItemID,
+                                   Name: thisWLI.WatchListItemName,
+                                   IMDB_URL: thisWLI.IMDB_URL,
+                                   Status: "ERROR",
+                                   Message: `No match by CSS class ${imgClasses[i]}`
+                              };
+
+                              logText += `\n${getCurrentDate()}: No match by CSS class ${imgClasses[i]} for ${thisWLI.WatchListItemID} ${thisWLI.WatchListItemName} ${thisWLI.IMDB_URL}`;
+                              logMessage(logText, true);
+
+                              return newResult;
                          }
-                    } else {
-                         const newResult = {
-                              ID: thisWLI.WatchListItemID,
-                              Name: thisWLI.WatchListItemName,
-                              IMDB_URL: thisWLI.IMDB_URL,
-                              Status: "ERROR",
-                              Message: "No match by CSS class"
-                         };
-
-                         logText += `\n${getCurrentDate()}: No match by CSS class for ${thisWLI.WatchListItemID} ${thisWLI.WatchListItemName} ${thisWLI.IMDB_URL}`;
-                         logMessage(logText, true);
-
-                         return newResult;
                     }
                }
           }

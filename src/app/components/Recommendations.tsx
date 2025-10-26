@@ -45,7 +45,7 @@ const Recommendations = ({ queryTerm, setRecommendationName, setRecommendationTy
      }
 
      useEffect(() => {
-          if (queryTerm !== "" && type !== "" && recommendationsLoadingCheck === APIStatus.Loading) {
+          if (queryTerm !== "" && type !== "" && recommendationsLoadingCheck === APIStatus.Idle) {
                setRecommendationsLoadingCheck(APIStatus.Loading)
 
                const url = `/api/Recommendations?SearchTerm=${encodeURIComponent(queryTerm)}&Type=${type}`;

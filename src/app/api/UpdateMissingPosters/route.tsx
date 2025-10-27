@@ -39,17 +39,10 @@ export async function GET(request: NextRequest) {
                return Response.json(["OK"]);
           }
 
-          console.log(new Date().toTimeString() + " " + missingPosters.length)
-
           for (let i = missingPosters.length - 1; i >= 0; i--) {
-               //if (i == missingPosters.length - 10) {
-               //     console.log("BREAKING when ID = " + missingPosters[i].WatchListItemID + "!!!!!!!!!!!!!!!!")
-               //     break;
-               //}
-
                const missingPosterResult: any = await getMissingArtwork(missingPosters[i].WatchListItemID);
 
-               if (missingPosterResult.Status === "OK" && typeof missingPosterResult.IMDB_Poster !== "undefined") {
+               if (typeof missingPosterResult !==  "undefined" && missingPosterResult !== null && missingPosterResult.Status === "OK" && typeof missingPosterResult.IMDB_Poster !== "undefined") {
                     missingPosters[i].IMDB_Poster = missingPosterResult.IMDB_Poster;
 
                     resultsSummary.push(missingPosterResult);
@@ -76,21 +69,3 @@ export async function GET(request: NextRequest) {
           return Response.json(["ERROR", e.message]);
      }
 }
-
-
-//const searchParams = request.nextUrl.searchParams;
-
-//const watchListItemsProcessIds = searchParams.get("IDs");
-//const watchListItemsFindMissing = searchParams.get("FindMissing");
-
-/*if (watchListItemsProcessIds === null) {
-     return Response.json({ "ERROR": "IDs were not provided" });
-}
-
-const parseNumberList = str => str.split(',').map(s => { if (isNaN(s = s.trim()) || s === '') throw new Error(`Invalid number: "${s}"`); return Number(s); });
-
-const processIds = parseNumberList(watchListItemsProcessIds);
-
-const resultsSummary = await getMissingArtwork(processIds);
-
-return Response.json(["OK", resultsSummary]);*/

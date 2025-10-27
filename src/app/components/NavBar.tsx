@@ -11,7 +11,7 @@ const NavBar = (props) => {
     } = useContext(NavBarContext) as NavBarContextType;
 
     const pageClickHandler = (adjustValue: number) => {
-        setCurrentPage(currentPage + (watchListSortDirection === "ASC" ? adjustValue * -1 : adjustValue));
+        setCurrentPage(currentPage + adjustValue);
     }
 
     return (

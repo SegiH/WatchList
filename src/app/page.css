@@ -33,6 +33,10 @@
           top: 12px !important;
      }
 
+     .displayInline {
+          display: unset !important;
+     }
+
      .rating {
           display: none;
      }
@@ -235,8 +239,8 @@ table.simpleTable:last-child {
      background-color: var(--dark-mode-backgroundColor) !important;
 }
 
-.dialogActions {
-     display: inline-block !important;
+.displayInline {
+     display: inline-block;
 }
 
 .editsaveCancelButton {
@@ -255,7 +259,8 @@ table.simpleTable:last-child {
      width: 42.5px;
      height: 43.5px;
      position: relative;
-     text-align: end;;
+     text-align: end;
+     ;
      top: 50;
      right: 0;
      border-radius: 50%;
@@ -313,7 +318,7 @@ table.simpleTable:last-child {
 
 .image-crop img {
      border-radius: 15px;
-     width:80%;
+     width: 80%;
      text-align: center;
      margin-right: 10px;
 }
@@ -622,11 +627,15 @@ table.simpleTable:last-child {
      top: -20px;
 }
 
-.searchInputStyle, .imdbButton, .searchButton {
+.searchInputStyle,
+.imdbButton,
+.searchButton {
      display: none !important;
 }
 
-.searchInputStyle.visible, .imdbButton.visible, .searchButton.visible {
+.searchInputStyle.visible,
+.imdbButton.visible,
+.searchButton.visible {
      display: block !important;
      animation: fadeInAnimation 2s linear;
 }
@@ -671,32 +680,36 @@ table.simpleTable:last-child {
 }
 
 .show-date {
-    height: auto; /* Let it grow based on content */
-    margin-bottom: 15px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    white-space: normal; /* Allow line breaks */
-    text-align: center;  /* Center the multiline content */
-    flex-direction: column; /* Stack the lines vertically */
-    line-height: 1.4;
+     height: auto;
+     /* Let it grow based on content */
+     margin-bottom: 15px;
+     display: flex;
+     align-items: center;
+     justify-content: center;
+     white-space: normal;
+     /* Allow line breaks */
+     text-align: center;
+     /* Center the multiline content */
+     flex-direction: column;
+     /* Stack the lines vertically */
+     line-height: 1.4;
 }
 
 .show-item {
-    border-style: dashed;
-    border-radius: 15px;
-    border-width: 1px;
-    font-family: "Brush Script MT", cursive;
-    margin-bottom: 45px;
-    margin-right: 55px;
-    overflow: hidden;
-    text-align: center;
-    vertical-align: top;
-    list-style: none;
-    width: 175px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+     border-style: dashed;
+     border-radius: 15px;
+     border-width: 1px;
+     font-family: "Brush Script MT", cursive;
+     margin-bottom: 45px;
+     margin-right: 55px;
+     overflow: hidden;
+     text-align: center;
+     vertical-align: top;
+     list-style: none;
+     width: 175px;
+     display: flex;
+     flex-direction: column;
+     align-items: center;
 }
 
 .show-link {
@@ -716,31 +729,33 @@ table.simpleTable:last-child {
 }
 
 .show-season {
-    height: 25px; /* Unified height for alignment */
-    display: flex;
-    align-items: center;
-    justify-content: center;
+     height: 25px;
+     /* Unified height for alignment */
+     display: flex;
+     align-items: center;
+     justify-content: center;
 }
 
 .show-type,
 .show-source {
-    height: 25px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+     height: 25px;
+     display: flex;
+     align-items: center;
+     justify-content: center;
 }
 
 .show-title {
-    display: inline-flex;
-    word-wrap: break-word;
-    min-height: 40px; /* Adjusted */
-    max-height: 50px;
-    line-height: 1.2;
-    overflow: hidden;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    padding: 0 5px;
+     display: inline-flex;
+     word-wrap: break-word;
+     min-height: 40px;
+     /* Adjusted */
+     max-height: 50px;
+     line-height: 1.2;
+     overflow: hidden;
+     justify-content: center;
+     align-items: center;
+     text-align: center;
+     padding: 0 5px;
 }
 
 .simpleTable th {

@@ -30,7 +30,7 @@ export default function WatchListItems() {
                               </span>
                          }
 
-                         <span className="topMarginContent">
+                         <span className="displayInline topMarginContent">
                               <ul className={`show-list${!darkMode ? " lightMode" : " darkMode"} ${hideTabs ? "noTabs" : ""}`}>
                                    {filteredWatchListItems?.map((currentWatchListItem: IWatchListItem, index: number) => {
                                         return (

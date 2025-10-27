@@ -6,6 +6,7 @@ export interface ItemsDtlContextType {
      darkMode: boolean;
      demoMode: boolean;
      EditIconComponent: React.ReactNode;
+     getMissingPoster: (watchListItemID: number) => void;
      isAdding: boolean;
      isEnabled: (value: string) => boolean;
      isEditing: boolean;

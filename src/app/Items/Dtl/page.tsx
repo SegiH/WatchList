@@ -12,7 +12,7 @@ import { ItemsDtlContextType } from "@/app/interfaces/contexts/ItemsDtlContextTy
 
 export default function ItemsDtl() {
      const {
-          BrokenImageIconComponent, CancelIconComponent, EditIconComponent, SaveIconComponent, darkMode, demoMode, isAdding, isEditing, isEnabled, isLoading, pullToRefreshEnabled, setErrorMessage, setIsAdding, setIsEditing, setIsError, setWatchListItemsSortingCheck, watchListTypes
+          BrokenImageIconComponent, CancelIconComponent, EditIconComponent, SaveIconComponent, darkMode, demoMode, getMissingPoster, isAdding, isEditing, isEnabled, isLoading, pullToRefreshEnabled, setErrorMessage, setIsAdding, setIsEditing, setIsError, setWatchListItemsSortingCheck, watchListTypes
      } = useContext(ItemsDtlContext) as ItemsDtlContextType
 
      const [addWatchListItemDtl, setAddWatchListItemDtl] = useState<IWatchListItem | null>();
@@ -96,6 +96,27 @@ export default function ItemsDtl() {
                setRecommendationType(typeof watchListItemDtl?.WatchListTypeName !== "undefined" ? watchListItemDtl?.WatchListTypeName : "");
           }
      };
+
+     const reloadImageClickHandler = async (watchListItemID: number) => {
+          const result = await getMissingPoster(watchListItemID);
+
+          if (result !== null && result[0].Status === "OK") {
+               const newWatchListItemDtl = Object.assign([], watchListItemDtl);
+               newWatchListItemDtl["IMDB_Poster"] = result[0].IMDB_Poster;
+
+               setWatchListItemDtl(newWatchListItemDtl);
+
+               const queryURL = `/api/UpdateWatchListItem?WatchListItemID=${watchListItemDtl?.WatchListItemID}&IMDB_Poster=${result[0].IMDB_Poster}`;
+
+               axios.put(queryURL)
+                    .then((res: AxiosResponse<IWatchListItem>) => {
+                         setWatchListItemsSortingCheck(APIStatus.Idle);
+                    })
+                    .catch((err: Error) => {
+                         //alert(`The error ${err.message} occurred while updating the item detail`);
+                    });
+          }
+     }
 
      const saveClickHandler = async () => {
           if (demoMode) {
@@ -516,7 +537,6 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
                                                   }
                                              </div>
 
-
                                              <div className="narrow card"></div>
 
                                              <div className="narrow card no-width">
@@ -574,6 +594,14 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
                                                        <input className={`inputStyle lightMode`} value={addWatchListItemDtl?.ItemNotes} onChange={(event: React.ChangeEvent<HTMLInputElement>) => addWatchListItemDetailChangeHandler("ItemNotes", event.target.value)} />
                                                   }
                                              </div>
+
+                                             {!isAdding && !isEditing && typeof watchListItemDtl !== "undefined" && watchListItemDtl !== null &&
+                                                  <div className={`clickable textLabel ${!darkMode ? " lightMode" : " darkMode"}`}>
+                                                       <a onClick={() => reloadImageClickHandler(watchListItemDtl.WatchListItemID)}>
+                                                            Reload Image
+                                                       </a>
+                                                  </div>
+                                             }
 
                                              {(isAdding || isEditing) &&
                                                   <>

@@ -50,8 +50,8 @@ export async function PUT(request: NextRequest) {
 
                     const result = await getIMDBDetails(id);
 
-                    if (result[0] === "OK" && result[1][0] === "OK") {
-                         imdb_json = JSON.stringify(result[1][1]);
+                    if (result !== null) {
+                         imdb_json = JSON.stringify(result);
                     }
                }
           }

@@ -8,7 +8,6 @@ export async function PUT(request: NextRequest) {
      }
 
      const searchParams = request.nextUrl.searchParams;
-     const body = await request.json();
 
      const watchListItemID = searchParams.get("WatchListItemID");
      const name = searchParams.get("WatchListItemName");

@@ -28,7 +28,7 @@ interface AutoCompleteWatchListItem {
 
 export default function WatchListDtl() {
      const {
-          BrokenImageIconComponent, CancelIconComponent, EditIconComponent, SaveIconComponent, darkMode, demoMode, imdbSearchEnabled, isAdding, isEditing, isLoading, pullToRefreshEnabled, recommendationsEnabled, setErrorMessage, setIsAdding, setIsEditing, setIsError, setStillWatching, setWatchListSortingCheck, showSearch, stillWatching, watchListSortDirection, watchListSources
+          BrokenImageIconComponent, CancelIconComponent, EditIconComponent, SaveIconComponent, darkMode, demoMode, getWatchList, imdbSearchEnabled, isAdding, isEditing, isLoading, pullToRefreshEnabled, recommendationsEnabled, setErrorMessage, setIsAdding, setIsEditing, setIsError, setStillWatching, showSearch, stillWatching, watchListSortDirection, watchListSources
      } = useContext(WatchListDtlContext) as WatchListDtlContextType
 
      const currentDate = new Date().toLocaleDateString();
@@ -150,7 +150,7 @@ export default function WatchListDtl() {
           setOriginalWatchListDtl(null);
 
           if (addModified || editModified) {
-               setWatchListSortingCheck(APIStatus.Idle)
+               getWatchList();
           }
 
           pullToRefreshEnabled(true);
@@ -221,6 +221,11 @@ export default function WatchListDtl() {
                     return;
                }
 
+               if (typeof addWatchListDtl.Season !== "undefined" && addWatchListDtl.Season === 0) {
+                    alert("Please enter the season");
+                    return;
+               }
+
                if (addWatchListDtl.WatchListSourceID === -1) {
                     alert("Please select the source");
                     return;
@@ -252,7 +257,7 @@ export default function WatchListDtl() {
                          alert(`The error ${res.data[1]} occurred while adding the detail`);
                     } else {
                          setIsAdding(false);
-                         setWatchListSortingCheck(APIStatus.Idle); // Initiate WL to re download the data
+                         getWatchList();
                          addingStarted = false;
 
                          if (typeof addWatchListDtl.EndDate !== "undefined" && !stillWatching) {
@@ -299,6 +304,11 @@ export default function WatchListDtl() {
 
                if (watchListDtl.StartDate === "" && watchListDtl.Archived !== 1) {
                     alert("Please enter the start date");
+                    return;
+               }
+
+               if (typeof watchListDtl.Season !== "undefined" && watchListDtl.Season === 0) {
+                    alert("Please enter the season");
                     return;
                }
 

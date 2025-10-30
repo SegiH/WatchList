@@ -18,6 +18,71 @@ export const defaultSources = ['Amazon', 'Hulu', 'Movie Theatre', 'Netflix', 'Pl
 const secretKey = typeof process.env.SECRET !== "undefined" ? String(process.env.SECRET) : "";
 const sessionDuration = 604800000;
 
+//const metaDataKeys = ["Actors", "Director", "Genre", "imdbRating", "imdbVotes", "Language", "Rated", "Released", "Runtime", "Total Seasons", "Writer", "Year"];
+
+export const metaSearch = {
+     "Actors": {
+          Key: "Actors",
+          Label: "By Actor",
+          MatchType: "Partial"
+     },
+     "Director": {
+          Key: "Director",
+          Label: "By Director",
+          MatchType: "Partial"
+     },
+     "Genre": {
+          Key: "Genre",
+          Label: "By Genre",
+          MatchType: "Partial"
+     },
+     "imdbRating": {
+          Key: "imdbRating",
+          Label: "By IMDB Rating",
+          MatchType: "Exact"
+     },
+     "imdbVotes": {
+          Key: "imdbVotes",
+          Label: "By # of IMDB Votes",
+          MatchType: "Exact"
+     },
+     "Language": {
+          Key: "Language",
+          Label: "By Language",
+          MatchType: "Partial"
+     },
+     "Rated": {
+          Key: "Rated",
+          Label: "By Rating",
+          MatchType: "Exact"
+     },
+     "Released": {
+          Key: "Released",
+          Label: "By Release Date",
+          MatchType: "Exact"
+     },
+     "Runtime": {
+          Key: "Runtime",
+          Label: "By Runtime",
+          MatchType: "Exact"
+     },
+     "totalSeasons": {
+          Key: "totalSeasons",
+          Label: "By # of Seasons",
+          MatchType: "Exact"
+     },
+     "Writer": {
+          Key: "Writer",
+          Label: "By Writer",
+          MatchType: "Partial"
+     },
+     "Year": {
+          Key: "Year",
+          Label: "By Year",
+          MatchType: "Partial"
+     }
+}
+
 export const addUser = async (request: NextRequest, isNewInstance = false) => {
      const searchParams = request.nextUrl.searchParams;
 
@@ -130,6 +195,254 @@ export const getIMDBDetails = async (imdb_id: string) => {
      const result = await fetchData(options);
 
      return result;
+}
+
+export const generateMetaData = async () => {
+     const db: any = await getDB();
+
+     const watchListItemsDB = db.WatchListItems;
+
+     const yearsValues: any = [];
+     const yearArrayValues: any = []; // raw unsorted values
+     const ratingsValues: any = [];
+     const releaseDateValues: any = [];
+     const runtimeValues: any = [];
+     const genreArrayValues: any = []; // raw unsorted values
+     const genreValues: any = [];
+     const directorValues: any = [];
+     const writerArrayValues: any = [];
+     const writerValues: any = [];
+     const actorArrayValues: any = [];
+     const actorValues: any = [];
+     const languageArrayValues: any = [];
+     const languageValues: any = [];
+     const imdbRatingValues: any = [];
+     const imdbVotesValues: any = [];
+     const totalSeasonsValues: any = [];
+
+     watchListItemsDB.map((watchListItem: IWatchListItem) => {
+          if (typeof watchListItem.IMDB_JSON !== "undefined") {
+               try {
+                    const WLIPayload: any = JSON.parse(watchListItem.IMDB_JSON);
+
+                    // Map these fields so they can be used in a multi select
+
+                    // Show rating like TV-MA
+                    if (typeof WLIPayload["Rated"] !== "undefined" && ratingsValues.findIndex(obj => obj.value === WLIPayload["Rated"]) === -1) {
+                         ratingsValues.push({ value: WLIPayload["Rated"], label: WLIPayload["Rated"] });
+                    }
+
+                    if (typeof WLIPayload["Released"] !== "undefined" && releaseDateValues.findIndex(obj => obj.value === WLIPayload["Released"]) === -1) {
+                         releaseDateValues.push({ value: WLIPayload["Released"], label: WLIPayload["Released"] });
+                    }
+
+                    if (typeof WLIPayload["Runtime"] !== "undefined" && runtimeValues.findIndex(obj => obj.value === WLIPayload["Runtime"]) === -1) {
+                         runtimeValues.push({ value: WLIPayload["Runtime"].replace("S min", " min"), label: WLIPayload["Runtime"].replace("S min", " min") });
+                    }
+
+                    if (typeof WLIPayload["Director"] !== "undefined" && directorValues.findIndex(obj => obj.value === WLIPayload["Director"]) === -1) {
+                         directorValues.push({ value: WLIPayload["Director"], label: WLIPayload["Director"] });
+                    }
+
+                    if (typeof WLIPayload["imdbRating"] !== "undefined" && imdbRatingValues.findIndex(obj => obj.value === WLIPayload["imdbRating"]) === -1) {
+                         imdbRatingValues.push({ value: WLIPayload["imdbRating"], label: WLIPayload["imdbRating"] });
+                    }
+
+                    if (typeof WLIPayload["imdbVotes"] !== "undefined" && imdbVotesValues.findIndex(obj => obj.value === WLIPayload["imdbVotes"]) === -1) {
+                         imdbVotesValues.push({ value: WLIPayload["imdbVotes"], label: WLIPayload["imdbVotes"] });
+                    }
+
+                    if (typeof WLIPayload["totalSeasons"] !== "undefined" && totalSeasonsValues.findIndex(obj => obj.value === WLIPayload["totalSeasons"]) === -1) {
+                         totalSeasonsValues.push({ value: WLIPayload["totalSeasons"], label: WLIPayload["totalSeasons"] });
+                    }
+
+                    // Do not map these values with value and label keys because they need to be processed
+                    if (typeof WLIPayload["Year"] !== "undefined" && yearArrayValues.indexOf(WLIPayload["Year"]) === -1) {
+                         yearArrayValues.push(WLIPayload["Year"]);
+                    }
+
+                    if (typeof WLIPayload["Genre"] !== "undefined" && genreArrayValues.indexOf(WLIPayload["Genre"]) === -1) {
+                         genreArrayValues.push(WLIPayload["Genre"]);
+                    }
+
+                    if (typeof WLIPayload["Writer"] !== "undefined" && writerArrayValues.indexOf(WLIPayload["Writer"]) === -1) {
+                         writerArrayValues.push(WLIPayload["Writer"]);
+                    }
+
+                    if (typeof WLIPayload["Actors"] !== "undefined" && actorArrayValues.indexOf(WLIPayload["Actors"]) === -1) {
+                         actorArrayValues.push(WLIPayload["Actors"]);
+                    }
+
+                    if (typeof WLIPayload["Language"] !== "undefined" && languageArrayValues.indexOf(WLIPayload["Language"]) === -1) {
+                         languageArrayValues.push(WLIPayload["Language"]);
+                    }
+               } catch (e) {
+                    console.log("error id=" + watchListItem.WatchListItemID + `${e.message}`)
+               }
+          }
+     });
+
+     for (let i = 0; i < yearArrayValues.length; i++) {
+          const rawVal = yearArrayValues[i];
+
+          switch (rawVal.length) {
+               case 4: // Single year show/movie
+                    if (yearsValues.findIndex(obj => String(obj.value) === String(parseInt(rawVal.trim(), 10))) === -1) {
+                         yearsValues.push({ value: parseInt(rawVal.trim(), 10), label: parseInt(rawVal.trim(), 10) });
+                    }
+
+                    break;
+               case 5: // Ongoing show/movie
+                    const intVal = parseInt(rawVal.slice(0, 4).trim());
+
+                    if (yearsValues.findIndex(obj => String(obj.value) === String(intVal)) === -1) {
+                         yearsValues.push({ value: intVal, label: intVal });
+                    }
+
+                    break;
+               case 9:
+                    const startYear = parseInt(rawVal.slice(0, 4).trim());
+                    const endYear = parseInt(rawVal.slice(5, 9).trim());
+
+                    for (let yearCounter = startYear; yearCounter <= endYear; yearCounter++) {
+                         if (yearsValues.findIndex(obj => String(obj.value) === String(yearCounter)) === -1) {
+                              yearsValues.push({ value: yearCounter, label: yearCounter });
+                         }
+                    }
+                    break
+          }
+     }
+
+     for (let i = 0; i < genreArrayValues.length; i++) {
+          const genreSpl = genreArrayValues[i].split(",");
+
+          for (let j = 0; j < genreSpl.length; j++) {
+               const rawVal = String(genreSpl[j]).trim();
+
+               if (typeof genreSpl[j] !== "undefined" && genreValues.findIndex(obj => String(obj.value) === String(rawVal)) === -1) {
+                    genreValues.push({ value: rawVal, label: rawVal });
+               }
+          }
+     }
+
+     for (let i = 0; i < writerArrayValues.length; i++) {
+          const writerSpl = writerArrayValues[i].split(",");
+
+          for (let j = 0; j < writerSpl.length; j++) {
+               const rawVal = String(writerSpl[j]).trim();
+
+               if (typeof writerSpl[j] !== "undefined" && writerValues.findIndex(obj => String(obj.value) === String(rawVal)) === -1) {
+                    writerValues.push({ value: rawVal, label: rawVal });
+               }
+          }
+     }
+
+     for (let i = 0; i < actorArrayValues.length; i++) {
+          const actorSpl = actorArrayValues[i].split(",");
+
+          for (let j = 0; j < actorSpl.length; j++) {
+               const rawVal = String(actorSpl[j]).trim();
+
+               if (typeof actorSpl[j] !== "undefined" && actorValues.findIndex(obj => String(obj.value) === String(rawVal)) === -1) {
+                    actorValues.push({ value: rawVal, label: rawVal });
+               }
+          }
+     }
+
+     for (let i = 0; i < languageArrayValues.length; i++) {
+          const languageSpl = languageArrayValues[i].split(",");
+
+          for (let j = 0; j < languageSpl.length; j++) {
+               const rawVal = String(languageSpl[j]).trim();
+
+               if (typeof languageSpl[j] !== "undefined" && languageValues.findIndex(obj => String(obj.value) === String(rawVal)) === -1) {
+                    languageValues.push({ value: rawVal, label: rawVal });
+               }
+          }
+     }
+
+     const sortedActors = actorValues.sort((a, b) => {
+          return String(a.value).localeCompare(String(b.value));
+     });
+
+     const sortedDirectors = directorValues.sort((a, b) => {
+          return String(a.value).localeCompare(String(b.value));
+     });
+
+     const sortedGenres = genreValues.sort((a, b) => {
+          return String(a.value).localeCompare(String(b.value));
+     });
+
+     const sortedIMDBRatings = imdbRatingValues.sort((a, b) => {
+          if (a.value === 'N/A') return 1; // Ensure 'N/A' goes last
+          if (b.value === 'N/A') return -1; // Ensure 'N/A' goes last
+          return parseFloat(a.value) - parseFloat(b.value); // Sort by numerical value
+     });
+
+     const sortedIMDBVotes = imdbVotesValues.sort((a, b) => {
+          // Remove commas and convert to numbers
+          const numA = parseFloat(a.value.replace(/,/g, ''));
+          const numB = parseFloat(b.value.replace(/,/g, ''));
+
+          return numA - numB; // Compare numerically
+     });
+
+     const sortedLanguages = languageValues.sort((a, b) => {
+          return String(a.value).localeCompare(String(b.value));
+     });
+
+     const sortedRatings = ratingsValues.sort((a, b) => {
+          return String(a.value).localeCompare(String(b.value));
+     });
+
+     const sortedReleaseDates = releaseDateValues.sort((a, b) => {
+          return new Date(a.value).getTime() - new Date(b.value).getTime();
+     });
+
+     const sortedRuntimes = runtimeValues.sort((a, b) => {
+          if (a.value === 'N/A') return 1; // Ensure 'N/A' goes last
+          if (b.value === 'N/A') return -1; // Ensure 'N/A' goes last
+
+          const aValue = parseInt(a.value.replace("S min", "").replace(" min", ""), 10);
+          const bValue = parseInt(b.value.replace("S min", "").replace(" min", ""), 10);
+
+          return aValue - bValue;
+     });
+
+     const totalSeasonsValuesSorted = totalSeasonsValues.sort((a, b) => {
+          const numA = Number(a.value);
+          const numB = Number(b.value);
+
+          // Handle "N/A" cases explicitly
+          if (isNaN(numA) && isNaN(numB)) return 0; // both N/A
+          if (isNaN(numA)) return 1; // put N/A last
+          if (isNaN(numB)) return -1; // put N/A last
+
+          return numA - numB; // numeric sort
+     });
+
+     const sortedWriters = writerValues.sort((a, b) => {
+          return String(a.value).localeCompare(String(b.value));
+     });
+
+     const sortedYears = yearsValues.sort((a, b) => {
+          return String(a.value).localeCompare(String(b.value));
+     });
+
+     metaSearch["Actors"]["Values"] = sortedActors;
+     metaSearch["Director"]["Values"] = sortedDirectors;
+     metaSearch["Genre"]["Values"] = sortedGenres;
+     metaSearch["imdbRating"]["Values"] = sortedIMDBRatings;
+     metaSearch["imdbVotes"]["Values"] = sortedIMDBVotes;
+     metaSearch["Language"]["Values"] = sortedLanguages;
+     metaSearch["Rated"]["Values"] = sortedRatings;
+     metaSearch["Released"]["Values"] = sortedReleaseDates;
+     metaSearch["Runtime"]["Values"] = sortedRuntimes;
+     metaSearch["totalSeasons"]["Values"] = totalSeasonsValuesSorted;
+     metaSearch["Writer"]["Values"] = sortedWriters;
+     metaSearch["Year"]["Values"] = sortedYears;
+
+     return metaSearch;
 }
 
 // This method will try to get the IMDB poster image for a given item based on the IMDBURL but will NOT save this back to the database.
@@ -450,6 +763,33 @@ export const logMessage = async (message, noDate = false) => { // No Date says d
                console.error('Error appending to log file:', err);
           }
      });
+}
+
+export const matchMetadata = (IMDB_JSON, metaDataFilters) => {
+     let metadataMatch: boolean = false;
+     let matchCount = 0;
+
+     if (metaDataFilters !== null) {
+          Object.keys(metaDataFilters).forEach((metaDataKey, index) => {
+               for (let i = 0; i < metaDataFilters[metaDataKey].length; i++) {
+                    if (typeof IMDB_JSON !== "undefined" && IMDB_JSON !== null && typeof IMDB_JSON[metaDataKey] !== "undefined" && IMDB_JSON[metaDataKey] !== null
+                         && (
+                              metaSearch[metaDataKey]["MatchType"] === "Partial" && IMDB_JSON[metaDataKey].includes(metaDataFilters[metaDataKey][i]["value"])
+                              ||
+                              metaSearch[metaDataKey]["MatchType"] === "Exact" && IMDB_JSON[metaDataKey] === metaDataFilters[metaDataKey][i]["value"]
+                         )
+                    ) {
+                         matchCount++;
+                    }
+               }
+          });
+
+          if (matchCount === Object.keys(metaDataFilters).length) {
+               metadataMatch = true;
+          }
+     }
+
+     return metadataMatch;
 }
 
 export const validateSettings = async () => {

@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useContext, useEffect, useRef, useState } from "react";
 
 import SearchIMDB from "./components/SearchIMDB";
+import MetaDataFilter from "./components/MetadataFilter";
 import Settings from "./components/Settings";
 import IWatchListSource from "./interfaces/IWatchListSource";
 import IWatchListType from "./interfaces/IWatchListType";
@@ -18,14 +19,19 @@ import { SharedLayoutContextType } from "./interfaces/contexts/SharedLayoutConte
 
 const SharedLayout = () => {
      const {
-          AddIconComponent, SearchIconComponent, SettingsIconComponent, activeRoute, darkMode, demoMode, hideTabs, imdbSearchEnabled, isAdmin, isEnabled, isError, isLoading, loggedInCheck, openDetailClickHandler, routeList, saveOptions, searchInputVisible, searchModalVisible, setActiveRoute, setCurrentPage, setIsLoading, setSearchInputVisible, setSearchModalVisible, setSearchTerm, setSourceFilter, setStillWatching, setTypeFilter, setWatchListSortColumn, setWatchListSortDirection, settingsVisible, showSettings, sourceFilter, stillWatching, typeFilter, watchListItemsSortColumns, watchListSortColumn, watchListSortColumns, watchListSortDirection, watchListSources, watchListSourcesLoadingCheck, watchListTypes, watchListTypesLoadingCheck
+          AddIconComponent, SearchIconComponent, SettingsIconComponent, activeRoute, darkMode, demoMode, hideTabs, imdbSearchEnabled, isAdmin, isEnabled, isError, isLoading, loggedInCheck, metaDataFilters, openDetailClickHandler, routeList, setMetaDataFilters, saveOptions, searchInputVisible, searchModalVisible, setActiveRoute, setCurrentPage, setIsLoading, setSearchInputVisible, setSearchModalVisible, setSearchTerm, setSourceFilter, setStillWatching, setTypeFilter, setWatchListSortColumn, setWatchListSortDirection, settingsVisible, showSettings, sourceFilter, stillWatching, typeFilter, watchListItemsSortColumns, watchListSortColumn, watchListSortColumns, watchListSortDirection, watchListSources, watchListSourcesLoadingCheck, watchListTypes, watchListTypesLoadingCheck
      } = useContext(SharedLayoutContext) as SharedLayoutContextType
 
      const [isClient, setIsClient] = useState(false);
+     const [metadataFiltervisible, setMetadataFiltervisible] = useState(false);
      const [newSearchTerm, setNewSearchTerm] = useState("");
 
      const inputRef = useRef<HTMLInputElement>(null);
      const router = useRouter();
+
+     const closeMetaDataFilter = async () => {
+          setMetadataFiltervisible(false);
+     }
 
      const handleKeyUp = (event: React.KeyboardEvent<HTMLDivElement>) => {
           if (event.key === 'Enter') {
@@ -154,7 +160,9 @@ const SharedLayout = () => {
                                                        <input className={`inputStyle lightMode`} ref={inputRef} value={newSearchTerm} onKeyUp={handleKeyUp} onChange={(event) => setNewSearchTerm(event.target.value)} />
                                                   </span>
 
-                                                  <Button variant="contained" className={`searchButton ${searchInputVisible ? "visible" : ""}`} style={{ marginLeft: "30px" }} onClick={() => searchTermGoClickHandler()}>Go</Button>
+                                                  {imdbSearchEnabled &&
+                                                       <Button variant="contained" className={`searchButton ${searchInputVisible ? "visible" : ""}`} style={{ marginLeft: "30px" }} onClick={() => searchTermGoClickHandler()}>Go</Button>
+                                                  }
                                              </>
                                         }
 
@@ -283,6 +291,8 @@ const SharedLayout = () => {
                                                             <option value="DESC">DESC</option>
                                                        </select>
                                                   </span>
+
+                                                  <Button variant="contained" style={{ marginLeft: "30px" }} onClick={() => setMetadataFiltervisible(true)}>More</Button>
                                              </>
                                         }
 
@@ -297,6 +307,10 @@ const SharedLayout = () => {
 
                                    {settingsVisible &&
                                         <Settings />
+                                   }
+
+                                   {imdbSearchEnabled && metadataFiltervisible &&
+                                        <MetaDataFilter closeMetaDataFilter={closeMetaDataFilter} darkMode={darkMode} metaDataFilters={metaDataFilters} setMetaDataFilters={setMetaDataFilters} />
                                    }
                               </>
                          }

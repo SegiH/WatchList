@@ -1,5 +1,5 @@
 import { NextRequest } from 'next/server';
-import { getDB, getUserID, isLoggedIn, logMessage } from "../lib";
+import { getDB, getUserID, isLoggedIn, logMessage, matchMetadata, metaSearch } from "../lib";
 import IWatchList from '@/app/interfaces/IWatchList';
 import IWatchListItem from '@/app/interfaces/IWatchListItem';
 import IWatchListType from '@/app/interfaces/IWatchListType';
@@ -23,6 +23,8 @@ export async function GET(request: NextRequest) {
      const sourceFilter = searchParams.get("SourceFilter"); // WL.WatchListSourceID
      const stillWatching = searchParams.get("StillWatching"); // WL.EndDate == null
      const typeFilter = searchParams.get("TypeFilter"); // WLI.WatchListTypeID
+     const metaDataFiltersJSONStr = searchParams.get("MetadataFilters");
+     const metaDataFilters = metaDataFiltersJSONStr !== null ? JSON.parse(decodeURIComponent(metaDataFiltersJSONStr)) : null;
 
      // Order params
      const sortColumn = searchParams.get("SortColumn");
@@ -71,6 +73,17 @@ export async function GET(request: NextRequest) {
                     }
                })
                .filter((watchList: IWatchList) => {
+                    const thisWLI = watchListItemsDB
+                         .filter((watchListItem: IWatchListItem) => {
+                              return (
+                                   watchListItem.WatchListItemID === watchList.WatchListItemID
+                              )
+                         });
+
+                    const IMDB_JSON = thisWLI.length === 1 && typeof thisWLI[0]["IMDB_JSON"] !== "undefined" ? JSON.parse(thisWLI[0]["IMDB_JSON"]) : null;
+
+                    const metadataMatch = matchMetadata(IMDB_JSON, metaDataFilters);
+
                     return (
                          (allData == "true") ||
                          (
@@ -81,14 +94,18 @@ export async function GET(request: NextRequest) {
                                    )
                               )
                          )
-                         &&
-                         (stillWatching !== "true" || (stillWatching === "true" && (watchList.EndDate === "" || watchList.EndDate == null)))
+                         && // When metadata filters are passed, StillWatcihng will prevent any results from showing up most of the time. 
+                         ((stillWatching !== "true") || (stillWatching === "true" && metaDataFiltersJSONStr === null && (watchList.EndDate === "" || watchList.EndDate == null)))
                          &&
                          (((archivedVisible !== "true" && watchList.Archived !== 1) || (archivedVisible === "true" && watchList.Archived === 1)))
                          &&
                          (sourceFilter === null || (sourceFilter !== null && String(sourceFilter) === String(watchList.WatchListSourceID)))
                          &&
                          (typeFilter === null || (typeFilter !== null && watchListItemsDB.filter((watchListItem: IWatchListItem) => { return watchListItem.WatchListItemID === watchList.WatchListItemID && String(watchListItem.WatchListTypeID) === String(typeFilter) }).length > 0))
+                         &&
+                         (metaDataFilters === null ||
+                              (metaDataFilters !== null && metadataMatch)
+                         )
                     )
                })
                .map((watchList: IWatchList) => {

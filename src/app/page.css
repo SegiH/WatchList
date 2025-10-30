@@ -458,6 +458,14 @@ table.simpleTable:last-child {
      list-style-type: none
 }
 
+.metaDataFilterButtons {
+     display: flex;
+     justify-content: space-between;
+     align-items: center;
+     padding: 10px;
+     width: 100%;
+}
+
 .minWidth105 {
      min-width: 105px !important;
 }
@@ -469,7 +477,11 @@ table.simpleTable:last-child {
 .modal {
      height: 100%;
      left: 0;
-     overflow: auto;
+     /*overflow: auto;*/
+     overflow: hidden;
+     justify-content: center;
+     align-items: center;
+
      padding-top: 100px;
      position: fixed;
      top: 0;
@@ -485,6 +497,8 @@ table.simpleTable:last-child {
      width: fit-content;
      min-height: 225px;
      min-width: 150px;
+     overflow-y: auto;
+     max-height: 80vh;
 }
 
 .narrow {
@@ -520,6 +534,10 @@ table.simpleTable:last-child {
 
 .options .searchIcon {
      margin-right: 35px;
+}
+
+.overflowY {
+     overflow-y: scroll;
 }
 
 .poster-detail {

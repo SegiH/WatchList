@@ -16,6 +16,7 @@ export interface SharedLayoutContextType {
      isError: boolean;
      isLoading: boolean;
      loggedInCheck: string;
+     metaDataFilters: any[];
      openDetailClickHandler: (value: number, activeRouteOverride?: string) => void;
      routeList: IRouteList;
      saveOptions: (newOptions: IUserOption) => void;
@@ -25,6 +26,7 @@ export interface SharedLayoutContextType {
      setActiveRoute: (value: string) => void;
      setCurrentPage: (value: number) => void;
      setIsLoading: (value: boolean) => void;
+     setMetaDataFilters: (value: []) => void;
      setSearchInputVisible: (value: boolean) => void;
      setSearchModalVisible: (value: boolean) => void;
      setSearchTerm: (value: string) => void;

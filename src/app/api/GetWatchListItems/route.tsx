@@ -1,5 +1,5 @@
 import { NextRequest } from 'next/server';
-import { getDB, isLoggedIn, logMessage, writeDB } from "../lib";
+import { getDB, isLoggedIn, logMessage, matchMetadata, metaSearch } from "../lib";
 import IWatchListType from '@/app/interfaces/IWatchListType';
 import IWatchListItem from '@/app/interfaces/IWatchListItem';
 import { sendCompressedJsonBrotli, sendCompressedJsonGZip } from '@/app/proxy';
@@ -18,6 +18,8 @@ export async function GET(request: NextRequest) {
      const searchTerm = searchParams.get("SearchTerm");
      const showMissingArtwork = searchParams.get("ShowMissingArtwork");
      const typeFilter = searchParams.get("TypeFilter");
+     const metaDataFiltersJSONStr = searchParams.get("MetadataFilters");
+     const metaDataFilters = metaDataFiltersJSONStr !== null ? JSON.parse(decodeURIComponent(metaDataFiltersJSONStr)) : null;
 
      // Order params
      const sortColumn = searchParams.get("SortColumn");
@@ -58,6 +60,10 @@ export async function GET(request: NextRequest) {
                     }
                })
                .filter((watchListItem: IWatchListItem) => {
+                    const IMDB_JSON = typeof watchListItem.IMDB_JSON !== "undefined" ? JSON.parse(watchListItem.IMDB_JSON) : null;
+
+                    const metadataMatch = matchMetadata(IMDB_JSON, metaDataFilters);
+
                     return (
                          (allData === "true") ||
                          (
@@ -74,6 +80,10 @@ export async function GET(request: NextRequest) {
                               ((archivedVisible !== "true" || (archivedVisible === "true" && watchListItem.Archived === 1)))
                               &&
                               (typeFilter === null || (typeFilter !== null && String(watchListItem.WatchListTypeID) === String(typeFilter)))
+                              &&
+                              (metaDataFilters === null ||
+                                   (metaDataFilters !== null && metadataMatch)
+                              )
                          )
                     )
                })
@@ -87,7 +97,7 @@ export async function GET(request: NextRequest) {
                     watchListItem.WatchListTypeName = watchListType.length > 0 ? watchListType[0].WatchListTypeName : "";
 
                     return watchListItem;
-               })
+               });
 
           if (allData != "true" && startIndex != null && endIndex !== null && results.length > (parseInt(endIndex, 10) - parseInt(startIndex, 10))) {
                results = results.slice(startIndex, endIndex);

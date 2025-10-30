@@ -477,16 +477,18 @@ table.simpleTable:last-child {
 .modal {
      height: 100%;
      left: 0;
-     /*overflow: auto;*/
-     overflow: hidden;
-     justify-content: center;
-     align-items: center;
-
+     overflow: auto;
      padding-top: 100px;
      position: fixed;
      top: 0;
      width: 100%;
      z-index: 999;
+}
+
+.modal.scrollable {
+     overflow: hidden !important;
+     justify-content: center;
+     align-items: center;
 }
 
 .modal-content {
@@ -497,6 +499,9 @@ table.simpleTable:last-child {
      width: fit-content;
      min-height: 225px;
      min-width: 150px;
+}
+
+.modal-content.scrollable {
      overflow-y: auto;
      max-height: 80vh;
 }

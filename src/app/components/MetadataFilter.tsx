@@ -81,8 +81,8 @@ const MetaDataFilter = (props) => {
     return (
         <>
             {metaDataLoadingCheck === APIStatus.Success &&
-                <div className="modal">
-                    <div className={`modal-content overflowY settingsPanel textLabel ${!props.darkMode ? " lightMode" : " darkMode"}`} style={{ overflowY: "auto" }}>
+                <div className="modal scrollable">
+                    <div className={`modal-content scrollable overflowY settingsPanel textLabel ${!props.darkMode ? " lightMode" : " darkMode"}`} style={{ overflowY: "auto" }}>
                         <div>Metadata Filter</div>
 
                         <div className="metaDataFilterButtons">

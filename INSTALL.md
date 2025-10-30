@@ -88,7 +88,7 @@ Requirements: Node 18.19.1 or higher
 1. After completing this setup up, you should have a file name database.json. This is your WatchList database. Make sure to back up this file from time to time.
 
 ## Searching IMDB
-WatchList will allow you to search for a movie or tv show on IMDB.com. To do this, you need to create a free RAPIDAPI Key. 
+WatchList will allow you to search for a movie or tv show on IMDB.com. To do this, you need to create a free RAPIDAPI Key. Using RapidAPI allows searching with more specific filters by Actor, Director, Genre and many more filters.
 
 Note: RapidAPI allows you 1000 free searches per month. In order for this API to work, you have to "subscribe" by adding your credit card with RapidAPI. It appears to work similarly to Amazon where they won't charge you if you do not go over your allotted API usage. If you do not add a credit card, the API will return an "Unsubscribed" error when you try to use it. I have never been charged for my usage. Once you have used 1000 searches, you will receive an error that you have exceeded your daily usage.
 

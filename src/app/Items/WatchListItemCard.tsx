@@ -29,8 +29,8 @@ export default function WatchListItemCard({ currentWatchListItem }: WatchListCar
 
         const result = await getMissingPoster(currentWatchListItem.WatchListItemID);
 
-        if (result !== null && result[0].Status === "OK") {
-            newWatchListItem["IMDB_Poster"] = result[0].IMDB_Poster;
+        if (typeof result !== "undefined" && result !== null && result[0]["Status"] === "OK") {
+            newWatchListItem["IMDB_Poster"] = result[0]["IMDB_Poster"];
             newWatchListItem["IMDB_Poster_Error"] = false;
         } else {
             newWatchListItem["IMDB_Poster_Error"] = true;

@@ -49,14 +49,10 @@ export default function WatchListCard({ currentWatchList }: WatchListCardProps) 
 
         const newWatchList = newWatchListResult[0];
 
-        /*if (newWatchList["IMDB_Poster_Error"] == true) {
-            return;
-        }*/
-
         const result = await getMissingPoster(currentWatchList.WatchListItemID);
 
-        if (result !== null && result[0].Status === "OK") {
-            newWatchList["IMDB_Poster"] = result[0].IMDB_Poster;
+        if (typeof result !== "undefined" && result !== null && result[0]["Status"] === "OK") {
+            newWatchList["IMDB_Poster"] = result[0]["IMDB_Poster"];
             newWatchList["IMDB_Poster_Error"] = false;
         } else {
             newWatchList["IMDB_Poster_Error"] = true;

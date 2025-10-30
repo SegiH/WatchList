@@ -128,7 +128,7 @@ const DataProvider = ({
      const [clientCheck, setClientCheck] = useState(APIStatus.Idle);
      const [currentPage, setCurrentPage] = useState(1);
      const [darkMode, setDarkMode] = useState(true);
-     const [demoMode, setDemoMode] = useState(false);
+     const [demoMode, setDemoMode] = useState(true);
      const [hideTabs, setHideTabs] = useState(false);
      const [imdbSearchEnabled, setImdbSearchEnabled] = useState(false);
      const [isAdding, setIsAdding] = useState(false);
@@ -265,6 +265,10 @@ const DataProvider = ({
      }, []);
 
      const getMissingPoster = async (watchListItemID: number) => {
+          if (demoMode) {
+               return;
+          }
+
           return axios.get(`/api/UpdateMissingPosters?IDs=${watchListItemID}`).then((res: AxiosResponse<IWatchListItem>) => {
                if (res.data[0] === "OK") {
                     return res.data[1];
@@ -645,6 +649,7 @@ const DataProvider = ({
                const demoWatchListPayload = require("./demo/index").demoWatchListPayload;
 
                setWatchList(demoWatchListPayload);
+               setFilteredWatchList(demoWatchListPayload);
                setWatchListSortingCheck(APIStatus.Success);
 
                return;
@@ -668,6 +673,8 @@ const DataProvider = ({
                const demoWatchListItemsPayload = require("./demo/index").demoWatchListItemsPayload;
 
                setWatchListItems(demoWatchListItemsPayload);
+               setFilteredWatchListItems(demoWatchListItemsPayload);
+               setWatchListItemsSortingCheck(APIStatus.Success);
                return;
           }
      }, [demoMode, isLoggedInCheck]);
@@ -878,6 +885,27 @@ const DataProvider = ({
 
                     setBuildDate(newBuildDate);
                });
+
+          if (demoMode) {
+               setImdbSearchEnabled(false);
+               setRecommendationsEnabled(false);
+               setLoggedInCheck(APIStatus.Success);
+
+               const newUserData = Object.assign({}, userData);
+               newUserData.UserID = 0;
+               newUserData.Username = "";
+               newUserData.RealName = "";
+
+               setUserData(newUserData);
+               setActiveRoute("WatchList");
+               setCurrentPage(1);
+
+               router.push("/WatchList");
+
+               setIsLoading(false);
+
+               return;
+          }
 
           /* Checks if IMDB search */
           axios.get(`/api/IsIMDBSearchEnabled`)

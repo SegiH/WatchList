@@ -7,6 +7,7 @@ export interface ItemsDtlContextType {
      demoMode: boolean;
      EditIconComponent: React.ReactNode;
      getMissingPoster: (watchListItemID: number) => void;
+     getWatchListItems: () => void;
      isAdding: boolean;
      isEnabled: (value: string) => boolean;
      isEditing: boolean;
@@ -17,6 +18,5 @@ export interface ItemsDtlContextType {
      setIsEditing: (value: boolean) => void;
      setIsError: (value: boolean) => void;
      setErrorMessage: (value: string) => void;
-     setWatchListItemsSortingCheck: (value: string) => void;
      watchListTypes: IWatchListType[];
 }

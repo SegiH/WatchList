@@ -12,7 +12,7 @@ import { ItemsDtlContextType } from "@/app/interfaces/contexts/ItemsDtlContextTy
 
 export default function ItemsDtl() {
      const {
-          BrokenImageIconComponent, CancelIconComponent, EditIconComponent, SaveIconComponent, darkMode, demoMode, getMissingPoster, isAdding, isEditing, isEnabled, isLoading, pullToRefreshEnabled, setErrorMessage, setIsAdding, setIsEditing, setIsError, setWatchListItemsSortingCheck, watchListTypes
+          BrokenImageIconComponent, CancelIconComponent, EditIconComponent, SaveIconComponent, darkMode, demoMode, getMissingPoster, getWatchListItems, isAdding, isEditing, isEnabled, isLoading, pullToRefreshEnabled, setErrorMessage, setIsAdding, setIsEditing, setIsError, watchListTypes
      } = useContext(ItemsDtlContext) as ItemsDtlContextType
 
      const [addWatchListItemDtl, setAddWatchListItemDtl] = useState<IWatchListItem | null>();
@@ -64,7 +64,7 @@ export default function ItemsDtl() {
           setOriginalWatchListItemDtl(null);
 
           if (addModified || editModified) {
-               setWatchListItemsSortingCheck(APIStatus.Idle);
+               getWatchListItems();
           }
 
           pullToRefreshEnabled(true);
@@ -110,7 +110,7 @@ export default function ItemsDtl() {
 
                axios.put(queryURL)
                     .then((res: AxiosResponse<IWatchListItem>) => {
-                         setWatchListItemsSortingCheck(APIStatus.Idle);
+                         getWatchListItems();
                     })
                     .catch((err: Error) => {
                          //alert(`The error ${err.message} occurred while updating the item detail`);
@@ -252,7 +252,7 @@ export default function ItemsDtl() {
                     if (addNewWatchListPrompt) {
                          setIsAdding(true);
                          router.push(`/WatchList/Dtl?WatchListItemID=${res.data[1]}`);
-                         setWatchListItemsSortingCheck(APIStatus.Idle);
+                         getWatchListItems();
                     }
                }
           })

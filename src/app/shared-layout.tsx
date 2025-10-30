@@ -292,7 +292,9 @@ const SharedLayout = () => {
                                                        </select>
                                                   </span>
 
-                                                  <Button variant="contained" style={{ marginLeft: "30px" }} onClick={() => setMetadataFiltervisible(true)}>More</Button>
+                                                  {imdbSearchEnabled &&
+                                                       <Button variant="contained" style={{ marginLeft: "30px" }} onClick={() => setMetadataFiltervisible(true)}>More</Button>
+                                                  }
                                              </>
                                         }
 

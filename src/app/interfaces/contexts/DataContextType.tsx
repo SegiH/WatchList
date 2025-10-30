@@ -9,6 +9,7 @@ export interface DataContextType {
      bugLogs: IBugLog[];
      darkMode: boolean;
      defaultRoute: string;
+     demoMode: boolean;
      isAdmin: () => boolean;
      setIsError: (value: boolean) => void;
      setErrorMessage: (value: string) => void;

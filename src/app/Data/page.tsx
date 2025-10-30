@@ -13,7 +13,7 @@ import IWatchListItem from "../interfaces/IWatchListItem";
 
 export default function Data() {
     const {
-        bugLogs, darkMode, defaultRoute, isAdmin, setIsError, setErrorMessage, visibleSections, watchList, watchListSortingCheck, watchListItems, watchListItemsSortingCheck, watchListSources, watchListTypes,
+        bugLogs, darkMode, defaultRoute, demoMode, isAdmin, setIsError, setErrorMessage, visibleSections, watchList, watchListSortingCheck, watchListItems, watchListItemsSortingCheck, watchListSources, watchListTypes,
     } = useContext(DataContext) as DataContextType;
 
     const [activeSection, setActiveSection] = useState("");
@@ -234,7 +234,7 @@ export default function Data() {
 
     useEffect(() => {
         // Make sure current user is an admin
-        if (!isAdmin()) {
+        if (!isAdmin() && !demoMode) {
             router.push(defaultRoute)
         }
 

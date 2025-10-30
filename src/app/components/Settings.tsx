@@ -84,7 +84,7 @@ const Settings = () => {
                                         value={visibleSections as any}
                                         defaultValue={visibleSections as any}
                                         onChange={addRemoveVisibleSectionChange}
-                                        options={visibleSectionChoices as any}
+                                        options={visibleSectionChoices.filter((section) => (!demoMode || (demoMode && section["label"] !== "Admin"))) as any}
                                         className="custom-select"
                                         styles={{
                                              control: (provided) => ({

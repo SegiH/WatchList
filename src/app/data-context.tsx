@@ -247,6 +247,7 @@ const DataProvider = ({
           { value: "2", label: 'Stats' },
           ...(String(process.env.NEXT_PUBLIC_DATA_ROUTE_ENABLED) === "true" ? [{ value: "5", label: 'Data' }] : []),
      ];
+
      const [visibleSections, setVisibleSections] = useState([{ value: "2", label: 'Stats' }, { value: "1", label: 'Items' }, ...(String(process.env.NEXT_PUBLIC_DATA_ROUTE_ENABLED) === "true" ? [{ value: "5", label: 'Data' }] : [])]);
 
      const watchListSortColumns = {
@@ -371,7 +372,11 @@ const DataProvider = ({
      }
 
      const isAdmin = () => {
-          return userData.Admin;
+          if (demoMode) {
+               return false;
+          } else {
+               return userData.Admin;
+          }
      }
 
      const isEnabled = (sectionName: string) => {

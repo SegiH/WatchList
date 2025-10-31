@@ -191,6 +191,7 @@ table.simpleTable:last-child {
 }
 
 .closeButtonAdjustment {
+     position: relative;
      top: -24px !important;
 }
 
@@ -322,6 +323,11 @@ table.simpleTable:last-child {
      text-align: center;
      margin-right: 10px;
 }
+
+.imdbCard {
+     width: 100%;
+}
+
 
 .inlineFlex {
      display: inline-flex;
@@ -539,6 +545,10 @@ table.simpleTable:last-child {
 
 .options .searchIcon {
      margin-right: 35px;
+}
+
+.overflowX {
+     overflow-x: scroll;
 }
 
 .overflowY {

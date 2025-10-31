@@ -9,6 +9,7 @@ import { APIStatus, ItemsDtlContext } from "../../data-context";
 import IWatchListItem from "../../interfaces/IWatchListItem";
 import IWatchListType from "../../interfaces/IWatchListType";
 import { ItemsDtlContextType } from "@/app/interfaces/contexts/ItemsDtlContextType";
+import IMDBCard from "@/app/components/IMDBCard";
 
 export default function ItemsDtl() {
      const {
@@ -18,6 +19,7 @@ export default function ItemsDtl() {
      const [addWatchListItemDtl, setAddWatchListItemDtl] = useState<IWatchListItem | null>();
      const [editModified, setEditModified] = useState(false);
      const [addModified, setAddModified] = useState(false);
+     const [imdbCardvisible, setImdbCardvisible] = useState(false);
      const [isClosing, setIsClosing] = useState(false);
      const [originalWatchListItemDtl, setOriginalWatchListItemDtl] = useState<IWatchListItem | null>();
      const [recommendationsVisible, setRecommendationsVisible] = useState(false);
@@ -71,6 +73,14 @@ export default function ItemsDtl() {
 
           setIsClosing(true);
      };
+
+     const closeIMDBCard = () => {
+          setImdbCardvisible(false);
+     }
+
+     const IMDBCardOpenClickHandler = () => {
+          setImdbCardvisible(true);
+     }
 
      const onIMDBPosterChangeHandler = async (URL: string) => {
           const result = await checkURL(URL);
@@ -407,6 +417,8 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
           }
      }, [isClosing, isEnabled, router]);
 
+     const IMDB_JSON = watchListItemDtl?.IMDB_JSON !== null && typeof watchListItemDtl?.IMDB_JSON !== "undefined" && watchListItemDtl?.IMDB_JSON !== "" ? JSON.parse(watchListItemDtl?.IMDB_JSON) : null;
+
      return (
           <>
                {!isLoading && !isClosing && watchListItemDtlLoadingCheck === APIStatus.Success &&
@@ -625,6 +637,10 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
                                                        }
                                                   </>
                                              }
+
+                                             {IMDB_JSON !== null &&
+                                                  <a className="clickable fontStyle" onClick={IMDBCardOpenClickHandler}>IMDB Info</a>
+                                             }
                                         </div>
                                    </div>
                               }
@@ -634,6 +650,10 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
                                         <Recommendations queryTerm={recommendationName} type={recommendationType} setRecommendationName={setRecommendationName} setRecommendationType={setRecommendationName} setRecommendationsVisible={setRecommendationsVisible} />
                                    </>
                               )}
+
+                              {imdbCardvisible &&
+                                   <IMDBCard closeIMDBCard={closeIMDBCard} darkMode={darkMode} IMDB_JSON={IMDB_JSON} />
+                              }
                          </div>
                     </div>
                }

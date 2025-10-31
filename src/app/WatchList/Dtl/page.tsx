@@ -8,6 +8,7 @@ import TextField, { TextFieldProps } from "@mui/material/TextField";
 import { useRouter } from "next/navigation";
 import React, { useCallback, useContext, useEffect, useState } from "react";
 import Recommendations from "../../components/Recommendations";
+import IMDBCard from "../../components/IMDBCard";
 
 import StarIcon from '@mui/icons-material/Star';
 
@@ -39,6 +40,7 @@ export default function WatchListDtl() {
      const [formattedNames, setFormattedNames] = useState<IAutoCompleteOption[]>([]);
      const [formattedNamesWithId, setFormattedNamesWithId] = useState<AutoCompleteWatchListItem[]>([]);
      const [editModified, setEditModified] = useState(false);
+     const [imdbCardvisible, setImdbCardvisible] = useState(false);
      const [isClosing, setIsClosing] = useState(false);
      const [originalWatchListDtl, setOriginalWatchListDtl] = useState<IWatchList | null>(null); (null);
      const [recommendationsVisible, setRecommendationsVisible] = useState(false);
@@ -158,6 +160,10 @@ export default function WatchListDtl() {
           setIsClosing(true);
      };
 
+     const closeIMDBCard = () => {
+          setImdbCardvisible(false);
+     }
+
      const getLocaleDate = useCallback(() => {
           const dateSpl = currentDate.split("/");
 
@@ -183,6 +189,10 @@ export default function WatchListDtl() {
                return -1;
           }
      };
+
+     const IMDBCardOpenClickHandler = () => {
+          setImdbCardvisible(true);
+     }
 
      const recommendationsClickHandler = () => {
           if (watchListDtl !== null) {
@@ -420,6 +430,8 @@ export default function WatchListDtl() {
 
           setEditModified(true);
      };
+
+     const IMDB_JSON = watchListDtl?.IMDB_JSON !== null && typeof watchListDtl?.IMDB_JSON !== "undefined" && watchListDtl?.IMDB_JSON !== "" ? JSON.parse(watchListDtl?.IMDB_JSON) : null;
 
      const imdbImage = typeof watchListDtl?.IMDB_Poster !== "undefined" && watchListDtl?.IMDB_Poster !== null && watchListDtl?.IMDB_Poster_Error !== true && watchListDtl?.IMDB_Poster !== "" && watchListDtl?.IMDB_Poster.length > 0
           ?
@@ -950,6 +962,14 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
                                                   }
                                              </div>
 
+                                             {IMDB_JSON !== null &&
+                                                  <>
+                                                       <div className="narrow card"></div>
+                                                       <a className="clickable fontStyle" onClick={IMDBCardOpenClickHandler}>IMDB Info</a>
+
+                                                  </>
+                                             }
+
                                              {(isAdding || isEditing) &&
                                                   <>
                                                        <div className="narrow card"></div>
@@ -979,6 +999,10 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
                               {recommendationsVisible && (
                                    <Recommendations queryTerm={recommendationName} type={recommendationType} setRecommendationName={setRecommendationName} setRecommendationType={setRecommendationName} setRecommendationsVisible={setRecommendationsVisible} />
                               )}
+
+                              {imdbCardvisible &&
+                                   <IMDBCard closeIMDBCard={closeIMDBCard} darkMode={darkMode} IMDB_JSON={IMDB_JSON} />
+                              }
                          </div>
                     </div>
                }

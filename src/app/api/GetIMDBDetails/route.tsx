@@ -41,9 +41,10 @@ export async function GET(request: NextRequest) {
                          const result = await getIMDBDetails(id);
 
                          if (result !== null) {
+                              console.log(`Sucessfully processed ${watchListItem.WatchListItemID}`)
                               watchListItem["IMDB_JSON"] = JSON.stringify(result);
 
-                              writeDB(db);
+                              await writeDB(db);
                          }
                     } catch (e) {
                          return Response.json(["ERROR", e.message]);

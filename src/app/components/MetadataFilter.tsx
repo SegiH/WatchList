@@ -51,8 +51,6 @@ const MetaDataFilter = (props) => {
     useEffect(() => {
         if (metaDataLoadingCheck === APIStatus.Idle) {
             setMetaDataLoadingCheck(APIStatus.Loading);
-        } else {
-            alert("not starting")
         }
     }, []);
 

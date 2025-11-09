@@ -24,9 +24,9 @@ export interface SharedLayoutContextType {
      searchInputVisible: boolean,
      searchModalVisible: boolean;
      setActiveRoute: (value: string) => void;
-     setCurrentPage: (value: number) => void;
      setIsLoading: (value: boolean) => void;
      setMetaDataFilters: (value: []) => void;
+     setNewPage: (value: number) => void;
      setSearchInputVisible: (value: boolean) => void;
      setSearchModalVisible: (value: boolean) => void;
      setSearchTerm: (value: string) => void;

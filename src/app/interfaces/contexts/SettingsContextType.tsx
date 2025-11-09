@@ -15,7 +15,7 @@ export interface SettingsContextType {
      pullToRefreshEnabled: (value: boolean) => void;
      saveOptions: (newOptions: IUserOption) => void;
      setActiveRoute: (value: string) => void;
-     setCurrentPage: (value: number) => void;
+     setNewPage: (value: number) => void;
      setOptions: (value: IUserOption) => void;
      setSettingsVisible: (value: boolean) => void;
      setShowMissingArtwork: (value: boolean) => void;

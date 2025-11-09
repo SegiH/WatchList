@@ -7,7 +7,7 @@ import { SettingsContextType } from '../interfaces/contexts/SettingsContextType'
 
 const Settings = () => {
      const {
-          activeRoute, archivedVisible, autoAdd, buildDate, darkMode, defaultRoute, demoMode, hideTabs, loggedInCheck, LogOutIconComponent, pullToRefreshEnabled, saveOptions, setActiveRoute, setCurrentPage, setOptions, setSettingsVisible, setShowMissingArtwork, setStillWatching, setVisibleSections, showMissingArtwork, signOut, visibleSectionChoices, visibleSections, watchListSortColumn
+          activeRoute, archivedVisible, autoAdd, buildDate, darkMode, defaultRoute, demoMode, hideTabs, loggedInCheck, LogOutIconComponent, pullToRefreshEnabled, saveOptions, setActiveRoute, setOptions, setSettingsVisible, setShowMissingArtwork, setStillWatching, setVisibleSections, showMissingArtwork, signOut, visibleSectionChoices, visibleSections, watchListSortColumn
      } = useContext(SettingsContext) as SettingsContextType
 
      const [formattedBuildDate, setFormattedBuildDate] = useState("");
@@ -56,8 +56,6 @@ const Settings = () => {
 
           setOptions(options);
           saveOptions(options);
-
-          setCurrentPage(1);
      }
 
      useEffect(() => {

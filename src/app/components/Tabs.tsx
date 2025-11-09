@@ -10,7 +10,7 @@ import { TabsContextType } from '../interfaces/contexts/TabsContextType';
 
 const Tabs = () => {
      const {
-          activeRoute, darkMode, demoMode, getPath, hideTabs, isAdding, isAdmin, isClient, isEditing, isEnabled, isError, isLoading, loggedInCheck, pullToRefreshEnabled, routeList, setActiveRoute, setCurrentPage, setSearchInputVisible, setSearchTerm, visibleSections
+          activeRoute, darkMode, demoMode, getPath, hideTabs, isAdding, isAdmin, isClient, isEditing, isEnabled, isError, isLoading, loggedInCheck, pullToRefreshEnabled, routeList, setActiveRoute, setSearchInputVisible, setSearchTerm, visibleSections
      } = useContext(TabsContext) as TabsContextType;
 
      const router = useRouter();
@@ -19,7 +19,6 @@ const Tabs = () => {
           setActiveRoute(tabClicked);
 
           if (tabClicked === "WatchList" || tabClicked === "Items") {
-               setCurrentPage(1);
                setSearchInputVisible(false);
                setSearchTerm("");
           }

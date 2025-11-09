@@ -19,7 +19,7 @@ import { SharedLayoutContextType } from "./interfaces/contexts/SharedLayoutConte
 
 const SharedLayout = () => {
      const {
-          AddIconComponent, SearchIconComponent, SettingsIconComponent, activeRoute, darkMode, demoMode, hideTabs, imdbSearchEnabled, isAdmin, isEnabled, isError, isLoading, loggedInCheck, metaDataFilters, openDetailClickHandler, routeList, setMetaDataFilters, saveOptions, searchInputVisible, searchModalVisible, setActiveRoute, setCurrentPage, setIsLoading, setSearchInputVisible, setSearchModalVisible, setSearchTerm, setSourceFilter, setStillWatching, setTypeFilter, setWatchListSortColumn, setWatchListSortDirection, settingsVisible, showSettings, sourceFilter, stillWatching, typeFilter, watchListItemsSortColumns, watchListSortColumn, watchListSortColumns, watchListSortDirection, watchListSources, watchListSourcesLoadingCheck, watchListTypes, watchListTypesLoadingCheck
+          AddIconComponent, SearchIconComponent, SettingsIconComponent, activeRoute, darkMode, demoMode, hideTabs, imdbSearchEnabled, isAdmin, isEnabled, isError, isLoading, loggedInCheck, metaDataFilters, openDetailClickHandler, routeList, setMetaDataFilters, saveOptions, searchInputVisible, searchModalVisible, setActiveRoute, setNewPage, setIsLoading, setSearchInputVisible, setSearchModalVisible, setSearchTerm, setSourceFilter, setStillWatching, setTypeFilter, setWatchListSortColumn, setWatchListSortDirection, settingsVisible, showSettings, sourceFilter, stillWatching, typeFilter, watchListItemsSortColumns, watchListSortColumn, watchListSortColumns, watchListSortDirection, watchListSources, watchListSourcesLoadingCheck, watchListTypes, watchListTypesLoadingCheck
      } = useContext(SharedLayoutContext) as SharedLayoutContextType
 
      const [isClient, setIsClient] = useState(false);
@@ -75,8 +75,6 @@ const SharedLayout = () => {
 
           saveOptions(options);
 
-          setCurrentPage(1);
-
           setIsLoading(false);
      }
 
@@ -84,7 +82,7 @@ const SharedLayout = () => {
           setActiveRoute(newTab);
 
           if (newTab === "WatchList" || newTab === "Items") {
-               setCurrentPage(1);
+               setNewPage(1);
           }
 
           router.push("/" + newTab);

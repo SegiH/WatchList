@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { act, useContext } from "react";
 
 import { NavBarContext } from "../data-context";
 
@@ -7,12 +7,14 @@ import { NavBarContextType } from "../interfaces/contexts/NavBarContextType";
 
 const NavBar = (props) => {
     const {
-        activeRoute, currentPage, darkMode, isAdding, isLoading, hideTabs, lastPage, setCurrentPage, watchListSortDirection
+        activeRoute, currentItemsPage, currentWatchListPage, darkMode, isAdding, isLoading, hideTabs, lastPage, setNewPage
     } = useContext(NavBarContext) as NavBarContextType;
 
     const pageClickHandler = (adjustValue: number) => {
-        setCurrentPage(currentPage + adjustValue);
+        setNewPage(adjustValue);
     }
+
+    const currentPage = activeRoute === "WatchList" ? currentWatchListPage : currentItemsPage;
 
     return (
         <>

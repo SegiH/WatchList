@@ -126,7 +126,8 @@ const DataProvider = ({
      const [buildDate, setBuildDate] = useState('');
      const [bugLogs, setBugLogs] = useState<IBugLog[]>([]);
      const [clientCheck, setClientCheck] = useState(APIStatus.Idle);
-     const [currentPage, setCurrentPage] = useState(1);
+     const [currentWatchListPage, setCurrentWatchListPage] = useState(1);
+     const [currentItemsPage, setCurrentItemsPage] = useState(1);
      const [darkMode, setDarkMode] = useState(true);
      const [demoMode, setDemoMode] = useState(false);
      const [hideTabs, setHideTabs] = useState(false);
@@ -295,7 +296,7 @@ const DataProvider = ({
      const getWatchList = async () => {
           setWatchListSortingCheck(APIStatus.Loading);
 
-          const newSliceStart = (currentPage - 1) * pageSize;
+          const newSliceStart = (currentWatchListPage - 1) * pageSize;
           const newSliceEnd = newSliceStart + pageSize;
 
           let newMetaDataFilters = Object.assign({}, metaDataFilters);
@@ -334,7 +335,7 @@ const DataProvider = ({
      const getWatchListItems = async () => {
           setWatchListItemsSortingCheck(APIStatus.Loading);
 
-          const newSliceStart = (currentPage - 1) * pageSize;
+          const newSliceStart = (currentItemsPage - 1) * pageSize;
           const newSliceEnd = newSliceStart + pageSize;
 
           let newMetaDataFilters = Object.assign({}, metaDataFilters);
@@ -436,6 +437,14 @@ const DataProvider = ({
                     setErrorMessage("Failed to update option with the error " + err.message);
                     setIsError(true);
                });
+     }
+
+     const setNewPage = (adjustValue: number) => {
+          if (activeRoute === "WatchList") {
+               setCurrentWatchListPage(currentWatchListPage + adjustValue);
+          } else if (activeRoute === "Items") {
+               setCurrentItemsPage(currentItemsPage + adjustValue);
+          }
      }
 
      const setOptions = useCallback((newOptions: IUserOption) => {
@@ -586,7 +595,7 @@ const DataProvider = ({
 
                          if (!noReroute) {
                               setActiveRoute("WatchList");
-                              setCurrentPage(1);
+                              setCurrentWatchListPage(1);
 
                               router.push("/WatchList");
                          }
@@ -668,7 +677,7 @@ const DataProvider = ({
           }
 
           getWatchList();
-     }, [activeRoute, archivedVisible, currentPage, metaDataFilters, searchTerm, stillWatching, sourceFilter, typeFilter, watchListSortColumn, watchListSortDirection]);
+     }, [activeRoute, archivedVisible, currentWatchListPage, metaDataFilters, searchTerm, stillWatching, sourceFilter, typeFilter, watchListSortColumn, watchListSortDirection]);
 
      // Initiate getting WatchListItems
      useEffect(() => {
@@ -691,7 +700,7 @@ const DataProvider = ({
           }
 
           getWatchListItems();
-     }, [activeRoute, archivedVisible, currentPage, metaDataFilters, searchTerm, showMissingArtwork, typeFilter, watchListSortColumn, watchListSortDirection, watchListItems]);
+     }, [activeRoute, archivedVisible, currentItemsPage, metaDataFilters, searchTerm, showMissingArtwork, typeFilter, watchListSortColumn, watchListSortDirection, watchListItems]);
 
      // Get WatchListSources
      useEffect(() => {
@@ -836,8 +845,10 @@ const DataProvider = ({
                newRoute = defaultRoute;
           }
 
-          if (newRoute === "WatchList" || newRoute === "Items") {
-               setCurrentPage(1);
+          if (newRoute === "WatchList") {
+               setCurrentWatchListPage(1);
+          } else if (newRoute === "Items") {
+               setCurrentItemsPage(1);
           }
 
           setActiveRoute(newRoute);
@@ -903,7 +914,7 @@ const DataProvider = ({
 
                setUserData(newUserData);
                setActiveRoute("WatchList");
-               setCurrentPage(1);
+               setCurrentWatchListPage(1);
 
                router.push("/WatchList");
 
@@ -939,9 +950,9 @@ const DataProvider = ({
      return (
           <LoginContext.Provider value={{ activeRoute, darkMode, defaultRoute, demoPassword, demoUsername, loggedInCheck, setActiveRoute, setDemoMode, setLoggedInCheck, setOptions, setUserData }}>
                <DataContext.Provider value={{ bugLogs, darkMode, defaultRoute, demoMode, isAdmin, setIsError, setErrorMessage, visibleSections, watchList, watchListSortingCheck, watchListItems, watchListItemsSortingCheck, watchListSources, watchListTypes, }}>
-                    <SharedLayoutContext.Provider value={{ AddIconComponent, SearchIconComponent, SettingsIconComponent, activeRoute, darkMode, demoMode, hideTabs, imdbSearchEnabled, isAdmin, isEnabled, isError, isLoading, loggedInCheck, metaDataFilters, openDetailClickHandler, routeList, saveOptions, searchInputVisible, searchModalVisible, setActiveRoute, setCurrentPage, setIsLoading, setMetaDataFilters, setSearchInputVisible, setSearchModalVisible, setSearchTerm, setSourceFilter, setStillWatching, setTypeFilter, setWatchListSortColumn, setWatchListSortDirection, settingsVisible, showSettings, sourceFilter, stillWatching, typeFilter, watchListItemsSortColumns, watchListSortColumn, watchListSortColumns, watchListSortDirection, watchListSources, watchListSourcesLoadingCheck, watchListTypes, watchListTypesLoadingCheck }}>
-                         <NavBarContext.Provider value={{ activeRoute, currentPage, darkMode, isAdding, isLoading, hideTabs, lastPage, setCurrentPage, watchListSortDirection }}>
-                              <TabsContext.Provider value={{ activeRoute, darkMode, demoMode, getPath, hideTabs, isAdding, isAdmin, isClient, isEditing, isEnabled, isError, isLoading, loggedInCheck, pullToRefreshEnabled, routeList, setActiveRoute, setCurrentPage, setSearchInputVisible, setSearchTerm, visibleSections }}>
+                    <SharedLayoutContext.Provider value={{ AddIconComponent, SearchIconComponent, SettingsIconComponent, activeRoute, darkMode, demoMode, hideTabs, imdbSearchEnabled, isAdmin, isEnabled, isError, isLoading, loggedInCheck, metaDataFilters, openDetailClickHandler, routeList, saveOptions, searchInputVisible, searchModalVisible, setActiveRoute, setNewPage, setIsLoading, setMetaDataFilters, setSearchInputVisible, setSearchModalVisible, setSearchTerm, setSourceFilter, setStillWatching, setTypeFilter, setWatchListSortColumn, setWatchListSortDirection, settingsVisible, showSettings, sourceFilter, stillWatching, typeFilter, watchListItemsSortColumns, watchListSortColumn, watchListSortColumns, watchListSortDirection, watchListSources, watchListSourcesLoadingCheck, watchListTypes, watchListTypesLoadingCheck }}>
+                         <NavBarContext.Provider value={{ activeRoute, currentItemsPage, currentWatchListPage, darkMode, isAdding, isLoading, hideTabs, lastPage, setNewPage }}>
+                              <TabsContext.Provider value={{ activeRoute, darkMode, demoMode, getPath, hideTabs, isAdding, isAdmin, isClient, isEditing, isEnabled, isError, isLoading, loggedInCheck, pullToRefreshEnabled, routeList, setActiveRoute, setNewPage, setSearchInputVisible, setSearchTerm, visibleSections }}>
                                    <WatchListContext.Provider value={{ darkMode, filteredWatchList, hideTabs, isLoading, setActiveRoute, setIsAdding, setIsEditing, watchListSortingCheck }}>
                                         <WatchListDtlContext.Provider value={{ BrokenImageIconComponent, CancelIconComponent, EditIconComponent, getWatchList, SaveIconComponent, darkMode, demoMode, imdbSearchEnabled, isAdding, isEditing, isLoading, pullToRefreshEnabled, recommendationsEnabled, setErrorMessage, setIsAdding, setIsEditing, setIsError, setStillWatching, showSearch, stillWatching, watchListSortDirection, watchListSources }}>
                                              <WatchListCardContext.Provider value={{ BrokenImageIconComponent, darkMode, filteredWatchList, getMissingPoster, openDetailClickHandler, setFilteredWatchList }}>
@@ -951,7 +962,7 @@ const DataProvider = ({
                                                                  <ItemsCardContext.Provider value={{ BrokenImageIconComponent, darkMode, filteredWatchListItems, getMissingPoster, openDetailClickHandler, setFilteredWatchListItems }}>
                                                                       <SearchIMDBContext.Provider value={{ AddIconComponent, autoAdd, BrokenImageIconComponent, darkMode, searchCount, SearchIconComponent, setIsAdding, setSearchCount, setSearchModalVisible }}>
                                                                            <RecommendationsContext.Provider value={{ BrokenImageIconComponent, darkMode, writeLog }}>
-                                                                                <SettingsContext.Provider value={{ activeRoute, archivedVisible, autoAdd, buildDate, darkMode, defaultRoute, demoMode, hideTabs, loggedInCheck, LogOutIconComponent, pullToRefreshEnabled, saveOptions, setActiveRoute, setCurrentPage, setOptions, setSettingsVisible, setShowMissingArtwork, setStillWatching, setVisibleSections, showMissingArtwork, signOut, visibleSectionChoices, visibleSections, watchListSortColumn }}>
+                                                                                <SettingsContext.Provider value={{ activeRoute, archivedVisible, autoAdd, buildDate, darkMode, defaultRoute, demoMode, hideTabs, loggedInCheck, LogOutIconComponent, pullToRefreshEnabled, saveOptions, setActiveRoute, setNewPage, setOptions, setSettingsVisible, setShowMissingArtwork, setStillWatching, setVisibleSections, showMissingArtwork, signOut, visibleSectionChoices, visibleSections, watchListSortColumn }}>
                                                                                      <SetupContext.Provider value={{ activeRoute, defaultRoute, darkMode, demoUsername, loggedInCheck, validatePassword }}>
                                                                                           <RecommendationsContext.Provider value={{ BrokenImageIconComponent, darkMode, writeLog }}>
                                                                                                <SearchIMDBContext value={{ AddIconComponent, autoAdd, BrokenImageIconComponent, darkMode, searchCount, SearchIconComponent, setIsAdding, setSearchCount, setSearchModalVisible }}>

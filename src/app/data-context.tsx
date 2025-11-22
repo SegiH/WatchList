@@ -306,7 +306,10 @@ const DataProvider = ({
                delete newMetaDataFilters["0"];
           }
 
-          return axios.get(`/api/GetWatchList?StartIndex=${newSliceStart}&EndIndex=${newSliceEnd}&StillWatching=${stillWatching}&SortColumn=${watchListSortColumn}&SortDirection=${watchListSortDirection}&ArchivedVisible=${archivedVisible}${sourceFilter !== null && sourceFilter !== -1 ? `&SourceFilter=${sourceFilter}` : ``}${typeFilter !== null && typeFilter !== -1 ? `&TypeFilter=${typeFilter}` : ``}${(searchTerm !== "" ? `&SearchTerm=${searchTerm}` : ``)}${Object.keys(newMetaDataFilters).length > 0 ? `&MetadataFilters=${JSON.stringify(newMetaDataFilters)}` : ""}`, { withCredentials: true })
+          const watchListSortColumnParam = watchListSortColumn !== "" ? watchListSortColumn : "ID";
+          const watchListSortDirectionParam = watchListSortDirection !== "" ? watchListSortDirection : "ASC";
+
+          return axios.get(`/api/GetWatchList?StartIndex=${newSliceStart}&EndIndex=${newSliceEnd}&StillWatching=${stillWatching}&SortColumn=${watchListSortColumnParam}&SortDirection=${watchListSortDirectionParam}&ArchivedVisible=${archivedVisible}${sourceFilter !== null && sourceFilter !== -1 ? `&SourceFilter=${sourceFilter}` : ``}${typeFilter !== null && typeFilter !== -1 ? `&TypeFilter=${typeFilter}` : ``}${(searchTerm !== "" ? `&SearchTerm=${searchTerm}` : ``)}${Object.keys(newMetaDataFilters).length > 0 ? `&MetadataFilters=${JSON.stringify(newMetaDataFilters)}` : ""}`, { withCredentials: true })
                .then((res: AxiosResponse<IWatchList>) => {
                     if (res.data[0] !== "OK") {
                          setErrorMessage("Failed to get WatchList with the error " + res.data[1])
@@ -655,7 +658,7 @@ const DataProvider = ({
           }
      }, [clientCheck, isClient, isError, isLoggedInApi, loggedInCheck, userData]);
 
-     // Initiate getting WatchList
+     // IsLoggedIn check
      useEffect(() => {
           if (!isLoggedInCheck()) return;
 
@@ -672,7 +675,15 @@ const DataProvider = ({
 
      // Get WatchList
      useEffect(() => {
-          if (activeRoute !== "WatchList" || (activeRoute === "WatchList" && watchListSortingCheck === APIStatus.Loading || watchListSortColumn === "" || watchListSortDirection === "")) {
+          if (activeRoute !== "WatchList") {
+               return;
+          }
+
+          if ((activeRoute === "WatchList" && watchListSortingCheck === APIStatus.Loading)) {
+               return;
+          }
+
+          if (!isLoggedInCheck()) {
                return;
           }
 

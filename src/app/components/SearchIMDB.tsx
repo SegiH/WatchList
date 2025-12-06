@@ -148,6 +148,12 @@ export default function SearchIMDB() {
                                                   );
                                              })}
                                         </select>
+
+                                        <div className="card rightAligned customCloseButton">
+                                             <span className="clickable closeButton" onClick={closeSearch}>
+                                                  X
+                                             </span>
+                                        </div>
                                    </div>
                               </div>
                          }
@@ -179,7 +185,7 @@ export default function SearchIMDB() {
                                              </span>
                                         </span>
 
-                                        <div className="card rightAligned customCloseButton searchMarginTop">
+                                        <div className="card rightAligned customCloseButton">
                                              <span className="clickable closeButton" onClick={closeSearch}>
                                                   X
                                              </span>

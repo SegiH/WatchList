@@ -231,6 +231,11 @@ export default function WatchListDtl() {
                     return;
                }
 
+               if (typeof addWatchListDtl.EndDate !== "undefined" && addWatchListDtl.EndDate !== null && addWatchListDtl.EndDate !== "" && new Date(addWatchListDtl.EndDate) < new Date(addWatchListDtl.StartDate)) {
+                    alert("The end date must be later than the start date");
+                    return;
+               }
+
                if (getWatchListTypeID(addWatchListDtl.WatchListItemID) === 2 && typeof addWatchListDtl.Season !== "undefined" && addWatchListDtl.Season === 0) {
                     alert("Please enter the season");
                     return;
@@ -317,6 +322,11 @@ export default function WatchListDtl() {
                     return;
                }
 
+               if (typeof watchListDtl.EndDate !== "undefined" && watchListDtl.EndDate !== null && watchListDtl.EndDate !== "" && new Date(watchListDtl.EndDate) < new Date(watchListDtl.StartDate)) {
+                    alert("The end date must be later than the start date");
+                    return;
+               }
+
                if (getWatchListTypeID(watchListDtl.WatchListItemID) === 2 && typeof watchListDtl.Season !== "undefined" && watchListDtl.Season === 0) {
                     alert("Please enter the season");
                     return;
@@ -375,7 +385,7 @@ export default function WatchListDtl() {
                     queryURL = `/api/UpdateWatchList?WatchListID=${watchListDtl.WatchListID}${queryURL}`;
 
                     axios.put(queryURL).then((res: AxiosResponse<IWatchList>) => {
-                         if (res.data[0] === "ERROR") {
+                         if (res.data[0] === "ERROR" && !silent) {
                               alert(`The error ${res.data[1]} occurred while updating the detail`);
                          } else {
                               setIsEditing(false);

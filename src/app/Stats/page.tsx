@@ -123,9 +123,7 @@ export default function WatchListStats() {
                               res.data[1].map((stat: any) => {
                                    newMovieTop10Stats.push(
                                         {
-                                             WatchListItemName: watchListItems.filter((watchListItem: IWatchListItem) => {
-                                                  return watchListItem.WatchListItemID === stat.WatchListItemID
-                                             })[0].WatchListItemName,
+                                             WatchListItemName: stat.WatchListItemName,
                                              ItemCount: stat.count
                                         }
                                    )

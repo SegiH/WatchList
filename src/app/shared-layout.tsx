@@ -127,11 +127,15 @@ const SharedLayout = () => {
                               <Loader />
                          }
 
-                         {loggedInCheck === APIStatus.Success && watchListSourcesLoadingCheck === APIStatus.Success && watchListTypesLoadingCheck === APIStatus.Success && !isLoading && activeRoute !== "Stats" &&
+                         {loggedInCheck === APIStatus.Success && watchListSourcesLoadingCheck === APIStatus.Success && watchListTypesLoadingCheck === APIStatus.Success && !isLoading &&
                               <>
                                    <span className={`menuBar ${!darkMode ? "lightMode" : "darkMode"}`}>
                                         {demoMode &&
                                              <span className={`leftMargin menuBarActiveRoute${!darkMode ? " lightMode" : " darkMode"}`}>Demo</span>
+                                        }
+
+                                        {activeRoute === "Stats" &&
+                                             <span className={`leftMargin menuBarActiveRoute${!darkMode ? " lightMode" : " darkMode"}`}>Stats</span>
                                         }
 
                                         {(activeRoute === "WatchList" || activeRoute === "Items") &&
@@ -145,11 +149,7 @@ const SharedLayout = () => {
                                                             {AddIconComponent}
                                                        </span>
                                                   )}
-                                             </>
-                                        }
 
-                                        {(activeRoute === "WatchList" || activeRoute === "Items") &&
-                                             <>
                                                   <span className={`clickable leftMargin50${!darkMode ? " lightMode" : " darkMode"}`} onClick={toggleSearch}>
                                                        {SearchIconComponent}
                                                   </span>

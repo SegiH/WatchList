@@ -41,8 +41,17 @@ Installation instructions and more detailed information can be found in INSTALL.
 ### Add a WatchList record
 ![WatchList Add](https://github.com/SegiH/WatchList-NextJS/blob/main/screenshots/WatchList-AddItem.png?raw=true)
 
-### WatchList Stats Video
-![WatchList Stats Video](https://github.com/SegiH/WatchList/blob/main/screenshots/WatchListStats.mp4?raw=true)
+### WatchList Stats Summary
+![WatchList Stats Summary](https://github.com/SegiH/WatchList/blob/main/screenshots/StatsSummary.png?raw=true)
+
+### WatchList Stats Total Movies Watched
+![WatchList Stats Total Movies Watched](https://github.com/SegiH/WatchList/blob/main/screenshots/TotalMoviesWatchedChart.png?raw=true)
+
+### WatchList Stats Total TV Shows Watched
+![WatchList Stats Total TV Shows Watched](https://github.com/SegiH/WatchList/blob/main/screenshots/TotalTVShowsWatchedChart.png?raw=true)
+
+### WatchList Stats Total TV Seasons Watched
+![WatchList Stats Total TV Seasons Watched](https://github.com/SegiH/WatchList/blob/main/screenshots/TotalTVSeasonsWatchedChart.png?raw=true)
 
 ### Search
 ![Search](https://github.com/SegiH/WatchList-NextJS/blob/main/screenshots/Search.png?raw=true)

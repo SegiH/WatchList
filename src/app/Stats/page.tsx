@@ -20,20 +20,22 @@ import IWatchListTVTotalCountStat from "../interfaces/IWatchListTVTotalCountStat
 import IWatchListWeeklyMovieStat from "../interfaces/IWatchListWeeklyMovieStat";
 import IWatchListWeeklyTVStat from "../interfaces/IWatchListWeeklyTVStat";
 
-import { WatchListStatsContext } from "../data-context";
+import { APIStatus, WatchListStatsContext } from "../data-context";
 
 import "../css/tablestyle.css";
 import "./watchliststats.css";
 import { WatchListStatsContextType } from "../interfaces/contexts/WatchListStatsContextType";
+import Loader from "../components/Loader";
 
 // add iserror seterror check
 
 export default function WatchListStats() {
      const {
-          darkMode, demoMode, ratingMax, setIsError, setErrorMessage, watchListItems
+          darkMode, demoMode, errorMessage, ratingMax, setIsError, setErrorMessage
      } = useContext(WatchListStatsContext) as WatchListStatsContextType
 
      const [hasStats, setHasStats] = useState(false);
+     const [statsLoadingCheck, setStatsLoadingCheck] = useState(APIStatus.Idle);
 
      /* States for Movie Stats */
      const [watchListMovieTop10Stats, setWatchListMovieTop10Stats] = useState<IWatchListMovieTop10Stat[]>([]);
@@ -127,6 +129,15 @@ export default function WatchListStats() {
                setWatchListWeeklyMovieStats(demoWatchListWeeklyBreakDown[2]);
 
                setHasStats(true);
+               setStatsLoadingCheck(APIStatus.Success);
+               return;
+          }
+
+          setStatsLoadingCheck(APIStatus.Loading);
+     }, []);
+
+     useEffect(() => {
+          if (statsLoadingCheck !== APIStatus.Loading) {
                return;
           }
 
@@ -168,17 +179,22 @@ export default function WatchListStats() {
                          const uniqueTVTotalYears = res.data[1]["WeeklyBreakdownTVTotalResultsStats"].map((item: IWatchListWeeklyTVStat) => item.Year).filter((value: string, index: number, current_value: [string]) => { return current_value.indexOf(value) === index }).sort();
                          setWatchListWeeklyTVTotalYearsStats(uniqueTVTotalYears);
                          setWatchListWeeklyTVTotalStats(res.data[1]["WeeklyBreakdownTVTotalResultsStats"]);
+
+                         setStatsLoadingCheck(APIStatus.Success);
                     } else {
                          setErrorMessage(`The following error occurred getting the WatchList Stats: ${res.data[1]}`);
                          setIsError(true);
+
+                         setStatsLoadingCheck(APIStatus.Error);
                     }
+
                })
                .catch((err: Error) => {
                     setErrorMessage("Failed to get WatchList Stats with the error " + err.message);
                     setIsError(true);
+                    setStatsLoadingCheck(APIStatus.Error);
                });
-
-     }, []);
+     }, [statsLoadingCheck]);
 
      // Create array for Movie weekly breakdown
      useEffect(() => {
@@ -258,64 +274,6 @@ export default function WatchListStats() {
           setWatchListWeeklyCurrentTVTotalWeekGroupingStat(tvWeekGrouping);
      }, [watchListWeeklyTVTotalStats, watchListWeeklyCurrentTVTotalYearStat]);
 
-     const topRated = (
-          <>
-               {watchListTopRatedStats && watchListTopRatedStats?.map((currentWatchListTopRatedStat: IWatchListTopRatedStat, index: number) => {
-                    return (
-                         <table key={index} className="datagrid">
-                              <tbody className="data">
-                                   <tr>
-                                        <td>
-                                             <div className="textLabel">
-                                                  {currentWatchListTopRatedStat.IMDB_URL !== null && (
-                                                       <a href={currentWatchListTopRatedStat.IMDB_URL} target="_blank">
-                                                            {currentWatchListTopRatedStat.WatchListItemName}
-                                                       </a>
-                                                  )}
-
-                                                  {currentWatchListTopRatedStat.IMDB_URL === null && <span>{currentWatchListTopRatedStat.WatchListItemName} </span>}
-                                                  {currentWatchListTopRatedStat.Season !== null && currentWatchListTopRatedStat.Season !== 0 ? ": Season " + currentWatchListTopRatedStat.Season : ""} rated {currentWatchListTopRatedStat.Rating}/{ratingMax}
-                                             </div>
-                                        </td>
-                                   </tr>
-                              </tbody>
-                         </table>
-                    );
-               })}
-          </>
-     );
-
-     const tvTop10Stats = (
-          <>
-               {watchListTVTop10Stats && watchListTVTop10Stats?.map((currentWatchListTVStat: IWatchListTVTop10Stat, index: number) => {
-                    return (
-                         <table key={index} className="datagrid">
-                              <tbody className="data">
-                                   <tr>
-                                        <td>
-                                             {currentWatchListTVStat.IMDB_URL === null && (
-                                                  <div className="textLabel">
-                                                       {currentWatchListTVStat.WatchListItemName} watched {currentWatchListTVStat.ItemCount} time(s)
-                                                  </div>
-                                             )}
-
-                                             {currentWatchListTVStat.IMDB_URL !== null && (
-                                                  <>
-                                                       <a href={currentWatchListTVStat.IMDB_URL} target="_blank">
-                                                            {currentWatchListTVStat.WatchListItemName}
-                                                       </a>{" "}
-                                                       watched {currentWatchListTVStat.ItemCount} time(s)
-                                                  </>
-                                             )}
-                                        </td>
-                                   </tr>
-                              </tbody>
-                         </table>
-                    );
-               })}
-          </>
-     );
-
      if (watchListSourceStats?.length > 0 && watchListTopRatedStats?.length === 0 && watchListMovieTop10Stats?.length === 0 && watchListTVTop10Stats?.length === 0) {
           return (
                <div className={`flex-container ${!darkMode ? " lightMode" : " darkMode"}`}>
@@ -326,375 +284,314 @@ export default function WatchListStats() {
 
      return (
           <div className={`bottomMargin stats-dashboard topMarginContent ${!darkMode ? "lightMode" : "darkMode"}`}>
-               {!hasStats && <h1>No Stats</h1>}
+               {statsLoadingCheck === APIStatus.Loading &&
+                    <Loader />
+               }
 
-               {/* ===================== SUMMARY GRID ===================== */}
-               <section className="stats-grid">
-                    {/* ===================== MOST WATCHED SOURCES ===================== */}
-                    {watchListSourceStats?.length > 0 && (
-                         <div className="stat-card">
-                              <h2>Most Watched Sources</h2>
+               {statsLoadingCheck === APIStatus.Success && !hasStats && <h1>No Stats</h1>}
 
-                              <div className="source-list">
-                                   {watchListSourceStats.map(
-                                        (currentWatchListSourceStat: IWatchListSourceStat, index: number) => {
-                                             const watchedCount =
-                                                  currentWatchListSourceStat.SourceCount -
-                                                  watchListSourceDtlStats.filter(
-                                                       (d: IWatchListSourceDtlStat) =>
-                                                            String(d.WatchListSourceID) ===
-                                                            String(currentWatchListSourceStat.WatchListSourceID) &&
-                                                            d.StartDate === null
-                                                  ).length;
+               {statsLoadingCheck === APIStatus.Success && hasStats &&
+                    <>
+                         {/* ===================== SUMMARY GRID ===================== */}
+                         <section className="stats-grid">
+                              {/* ===================== MOST WATCHED SOURCES ===================== */}
+                              {watchListSourceStats?.length > 0 && (
+                                   <div className="stat-card">
+                                        <h2>Most Watched Sources</h2>
 
-                                             return (
-                                                  <div key={index} className="source-item">
-                                                       <div className="source-header">
-                                                            <span className="source-name">
-                                                                 {currentWatchListSourceStat.WatchListSourceName}
-                                                            </span>
-                                                            <span className="source-count">
-                                                                 {watchedCount} watched
-                                                            </span>
-                                                       </div>
+                                        <div className="source-list">
+                                             {watchListSourceStats.map((source, index) => {
+                                                  const watchedCount =
+                                                       source.SourceCount -
+                                                       watchListSourceDtlStats.filter(
+                                                            d =>
+                                                                 String(d.WatchListSourceID) === String(source.WatchListSourceID) &&
+                                                                 d.StartDate === null
+                                                       ).length;
 
-                                                       <details className="source-details">
-                                                            <summary>View details</summary>
-
-                                                            <div className="source-sort">
-                                                                 <span className="sortBy">Sort By</span>
-                                                                 <select
-                                                                      className="selectStyle"
-                                                                      value={watchListSourceStatsFilter}
-                                                                      onChange={(event) =>
-                                                                           setWatchListSourceStatsFilter(event.target.value)
-                                                                      }
-                                                                 >
-                                                                      {Object.keys(watchListSourceDetailSortOptions).map(
-                                                                           (option, idx) => (
-                                                                                <option key={idx} value={option}>
-                                                                                     {watchListSourceDetailSortOptions[option]}
-                                                                                </option>
-                                                                           )
-                                                                      )}
-                                                                 </select>
+                                                  return (
+                                                       <div key={index} className="source-item">
+                                                            <div className="source-header">
+                                                                 <span className="source-name">{source.WatchListSourceName}</span>
+                                                                 <span className="source-count">{watchedCount} watched</span>
                                                             </div>
 
-                                                            <ul className="source-detail-list improved">
-                                                                 {watchListSourceDtlStats
-                                                                      .filter(
-                                                                           (d: IWatchListSourceDtlStat) =>
-                                                                                String(d.WatchListSourceID) ===
-                                                                                String(currentWatchListSourceStat.WatchListSourceID) &&
-                                                                                d.StartDate !== null
-                                                                      )
-                                                                      .sort((a, b) => {
-                                                                           switch (watchListSourceStatsFilter) {
-                                                                                case "WatchListID":
-                                                                                     return a.WatchListID > b.WatchListID ? 1 : -1;
-                                                                                case "Name":
-                                                                                     return a.WatchListItemName > b.WatchListItemName ? 1 : -1;
-                                                                                case "StartDate":
-                                                                                     return (
-                                                                                          new Date(a.StartDate).valueOf() -
-                                                                                          new Date(b.StartDate).valueOf()
-                                                                                     );
-                                                                                case "EndDate":
-                                                                                     return (
-                                                                                          new Date(a.EndDate).valueOf() -
-                                                                                          new Date(b.EndDate).valueOf()
-                                                                                     );
-                                                                                default:
-                                                                                     return 0;
-                                                                           }
-                                                                      })
-                                                                      .map((d, i) => (
-                                                                           <li key={i} className="source-detail-row">
-                                                                                <div className="detail-main">
-                                                                                     <span className="detail-title">
-                                                                                          {d.WatchListItemName}
-                                                                                     </span>
-                                                                                     {d.Season !== null && (
-                                                                                          <span className="detail-season">
-                                                                                               Season {d.Season}
-                                                                                          </span>
-                                                                                     )}
-                                                                                </div>
+                                                            <details className="source-details">
+                                                                 <summary>View details</summary>
 
-                                                                                <div className="detail-dates">
-                                                                                     {d.EndDate && d.EndDate !== d.StartDate
-                                                                                          ? `${d.StartDate} → ${d.EndDate}`
-                                                                                          : d.StartDate}
-                                                                                </div>
-                                                                           </li>
-                                                                      ))}
-                                                            </ul>
-                                                       </details>
-                                                  </div>
-                                             );
-                                        }
-                                   )}
-                              </div>
-                         </div>
-                    )}
+                                                                 <div className="source-detail-scroll">
+                                                                      <ul className="source-detail-list improved">
+                                                                           {watchListSourceDtlStats
+                                                                                .filter(
+                                                                                     d =>
+                                                                                          String(d.WatchListSourceID) === String(source.WatchListSourceID) &&
+                                                                                          d.StartDate !== null
+                                                                                )
+                                                                                .map((d, i) => (
+                                                                                     <li key={i} className="source-detail-row">
+                                                                                          <div className="detail-title">
+                                                                                               {d.WatchListItemName}
+                                                                                               {d.Season !== null && (
+                                                                                                    <span className="detail-season"> • Season {d.Season}</span>
+                                                                                               )}
+                                                                                          </div>
 
-                    {/* ===================== TOP RATED ===================== */}
-                    {watchListTopRatedStats?.length > 0 && (
-                         <div className="stat-card">
-                              <h2>Top Rated</h2>
-
-                              <div className="clean-link-list">
-                                   {watchListTopRatedStats.map(
-                                        (stat: IWatchListTopRatedStat, index: number) => (
-                                             <div key={index} className="list-row">
-                                                  {stat.IMDB_URL ? (
-                                                       <a
-                                                            href={stat.IMDB_URL}
-                                                            target="_blank"
-                                                            rel="noreferrer"
-                                                            className="clean-link"
-                                                       >
-                                                            {stat.WatchListItemName}
-                                                       </a>
-                                                  ) : (
-                                                       <span>{stat.WatchListItemName}</span>
-                                                  )}
-
-                                                  <span className="muted">
-                                                       {stat.Season !== null && stat.Season !== 0
-                                                            ? `Season ${stat.Season} • `
-                                                            : ""}
-                                                       rated {stat.Rating}/{ratingMax}
-                                                  </span>
-                                             </div>
-                                        )
-                                   )}
-                              </div>
-                         </div>
-                    )}
-
-                    {/* ===================== TOP 10 MOVIES ===================== */}
-                    {watchListMovieTop10Stats?.length > 0 && (
-                         <div className="stat-card">
-                              <h2>Top 10 Movies</h2>
-
-                              <div className="clean-link-list">
-                                   {watchListMovieTop10Stats.map(
-                                        (movie: IWatchListMovieTop10Stat, index: number) => (
-                                             <div key={index} className="list-row">
-                                                  {movie.IMDB_URL ? (
-                                                       <a
-                                                            href={movie.IMDB_URL}
-                                                            target="_blank"
-                                                            rel="noreferrer"
-                                                            className="clean-link"
-                                                       >
-                                                            {movie.WatchListItemName}
-                                                       </a>
-                                                  ) : (
-                                                       <span>{movie.WatchListItemName}</span>
-                                                  )}
-                                                  <span className="muted">
-                                                       watched {movie.ItemCount} time(s)
-                                                  </span>
-                                             </div>
-                                        )
-                                   )}
-                              </div>
-                         </div>
-                    )}
-
-                    {/* ===================== TOP 10 TV ===================== */}
-                    {watchListTVTop10Stats?.length > 0 && (
-                         <div className="stat-card">
-                              <h2>Top 10 TV Shows</h2>
-
-                              <div className="clean-link-list">
-                                   {watchListTVTop10Stats.map(
-                                        (tv: IWatchListTVTop10Stat, index: number) => (
-                                             <div key={index} className="list-row">
-                                                  {tv.IMDB_URL ? (
-                                                       <a
-                                                            href={tv.IMDB_URL}
-                                                            target="_blank"
-                                                            rel="noreferrer"
-                                                            className="clean-link"
-                                                       >
-                                                            {tv.WatchListItemName}
-                                                       </a>
-                                                  ) : (
-                                                       <span>{tv.WatchListItemName}</span>
-                                                  )}
-                                                  <span className="muted">
-                                                       watched {tv.ItemCount} time(s)
-                                                  </span>
-                                             </div>
-                                        )
-                                   )}
-                              </div>
-                         </div>
-                    )}
-               </section>
-
-               {/* ===================== CHARTS ===================== */}
-               <section className="stats-charts">
-                    {/* ===================== MOVIES ===================== */}
-                    <div
-                         className="chart-card"
-                         style={{
-                              backgroundColor: darkMode ? "#ffffff" : "#000000",
-                              color: darkMode ? "#000000" : "#ffffff",
-                         }}
-                    >
-                         <h2 className="chart-title">Total Movies Watched</h2>
-
-                         <div>{JSON.stringify(watchListMovieCountStats)}</div>
-
-                         <select
-                              className="selectStyle"
-                              value={watchListWeeklyCurrentMovieYearStat}
-                              onChange={(e) =>
-                                   setWatchListWeeklyCurrentMovieYearStat(
-                                        parseInt(e.target.value, 10)
-                                   )
-                              }
-                         >
-                              <option value="-1">Please select</option>
-                              {watchListWeeklyMovieYearsStats?.map((year: string, index: number) => (
-                                   <option key={index} value={year}>
-                                        {year}
-                                   </option>
-                              ))}
-                         </select>
-
-                         {watchListWeeklyCurrentMovieYearStat !== -1 && (
-                              <LineChart
-                                   xAxis={[
-                                        {
-                                             scaleType: "point",
-                                             label: "Week",
-                                             data: Array.from(
-                                                  { length: watchListWeeklyMovieMaxWeek },
-                                                  (_, i) => i + 1
-                                             ),
-                                        },
-                                   ]}
-                                   yAxis={[{ tickMinStep: 1 }]}
-                                   series={[
-                                        {
-                                             label: "Times Watched",
-                                             data: watchListWeeklyCurrentMovieWeekGroupingStat,
-                                        },
-                                   ]}
-                                   height={300}
-                              />
-                         )}
-                    </div>
-
-                    {/* ===================== TV TOTAL ===================== */}
-                    <div
-                         className="chart-card"
-                         style={{
-                              backgroundColor: darkMode ? "#ffffff" : "#000000",
-                              color: darkMode ? "#000000" : "#ffffff",
-                         }}
-                    >
-                         <h2 className="chart-title">Total TV Shows Watched</h2>
-                         <div>{JSON.stringify(watchListTVTotalCountStats)}</div>
-
-                         <select
-                              className="selectStyle"
-                              value={watchListWeeklyCurrentTVTotalYearStat}
-                              onChange={(e) =>
-                                   setWatchListWeeklyCurrentTVTotalYearStat(
-                                        parseInt(e.target.value, 10)
-                                   )
-                              }
-                         >
-                              <option value="-1">Please select</option>
-                              {watchListWeeklyTVTotalYearsStats?.map((year: string, index: number) => (
-                                   <option key={index} value={year}>
-                                        {year}
-                                   </option>
-                              ))}
-                         </select>
-
-                         {watchListWeeklyCurrentTVTotalYearStat !== -1 && (
-                              <LineChart
-                                   xAxis={[
-                                        {
-                                             label: "Week",
-                                             data: Array.from(
-                                                  { length: watchListWeeklyTVTotalMaxWeek },
-                                                  (_, i) => i + 1
-                                             ),
-                                        },
-                                   ]}
-                                   yAxis={[{ tickMinStep: 1 }]}
-                                   series={[
-                                        {
-                                             label: "Times Watched",
-                                             data: watchListWeeklyCurrentTVTotalWeekGroupingStat,
-                                        },
-                                   ]}
-                                   height={300}
-                              />
-                         )}
-                    </div>
-
-                    {/* ===================== TV SEASONS ===================== */}
-                    <div
-                         className="bottomMargin75 chart-card"
-                         style={{
-                              backgroundColor: darkMode ? "#ffffff" : "#000000",
-                              color: darkMode ? "#000000" : "#ffffff",
-                         }}
-                    >
-                         <h2 className="chart-title">TV Seasons Watched</h2>
-                         <div>{JSON.stringify(watchListTVSeasonsCountStats)}</div>
-
-                         <select
-                              className="selectStyle"
-                              value={watchListWeeklyCurrentTVSeasonsYearStat}
-                              onChange={(e) =>
-                                   setWatchListWeeklyCurrentTVSeasonsYearStat(
-                                        parseInt(e.target.value, 10)
-                                   )
-                              }
-                         >
-                              <option value="-1">Please select</option>
-                              {watchListWeeklyTVSeasonsYearsStats?.map(
-                                   (year: string, index: number) => (
-                                        <option key={index} value={year}>
-                                             {year}
-                                        </option>
-                                   )
+                                                                                          <div className="detail-dates">
+                                                                                               {d.EndDate && d.EndDate !== d.StartDate
+                                                                                                    ? `${d.StartDate} → ${d.EndDate}`
+                                                                                                    : d.StartDate}
+                                                                                          </div>
+                                                                                     </li>
+                                                                                ))}
+                                                                      </ul>
+                                                                 </div>
+                                                            </details>
+                                                       </div>
+                                                  );
+                                             })}
+                                        </div>
+                                   </div>
                               )}
-                         </select>
 
-                         {watchListWeeklyCurrentTVSeasonsYearStat !== -1 && (
-                              <LineChart
-                                   xAxis={[
-                                        {
-                                             label: "Week",
-                                             data: Array.from(
-                                                  { length: watchListWeeklyTVSeasonsMaxWeek },
-                                                  (_, i) => i + 1
-                                             ),
-                                        },
-                                   ]}
-                                   yAxis={[{ tickMinStep: 1 }]}
-                                   series={[
-                                        {
-                                             label: "Times Watched",
-                                             data: watchListWeeklyCurrentTVSeasonsWeekGroupingStat,
-                                        },
-                                   ]}
-                                   height={300}
-                              />
-                         )}
-                    </div>
-               </section>
+                              {/* ===================== TOP RATED ===================== */}
+                              {watchListTopRatedStats?.length > 0 && (
+                                   <div className="stat-card">
+                                        <h2>Top Rated</h2>
+
+                                        <div className="clean-link-list">
+                                             {watchListTopRatedStats.map((stat, index) => (
+                                                  <div key={index} className="list-row wrap">
+                                                       <div className="list-main">
+                                                            {stat.IMDB_URL ? (
+                                                                 <a
+                                                                      href={stat.IMDB_URL}
+                                                                      target="_blank"
+                                                                      rel="noreferrer"
+                                                                      className="clean-link"
+                                                                 >
+                                                                      {stat.WatchListItemName}
+                                                                 </a>
+                                                            ) : (
+                                                                 <span>{stat.WatchListItemName}</span>
+                                                            )}
+                                                       </div>
+
+                                                       <div className="list-meta muted">
+                                                            {stat.Season ? `Season ${stat.Season} • ` : ""}
+                                                            rated {stat.Rating}/{ratingMax}
+                                                       </div>
+                                                  </div>
+                                             ))}
+                                        </div>
+                                   </div>
+                              )}
+
+                              {/* ===================== TOP 10 MOVIES ===================== */}
+                              {watchListMovieTop10Stats?.length > 0 && (
+                                   <div className="stat-card">
+                                        <h2>Top 10 Movies</h2>
+
+                                        <div className="clean-link-list">
+                                             {watchListMovieTop10Stats.map((movie, index) => (
+                                                  <div key={index} className="list-row wrap">
+                                                       <div className="list-main">
+                                                            {movie.IMDB_URL ? (
+                                                                 <a
+                                                                      href={movie.IMDB_URL}
+                                                                      target="_blank"
+                                                                      rel="noreferrer"
+                                                                      className="clean-link"
+                                                                 >
+                                                                      {movie.WatchListItemName}
+                                                                 </a>
+                                                            ) : (
+                                                                 <span>{movie.WatchListItemName}</span>
+                                                            )}
+                                                       </div>
+
+                                                       <div className="list-meta muted">
+                                                            watched {movie.ItemCount} time(s)
+                                                       </div>
+                                                  </div>
+                                             ))}
+                                        </div>
+                                   </div>
+                              )}
+
+                              {/* ===================== TOP 10 TV ===================== */}
+                              {watchListTVTop10Stats?.length > 0 && (
+                                   <div className="stat-card">
+                                        <h2>Top 10 TV Shows</h2>
+
+                                        <div className="clean-link-list">
+                                             {watchListTVTop10Stats.map((tv, index) => (
+                                                  <div key={index} className="list-row wrap">
+                                                       <div className="list-main">
+                                                            {tv.IMDB_URL ? (
+                                                                 <a
+                                                                      href={tv.IMDB_URL}
+                                                                      target="_blank"
+                                                                      rel="noreferrer"
+                                                                      className="clean-link"
+                                                                 >
+                                                                      {tv.WatchListItemName}
+                                                                 </a>
+                                                            ) : (
+                                                                 <span>{tv.WatchListItemName}</span>
+                                                            )}
+                                                       </div>
+
+                                                       <div className="list-meta muted">
+                                                            watched {tv.ItemCount} time(s)
+                                                       </div>
+                                                  </div>
+                                             ))}
+                                        </div>
+                                   </div>
+                              )}
+                         </section>
+
+                         {/* ===================== CHARTS ===================== */}
+                         <section className="stats-charts">
+                              {/* ===================== MOVIES ===================== */}
+                              <div className="chart-card stat-style">
+                                   <div className="chart-header">
+                                        <h2 className="chart-title">Total Movies Watched</h2>
+                                        <div className="chart-metric">{watchListMovieCountStats[0]["MovieCount"]}</div>
+                                   </div>
+
+                                   <select
+                                        className="selectStyle"
+                                        value={watchListWeeklyCurrentMovieYearStat}
+                                        onChange={(e) =>
+                                             setWatchListWeeklyCurrentMovieYearStat(parseInt(e.target.value, 10))
+                                        }
+                                   >
+                                        <option value="-1">Please select</option>
+                                        {watchListWeeklyMovieYearsStats?.map((year: string, index: number) => (
+                                             <option key={index} value={year}>
+                                                  {year}
+                                             </option>
+                                        ))}
+                                   </select>
+
+                                   {watchListWeeklyCurrentMovieYearStat !== -1 && (
+                                        <div className="chart-container">
+                                             <LineChart
+                                                  xAxis={[
+                                                       {
+                                                            scaleType: "point",
+                                                            label: "Week",
+                                                            data: Array.from({ length: watchListWeeklyMovieMaxWeek }, (_, i) => i + 1),
+                                                       },
+                                                  ]}
+                                                  yAxis={[{ tickMinStep: 1 }]}
+                                                  series={[
+                                                       {
+                                                            label: "Times Watched",
+                                                            data: watchListWeeklyCurrentMovieWeekGroupingStat,
+                                                       },
+                                                  ]}
+                                                  height={300}
+                                             />
+                                        </div>
+                                   )}
+                              </div>
+
+                              {/* ===================== TV TOTAL ===================== */}
+                              <div className="chart-card stat-style">
+                                   <div className="chart-header">
+                                        <h2 className="chart-title">Total TV Shows Watched</h2>
+                                        <div className="chart-metric">{watchListTVTotalCountStats[0]["TVTotalCount"]}</div>
+                                   </div>
+
+                                   <select
+                                        className="selectStyle"
+                                        value={watchListWeeklyCurrentTVTotalYearStat}
+                                        onChange={(e) =>
+                                             setWatchListWeeklyCurrentTVTotalYearStat(parseInt(e.target.value, 10))
+                                        }
+                                   >
+                                        <option value="-1">Please select</option>
+                                        {watchListWeeklyTVTotalYearsStats?.map((year: string, index: number) => (
+                                             <option key={index} value={year}>
+                                                  {year}
+                                             </option>
+                                        ))}
+                                   </select>
+
+                                   {watchListWeeklyCurrentTVTotalYearStat !== -1 && (
+                                        <div className="chart-container">
+                                             <LineChart
+                                                  xAxis={[
+                                                       {
+                                                            label: "Week",
+                                                            data: Array.from({ length: watchListWeeklyTVTotalMaxWeek }, (_, i) => i + 1),
+                                                       },
+                                                  ]}
+                                                  yAxis={[{ tickMinStep: 1 }]}
+                                                  series={[
+                                                       {
+                                                            label: "Times Watched",
+                                                            data: watchListWeeklyCurrentTVTotalWeekGroupingStat,
+                                                       },
+                                                  ]}
+                                                  height={300}
+                                             />
+                                        </div>
+                                   )}
+                              </div>
+
+                              {/* ===================== TV SEASONS ===================== */}
+                              <div className="chart-card stat-style bottomMargin75">
+                                   <div className="chart-header">
+                                        <h2 className="chart-title">TV Seasons Watched</h2>
+                                        <div className="chart-metric">{watchListTVSeasonsCountStats[0]["TVSeasonsCount"]}</div>
+                                   </div>
+
+                                   <select
+                                        className="selectStyle"
+                                        value={watchListWeeklyCurrentTVSeasonsYearStat}
+                                        onChange={(e) =>
+                                             setWatchListWeeklyCurrentTVSeasonsYearStat(parseInt(e.target.value, 10))
+                                        }
+                                   >
+                                        <option value="-1">Please select</option>
+                                        {watchListWeeklyTVSeasonsYearsStats?.map((year: string, index: number) => (
+                                             <option key={index} value={year}>
+                                                  {year}
+                                             </option>
+                                        ))}
+                                   </select>
+
+                                   {watchListWeeklyCurrentTVSeasonsYearStat !== -1 && (
+                                        <div className="chart-container">
+                                             <LineChart
+                                                  xAxis={[
+                                                       {
+                                                            label: "Week",
+                                                            data: Array.from({ length: watchListWeeklyTVSeasonsMaxWeek }, (_, i) => i + 1),
+                                                       },
+                                                  ]}
+                                                  yAxis={[{ tickMinStep: 1 }]}
+                                                  series={[
+                                                       {
+                                                            label: "Times Watched",
+                                                            data: watchListWeeklyCurrentTVSeasonsWeekGroupingStat,
+                                                       },
+                                                  ]}
+                                                  height={300}
+                                             />
+                                        </div>
+                                   )}
+                              </div>
+                         </section>
+                    </>
+               }
+
+               {statsLoadingCheck === APIStatus.Error &&
+                    <h1>{errorMessage}</h1>
+               }
           </div>
      );
 }

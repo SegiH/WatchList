@@ -9,6 +9,7 @@ export interface SharedLayoutContextType {
      AddIconComponent: React.ReactNode;
      darkMode: boolean;
      demoMode: boolean;
+     demoModeNotificationVisible: boolean;
      hideTabs: boolean;
      imdbSearchEnabled: boolean;
      isAdmin: () => boolean;
@@ -24,6 +25,7 @@ export interface SharedLayoutContextType {
      searchInputVisible: boolean,
      searchModalVisible: boolean;
      setActiveRoute: (value: string) => void;
+     setDemoModeNotificationVisible: (value: boolean) => void;
      setIsLoading: (value: boolean) => void;
      setMetaDataFilters: (value: []) => void;
      setNewPage: (value: number) => void;

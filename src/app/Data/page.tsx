@@ -242,7 +242,7 @@ export default function Data() {
     }, [defaultRoute, isAdmin, router, setIsMounted]);
 
     return (
-        <>
+        <span className="topMarginContent">
             {isMounted &&
                 <div className="topMargin100">
                     <span className="firstItem">
@@ -347,7 +347,7 @@ export default function Data() {
                     }*/}
                 </div>
             }
-        </>
+        </span>
     );
 }
 

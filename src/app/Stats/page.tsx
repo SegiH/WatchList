@@ -2,21 +2,14 @@
 
 import axios, { AxiosResponse } from "axios";
 import { useContext, useEffect, useState } from "react";
-
-import ChevronRightIcon from "@mui/icons-material/ChevronRight";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { LineChart } from '@mui/x-charts/LineChart';
-import { SimpleTreeView, TreeItem } from "@mui/x-tree-view";
 
-import IWatchListMovieCountStat from "../interfaces/IWatchListMovieCountStat";
+
 import IWatchListMovieTop10Stat from "../interfaces/IWatchListMovieTop10Stat";
-import IWatchListSourceDetailSortOption from "../interfaces/IWatchListSourceDetailSortOption";
 import IWatchListSourceDtlStat from "../interfaces/IWatchListSourceDtlStat";
 import IWatchListSourceStat from "../interfaces/IWatchListSourceStat";
 import IWatchListTopRatedStat from "../interfaces/IWatchListTopRatedStat";
-import IWatchListTVSeasonsCountStat from "../interfaces/IWatchListTVSeasonsCountStat";
 import IWatchListTVTop10Stat from "../interfaces/IWatchListTVTop10Stat";
-import IWatchListTVTotalCountStat from "../interfaces/IWatchListTVTotalCountStat";
 import IWatchListWeeklyMovieStat from "../interfaces/IWatchListWeeklyMovieStat";
 import IWatchListWeeklyTVStat from "../interfaces/IWatchListWeeklyTVStat";
 
@@ -26,8 +19,6 @@ import "../css/tablestyle.css";
 import "./watchliststats.css";
 import { WatchListStatsContextType } from "../interfaces/contexts/WatchListStatsContextType";
 import Loader from "../components/Loader";
-
-// add iserror seterror check
 
 export default function WatchListStats() {
      const {
@@ -39,7 +30,7 @@ export default function WatchListStats() {
 
      /* States for Movie Stats */
      const [watchListMovieTop10Stats, setWatchListMovieTop10Stats] = useState<IWatchListMovieTop10Stat[]>([]);
-     const [watchListMovieCountStats, setWatchListMovieCountStats] = useState<IWatchListMovieCountStat[]>([]);
+     const [watchListMovieCountStats, setWatchListMovieCountStats] = useState<number>();
      const [watchListWeeklyCurrentMovieYearStat, setWatchListWeeklyCurrentMovieYearStat] = useState(-1);
      const [watchListWeeklyCurrentMovieWeekGroupingStat, setWatchListWeeklyCurrentMovieWeekGroupingStat] = useState<number[]>([]);
      const [watchListWeeklyMovieMaxWeek, setWatchListWeeklyMovieMaxWeek] = useState(-1);
@@ -49,12 +40,11 @@ export default function WatchListStats() {
      /* States for Source Stats */
      const [watchListSourceDtlStats, setWatchListSourceDtlStats] = useState<IWatchListSourceDtlStat[]>([]);
      const [watchListSourceStats, setWatchListSourceStats] = useState<IWatchListSourceStat[]>([]);
-     const [watchListSourceStatsFilter, setWatchListSourceStatsFilter] = useState("StartDate");
 
      /* States for Television Stats */
-     const [watchListTVSeasonsCountStats, setWatchListTVSeasonsCountStats] = useState<IWatchListTVSeasonsCountStat[]>([]);
+     const [watchListTVSeasonsCountStats, setWatchListTVSeasonsCountStats] = useState();
      const [watchListTVTop10Stats, setWatchListTVTop10Stats] = useState<IWatchListTVTop10Stat[]>([]);
-     const [watchListTVTotalCountStats, setWatchListTVTotalCountStats] = useState<IWatchListTVTotalCountStat[]>([]);
+     const [watchListTVTotalCountStats, setWatchListTVTotalCountStats] = useState();
      const [watchListWeeklyCurrentTVSeasonsWeekGroupingStat, setWatchListWeeklyCurrentTVSeasonsWeekGroupingStat] = useState<number[]>([]);
      const [watchListWeeklyCurrentTVSeasonsYearStat, setWatchListWeeklyCurrentTVSeasonsYearStat] = useState(-1);
      const [watchListWeeklyCurrentTVTotalWeekGroupingStat, setWatchListWeeklyCurrentTVTotalWeekGroupingStat] = useState<number[]>([]);
@@ -68,13 +58,6 @@ export default function WatchListStats() {
 
      /* States for Top Rated Stats */
      const [watchListTopRatedStats, setWatchListTopRatedStats] = useState<IWatchListTopRatedStat[]>([]);
-
-     const watchListSourceDetailSortOptions: IWatchListSourceDetailSortOption = {
-          WatchListID: "ID",
-          Name: "Name",
-          StartDate: "Start Date",
-          EndDate: "End Date",
-     };
 
      const getWeek = () => {
           var date = new Date();
@@ -457,7 +440,7 @@ export default function WatchListStats() {
                               <div className="chart-card stat-style">
                                    <div className="chart-header">
                                         <h2 className="chart-title">Total Movies Watched</h2>
-                                        <div className="chart-metric">{watchListMovieCountStats[0]["MovieCount"]}</div>
+                                        <div className="chart-metric">{watchListMovieCountStats}</div>
                                    </div>
 
                                    <select
@@ -502,7 +485,7 @@ export default function WatchListStats() {
                               <div className="chart-card stat-style">
                                    <div className="chart-header">
                                         <h2 className="chart-title">Total TV Shows Watched</h2>
-                                        <div className="chart-metric">{watchListTVTotalCountStats[0]["TVTotalCount"]}</div>
+                                        <div className="chart-metric">{watchListTVTotalCountStats}</div>
                                    </div>
 
                                    <select
@@ -546,7 +529,7 @@ export default function WatchListStats() {
                               <div className="chart-card stat-style bottomMargin75">
                                    <div className="chart-header">
                                         <h2 className="chart-title">TV Seasons Watched</h2>
-                                        <div className="chart-metric">{watchListTVSeasonsCountStats[0]["TVSeasonsCount"]}</div>
+                                        <div className="chart-metric">{watchListTVSeasonsCountStats}</div>
                                    </div>
 
                                    <select

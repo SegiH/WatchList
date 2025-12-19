@@ -74,7 +74,7 @@ export async function GET(request: NextRequest) {
      const watchListWeeklyBreakdownMovieStats = generateWatchListWeeklyMovieBreakdown(allMovieWatchList, allTvWatchList)
 
      const response = {
-          "WatchListMovieCountStats": watchListMovieCountStats[0],
+          "WatchListMovieCountStats": watchListMovieCountStats,
           "WatchListSourceStats": watchListSourceStats,
           "WatchListSourceDetailStats": watchListSourceDetailsStats,
           "WatchListTop10MoviesStats": watchListTop10MoviesStats,
@@ -82,8 +82,8 @@ export async function GET(request: NextRequest) {
           "WatchListTVSeasonsStats": allTvWatchList.length,
           "WatchListTVTop10Stats": watchListTVTop10Stats,
           "WatchListTVTotalCountStats": watchListTVTotalCountStats,
-          "WeeklyBreakdownTVSeasonsStats": watchListWeeklyBreakdownTV[0].MovieCount,
-          "WeeklyBreakdownTVTotalResultsStats": watchListWeeklyBreakdownTV[1],
+          "WeeklyBreakdownTVSeasonsStats": watchListWeeklyBreakdownTV,
+          "WeeklyBreakdownTVTotalResultsStats": watchListWeeklyBreakdownTV,
           "WeeklyBreakdownMovieStats": watchListWeeklyBreakdownMovieStats
      }
 

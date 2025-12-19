@@ -130,7 +130,7 @@ const DataProvider = ({
      const [currentItemsPage, setCurrentItemsPage] = useState(1);
      const [darkMode, setDarkMode] = useState(true);
      const [demoMode, setDemoMode] = useState(false);
-     const [demoModeNotificationVisible, setDemoModeNotificationVisible] = useState(true);
+     const [demoModeNotificationVisible, setDemoModeNotificationVisible] = useState(false);
      const [hideTabs, setHideTabs] = useState(false);
      const [imdbSearchEnabled, setImdbSearchEnabled] = useState(false);
      const [isAdding, setIsAdding] = useState(false);
@@ -664,6 +664,8 @@ const DataProvider = ({
           if (!isLoggedInCheck()) return;
 
           if (demoMode) {
+               setDemoModeNotificationVisible(true);
+
                const demoWatchListPayload = require("./demo/index").demoWatchListPayload;
 
                setWatchList(demoWatchListPayload);

@@ -276,10 +276,10 @@ export default function WatchListStats() {
                {statsLoadingCheck === APIStatus.Success && hasStats &&
                     <>
                          {/* ===================== SUMMARY GRID ===================== */}
-                         <section className="stats-grid">
+                         <section className={`stats-grid`}>
                               {/* ===================== MOST WATCHED SOURCES ===================== */}
                               {watchListSourceStats?.length > 0 && (
-                                   <div className="stat-card">
+                                   <div className={`stat-card ${!darkMode ? "lightMode" : "darkMode"}`}>
                                         <h2>Most Watched Sources</h2>
 
                                         <div className="source-list">
@@ -338,7 +338,7 @@ export default function WatchListStats() {
 
                               {/* ===================== TOP RATED ===================== */}
                               {watchListTopRatedStats?.length > 0 && (
-                                   <div className="stat-card">
+                                   <div className={`stat-card ${!darkMode ? "lightMode" : "darkMode"}`}>
                                         <h2>Top Rated</h2>
 
                                         <div className="clean-link-list">
@@ -371,7 +371,7 @@ export default function WatchListStats() {
 
                               {/* ===================== TOP 10 MOVIES ===================== */}
                               {watchListMovieTop10Stats?.length > 0 && (
-                                   <div className="stat-card">
+                                   <div className={`stat-card ${!darkMode ? "lightMode" : "darkMode"}`}>
                                         <h2>Top 10 Movies</h2>
 
                                         <div className="clean-link-list">
@@ -403,7 +403,7 @@ export default function WatchListStats() {
 
                               {/* ===================== TOP 10 TV ===================== */}
                               {watchListTVTop10Stats?.length > 0 && (
-                                   <div className="stat-card">
+                                   <div className={`stat-card ${!darkMode ? "lightMode" : "darkMode"}`}>
                                         <h2>Top 10 TV Shows</h2>
 
                                         <div className="clean-link-list">
@@ -435,9 +435,9 @@ export default function WatchListStats() {
                          </section>
 
                          {/* ===================== CHARTS ===================== */}
-                         <section className="stats-charts">
+                         <section className={`stats-charts ${!darkMode ? "lightMode" : "darkMode"}`}>
                               {/* ===================== MOVIES ===================== */}
-                              <div className="chart-card stat-style">
+                              <div className={`chart-card stat-style ${!darkMode ? "lightMode" : "darkMode"}`}>
                                    <div className="chart-header">
                                         <h2 className="chart-title">Total Movies Watched</h2>
                                         <div className="chart-metric">{watchListMovieCountStats}</div>
@@ -482,7 +482,7 @@ export default function WatchListStats() {
                               </div>
 
                               {/* ===================== TV TOTAL ===================== */}
-                              <div className="chart-card stat-style">
+                              <div className={`chart-card stat-style ${!darkMode ? "lightMode" : "darkMode"}`}>
                                    <div className="chart-header">
                                         <h2 className="chart-title">Total TV Shows Watched</h2>
                                         <div className="chart-metric">{watchListTVTotalCountStats}</div>
@@ -526,7 +526,7 @@ export default function WatchListStats() {
                               </div>
 
                               {/* ===================== TV SEASONS ===================== */}
-                              <div className="chart-card stat-style bottomMargin75">
+                              <div className={`chart-card stat-style bottomMargin75 ${!darkMode ? "lightMode" : "darkMode"}`}>
                                    <div className="chart-header">
                                         <h2 className="chart-title">TV Seasons Watched</h2>
                                         <div className="chart-metric">{watchListTVSeasonsCountStats}</div>

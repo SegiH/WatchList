@@ -61,7 +61,7 @@
 
 .darkMode .stat-card,
 .darkMode .chart-card {
-  background: #1e1e1e;
+  background: #1e1e1e !important;
 }
 
 .stat-card h2,
@@ -254,7 +254,7 @@ html {
 
 /* ===================== Stats Chart Specific Theme ===================== */
 .stats-charts .chart-card {
-  background: rgba(0, 0, 0, 0.04); /* grayish container */
+  background: #1e1e1e; /* grayish container */
   color: inherit;
 }
 

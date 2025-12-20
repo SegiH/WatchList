@@ -82,8 +82,8 @@ export async function GET(request: NextRequest) {
           "WatchListTVSeasonsStats": allTvWatchList.length,
           "WatchListTVTop10Stats": watchListTVTop10Stats,
           "WatchListTVTotalCountStats": watchListTVTotalCountStats,
-          "WeeklyBreakdownTVSeasonsStats": watchListWeeklyBreakdownTV,
-          "WeeklyBreakdownTVTotalResultsStats": watchListWeeklyBreakdownTV,
+          "WeeklyBreakdownTVSeasonsStats": watchListWeeklyBreakdownTV[0],
+          "WeeklyBreakdownTVTotalResultsStats": watchListWeeklyBreakdownTV[1],
           "WeeklyBreakdownMovieStats": watchListWeeklyBreakdownMovieStats
      }
 

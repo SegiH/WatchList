@@ -5,3 +5,5 @@ public/sw.js
 next-env.d.ts
 .next
 public/workbox*.js
+*.pem
+certificates

@@ -958,6 +958,13 @@ const DataProvider = ({
                });
 
           isLoggedInApi(true);
+
+          if ('serviceWorker' in navigator) {
+               navigator.serviceWorker
+                    .register('/sw.js')
+                    .then(reg => console.log('SW registered', reg))
+                    .catch(err => console.error('SW registration failed', err));
+          }
           // eslint-disable-next-line react-hooks/exhaustive-deps
      }, []); // Do not add isLoggedInApi as a dependency. It causes an ends loop of network requests
 

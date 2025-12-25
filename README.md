@@ -7,7 +7,7 @@ After adding information for a while, WatchList will generate statistics to show
 
 It is possible to add a WatchList record by searching IMDB if you provide an API key. More info is available in INSTALL.md.
 
-When you are online, images are cached so that they do not need to be downloaded again.
+Watchlist uses caching so movie or TV shows images are saved locally and will not be downloaded again, unless you clear your browser cache.
 
 WatchList uses a JSON database to store your logged movie and TV shows.
 

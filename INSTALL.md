@@ -127,6 +127,19 @@ If you cannot log into WatchList with the admin account, you can reset the passw
 1. Log into WatchList with the password "watchlist" without quotes.
 1. Go to the admin section and change your password.
 
+## Development
+Please use Github issue tracker to suggest ideas.
+
+Caching only works over https. To test caching with the dev server:
+
+1. Install mkcert:
+   - Linux: `apt install mkcert`
+   - macOS: `brew install mkcert`
+   - Windows: `choco install mkcert`
+1. Install local CA: `mkcert -install`
+1. Generate dev certs:
+   mkcert watchlist.demo.dev
+
 ## Known Issues:
 
 If you search RapidAPI for a movie or show that is pretty new, you may not be able to find it when searching and will have to add a WatchList Item manually. This happens because RapidAPI does not have new movies or shows in their database right away.

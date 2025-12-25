@@ -13,6 +13,7 @@
   },
   "scripts": {
     "dev": "node writeBuildDate.js && next dev",
+    "dev:https": "node writeBuildDate.js && next dev --experimental-https",
     "build": "next build",
     "start": "next start",
     "deploy-windows": "xcopy /q /y .env-template .next\\standalone && xcopy /y database-template.json .next\\standalone\\database.json && xcopy /e /i /y public .next\\standalone\\public && xcopy /e /i /y .next\\static .next\\standalone\\.next\\static",

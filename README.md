@@ -51,7 +51,7 @@ Installation instructions and more detailed information can be found in INSTALL.
 ![WatchList Stats Total TV Shows Watched](https://github.com/SegiH/WatchList/blob/main/screenshots/TotalTVShowsWatchedChart.png?raw=true)
 
 ### WatchList Stats Total TV Seasons Watched
-![WatchList Stats Total TV Seasons Watched](https://github.com/SegiH/WatchList/blob/main/screenshots/TotalTVSeasonsWatchedChart.png?raw=true)
+![WatchList Stats Total TV Seasons Watched](https://github.com/SegiH/WatchList/blob/main/screenshots/TVSeasonsWatchedChart.png?raw=true)
 
 ### Search
 ![Search](https://github.com/SegiH/WatchList-NextJS/blob/main/screenshots/Search.png?raw=true)

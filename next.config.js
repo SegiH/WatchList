@@ -4,7 +4,7 @@ const withPWA = require("next-pwa");
 
 const nextConfig = {
      output: "standalone",
-     /*outputFileTracingRoot: path.join(__dirname),*/
+     outputFileTracingRoot: path.join(__dirname),
      devIndicators: false,
      turbopack: {
           root: path.join(__dirname, '..'),

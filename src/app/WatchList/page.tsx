@@ -55,7 +55,7 @@ export default function WatchList() {
                               </ul>
                          </span>
 
-                         <span className="bottom">
+                         <span className={`bottom ${hideTabs ? "noTabs" : ""}`}>
                               <NavBar IsBottomNav={true} />
                          </span>
                     </>

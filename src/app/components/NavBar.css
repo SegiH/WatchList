@@ -18,6 +18,10 @@ span.bottom {
     position: sticky;
 }
 
+span.bottom.noTabs {
+    bottom: 0px !important;
+}
+
 span.top {
     top: 59px;
     position: sticky;

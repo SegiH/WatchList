@@ -1,4 +1,3 @@
-import axios from "axios";
 import { Button } from "@mui/material";
 import Select from 'react-select';
 import { useEffect, useState } from "react";
@@ -27,6 +26,22 @@ const MetaDataFilter = (props) => {
     const clearFiltersClickHandler = () => {
         props.setMetaDataFilters([{}]);
         props.closeMetaDataFilter();
+    }
+
+    const getMetaData = async () => {
+        const getMetaDataResponse = await fetch(`/api/GetMetadata`, { credentials: 'include' });
+
+        const getMetaDataResult = await getMetaDataResponse.json();
+
+        if (getMetaDataResult[0] === "OK") {
+            setMetaDataObj(getMetaDataResult[1])
+        } else {
+            alert(`An error occurred while getting the metadata`);
+        }
+
+        setSelectedValues(props.metaDataFilters);
+
+        setMetaDataLoadingCheck(APIStatus.Success);
     }
 
     const setFiltersClickHandler = () => {
@@ -59,21 +74,7 @@ const MetaDataFilter = (props) => {
             return;
         }
 
-        axios.get(`/api/GetMetadata`)
-            .then((res) => {
-                if (res.data[0] === "OK") {
-                    setMetaDataObj(res.data[1])
-                } else {
-                    alert(`An error occurred while getting the metadata`);
-                }
-
-                setSelectedValues(props.metaDataFilters);
-
-                setMetaDataLoadingCheck(APIStatus.Success);
-            })
-            .catch((err: Error) => {
-                alert(err.message)
-            });
+        getMetaData();
     }, [metaDataLoadingCheck]);
 
     return (

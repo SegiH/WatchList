@@ -1,6 +1,5 @@
 "use client";
 
-import axios, { AxiosResponse } from "axios";
 import { useRouter } from 'next/navigation';
 import { usePathname } from 'next/navigation';
 import React, { createContext, ReactNode, useCallback, useEffect, useMemo, useState } from "react";
@@ -272,16 +271,16 @@ const DataProvider = ({
                return;
           }
 
-          return axios.get(`/api/UpdateMissingPosters?IDs=${watchListItemID}`).then((res: AxiosResponse<IWatchListItem>) => {
-               if (res.data[0] === "OK") {
-                    return res.data[1];
-               } else {
-                    //alert(`The error ${res.data[1]} occurred while updating the item detail`);
-               }
-          }).catch((err: Error) => {
+          // Get artwork for missing poster
+          const missingPostersResponse = await fetch(`/api/UpdateMissingPosters?IDs=${watchListItemID}`, { credentials: 'include' });
+
+          const missingPostersResult = await missingPostersResponse.json();
+
+          if (missingPostersResult[0] === "OK") {
+               return missingPostersResult[1];
+          } else {
                console.log(`No result when getting missing poster for ID ${watchListItemID}`)
-               //alert(`The error ${err.message} occurred while updating the item detail`);
-          });
+          }
      }
 
      const getPath = useCallback((routeName: string) => {
@@ -310,30 +309,24 @@ const DataProvider = ({
           const watchListSortColumnParam = watchListSortColumn !== "" ? watchListSortColumn : "ID";
           const watchListSortDirectionParam = watchListSortDirection !== "" ? watchListSortDirection : "ASC";
 
-          return axios.get(`/api/GetWatchList?StartIndex=${newSliceStart}&EndIndex=${newSliceEnd}&StillWatching=${stillWatching}&SortColumn=${watchListSortColumnParam}&SortDirection=${watchListSortDirectionParam}&ArchivedVisible=${archivedVisible}${sourceFilter !== null && sourceFilter !== -1 ? `&SourceFilter=${sourceFilter}` : ``}${typeFilter !== null && typeFilter !== -1 ? `&TypeFilter=${typeFilter}` : ``}${(searchTerm !== "" ? `&SearchTerm=${searchTerm}` : ``)}${Object.keys(newMetaDataFilters).length > 0 ? `&MetadataFilters=${JSON.stringify(newMetaDataFilters)}` : ""}`, { withCredentials: true })
-               .then((res: AxiosResponse<IWatchList>) => {
-                    if (res.data[0] !== "OK") {
-                         setErrorMessage("Failed to get WatchList with the error " + res.data[1])
-                         setIsError(true);
-                         return;
-                    }
+          const watchListResponse = await fetch(`/api/GetWatchList?StartIndex=${newSliceStart}&EndIndex=${newSliceEnd}&StillWatching=${stillWatching}&SortColumn=${watchListSortColumnParam}&SortDirection=${watchListSortDirectionParam}&ArchivedVisible=${archivedVisible}${sourceFilter !== null && sourceFilter !== -1 ? `&SourceFilter=${sourceFilter}` : ``}${typeFilter !== null && typeFilter !== -1 ? `&TypeFilter=${typeFilter}` : ``}${(searchTerm !== "" ? `&SearchTerm=${searchTerm}` : ``)}${Object.keys(newMetaDataFilters).length > 0 ? `&MetadataFilters=${JSON.stringify(newMetaDataFilters)}` : ""}`, { credentials: 'include' });
 
-                    if (activeRoute === "WatchList" && res.data[1].length < pageSize) {
-                         setLastPage(true);
-                    } else {
-                         setLastPage(false);
-                    }
+          const watchListResult = await watchListResponse.json();
 
-                    setFilteredWatchList(res.data[1]);
-                    setWatchListSortingCheck(APIStatus.Success);
+          if (watchListResult[0] !== "OK") {
+               setErrorMessage("Failed to get WatchList with the error " + watchListResult[1])
+               setIsError(true);
+               return;
+          }
 
-                    return res.data[1]; // Return in case its needed by the calling method
-               })
-               .catch((err: Error) => {
-                    setErrorMessage("Failed to get WatchList with the error " + err.message);
+          if (activeRoute === "WatchList" && watchListResult[1].length < pageSize) {
+               setLastPage(true);
+          } else {
+               setLastPage(false);
+          }
 
-                    setIsError(true);
-               });
+          setFilteredWatchList(watchListResult[1]);
+          setWatchListSortingCheck(APIStatus.Success);
      }
 
      const getWatchListItems = async () => {
@@ -349,31 +342,68 @@ const DataProvider = ({
                delete newMetaDataFilters["0"];
           }
 
-          return axios.get(`/api/GetWatchListItems?StartIndex=${newSliceStart}&EndIndex=${newSliceEnd}&SortColumn=${watchListSortColumn}&SortDirection=${watchListSortDirection}&ArchivedVisible=${archivedVisible}&ShowMissingArtwork=${showMissingArtwork}${typeFilter !== null && typeFilter !== -1 ? `&TypeFilter=${typeFilter}` : ``}${(searchTerm !== "" ? `&SearchTerm=${searchTerm}` : ``)}${Object.keys(newMetaDataFilters).length > 0 ? `&MetadataFilters=${JSON.stringify(newMetaDataFilters)}` : ""}`, { withCredentials: true })
-               .then((res: AxiosResponse<IWatchListItem>) => {
-                    if (res.data[0] !== "OK") {
-                         setErrorMessage("Failed to get WatchList Items with the error " + res.data[1]);
-                         setIsError(true);
-                         return;
-                    }
+          const watchListItemsResponse = await fetch(`/api/GetWatchListItems?StartIndex=${newSliceStart}&EndIndex=${newSliceEnd}&SortColumn=${watchListSortColumn}&SortDirection=${watchListSortDirection}&ArchivedVisible=${archivedVisible}&ShowMissingArtwork=${showMissingArtwork}${typeFilter !== null && typeFilter !== -1 ? `&TypeFilter=${typeFilter}` : ``}${(searchTerm !== "" ? `&SearchTerm=${searchTerm}` : ``)}${Object.keys(newMetaDataFilters).length > 0 ? `&MetadataFilters=${JSON.stringify(newMetaDataFilters)}` : ""}`, { credentials: 'include' });
 
-                    if (activeRoute === "Items" && res.data[1].length < pageSize) {
-                         setLastPage(true);
-                    } else {
-                         setLastPage(false);
-                    }
+          const watchListItemsResult = await watchListItemsResponse.json();
 
-                    setFilteredWatchListItems(res.data[1]);
+          if (watchListItemsResult[0] !== "OK") {
+               setErrorMessage("Failed to get WatchList Items with the error " + watchListItemsResult[1]);
+               setIsError(true);
+               return;
+          }
 
-                    setWatchListItemsSortingCheck(APIStatus.Success);
+          if (activeRoute === "Items" && watchListItemsResult[1].length < pageSize) {
+               setLastPage(true);
+          } else {
+               setLastPage(false);
+          }
 
-                    return res.data[1]; // Return in case its needed by the calling method
-               })
-               .catch((err: Error) => {
-                    setErrorMessage("Failed to get WatchList Items with the error " + err.message);
+          setFilteredWatchListItems(watchListItemsResult[1]);
 
-                    setIsError(true);
-               });
+          setWatchListItemsSortingCheck(APIStatus.Success);
+
+          return watchListItemsResult[1];
+     }
+
+     const getWatchListSources = async () => {
+          const getWatchListSourcesResponse = await fetch(`/api/GetWatchListSources`, { credentials: 'include' });
+
+          const getWatchListSourcesResult = await getWatchListSourcesResponse.json();
+
+          if (getWatchListSourcesResult[0] !== "OK") {
+               setErrorMessage("Failed to get WatchList Sources with the error " + getWatchListSourcesResult[1]);
+               setIsError(true);
+               return;
+          }
+
+          const wls = getWatchListSourcesResult[1];
+
+          wls.sort((a: IWatchListSource, b: IWatchListSource) => {
+               const aName = a.WatchListSourceName;
+               const bName = b.WatchListSourceName;
+
+               return String(aName) > String(bName) ? 1 : -1;
+          });
+
+          setWatchListSources(wls);
+          setWatchListSourcesLoadingCheck(APIStatus.Success);
+     }
+
+     const getWatchListTypes = async () => {
+          const getWatchListTypesResponse = await fetch(`/api/GetWatchListTypes`, { credentials: 'include' });
+
+          const getWatchListTypesResult = await getWatchListTypesResponse.json();
+
+          if (getWatchListTypesResult[0] !== "OK") {
+               setErrorMessage("Failed to get WatchList Types with the error " + getWatchListTypesResult[1]);
+               setIsError(true);
+               return;
+          }
+
+          setWatchListTypes(getWatchListTypesResult[1]);
+          setWatchListTypesLoadingCheck(APIStatus.Success);
+
+          setIsLoading(false);
      }
 
      const isAdmin = () => {
@@ -395,6 +425,26 @@ const DataProvider = ({
                return true;
           } else {
                return false;
+          }
+     }
+
+     const isIMDBSearchEnabled = async () => {
+          const isIMDBSearchEnabledResponse = await fetch(`/api/IsIMDBSearchEnabled`, { credentials: 'include' });
+
+          const isIMDBSearchEnabledResult = await isIMDBSearchEnabledResponse.json();
+
+          if (isIMDBSearchEnabledResult[0] === "OK") {
+               setImdbSearchEnabled(true);
+          }
+     }
+
+     const isRecommendationsEnabled = async () => {
+          const isRecommendationsEnabledResponse = await fetch(`/api/IsRecommendationsEnabled`, { credentials: 'include' });
+
+          const isRecommendationsEnabledResult = await isRecommendationsEnabledResponse.json();
+
+          if (isRecommendationsEnabledResult[0] === "OK") {
+               setRecommendationsEnabled(true);
           }
      }
 
@@ -436,11 +486,14 @@ const DataProvider = ({
      }
 
      const saveOptions = async (newOptions: IUserOption) => {
-          await axios.get(`/api/UpdateOptions?Options=${JSON.stringify(newOptions)}`)
-               .catch((err: Error) => {
-                    setErrorMessage("Failed to update option with the error " + err.message);
-                    setIsError(true);
-               });
+          const saveOptionsResponse = await fetch(`/api/UpdateOptions?Options=${JSON.stringify(newOptions)}`, { credentials: 'include' });
+
+          const saveOptionsResult = await saveOptionsResponse.json();
+
+          if (saveOptionsResult[0] != "OK") {
+               setErrorMessage("Failed to update option with the error " + saveOptionsResult[1]);
+               setIsError(true);
+          }
      }
 
      const setNewPage = (adjustValue: number) => {
@@ -496,23 +549,21 @@ const DataProvider = ({
           setSettingsVisible(true);
      };
 
-     const signOut = () => {
+     const signOut = async () => {
           if (demoMode) {
                signOutActions();
                return;
           }
 
-          axios.get(`/api/SignOut`)
-               .then((res: AxiosResponse<IUser>) => {
-                    if (res.data[0] === "OK") {
-                         signOutActions();
-                    } else {
-                         alert(res.data[1]);
-                    }
-               })
-               .catch((err: Error) => {
-                    alert(err.message);
-               });
+          const signOutResponse = await fetch(`/api/SignOut`, { credentials: 'include' });
+
+          const signOutResult = await signOutResponse.json();
+
+          if (signOutResult[0] === "OK") {
+               signOutActions();
+          } else {
+               alert(signOutResult[1]);
+          }
      };
 
      const signOutActions = () => {
@@ -553,90 +604,86 @@ const DataProvider = ({
           return strongRegex.test(value);
      };
 
-     const writeLog = useCallback((logMessage: string) => {
-          axios.put(`/api/WriteLog?LogMessage=${encodeURIComponent(logMessage)}`)
-               .then(async (res: AxiosResponse<IUser>) => {
-                    if (res.data[0] !== "OK") {
-                         writeLog(res.data[1]);
-                    }
-               })
-               .catch(() => {
-                    setLoggedInCheck(APIStatus.Success);
+     const writeLog = useCallback(async (logMessage: string) => {
+          const writeLogResponse = await fetch(`/api/WriteLog?LogMessage=${encodeURIComponent(logMessage)}`, { method: 'PUT', credentials: 'include' });
 
-                    router.push("/Login");
-               });
+          const writeLogResult = await writeLogResponse.json();
+
+          if (writeLogResponse[0] !== "OK") {
+               writeLog(writeLogResult[1]);
+          } else {
+               setLoggedInCheck(APIStatus.Success);
+
+               router.push("/Login");
+          }
      }, [router]);
 
      // This method has a dependency on setOptions and writeLog and has to be defined after these functions
-     const isLoggedInApi = useCallback((noReroute: boolean = false) => {
+     const isLoggedInApi = useCallback(async (noReroute: boolean = false) => {
           if (isError) {
                return;
           }
 
           let params = '';
 
-          axios.get(`/api/IsLoggedIn${params}`)
-               .then(async (res: AxiosResponse<IUser>) => {
-                    if (res.data[0] === "OK") {
-                         pullToRefreshEnabled(true);
+          const isLoggedInResponse = await fetch(`/api/IsLoggedIn${params}`, { credentials: 'include' });
 
-                         const newUserData = Object.assign({}, userData);
-                         newUserData.UserID = res.data[1].UserID;
-                         newUserData.Username = res.data[1].Username;
-                         newUserData.RealName = res.data[1].RealName;
-                         newUserData.Admin = res.data[1].Admin;
+          const isLoggedInResult = await isLoggedInResponse.json();
 
-                         if (newUserData.Admin) {
-                              routeList["Admin"].Enabled = true;
-                         }
+          if (isLoggedInResult[0] === "OK") {
+               pullToRefreshEnabled(true);
 
-                         if (typeof res.data[1].Options !== "undefined") {
-                              setOptions(res.data[1].Options);
-                         }
+               const newUserData = Object.assign({}, userData);
+               newUserData.UserID = isLoggedInResult[1].UserID;
+               newUserData.Username = isLoggedInResult[1].Username;
+               newUserData.RealName = isLoggedInResult[1].RealName;
+               newUserData.Admin = isLoggedInResult[1].Admin;
 
-                         setLoggedInCheck(APIStatus.Success);
-                         setUserData(newUserData);
+               if (newUserData.Admin) {
+                    routeList["Admin"].Enabled = true;
+               }
 
-                         if (!noReroute) {
-                              setActiveRoute("WatchList");
-                              setCurrentWatchListPage(1);
+               if (typeof isLoggedInResult[1].Options !== "undefined") {
+                    setOptions(isLoggedInResult[1].Options);
+               }
 
-                              router.push("/WatchList");
-                         }
+               setLoggedInCheck(APIStatus.Success);
+               setUserData(newUserData);
+
+               if (!noReroute) {
+                    setActiveRoute("WatchList");
+                    setCurrentWatchListPage(1);
+
+                    router.push("/WatchList");
+               }
+          } else {
+               pullToRefreshEnabled(false);
+
+               if (isLoggedInResult[1] === false) {
+                    setLoggedInCheck(APIStatus.Unauthorized);
+                    setActiveRoute("Setup");
+                    router.push("/Setup");
+                    return;
+               } else if (isLoggedInResult[1] !== "") {
+                    if (typeof isLoggedInResult[2] !== "undefined" && isLoggedInResult[2] === true) {
+                         setErrorMessage(isLoggedInResult[1]);
+
+                         setActiveRoute("404");
+
+                         setIsError(true);
+
+                         return;
                     } else {
-                         pullToRefreshEnabled(false);
-
-                         if (res.data[1] === false) {
-                              setLoggedInCheck(APIStatus.Unauthorized);
-                              setActiveRoute("Setup");
-                              router.push("/Setup");
-                              return;
-                         } else if (res.data[1] !== "") {
-                              if (typeof res.data[2] !== "undefined" && res.data[2] === true) {
-                                   setErrorMessage(res.data[1]);
-
-                                   setActiveRoute("404");
-
-                                   setIsError(true);
-
-                                   return;
-                              } else {
-                                   alert(res.data[1]);
-                              }
-                         }
-
-                         setActiveRoute("Login");
-
-                         setLoggedInCheck(APIStatus.Unauthorized);
-
-                         router.push("/Login");
+                         alert(isLoggedInResult[1]);
                     }
-               })
-               .catch(() => {
-                    setLoggedInCheck(APIStatus.Success);
+               }
 
-                    router.push("/Login");
-               });
+               setActiveRoute("Login");
+
+               setLoggedInCheck(APIStatus.Unauthorized);
+
+               router.push("/Login");
+          }
      }, [isError, routeList, router, setOptions, userData]);
 
      // Check if user is logged in already
@@ -730,32 +777,9 @@ const DataProvider = ({
           }
 
           if (watchListSourcesLoadingCheck === APIStatus.Idle) {
-               setWatchListSourcesLoadingCheck(APIStatus.Success);
+               setWatchListSourcesLoadingCheck(APIStatus.Loading);
 
-               axios.get(`/api/GetWatchListSources`, { withCredentials: true })
-                    .then((res: AxiosResponse<IWatchListSource>) => {
-                         if (res.data[0] !== "OK") {
-                              setErrorMessage("Failed to get WatchList Sources with the error " + res.data[1]);
-                              setIsError(true);
-                              return;
-                         }
-
-                         const wls = res.data[1];
-
-                         wls.sort((a: IWatchListSource, b: IWatchListSource) => {
-                              const aName = a.WatchListSourceName;
-                              const bName = b.WatchListSourceName;
-
-                              return String(aName) > String(bName) ? 1 : -1;
-                         });
-
-                         setWatchListSources(wls);
-                         setWatchListSourcesLoadingCheck(APIStatus.Success);
-                    })
-                    .catch((err: Error) => {
-                         setErrorMessage("Failed to get WatchList Sources with the error " + err.message);
-                         setIsError(true);
-                    });
+               getWatchListSources();
           }
      }, [demoMode, isLoggedInCheck, watchListSourcesLoadingCheck]);
 
@@ -775,23 +799,7 @@ const DataProvider = ({
           if (watchListSourcesLoadingCheck === APIStatus.Success && watchListTypesLoadingCheck === APIStatus.Idle) {
                setWatchListTypesLoadingCheck(APIStatus.Loading);
 
-               axios.get(`/api/GetWatchListTypes`, { withCredentials: true })
-                    .then((res: AxiosResponse<IWatchListType>) => {
-                         if (res.data[0] !== "OK") {
-                              setErrorMessage("Failed to get WatchList Types with the error " + res.data[1]);
-                              setIsError(true);
-                              return;
-                         }
-
-                         setWatchListTypes(res.data[1]);
-                         setWatchListTypesLoadingCheck(APIStatus.Success);
-
-                         setIsLoading(false);
-                    })
-                    .catch((err: Error) => {
-                         setErrorMessage("Failed to get WatchList Types with the error " + err.message);
-                         setIsError(true);
-                    });
+               getWatchListTypes();
           }
      }, [demoMode, isLoggedInCheck, watchListSourcesLoadingCheck, watchListTypesLoadingCheck]);
 
@@ -938,24 +946,10 @@ const DataProvider = ({
           }
 
           /* Checks if IMDB search */
-          axios.get(`/api/IsIMDBSearchEnabled`)
-               .then((res: AxiosResponse<ISearchImdb>) => {
-                    if (res.data[0] === "OK") {
-                         setImdbSearchEnabled(true);
-                    }
-               })
-               .catch((err: Error) => {
-               });
+          isIMDBSearchEnabled();
 
           /* Checks if Recommendations is enabled */
-          axios.get(`/api/IsRecommendationsEnabled`)
-               .then((res: AxiosResponse<IRecommendation>) => {
-                    if (res.data[0] === "OK") {
-                         setRecommendationsEnabled(true);
-                    }
-               })
-               .catch((err: Error) => {
-               });
+          isRecommendationsEnabled();
 
           isLoggedInApi(true);
 
@@ -1027,44 +1021,3 @@ const DataProvider = ({
 }
 
 export { AdminContext, BugLogsContext, DataContext, DataProvider, ErrorContext, ItemsContext, ItemsCardContext, ItemsDtlContext, LoginContext, ManageUserAccountsContext, ManageWatchListSourcesContext, ManageWatchListTypesContext, NavBarContext, RecommendationsContext, SearchIMDBContext, SettingsContext, SetupContext, SharedLayoutContext, TabsContext, WatchListContext, WatchListCardContext, WatchListDtlContext, WatchListStatsContext };
-
-/*const cacheIMDBPosterImage = (watchListItemID: number) => {
-     const newWatchListItems: IWatchListItem[] = Object.assign([], watchListItems);
-
-     const newWatchListItemsResult: IWatchListItem[] = newWatchListItems?.filter((currentWatchListItem: IWatchListItem) => {
-          return String(currentWatchListItem.WatchListItemID) === String(watchListItemID);
-     });
-
-     if (newWatchListItemsResult.length === 0) {
-          // this shouldn't ever happen!
-          return;
-     }
-
-     const newWatchListItem = newWatchListItemsResult[0];
-
-     if (typeof newWatchListItem.IMDB_Poster !== "undefined" && newWatchListItem.IMDB_Poster !== null && newWatchListItem.IMDB_Poster !== "" && (typeof newWatchListItem.IMDB_Poster_Image === "undefined" || newWatchListItem.IMDB_Poster_Image === null || newWatchListItem.IMDB_Poster_Image === "") && (typeof newWatchListItem.IMDB_Poster !== "undefined" && newWatchListItem.IMDB_Poster !== null && newWatchListItem.IMDB_Poster !== "")) {
-          fetch(newWatchListItem.IMDB_Poster)
-               .then(response => response.blob())
-               .then(blob => new Promise((resolve, reject) => {
-                    const reader = new FileReader();
-                    reader.onloadend = () => resolve(reader.result);
-                    reader.onerror = reject;
-                    reader.readAsDataURL(blob);
-               }))
-               .then((base64data: string) => {
-                    const queryURL = `/api/UpdateWatchListItem?WatchListItemID=${watchListItemID}`;
-
-                    axios.put(queryURL, { IMDB_Poster_Image: encodeURIComponent(base64data) }, {
-                         headers: {
-                              'Content-Type': 'application/json',
-                         }
-                    }).then((res: AxiosResponse<IWatchListItem>) => {
-                         if (res.data[0] === "ERROR") {
-                              alert(`The error ${res.data[1]} occurred while updating the item detail`);
-                         }
-                    }).catch((err: Error) => {
-                         alert(`The error ${err.message} occurred while updating the item detail`);
-                    });
-               })
-     }
-}*/

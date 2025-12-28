@@ -1,6 +1,5 @@
 "use client"
 
-import axios, { AxiosResponse } from "axios";
 import Image from "next/image";
 
 import { Autocomplete, Rating } from "@mui/material";
@@ -178,6 +177,147 @@ export default function WatchListDtl() {
           }
      }, [currentDate]);
 
+     const getWatchListDtl = async (watchListDtlID: number) => {
+          const getWatchListDtlResponse = await fetch(`/api/GetWatchListDtl?WatchListID=${watchListDtlID}`, { credentials: 'include' });
+
+          const getWatchListDtlResult = await getWatchListDtlResponse.json();
+
+          if (getWatchListDtlResult[0] === "ERROR") {
+               setErrorMessage(`The error ${getWatchListDtlResult[1]} occurred while getting the detail`);
+               setIsError(true);
+               return;
+          } else {
+               // Sanitize object by replacing all fields with null
+               const wld = getWatchListDtlResult[1];
+
+               if (wld[0]?.IMDB_JSON !== null && typeof wld[0]?.IMDB_JSON !== "undefined") {
+                    const IMDB_JSON = (JSON.parse(wld[0]?.IMDB_JSON));
+
+                    const tooltip = IMDB_JSON && IMDB_JSON !== null &&
+                         `Rated: ${IMDB_JSON.Rated} 
+Year: ${IMDB_JSON.Year}
+Rated: ${IMDB_JSON.imdbRating}
+Genre: ${IMDB_JSON.Genre}
+Runtime: ${IMDB_JSON.Runtime}
+Release Date: ${IMDB_JSON.Released}
+Director: ${IMDB_JSON.Director}
+Plot: ${IMDB_JSON.Plot}
+${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSeasons}` : ""}
+     `;
+
+                    wld[0].Tooltip = tooltip;
+               }
+
+               Object.keys(wld[0]).map((keyName) => {
+                    if (wld[0][keyName] === null) {
+                         wld[0][keyName] = "";
+                    }
+               });
+
+               setWatchListDtl(wld[0]);
+               setWatchListDtlLoadingCheck(APIStatus.Success);
+          }
+     }
+
+     const getWatchListItems = async () => {
+          const getAllWatchListItemsResponse = await fetch(`/api/GetWatchListItems?AllData=true`, { credentials: 'include' });
+
+          const getAllWatchListItemsResult = await getAllWatchListItemsResponse.json();
+
+          if (getAllWatchListItemsResult[0] !== "OK") {
+               setErrorMessage("Failed to get WatchList Items with the error " + getAllWatchListItemsResult[1]);
+               setIsError(true);
+               return;
+          }
+
+          setWatchListItems(getAllWatchListItemsResult[1]);
+
+          // Generate names for auto complete
+          const namesOnlyItems: IAutoCompleteOption[] = getAllWatchListItemsResult[1].map((watchListItem: IWatchListItem) => {
+               const IMDB_JSON = watchListItem?.IMDB_JSON !== null && typeof watchListItem?.IMDB_JSON !== "undefined" ? JSON.parse(watchListItem?.IMDB_JSON) : null;
+
+               let itemName = watchListItem.WatchListItemName + (IMDB_JSON !== null && IMDB_JSON.Year !== null ? ` (${IMDB_JSON.Year})` : ``);
+
+
+               if (getAllWatchListItemsResult[1]?.filter((watchListItemDupe: IWatchListItem) => {
+                    return String(watchListItemDupe.WatchListItemName) === String(watchListItem.WatchListItemName);
+               }).length > 1) {
+                    itemName += ` (${watchListItem.WatchListTypeName})`;
+               }
+
+               return { name: itemName };
+          });
+
+          const namesSorted = namesOnlyItems.sort((a: any, b: any) => {
+               // Convert names to lowercase for case-insensitive sorting
+               const nameA = a.name.toLowerCase().trim();
+               const nameB = b.name.toLowerCase().trim();
+
+               // Compare the names
+               if (nameA < nameB) {
+                    return -1;
+               }
+               if (nameA > nameB) {
+                    return 1;
+               }
+
+               // Names are equal
+               return 0;
+          });
+
+          const seenNames = new Map<string, number>();
+          const duplicateMessages: string[] = [];
+
+          namesSorted.forEach((item, index) => {
+               if (seenNames.has(item.name)) {
+                    duplicateMessages.push(`Duplicate found for "${item.name}"`);
+               }
+               seenNames.set(item.name, index); // Overwrite to keep the last occurrence
+          });
+
+          if (duplicateMessages.length > 0) {
+               console.log(duplicateMessages.join("\n"));
+          }
+
+          setFormattedNames(namesSorted);
+
+          const namesWithIdItems = getAllWatchListItemsResult[1].map((watchListItem: IWatchListItem) => {
+               let itemName = watchListItem.WatchListItemName
+
+               if (watchListItems?.filter((watchListItemDupe: IWatchListItem) => {
+                    return String(watchListItemDupe.WatchListItemName) === String(watchListItem.WatchListItemName);
+               }).length > 1) {
+                    itemName += " (" + watchListItem.WatchListTypeName + ")"
+               }
+
+               let newItem: AutoCompleteWatchListItem = {
+                    WatchListItemID: watchListItem.WatchListItemID,
+                    WatchListItemName: itemName
+               }
+
+               return newItem;
+          });
+
+          const namesWithIdItemsSorted = namesWithIdItems.sort((a: IWatchListItem, b: IWatchListItem) => {
+               // Convert names to lowercase for case-insensitive sorting
+               const nameA = a.WatchListItemName.toLowerCase().trim();
+               const nameB = b.WatchListItemName.toLowerCase().trim();
+
+               // Compare the names
+               if (nameA < nameB) {
+                    return -1;
+               }
+               if (nameA > nameB) {
+                    return 1;
+               }
+
+               // Names are equal
+               return 0;
+          });
+
+          setFormattedNamesWithId(namesWithIdItemsSorted);
+     }
+
      const getWatchListTypeID = (watchListItemID: number) => {
           const results = watchListItems?.filter((watchListItem: IWatchListItem) => {
                return String(watchListItem.WatchListItemID) === String(watchListItemID);
@@ -266,24 +406,23 @@ export default function WatchListDtl() {
                     queryURL += `&Notes=${addWatchListDtl.Notes}`;
                }
 
+               const saveNewWatchListResponse = await fetch(queryURL, { method: 'PUT', credentials: 'include' });
 
-               axios.put(queryURL).then((res: AxiosResponse<IWatchList>) => {
-                    if (res.data[0] === "ERROR") {
-                         alert(`The error ${res.data[1]} occurred while adding the detail`);
-                    } else {
-                         setIsAdding(false);
-                         getWatchList();
-                         addingStarted = false;
+               const saveNewWatchListResult = await saveNewWatchListResponse.json();
 
-                         if (typeof addWatchListDtl.EndDate !== "undefined" && !stillWatching) {
-                              setStillWatching(true);
-                         }
+               if (saveNewWatchListResult[0] === "ERROR") {
+                    alert(`The error ${saveNewWatchListResult[1]} occurred while adding the detail`);
+               } else {
+                    setIsAdding(false);
+                    getWatchList();
+                    addingStarted = false;
 
-                         router.push("/WatchList");
+                    if (typeof addWatchListDtl.EndDate !== "undefined" && !stillWatching) {
+                         setStillWatching(true);
                     }
-               }).catch((err: Error) => {
-                    alert(`The error ${err.message} occurred while adding the detail`);
-               });
+
+                    router.push("/WatchList");
+               }
           } else { // This shouldn't ever happen
                alert("Unable to save new record. addWatchListDtl is null!");
           }
@@ -310,7 +449,7 @@ export default function WatchListDtl() {
           }
      };
 
-     const updateWatchList = (silent: boolean) => {
+     const updateWatchList = async (silent: boolean) => {
           if (watchListDtl !== null) {
                if (watchListDtl.WatchListItemID === -1) {
                     alert("Please select the Movie or TV Show");
@@ -384,17 +523,15 @@ export default function WatchListDtl() {
                if (queryURL != "") {
                     queryURL = `/api/UpdateWatchList?WatchListID=${watchListDtl.WatchListID}${queryURL}`;
 
-                    axios.put(queryURL).then((res: AxiosResponse<IWatchList>) => {
-                         if (res.data[0] === "ERROR" && !silent) {
-                              alert(`The error ${res.data[1]} occurred while updating the detail`);
-                         } else {
-                              setIsEditing(false);
-                         }
-                    }).catch((err: Error) => {
-                         if (!silent) {
-                              alert(`The error ${err.message} occurred while updating the detail`);
-                         }
-                    });
+                    const updateWatchListResponse = await fetch(queryURL, { method: 'PUT', credentials: 'include' });
+
+                    const updateWatchListResult = await updateWatchListResponse.json();
+
+                    if (updateWatchListResult[0] === "ERROR" && !silent) {
+                         alert(`The error ${updateWatchListResult[1]} occurred while updating the detail`);
+                    } else {
+                         setIsEditing(false);
+                    }
                } else {
                     setIsEditing(false);
                }
@@ -472,48 +609,7 @@ export default function WatchListDtl() {
                     return;
                }
 
-               axios.get(`/api/GetWatchListDtl?WatchListID=${watchListDtlID}`)
-                    .then((res: AxiosResponse<IWatchList>) => {
-                         if (res.data[0] === "ERROR") {
-                              setErrorMessage(`The error ${res.data[1]} occurred while getting the detail`);
-                              setIsError(true);
-                              return;
-                         } else {
-                              // Sanitize object by replacing all fields with null
-                              const wld = res.data[1];
-
-                              if (wld[0]?.IMDB_JSON !== null && typeof wld[0]?.IMDB_JSON !== "undefined") {
-                                   const IMDB_JSON = (JSON.parse(wld[0]?.IMDB_JSON));
-
-                                   const tooltip = IMDB_JSON && IMDB_JSON !== null &&
-                                        `Rated: ${IMDB_JSON.Rated} 
-Year: ${IMDB_JSON.Year}
-Rated: ${IMDB_JSON.imdbRating}
-Genre: ${IMDB_JSON.Genre}
-Runtime: ${IMDB_JSON.Runtime}
-Release Date: ${IMDB_JSON.Released}
-Director: ${IMDB_JSON.Director}
-Plot: ${IMDB_JSON.Plot}
-${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSeasons}` : ""}
-     `;
-
-                                   wld[0].Tooltip = tooltip;
-                              }
-
-                              Object.keys(wld[0]).map((keyName) => {
-                                   if (wld[0][keyName] === null) {
-                                        wld[0][keyName] = "";
-                                   }
-                              });
-
-                              setWatchListDtl(wld[0]);
-                              setWatchListDtlLoadingCheck(APIStatus.Success);
-                         }
-                    })
-                    .catch((err: Error) => {
-                         setErrorMessage(`The fatal error ${err.message} occurred while getting the detail`);
-                         setIsError(true);
-                    });
+               getWatchListDtl(watchListDtlID);
           } else if (isAdding) {
                const newAddWatchListDtl: IWatchList = {} as IWatchList;
                newAddWatchListDtl.WatchListItemID = watchListItemDtlID !== null ? watchListItemDtlID : -1;
@@ -532,106 +628,7 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
 
      useEffect(() => {
           if (formattedNames.length == 0) {
-               axios.get(`/api/GetWatchListItems?AllData=true`, { withCredentials: true })
-                    .then((res: AxiosResponse<IWatchListItem>) => {
-                         if (res.data[0] !== "OK") {
-                              setErrorMessage("Failed to get WatchList Items with the error " + res.data[1]);
-                              setIsError(true);
-                              return;
-                         }
-
-                         setWatchListItems(res.data[1]);
-
-                         // Generate names for auto complete
-                         const namesOnlyItems: IAutoCompleteOption[] = res.data[1].map((watchListItem: IWatchListItem) => {
-                              const IMDB_JSON = watchListItem?.IMDB_JSON !== null && typeof watchListItem?.IMDB_JSON !== "undefined" ? JSON.parse(watchListItem?.IMDB_JSON) : null;
-
-                              let itemName = watchListItem.WatchListItemName + (IMDB_JSON !== null && IMDB_JSON.Year !== null ? ` (${IMDB_JSON.Year})` : ``);
-
-
-                              if (res.data[1]?.filter((watchListItemDupe: IWatchListItem) => {
-                                   return String(watchListItemDupe.WatchListItemName) === String(watchListItem.WatchListItemName);
-                              }).length > 1) {
-                                   itemName += ` (${watchListItem.WatchListTypeName})`;
-                              }
-
-                              return { name: itemName };
-                         });
-
-                         const namesSorted = namesOnlyItems.sort((a: any, b: any) => {
-                              // Convert names to lowercase for case-insensitive sorting
-                              const nameA = a.name.toLowerCase().trim();
-                              const nameB = b.name.toLowerCase().trim();
-
-                              // Compare the names
-                              if (nameA < nameB) {
-                                   return -1;
-                              }
-                              if (nameA > nameB) {
-                                   return 1;
-                              }
-
-                              // Names are equal
-                              return 0;
-                         });
-
-                         const seenNames = new Map<string, number>();
-                         const duplicateMessages: string[] = [];
-
-                         namesSorted.forEach((item, index) => {
-                              if (seenNames.has(item.name)) {
-                                   duplicateMessages.push(`Duplicate found for "${item.name}"`);
-                              }
-                              seenNames.set(item.name, index); // Overwrite to keep the last occurrence
-                         });
-
-                         if (duplicateMessages.length > 0) {
-                              console.log(duplicateMessages.join("\n"));
-                         }
-
-                         setFormattedNames(namesSorted);
-
-                         const namesWithIdItems = res.data[1].map((watchListItem: IWatchListItem) => {
-                              let itemName = watchListItem.WatchListItemName
-
-                              if (watchListItems?.filter((watchListItemDupe: IWatchListItem) => {
-                                   return String(watchListItemDupe.WatchListItemName) === String(watchListItem.WatchListItemName);
-                              }).length > 1) {
-                                   itemName += " (" + watchListItem.WatchListTypeName + ")"
-                              }
-
-                              let newItem: AutoCompleteWatchListItem = {
-                                   WatchListItemID: watchListItem.WatchListItemID,
-                                   WatchListItemName: itemName
-                              }
-
-                              return newItem;
-                         });
-
-                         const namesWithIdItemsSorted = namesWithIdItems.sort((a: IWatchListItem, b: IWatchListItem) => {
-                              // Convert names to lowercase for case-insensitive sorting
-                              const nameA = a.WatchListItemName.toLowerCase().trim();
-                              const nameB = b.WatchListItemName.toLowerCase().trim();
-
-                              // Compare the names
-                              if (nameA < nameB) {
-                                   return -1;
-                              }
-                              if (nameA > nameB) {
-                                   return 1;
-                              }
-
-                              // Names are equal
-                              return 0;
-                         });
-
-                         setFormattedNamesWithId(namesWithIdItemsSorted);
-                    })
-                    .catch((err: Error) => {
-                         setErrorMessage("Failed to get WatchList Items with the error " + err.message);
-
-                         setIsError(true);
-                    });
+               getWatchListItems();
           }
      }, [formattedNames]);
 

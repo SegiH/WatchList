@@ -2,7 +2,6 @@
 
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
-import axios, { AxiosResponse } from "axios";
 import { useRouter } from 'next/navigation';
 import React, { useContext, useEffect, useState } from "react";
 import { APIStatus, ManageUserAccountsContext } from "../data-context";
@@ -10,6 +9,7 @@ import IUser from "../interfaces/IUser";
 
 import "../page.css";
 import { ManageUserAccountsContextType } from "../interfaces/contexts/ManageUserAccountsContextType";
+import { getUserSession } from "../api/lib";
 
 const ManageUserAccounts = () => {
      const {
@@ -57,7 +57,23 @@ const ManageUserAccounts = () => {
           setIsEditing(true);
      }
 
-     const saveRow = () => {
+     const getUsers = async () => {
+          const getUsersResponse = await fetch(`/api/GetUsers`, { credentials: 'include' });
+
+          const getUsersResult = await getUsersResponse.json();
+
+          if (getUsersResult[0] === "OK") {
+               setUsers(getUsersResult[1]);
+          } else {
+               alert(getUsersResult[1])
+               setErrorMessage(getUsersResult[1]);
+               setIsError(true);
+          }
+
+          setUsersLoadingCheck(APIStatus.Success);
+     }
+
+     const saveRow = async () => {
           if (demoMode) {
                alert("Adding a user is disabled in demo mode");
                return;
@@ -129,22 +145,20 @@ const ManageUserAccounts = () => {
 
           const endPoint = (isAdding ? `/api/AddUser` : `/api/UpdateUser`) + columns;
 
-          axios.put(endPoint, { withCredentials: true })
-               .then((response: AxiosResponse<IUser>) => {
-                    if (response !== null && response.data !== null && response.data[0] === "OK") {
-                         alert("Saved");
+          const saveUserAccountResponse = await fetch(endPoint, { method: 'PUT', credentials: 'include' });
 
-                         setUsersLoadingCheck(APIStatus.Idle);
+          const saveUserAccountResult = await saveUserAccountResponse.json();
 
-                         setIsAdding(false);
-                         setIsEditing(false);
-                    } else {
-                         alert(response.data[1]);
-                    }
-               })
-               .catch((err: Error) => {
-                    alert("Failed to update users with the error " + err.message);
-               });
+          if (saveUserAccountResult[0] === "OK") {
+               alert("Saved");
+
+               setUsersLoadingCheck(APIStatus.Idle);
+
+               setIsAdding(false);
+               setIsEditing(false);
+          } else {
+               alert(saveUserAccountResult[1]);
+          }
      }
 
      const userChangeHandler = (fieldName: string, fieldValue: string) => {
@@ -186,22 +200,7 @@ const ManageUserAccounts = () => {
           if (usersLoadingCheck === APIStatus.Idle) {
                setUsersLoadingCheck(APIStatus.Loading);
 
-               axios.get(`/api/GetUsers`, { withCredentials: true })
-                    .then((res: AxiosResponse<IUser>) => {
-                         if (res.data[0] === "OK") {
-                              setUsers(res.data[1]);
-                         } else {
-                              alert(res.data[1])
-                              setErrorMessage(res.data[1]);
-                              setIsError(true);
-                         }
-
-                         setUsersLoadingCheck(APIStatus.Success);
-                    })
-                    .catch((err: Error) => {
-                         setErrorMessage("Failed to get users with the error " + err.message);
-                         setIsError(true);
-                    });
+               getUsers();
           }
      }, [defaultRoute, demoMode, isAdmin, router, setErrorMessage, setIsError, setUsers, usersLoadingCheck]);
 

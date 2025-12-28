@@ -1,4 +1,3 @@
-import axios from "axios";
 import { NextRequest } from 'next/server';
 import { getRecommendationsAPIKey, isLoggedIn } from '../lib';
 
@@ -34,50 +33,56 @@ export async function GET(request: NextRequest) {
      }
 
      if (typeName === "TV") {
-          const results :any = await tvLookup(queryTerm, resultPages);
+          const results: any = await tvLookup(queryTerm, resultPages);
 
           if (results && results.length > 0) {
                return Response.json(["OK", results]);
           } //else {
-               // try as movie
-               //const movieResults = await movieLookup(queryTerm, resultPages);
-               //return Response.json(["OK", movieResults]);
+          // try as movie
+          //const movieResults = await movieLookup(queryTerm, resultPages);
+          //return Response.json(["OK", movieResults]);
           //}
      } else if (typeName === "Movie") {
-          const results :any = await movieLookup(queryTerm, resultPages);
+          const results: any = await movieLookup(queryTerm, resultPages);
 
           if (results.length > 0) {
                return Response.json(["OK", results]);
           } //else {
-               //const tvResults = await tvLookup(queryTerm, resultPages);
+          //const tvResults = await tvLookup(queryTerm, resultPages);
 
-               //if (tvResults.length > 0) {
-               //     return Response.json(["OK", tvResults]);
-               //}
+          //if (tvResults.length > 0) {
+          //     return Response.json(["OK", tvResults]);
+          //}
           //}
      }
 }
 
-async function executeAxios(url) {
-     const recommendations_api_key = await getRecommendationsAPIKey();
+async function executeFetch(url) {
+     try {
+          const recommendations_api_key = await getRecommendationsAPIKey();
 
-     return axios
-          .get(url, {
+          const response = await fetch(url, {
+               method: 'GET',
                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${recommendations_api_key}`,
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${recommendations_api_key}`,
                },
-          })
-          .then((res) => {
-               if (res.data.results.length > 0) {
-                    return ["OK", res.data.results];
-               } else {
-                    return ["OK", null];
-               }
-          })
-          .catch((err) => {
-               return ["ERROR", err.message];
           });
+
+          if (!response.ok) {
+               throw new Error(`HTTP error! status: ${response.status}`);
+          }
+
+          const data = await response.json();
+
+          if (data.results && data.results.length > 0) {
+               return ['OK', data.results];
+          } else {
+               return ['OK', null];
+          }
+     } catch (err) {
+          return ['ERROR', err.message];
+     }
 }
 
 // Step 1 when looking for TV recommendations
@@ -118,7 +123,7 @@ async function findShow(queryTerm) {
      const tv_url = "https://api.themoviedb.org/3/search/tv?query=*PARAM*&include_adult=false&language=en-US&page=1";
 
      const url = tv_url.replace("*PARAM*", encodeURIComponent(queryTerm));
-     const results = await executeAxios(url);
+     const results = await executeFetch(url);
      return results;
 }
 
@@ -126,7 +131,7 @@ async function findShow(queryTerm) {
 async function findMovie(queryTerm) {
      const movie_url = "https://api.themoviedb.org/3/search/movie?query=*PARAM*&include_adult=false&language=en-US&page=1";
      const url = movie_url.replace("*PARAM*", encodeURIComponent(queryTerm));
-     const results = await executeAxios(url);
+     const results = await executeFetch(url);
      return results;
 }
 
@@ -168,7 +173,7 @@ async function findSimilarTVShows(id, pageNum) {
           .replace("*PARAM*", encodeURIComponent(id))
           .replace("&page=", `&page=${pageNum}`);
 
-     return executeAxios(url);
+     return executeFetch(url);
 }
 
 // Step 5 when looking for movie recommendations
@@ -179,5 +184,5 @@ async function findSimilarMovies(id, pageNum) {
           .replace("*PARAM*", encodeURIComponent(id))
           .replace("&page=", `&page=${pageNum}`);
 
-     return executeAxios(url);
+     return executeFetch(url);
 }

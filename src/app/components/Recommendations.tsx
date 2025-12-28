@@ -1,4 +1,3 @@
-import axios, { AxiosResponse } from "axios";
 import Image from 'next/image';
 import { useContext, useEffect, useState } from "react";
 import { APIStatus, RecommendationsContext } from "../data-context";
@@ -27,6 +26,22 @@ const Recommendations = ({ queryTerm, setRecommendationName, setRecommendationTy
           setRecommendationsVisible(false);
      }
 
+     const getRecommendations = async () => {
+          const getRecommendationsResponse = await fetch(`/api/Recommendations?SearchTerm=${encodeURIComponent(queryTerm)}&Type=${type}`, { credentials: 'include' });
+
+          const getRecommendationsResult = await getRecommendationsResponse.json();
+
+          setRecommendationsLoadingCheck(APIStatus.Success);
+
+          if (getRecommendationsResult[0] === "OK") {
+               setRecommendations(getRecommendationsResult[1]);
+          } else { // I do not want to display an alert if the recommendations returns an error
+               writeLog(`The error ${getRecommendationsResult[1].length} occurred while searching for recommendations`);
+
+               setRecommendationsError(true);
+          }
+     }
+
      const showDefaultSrc = (id: number): void => {
           const newRecommendations: IRecommendation[] = Object.assign([], recommendations);
 
@@ -48,22 +63,7 @@ const Recommendations = ({ queryTerm, setRecommendationName, setRecommendationTy
           if (queryTerm !== "" && type !== "" && recommendationsLoadingCheck === APIStatus.Idle) {
                setRecommendationsLoadingCheck(APIStatus.Loading)
 
-               const url = `/api/Recommendations?SearchTerm=${encodeURIComponent(queryTerm)}&Type=${type}`;
-
-               axios.get(url).then((res: AxiosResponse<IRecommendation>) => {
-                    setRecommendationsLoadingCheck(APIStatus.Success);
-
-                    if (res.data[0] === "OK") {
-                         setRecommendations(res.data[1]);
-                    } else { // I do not want to display an alert if the recommendations returns an error
-                         writeLog(`The error ${res.data[1].length} occurred while searching for recommendations`);
-
-                         setRecommendationsError(true);
-                    }
-               }).catch((err: Error) => {
-                    writeLog(err.message);
-                    setRecommendationsError(true);
-               });
+               getRecommendations();
           }
      }, [queryTerm, recommendationsLoadingCheck, type, writeLog]);
 

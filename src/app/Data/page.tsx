@@ -5,11 +5,9 @@ import { APIStatus, DataContext } from "../data-context";
 import { useRouter } from 'next/navigation';
 
 import "../page.css";
-import axios, { AxiosResponse } from "axios";
 import IBugLog from "../interfaces/IBugLog";
 import IUser from "../interfaces/IUser";
 import { DataContextType } from "../interfaces/contexts/DataContextType";
-import IWatchListItem from "../interfaces/IWatchListItem";
 
 export default function Data() {
     const {
@@ -103,21 +101,17 @@ export default function Data() {
         switch (newActiveSection) {
             case "WatchList":
                 if (watchList.length === 0 || watchListSortingCheck !== APIStatus.Success) {
-                    axios.get(`/api/GetWatchList?AllData=true`, { withCredentials: true })
-                        .then((res: AxiosResponse<IWatchListItem>) => {
-                            if (res.data[0] !== "OK") {
-                                setErrorMessage("Failed to get WatchList with the error " + res.data[1]);
-                                setIsError(true);
-                                return;
-                            } else {
-                                setDataSource(res.data[1]);
-                            }
-                        })
-                        .catch((err: Error) => {
-                            setErrorMessage("Failed to get WatchList with the error " + err.message);
+                    const getAllWatchListResponse = await fetch(`/api/GetWatchList?AllData=true`, { credentials: 'include' });
 
-                            setIsError(true);
-                        });
+                    const getAllWatchListResult = await getAllWatchListResponse.json();
+
+                    if (getAllWatchListResult[0] !== "OK") {
+                        setErrorMessage("Failed to get WatchList with the error " + getAllWatchListResult[1]);
+                        setIsError(true);
+                        return;
+                    } else {
+                        setDataSource(getAllWatchListResult[1]);
+                    }
                 } else {
                     setDataSource(watchList);
                 }
@@ -125,21 +119,17 @@ export default function Data() {
                 break;
             case "Items":
                 if (watchListItems.length == 0 || watchListItemsSortingCheck !== APIStatus.Success) {
-                    axios.get(`/api/GetWatchListItems?AllData=true`, { withCredentials: true })
-                        .then((res: AxiosResponse<IWatchListItem>) => {
-                            if (res.data[0] !== "OK") {
-                                setErrorMessage("Failed to get WatchList Items with the error " + res.data[1]);
-                                setIsError(true);
-                                return;
-                            } else {
-                                setDataSource(res.data[1]);
-                            }
-                        })
-                        .catch((err: Error) => {
-                            setErrorMessage("Failed to get WatchList Items with the error " + err.message);
+                    const getAllWatchListItemsResponse = await fetch(`/api/GetWatchListItems?AllData=true`, { credentials: 'include' });
 
-                            setIsError(true);
-                        });
+                    const getAllWatchListItemsResult = await getAllWatchListItemsResponse.json();
+
+                    if (getAllWatchListItemsResult[0] !== "OK") {
+                        setErrorMessage("Failed to get WatchList Items with the error " + getAllWatchListItemsResult[1]);
+                        setIsError(true);
+                        return;
+                    } else {
+                        setDataSource(getAllWatchListItemsResult[1]);
+                    }
                 } else {
                     setDataSource(watchListItems);
                 }
@@ -156,21 +146,17 @@ export default function Data() {
             //setDataSource(userData.)
             //break;
             case "Logs":
-                axios.get(`/api/GetLogs`, { withCredentials: true })
-                    .then((res: AxiosResponse<IWatchListItem>) => {
-                        if (res.data[0] !== "OK") {
-                            setErrorMessage("Failed to get logs with the error " + res.data[1]);
-                            setIsError(true);
-                            return;
-                        } else {
-                            setDataSource(res.data[1]);
-                        }
-                    })
-                    .catch((err: Error) => {
-                        setErrorMessage("Failed to get logs with the error " + err.message);
+                const getLogsResponse = await fetch(`/api/GetLogs`, { credentials: 'include' });
 
-                        setIsError(true);
-                    });
+                const getLogsResult = await getLogsResponse.json();
+
+                if (getLogsResult[0] !== "OK") {
+                    setErrorMessage("Failed to get logs with the error " + getLogsResult[1]);
+                    setIsError(true);
+                    return;
+                } else {
+                    setDataSource(getLogsResult[1]);
+                }
                 break;
             case "VisibleSections":
                 setDataSource(visibleSections);
@@ -187,21 +173,18 @@ export default function Data() {
                     return;
                 }
 
-                await axios.get(`/api/GetUsers`, { withCredentials: true })
-                    .then((res: AxiosResponse<IUser>) => {
-                        if (res.data[0] === "OK") {
-                            setDataSource(res.data[1]);
-                            setUsers(res.data[1]); // Save copy to avoid multiple calls to API
-                        } else {
-                            alert(res.data[1])
-                            setErrorMessage(res.data[1]);
-                            setIsError(true);
-                        }
-                    })
-                    .catch((err: Error) => {
-                        setErrorMessage("Failed to get users with the error " + err.message);
-                        setIsError(true);
-                    });
+                const getUsersResponse = await fetch(`/api/GetUsers`, { credentials: 'include' });
+
+                const getUsersResult = await getUsersResponse.json();
+
+                if (getUsersResult[0] === "OK") {
+                    setDataSource(getUsersResult[1]);
+                    setUsers(getUsersResult[1]); // Save copy to avoid multiple calls to API
+                } else {
+                    alert(getUsersResult[1])
+                    setErrorMessage(getUsersResult[1]);
+                    setIsError(true);
+                }
                 break;
             default:
                 setDataSource([]);
@@ -210,26 +193,23 @@ export default function Data() {
     }
 
     const getBugLogs = async () => {
-        axios.get(`/api/GetBugLogs`)
-            .then((res) => {
-                if (res.data[0] === "OK") {
-                    res.data[1].forEach(async (element: IBugLog) => {
-                        element.AddDate = String(element.AddDate).trim();
+        const getBugLogsResponse = await fetch(`/api/GetBugLogs`, { credentials: 'include' });
 
-                        if (element.CompletedDate !== null) {
-                            element.CompletedDate = String(element.CompletedDate).trim();
-                        }
-                    });
+        const getBugLogsResult = await getBugLogsResponse.json();
 
-                    setDataSource(res.data[1]);
-                } else {
-                    alert(`An error occurred while getting the bug logs`);
+        if (getBugLogsResult[0] === "OK") {
+            getBugLogsResult[1].forEach(async (element: IBugLog) => {
+                element.AddDate = String(element.AddDate).trim();
+
+                if (element.CompletedDate !== null) {
+                    element.CompletedDate = String(element.CompletedDate).trim();
                 }
-            })
-            .catch((err: Error) => {
-                setErrorMessage(`The fatal error ${err.message} occurred while getting the bug logs`);
-                setIsError(true);
             });
+
+            setDataSource(getBugLogsResult[1]);
+        } else {
+            alert(`An error occurred while getting the bug logs`);
+        }
     }
 
     useEffect(() => {

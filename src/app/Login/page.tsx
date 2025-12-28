@@ -1,6 +1,5 @@
 "use client"
 
-import axios, { AxiosResponse } from "axios";
 import { useRouter } from "next/navigation";
 import React, { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { APIStatus, LoginContext } from "../data-context";
@@ -31,7 +30,7 @@ export default function Login() {
           }
      }
 
-     const login = (e?: any) => {
+     const login = async (e?: any) => {
           if (typeof e !== "undefined") {
                e.preventDefault();
           }
@@ -64,31 +63,17 @@ export default function Login() {
                return;
           }
 
-          axios.defaults.headers.common['wl_username'] = username;
-          axios.defaults.headers.common['wl_password'] = password;
+          const loginResponse = await fetch(`/api/Login`, { headers: { wl_username: username, wl_password: password }, credentials: 'include' });
 
-          axios.put(`/api/Login`)
-               .then((res: AxiosResponse<IUser>) => {
-                    if (res.data[0] === "OK") {
-                         loginSuccessfullActions(res.data[1]);
-                    } else {
-                         alert(res.data[1]);
-                         setLoginSubmitted(false);
-                         setUserNameNeedsFocus(true);
-                    }
-               })
-               .catch((err: Error) => {
-                    setLoggedInCheck(APIStatus.Unauthorized);
-                    setLoginSubmitted(false);
+          const loginResult = await loginResponse.json();
 
-                    if (String(err.message).startsWith("Unauthorized")) {
-                         alert(`Invalid username or password`);
-                    } else if (err.message === "Request failed with status code 404") {
-                         alert(`An error occurred logging in. Please check the WatchList Backend`);
-                    } else {
-                         alert(`An error occurred logging in with the error ${err.message}`);
-                    }
-               });
+          if (loginResult[0] === "OK") {
+               loginSuccessfullActions(loginResult[1]);
+          } else {
+               alert(loginResult[1]);
+               setLoginSubmitted(false);
+               setUserNameNeedsFocus(true);
+          }          
      };
 
      const loginSuccessfullActions = useCallback(async (response: IUser) => {

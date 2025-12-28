@@ -2,7 +2,6 @@
 
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
-import axios, { AxiosResponse } from "axios";
 import { useRouter } from 'next/navigation';
 import React, { useContext, useEffect, useState } from "react";
 import { APIStatus, BugLogsContext } from "../data-context";
@@ -13,7 +12,7 @@ import { BugLogsContextType } from "../interfaces/contexts/BugLogsContextType";
 
 export default function BugLogs() {
      const {
-          bugLogs,CancelIconComponent, darkMode, defaultRoute, DeleteIconComponent, EditIconComponent, isAdding, isAdmin, isEditing, SaveIconComponent, setBugLogs, setIsError, setErrorMessage, setIsAdding, setIsEditing
+          bugLogs, CancelIconComponent, darkMode, defaultRoute, DeleteIconComponent, EditIconComponent, isAdding, isAdmin, isEditing, SaveIconComponent, setBugLogs, setIsError, setErrorMessage, setIsAdding, setIsEditing
      } = useContext(BugLogsContext) as BugLogsContextType;
 
      const [addingBugLog, setAddingBugLog] = useState<IBugLog>({} as IBugLog);
@@ -60,28 +59,26 @@ export default function BugLogs() {
           return rowCount / 30;
      }
 
-     const deleteBugLogHandler = (id: number) => {
+     const deleteBugLogHandler = async (id: number) => {
           const confirmDelete = confirm(`Are you sure that you want to delete the Bug Log ?`);
 
           if (!confirmDelete) {
                return;
           }
 
-          axios.put(`/api/DeleteBugLog?BugLogId=${id}`, { withCredentials: true })
-               .then((response: AxiosResponse<IBugLog>) => {
-                    if (response.data[0] === "ERROR") {
-                         alert(response.data[1])
-                    } else {
-                         alert("The bug log has been deleted");
+          const deleteBugLogResponse = await fetch(`/api/DeleteBugLog?BugLogId=${id}`, { method: 'PUT', credentials: 'include' });
 
-                         const newBugLogs = bugLogs?.filter((bugLog: IBugLog) => bugLog.BugLogId !== id);
+          const deleteBugLogResult = await deleteBugLogResponse.json();
 
-                         setBugLogs(newBugLogs);
-                    }
-               })
-               .catch((err: Error) => {
-                    alert("Failed to delete bug log with the error " + err.message);
-               });
+          if (deleteBugLogResult[0] === "ERROR") {
+               alert(deleteBugLogResult[1])
+          } else {
+               alert("The bug log has been deleted");
+
+               const newBugLogs = bugLogs?.filter((bugLog: IBugLog) => bugLog.BugLogId !== id);
+
+               setBugLogs(newBugLogs);
+          }
      }
 
      const enterAddModeClickHandler = () => {
@@ -115,7 +112,28 @@ export default function BugLogs() {
           setIsEditing(true);
      };
 
-     const saveRow = () => {
+     const getBugLogs = async () => {
+          const getBugLogsResponse = await fetch(`/api/GetBugLogs`, { credentials: 'include' });
+
+          const getBugLogsResult = await getBugLogsResponse.json();
+
+          if (getBugLogsResult[0] === "OK") {
+               getBugLogsResult[1].forEach(async (element: IBugLog) => {
+                    element.AddDate = String(element.AddDate).trim();
+
+                    if (element.CompletedDate !== null) {
+                         element.CompletedDate = String(element.CompletedDate).trim();
+                    }
+               });
+
+               setBugLogs(getBugLogsResult[1]);
+               setBugLogsLoadingCheck(APIStatus.Success);
+          } else {
+               alert(`An error occurred while getting the bug logs`);
+          }
+     }
+
+     const saveRow = async () => {
           const currentBugLog = Object.assign({}, isAdding ? addingBugLog : editingBugLog);
 
           // validate rows
@@ -150,22 +168,20 @@ export default function BugLogs() {
 
           const endPoint = (currentBugLog.isNew == true ? `/api/AddBugLog` : `/api/UpdateBugLog`) + columns;
 
-          axios.put(endPoint, { withCredentials: true })
-               .then((response: AxiosResponse<IBugLog>) => {
-                    if (response !== null && response.data !== null && response.data[0] === "OK") {
-                         alert("Saved");
+          const saveBugLogResponse = await fetch(endPoint, { method: 'PUT', credentials: 'include' });
 
-                         setBugLogsLoadingCheck(APIStatus.Idle);
+          const saveBugLogResult = await saveBugLogResponse.json();
 
-                         setIsAdding(false);
-                         setIsEditing(false);
-                    } else {
-                         alert(response.data[1]);
-                    }
-               })
-               .catch((err: Error) => {
-                    alert("Failed to update bug log with the error " + err.message);
-               });
+          if (saveBugLogResult !== null && saveBugLogResult[0] === "OK") {
+               alert("Saved");
+
+               setBugLogsLoadingCheck(APIStatus.Idle);
+
+               setIsAdding(false);
+               setIsEditing(false);
+          } else {
+               alert(saveBugLogResult[1]);
+          }
      }
 
      useEffect(() => {
@@ -174,27 +190,7 @@ export default function BugLogs() {
                return;
           }
 
-          axios.get(`/api/GetBugLogs`)
-               .then((res) => {
-                    if (res.data[0] === "OK") {
-                         res.data[1].forEach(async (element: IBugLog) => {
-                              element.AddDate = String(element.AddDate).trim();
-
-                              if (element.CompletedDate !== null) {
-                                   element.CompletedDate = String(element.CompletedDate).trim();
-                              }
-                         });
-
-                         setBugLogs(res.data[1]);
-                         setBugLogsLoadingCheck(APIStatus.Success);
-                    } else {
-                         alert(`An error occurred while getting the bug logs`);
-                    }
-               })
-               .catch((err: Error) => {
-                    setErrorMessage(`The fatal error ${err.message} occurred while getting the bug logs`);
-                    setIsError(true);
-               });
+          getBugLogs();
      }, [bugLogsLoadingCheck, setBugLogs, setErrorMessage, setIsError]);
 
      useEffect(() => {

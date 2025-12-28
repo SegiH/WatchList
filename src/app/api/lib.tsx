@@ -1,4 +1,3 @@
-import axios from "axios";
 import fs from "fs";
 import { cookies } from 'next/headers';
 import * as CryptoJS from 'crypto-js';
@@ -149,8 +148,8 @@ export const encrypt = (plainText: string) => {
 
 export const fetchData = async (options) => {
      try {
-          const response = await axios(options);
-          return response.data;
+          const response = await fetch(options);
+          return await response.json();
      } catch (error) {
           throw error;
      }

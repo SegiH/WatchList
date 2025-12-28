@@ -1,6 +1,5 @@
 "use client"
 
-import axios, { AxiosResponse } from "axios";
 import Image from "next/image";
 import { useRouter } from 'next/navigation';
 import React, { useContext, useEffect, useState } from "react";
@@ -49,15 +48,15 @@ export default function ItemsDtl() {
      };
 
      const checkURL = async (URL: string) => {
-          const result = await axios.get(URL)
-               .then(() => {
-                    return true;
-               })
-               .catch(() => {
-                    return false;
-               });
+          const checkURLResponse = await fetch(URL);
 
-          return result;
+          const checkURLResult = await checkURLResponse.json();
+
+          if (checkURLResult) {
+               return true;
+          } else {
+               return false;
+          }
      };
 
      const closeDetail = async () => {
@@ -76,6 +75,51 @@ export default function ItemsDtl() {
 
      const closeIMDBCard = () => {
           setImdbCardvisible(false);
+     }
+
+     const getWatchListItemDtl = async (id: number) => {
+          const getWatchListItemDtlResponse = await fetch(`/api/GetWatchListItemDtl?WatchListItemID=${watchListItemDtlID}`, { credentials: 'include' });
+
+          const getWatchListItemDtlResult = await getWatchListItemDtlResponse.json();
+
+          setWatchListItemDtlLoadingCheck(APIStatus.Success);
+
+          if (getWatchListItemDtlResult[0] === "ERROR") {
+               setErrorMessage(`The error ${getWatchListItemDtlResult[1]} occurred while getting the item detail`);
+               setIsError(true);
+               return;
+          } else {
+               // Sanitize object by replacing all null fields with "". There are issues with binding to input fields when the value is null
+               const wlid = getWatchListItemDtlResult[1];
+
+               if (wlid[0]?.IMDB_JSON !== null && typeof wlid[0]?.IMDB_JSON !== "undefined") {
+                    const IMDB_JSON = (JSON.parse(wlid[0]?.IMDB_JSON));
+
+                    const tooltip = IMDB_JSON && IMDB_JSON !== null &&
+                         `Rated: ${IMDB_JSON.Rated} 
+Year: ${IMDB_JSON.Year}
+Rated: ${IMDB_JSON.imdbRating}
+Genre: ${IMDB_JSON.Genre}
+Runtime: ${IMDB_JSON.Runtime}
+Release Date: ${IMDB_JSON.Released}
+Director: ${IMDB_JSON.Director}
+Plot: ${IMDB_JSON.Plot}
+${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSeasons}` : ""}
+     `;
+
+                    wlid[0].Tooltip = tooltip;
+               }
+
+               Object.keys(wlid[0]).map((keyName) => {
+                    if (wlid[0][keyName] === null) {
+                         wlid[0][keyName] = "";
+                    }
+               });
+
+               setWatchListItemDtl(wlid[0]);
+
+               setWatchListItemDtlLoadingCheck(APIStatus.Success);
+          }
      }
 
      const IMDBCardOpenClickHandler = () => {
@@ -118,13 +162,11 @@ export default function ItemsDtl() {
 
                const queryURL = `/api/UpdateWatchListItem?WatchListItemID=${watchListItemDtl?.WatchListItemID}&IMDB_Poster=${result[0].IMDB_Poster}`;
 
-               axios.put(queryURL)
-                    .then((res: AxiosResponse<IWatchListItem>) => {
-                         getWatchListItems();
-                    })
-                    .catch((err: Error) => {
-                         //alert(`The error ${err.message} occurred while updating the item detail`);
-                    });
+               const reloadImageResponse = await fetch(queryURL, { method: 'PUT', credentials: 'include' });
+
+               await reloadImageResponse.json();
+
+               getWatchListItems();
           }
      }
 
@@ -174,37 +216,35 @@ export default function ItemsDtl() {
                if (queryURL != "") {
                     queryURL = `/api/UpdateWatchListItem?WatchListItemID=${watchListItemDtl?.WatchListItemID}${queryURL}`;
 
-                    axios.put(queryURL)
-                         .then((res: AxiosResponse<IWatchListItem>) => {
-                              if (res.data[0] === "ERROR") {
-                                   alert(`The error ${res.data[1]} occurred while updating the item detail`);
-                              } else {
-                                   // Update type name if needed
-                                   if (watchListItemDtl?.WatchListTypeIDIsModified === true) {
-                                        const result = watchListTypes?.filter((currentWatchList: IWatchListType) => {
-                                             return String(currentWatchList.WatchListTypeID) === String(watchListItemDtl["WatchListTypeID"]);
-                                        });
+                    const saveItemDtlResponse = await fetch(queryURL, { method: 'PUT', credentials: 'include' });
 
-                                        if (result.length !== 1) {
-                                             alert("Unable to update type name");
-                                             return;
-                                        }
+                    const saveItemDtlResult = await saveItemDtlResponse.json();
 
-                                        const newWatchListItemDtl = Object.assign({}, watchListItemDtl);
+                    if (saveItemDtlResult[0] === "ERROR") {
+                         alert(`The error ${saveItemDtlResult[1]} occurred while updating the item detail`);
+                    } else {
+                         // Update type name if needed
+                         if (watchListItemDtl?.WatchListTypeIDIsModified === true) {
+                              const result = watchListTypes?.filter((currentWatchList: IWatchListType) => {
+                                   return String(currentWatchList.WatchListTypeID) === String(watchListItemDtl["WatchListTypeID"]);
+                              });
 
-                                        newWatchListItemDtl["WatchListTypeName"] = result[0].WatchListTypeName;
-
-                                        setWatchListItemDtl(newWatchListItemDtl);
-                                   }
-
-                                   setIsEditing(false);
-
-                                   setEditModified(true);
+                              if (result.length !== 1) {
+                                   alert("Unable to update type name");
+                                   return;
                               }
-                         })
-                         .catch((err: Error) => {
-                              alert(`The error ${err.message} occurred while updating the item detail`);
-                         });
+
+                              const newWatchListItemDtl = Object.assign({}, watchListItemDtl);
+
+                              newWatchListItemDtl["WatchListTypeName"] = result[0].WatchListTypeName;
+
+                              setWatchListItemDtl(newWatchListItemDtl);
+                         }
+
+                         setIsEditing(false);
+
+                         setEditModified(true);
+                    }
                } else {
                     alert("query params is empty in saveClickHandler()");
                     return;
@@ -247,28 +287,27 @@ export default function ItemsDtl() {
                queryURL += `&ItemNotes=${addWatchListItemDtl?.ItemNotes}`;
           }
 
-          axios.put(queryURL).then((res: AxiosResponse<IWatchListItem>) => {
-               if (res.data[0] === "ERROR") {
-                    alert(`The error ${res.data[1]} occurred while adding the detail`);
-               } else if (res.data[0] === "ERROR-ALREADY-EXISTS") {
-                    alert(res.data[1]);
-               } else {
-                    setAddModified(true);
+          const saveNewItemDtlResponse = await fetch(queryURL, { method: 'PUT', credentials: 'include' });
 
-                    setIsAdding(false);
+          const saveNewItemDtlResult = await saveNewItemDtlResponse.json();
 
-                    const addNewWatchListPrompt = confirm("Do you want to add a new WatchList record now ?");
+          if (saveNewItemDtlResult[0] === "ERROR") {
+               alert(`The error ${saveNewItemDtlResult[1]} occurred while adding the detail`);
+          } else if (saveNewItemDtlResult[0] === "ERROR-ALREADY-EXISTS") {
+               alert(saveNewItemDtlResult[1]);
+          } else {
+               setAddModified(true);
 
-                    if (addNewWatchListPrompt) {
-                         setIsAdding(true);
-                         router.push(`/WatchList/Dtl?WatchListItemID=${res.data[1]}`);
-                         getWatchListItems();
-                    }
+               setIsAdding(false);
+
+               const addNewWatchListPrompt = confirm("Do you want to add a new WatchList record now ?");
+
+               if (addNewWatchListPrompt) {
+                    setIsAdding(true);
+                    router.push(`/WatchList/Dtl?WatchListItemID=${saveNewItemDtlResult[1]}`);
+                    getWatchListItems();
                }
-          })
-               .catch((err: Error) => {
-                    alert(`The error ${err.message} occurred while adding the detail`);
-               });
+          }
      };
 
      const showDefaultSrc = () => {
@@ -328,51 +367,7 @@ export default function ItemsDtl() {
                     return;
                }
 
-               axios.get(`/api/GetWatchListItemDtl?WatchListItemID=${watchListItemDtlID}`)
-                    .then((res: AxiosResponse<IWatchListItem>) => {
-                         setWatchListItemDtlLoadingCheck(APIStatus.Success);
-
-                         if (res.data[0] === "ERROR") {
-                              setErrorMessage(`The error ${res.data[1]} occurred while getting the item detail`);
-                              setIsError(true);
-                              return;
-                         } else {
-                              // Sanitize object by replacing all null fields with "". There are issues with binding to input fields when the value is null
-                              const wlid = res.data[1];
-
-                              if (wlid[0]?.IMDB_JSON !== null && typeof wlid[0]?.IMDB_JSON !== "undefined") {
-                                   const IMDB_JSON = (JSON.parse(wlid[0]?.IMDB_JSON));
-
-                                   const tooltip = IMDB_JSON && IMDB_JSON !== null &&
-                                        `Rated: ${IMDB_JSON.Rated} 
-Year: ${IMDB_JSON.Year}
-Rated: ${IMDB_JSON.imdbRating}
-Genre: ${IMDB_JSON.Genre}
-Runtime: ${IMDB_JSON.Runtime}
-Release Date: ${IMDB_JSON.Released}
-Director: ${IMDB_JSON.Director}
-Plot: ${IMDB_JSON.Plot}
-${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSeasons}` : ""}
-     `;
-
-                                   wlid[0].Tooltip = tooltip;
-                              }
-
-                              Object.keys(wlid[0]).map((keyName) => {
-                                   if (wlid[0][keyName] === null) {
-                                        wlid[0][keyName] = "";
-                                   }
-                              });
-
-                              setWatchListItemDtl(wlid[0]);
-
-                              setWatchListItemDtlLoadingCheck(APIStatus.Success);
-                         }
-                    })
-                    .catch((err: Error) => {
-                         setErrorMessage(`The fatal error ${err.message} occurred while getting the item detail`);
-                         setIsError(true);
-                    });
+               getWatchListItemDtl(watchListItemDtlID);
           } else if (isAdding && watchListItemDtlID === -1) {
                const newAddWatchListItemDtl: IWatchListItem = { WatchListItemID: 0, WatchListItemName: "", WatchListTypeID: -1, WatchListTypeName: "", IMDB_URL: "", IMDB_Poster: "", ItemNotes: "", Archived: 0 };
                newAddWatchListItemDtl.WatchListItemName = "";

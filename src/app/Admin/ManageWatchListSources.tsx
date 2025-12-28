@@ -1,6 +1,5 @@
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
-import axios, { AxiosResponse } from "axios";
 
 import { useRouter } from 'next/navigation';
 import React, { useContext, useEffect, useState } from "react";
@@ -48,24 +47,22 @@ const ManageWatchListSources = () => {
           setIsEditing(false);
      }
 
-     const deleteSourceClickHandler = (id: number, name: string) => {
+     const deleteSourceClickHandler = async (id: number, name: string) => {
           const confirmDelete = confirm(`Are you sure that you want to delete the WatchList Source ${name} ?`);
 
           if (!confirmDelete) {
                return;
           }
 
-          axios.put(`/api/DeleteWatchListSource?WatchListSourceID=${id}`, { withCredentials: true })
-               .then((response: AxiosResponse<IWatchListSource>) => {
-                    if (response.data[0] === "ERROR") {
-                         alert(response.data[1])
-                    } else {
-                         setWatchListSourcesLoadingCheck(APIStatus.Idle);
-                    }
-               })
-               .catch((err: Error) => {
-                    alert("Failed to delete source with the error " + err.message);
-               });
+          const deleteSourceResponse = await fetch(`/api/DeleteWatchListSource?WatchListSourceID=${id}`, { method: 'PUT', credentials: 'include' });
+
+          const deleteSourceResult = await deleteSourceResponse.json();
+
+          if (deleteSourceResult[0] === "ERROR") {
+               alert(deleteSourceResult[1])
+          } else {
+               setWatchListSourcesLoadingCheck(APIStatus.Idle);
+          }
      }
 
      const editSourceClickHandler = (id: number) => {
@@ -83,7 +80,7 @@ const ManageWatchListSources = () => {
           setIsEditing(true);
      }
 
-     const saveRow = () => {
+     const saveRow = async () => {
           if (demoMode) {
                alert("Adding a source is disabled in demo mode");
                return;
@@ -116,21 +113,19 @@ const ManageWatchListSources = () => {
 
           const endPoint = (isAdding == true ? `/api/AddWatchListSource` : `/api/UpdateWatchListSource`) + columns;
 
-          axios.put(endPoint, { withCredentials: true })
-               .then((response: AxiosResponse<IWatchListSource>) => {
-                    if (response !== null && response.data !== null && response.data[0] === "OK") {
-                         alert("Saved");
+          const sourceSourceResponse = await fetch(endPoint, { method: 'PUT', credentials: 'include' });
 
-                         setWatchListSourcesLoadingCheck(APIStatus.Idle);
-                         setIsAdding(false);
-                         setIsEditing(false);
-                    } else {
-                         alert(response.data[1]);
-                    }
-               })
-               .catch((err: Error) => {
-                    alert("Failed to update sources with the error " + err.message);
-               });
+          const sourceSourceResult = await sourceSourceResponse.json();
+
+          if (sourceSourceResult !== null && sourceSourceResult[0] === "OK") {
+               alert("Saved");
+
+               setWatchListSourcesLoadingCheck(APIStatus.Idle);
+               setIsAdding(false);
+               setIsEditing(false);
+          } else {
+               alert(sourceSourceResult[1]);
+          }
      }
 
      const sourceChangeHandler = (fieldName: string, fieldValue: string) => {

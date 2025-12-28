@@ -1,6 +1,5 @@
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
-import axios, { AxiosResponse } from "axios";
 import { useRouter } from 'next/navigation';
 import React, { useContext, useEffect, useState } from "react";
 
@@ -33,24 +32,22 @@ const ManageWatchListTypes = () => {
           setIsEditing(false);
      }
 
-     const deleteTypeClickHandler = (id: number, name: string) => {
+     const deleteTypeClickHandler = async (id: number, name: string) => {
           const confirmDelete = confirm(`Are you sure that you want to delete the WatchList Type ${name} ?`);
 
           if (!confirmDelete) {
                return;
           }
 
-          axios.put(`/api/DeleteWatchListType?WatchListTypeID=${id}`, { withCredentials: true })
-               .then((response: AxiosResponse<IWatchListType>) => {
-                    if (response.data[0] === "ERROR") {
-                         alert(response.data[1])
-                    } else {
-                         setWatchListTypesLoadingCheck(APIStatus.Idle);
-                    }
-               })
-               .catch((err: Error) => {
-                    alert("Failed to delete type with the error " + err.message);
-               });
+          const deleteTypeResponse = await fetch(`/api/DeleteWatchListType?WatchListTypeID=${id}`, { method: 'PUT', credentials: 'include' });
+
+          const deleteTypeResult = await deleteTypeResponse.json();
+
+          if (deleteTypeResult[0] === "ERROR") {
+               alert(deleteTypeResult[1])
+          } else {
+               setWatchListTypesLoadingCheck(APIStatus.Idle);
+          }
      }
 
      const editTypeClickHandler = (id: number) => {
@@ -68,7 +65,7 @@ const ManageWatchListTypes = () => {
           setIsEditing(true);
      }
 
-     const saveRow = () => {
+     const saveRow = async () => {
           if (demoMode) {
                alert("Adding a type is disabled in demo mode");
                return;
@@ -97,21 +94,19 @@ const ManageWatchListTypes = () => {
 
           const endPoint = (isAdding == true ? `/api/AddWatchListType` : `/api/UpdateWatchListType`) + columns;
 
-          axios.put(endPoint, { withCredentials: true })
-               .then((response: AxiosResponse<IWatchListType>) => {
-                    if (response !== null && response.data !== null && response.data[0] === "OK") {
-                         alert("Saved");
+          const saveBugLogResponse = await fetch(endPoint, { method: 'PUT', credentials: 'include' });
 
-                         setWatchListTypesLoadingCheck(APIStatus.Idle);
-                         setIsAdding(false);
-                         setIsEditing(false);
-                    } else {
-                         alert(response.data[1]);
-                    }
-               })
-               .catch((err: Error) => {
-                    alert("Failed to update types with the error " + err.message);
-               });
+          const saveBugLogResult = await saveBugLogResponse.json();
+
+          if (saveBugLogResult !== null && saveBugLogResult[0] === "OK") {
+               alert("Saved");
+
+               setWatchListTypesLoadingCheck(APIStatus.Idle);
+               setIsAdding(false);
+               setIsEditing(false);
+          } else {
+               alert(saveBugLogResult[1]);
+          }
      }
 
      const typeChangeHandler = (fieldName: string, fieldValue: string) => {

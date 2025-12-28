@@ -1,4 +1,3 @@
-import axios, { AxiosResponse } from "axios";
 import Image from 'next/image';
 import ISearchImdb from "../interfaces/ISearchImdb";
 
@@ -27,7 +26,7 @@ export default function SearchIMDB() {
 
      const router = useRouter();
 
-     const addIMDBSearchResultClickHandler = (index: number) => {
+     const addIMDBSearchResultClickHandler = async (index: number) => {
           let itemType = 0; ``
 
           if (imdbSearchResults[index].Type === "movie") {
@@ -50,29 +49,27 @@ export default function SearchIMDB() {
 
           paramStr += `&IMDB_Poster=${imdbSearchResults[index].Poster}`;
 
-          axios.put(paramStr)
-               .then((res: AxiosResponse<ISearchImdb>) => {
-                    if (res.data[0] === "ERROR") {
-                         alert(`The error ${res.data[1]} occurred while adding the search result`);
-                    } else if (res.data[0] === "ERROR-ALREADY-EXISTS") {
-                         alert(res.data[1]);
-                    } else {
-                         if (autoAdd) {
-                              setIsAdding(true);
-                              router.push(`/WatchList/Dtl?WatchListItemID=${res.data[1]}`);
-                         }
+          const searchIMDBResponse = await fetch(paramStr, { method: 'PUT', credentials: 'include' });
 
-                         // Remove this item from the the search results since its been added
-                         const newSearchResults = Object.assign([], imdbSearchResults);
-                         newSearchResults.splice(index, 1);
-                         setIMDBSearchResults(newSearchResults);
+          const searchIMDBResult = await searchIMDBResponse.json();
 
-                         setSearchModalVisible(false);
-                    }
-               })
-               .catch((err: Error) => {
-                    alert(`The error ${err.message} occurred while adding the search result`);
-               });
+          if (searchIMDBResult[0] === "ERROR") {
+               alert(`The error ${searchIMDBResult[1]} occurred while adding the search result`);
+          } else if (searchIMDBResult[0] === "ERROR-ALREADY-EXISTS") {
+               alert(searchIMDBResult[1]);
+          } else {
+               if (autoAdd) {
+                    setIsAdding(true);
+                    router.push(`/WatchList/Dtl?WatchListItemID=${searchIMDBResult[1]}`);
+               }
+
+               // Remove this item from the the search results since its been added
+               const newSearchResults = Object.assign([], imdbSearchResults);
+               newSearchResults.splice(index, 1);
+               setIMDBSearchResults(newSearchResults);
+
+               setSearchModalVisible(false);
+          }
      };
 
      const closeSearch = async () => {
@@ -85,7 +82,7 @@ export default function SearchIMDB() {
           }
      };
 
-     const searchIMDB = () => {
+     const searchIMDB = async () => {
           if (searchTerm === "") {
                setIMDBSearchResults([]);
 
@@ -102,17 +99,16 @@ export default function SearchIMDB() {
           //     setSearchLoadingCheck(APIStatus.Success);
           //}, 5000);
 
-          axios.get(`/api/SearchIMDB?SearchTerm=${searchTerm}&SearchCount=${searchCount}`)
-               .then((res: AxiosResponse<ISearchImdb>) => {
-                    if (res.data[0] === "ERROR") {
-                         alert(`The error ${res.data[1]} occurred while searching IMDB`);
-                    } else {
-                         setIMDBSearchResults(res.data[1]);
-                         setSearchLoadingCheck(APIStatus.Success);
-                    }
-               }).catch((err: Error) => {
-                    alert(`The error ${err} occurred while searching IMDB`);
-               });
+          const searchIMDBResponse = await fetch(`/api/SearchIMDB?SearchTerm=${searchTerm}&SearchCount=${searchCount}`, { credentials: 'include' });
+
+          const searchIMDBResult = await searchIMDBResponse.json();
+
+          if (searchIMDBResult[0] === "ERROR") {
+               alert(`The error ${searchIMDBResult[1]} occurred while searching IMDB`);
+          } else {
+               setIMDBSearchResults(searchIMDBResult[1]);
+               setSearchLoadingCheck(APIStatus.Success);
+          }
      }
 
      return (

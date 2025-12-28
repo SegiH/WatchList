@@ -1,6 +1,5 @@
 "use client"
 
-import axios, { AxiosResponse } from "axios";
 import { useRouter } from "next/navigation";
 import React, { useContext, useEffect, useState } from "react";
 import { APIStatus, SetupContext } from "../data-context";
@@ -29,7 +28,7 @@ export default function Setup() {
           }
      }
 
-     const setupClickHandler = () => {
+     const setupClickHandler = async () => {
           if (typeof realname !== "string" || (typeof realname === "string" && (realname === null || realname === ""))) {
                alert("Please enter the name for the user account");
                return;
@@ -70,21 +69,18 @@ export default function Setup() {
           setSubmitClicked(true);
 
           // First user account created in this WatchList instance is automatically made an admin
-          axios.put(`/api/Setup?wl_username=${encodeURIComponent(username)}&wl_realname=${encodeURIComponent(realname)}&wl_password=${encodeURIComponent(password)}&wl_admin=true`, null)
-               .then((res: AxiosResponse<IUser>) => {
-                    if (res.data[0] === "OK") {
-                         alert("User account was successfully created");
+          const setupInitialUserAccountResponse = await fetch(`/api/Setup?wl_username=${encodeURIComponent(username)}&wl_realname=${encodeURIComponent(realname)}&wl_password=${encodeURIComponent(password)}&wl_admin=true`, { method: 'PUT', credentials: 'include' });
 
-                         router.push("/Login");
-                    } else {
-                         alert("User account was NOT created. " + res.data[1]);
-                         setSubmitClicked(false);
-                    }
-               })
-               .catch((err: Error) => {
-                    alert("User account was NOT created. The error " + err.message + " occurred");
-                    setSubmitClicked(false);
-               });
+          const setupInitialUserAccountResult = await setupInitialUserAccountResponse.json();
+
+          if (setupInitialUserAccountResult[0] === "OK") {
+               alert("User account was successfully created");
+
+               router.push("/Login");
+          } else {
+               alert("User account was NOT created. " + setupInitialUserAccountResult[1]);
+               setSubmitClicked(false);
+          }
      };
 
      useEffect(() => {

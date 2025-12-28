@@ -177,7 +177,7 @@ const DataProvider = ({
      const defaultRoute = "WatchList";
      const demoUsername = "demo";
      const demoPassword = "demo";
-     const pageSize = typeof window !== 'undefined' && window.innerWidth <= 768 ? 10 : 49; //const pageSize = 49;
+     const pageSize = typeof window !== 'undefined' && window.innerWidth <= 768 ? 10 : 49; // items per page. Mobile has less items
 
      const routeList = useMemo(() => {
           return {
@@ -247,10 +247,10 @@ const DataProvider = ({
           { value: "4", label: 'BugLogs' },
           { value: "1", label: 'Items' },
           { value: "2", label: 'Stats' },
-          ...(String(process.env.NEXT_PUBLIC_DATA_ROUTE_ENABLED) === "true" ? [{ value: "5", label: 'Data' }] : []),
+          ...(String(process.env.NEXT_PUBLIC_DATA_ROUTE_ENABLED) === "true" ? [{ value: "5", label: 'Data' }] : []), // Only add the Data route as a section choice when enabled via the env var
      ];
 
-     const [visibleSections, setVisibleSections] = useState([{ value: "2", label: 'Stats' }, { value: "1", label: 'Items' }, ...(String(process.env.NEXT_PUBLIC_DATA_ROUTE_ENABLED) === "true" ? [{ value: "5", label: 'Data' }] : [])]);
+     const [visibleSections, setVisibleSections] = useState([{ value: "2", label: 'Stats' }, { value: "1", label: 'Items' }, ...(String(process.env.NEXT_PUBLIC_DATA_ROUTE_ENABLED) === "true" ? [{ value: "5", label: 'Data' }] : [])]); // Only add the Data route as a section choice when enabled via the env var
 
      const watchListSortColumns = {
           ID: "ID",

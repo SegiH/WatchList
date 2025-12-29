@@ -63,7 +63,7 @@ export default function Login() {
                return;
           }
 
-          const loginResponse = await fetch(`/api/Login`, { headers: { wl_username: username, wl_password: password }, credentials: 'include' });
+          const loginResponse = await fetch(`/api/Login`, { headers: { wl_username: username, wl_password: password }, method: 'PUT',credentials: 'include' });
 
           const loginResult = await loginResponse.json();
 

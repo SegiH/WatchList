@@ -5,8 +5,6 @@ import { usePathname } from 'next/navigation';
 import React, { createContext, ReactNode, useCallback, useEffect, useMemo, useState } from "react";
 
 import IBugLog from "./interfaces/IBugLog";
-import IRecommendation from "./interfaces/IRecommendation";
-import ISearchImdb from "./interfaces/ISearchImdb";
 import IUser from "./interfaces/IUser";
 import IUserOption from "./interfaces/IUserOption";
 import IWatchList from "./interfaces/IWatchList";

@@ -1,14 +1,10 @@
 import { NextRequest } from 'next/server';
-import { getDB, getIMDBDetails, getRapidAPIKey, isLoggedIn, logMessage, writeDB } from "../lib";
+import { getDB, getIMDBDetails, isLoggedIn, writeDB } from "../lib";
 import IWatchListItem from '@/app/interfaces/IWatchListItem';
 
 export async function GET(request: NextRequest) {
      if (!isLoggedIn(request)) {
           return Response.json(["ERROR", "Error. Not signed in"]);
-     }
-
-     if (await getRapidAPIKey() === "") {
-          return Response.json(["ERROR", "API key is not set"]);
      }
 
      const searchParams = request.nextUrl.searchParams;
@@ -24,7 +20,7 @@ export async function GET(request: NextRequest) {
 
      const watchListItemsDB = db.WatchListItems;
 
-     const result = await watchListItemsDB
+     await watchListItemsDB
           .filter((watchListItem: IWatchListItem) => {
                return (findMissing !== "true" && imdb_id !== null && (String(watchListItem.IMDB_URL).endsWith(imdb_id) || String(watchListItem.IMDB_URL).endsWith(imdb_id + "/")))
                     ||

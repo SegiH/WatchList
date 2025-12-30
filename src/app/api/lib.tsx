@@ -135,6 +135,12 @@ export const addUser = async (request: NextRequest, isNewInstance = false) => {
      }
 }
 
+function assertString(value: string | undefined): asserts value is string {
+     if (value == null) {
+          throw new Error("RapidAPI key is missing");
+     }
+}
+
 export const decrypt = (cipherText: string) => {
      const bytes = CryptoJS.AES.decrypt(cipherText, secretKey)
      const plainText = bytes.toString(CryptoJS.enc.Utf8)
@@ -146,9 +152,21 @@ export const encrypt = (plainText: string) => {
      return cipherText
 }
 
-export const fetchData = async (options) => {
+export const fetchRapidAPIData = async (url) => {
+     const rapidapi_key = await getRapidAPIKey();
+
+     assertString(rapidapi_key);
+
+     const headers = {
+          method: "GET",
+          headers: {
+               "x-rapidapi-host": "movie-database-alternative.p.rapidapi.com",
+               "x-rapidapi-key": rapidapi_key
+          }
+     };
+
      try {
-          const response = await fetch(options);
+          const response = await fetch(url, headers);
           return await response.json();
      } catch (error) {
           throw error;
@@ -180,20 +198,11 @@ export const getDB = () => {
 export const getIMDBDetails = async (imdb_id: string) => {
      const rapidapi_key = process.env.RAPIDAPIKEY;
 
-     let options = {
-          method: "GET",
-          url: "https://imdb107.p.rapidapi.com/",
-          params: { i: imdb_id, r: "json" },
-          headers: {
-               "x-rapidapi-host": "movie-database-alternative.p.rapidapi.com",
-               "x-rapidapi-key": rapidapi_key,
-               useQueryString: true,
-          },
-     };
+     assertString(rapidapi_key);
 
-     const result = await fetchData(options);
+     const url = `https://movie-database-alternative.p.rapidapi.com/?r=json&i=${imdb_id}`;
 
-     return result;
+     return fetchRapidAPIData(url);
 }
 
 export const generateMetaData = async () => {

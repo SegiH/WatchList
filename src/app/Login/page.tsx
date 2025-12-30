@@ -76,7 +76,7 @@ export default function Login() {
                     setUserNameNeedsFocus(true);
                }
           } catch (e) {
-               alert(e.errorMessage);
+               alert(e.message);
                setLoginSubmitted(false);
                setUserNameNeedsFocus(true);
           }

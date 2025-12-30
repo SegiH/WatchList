@@ -42,12 +42,12 @@ const Recommendations = ({ queryTerm, setRecommendationName, setRecommendationTy
                     setRecommendationsError(true);
                }
           } catch (e) {
-               alert(e.errorMessage);
+               alert(e.message);
           }
      }
 
      const showDefaultSrc = (id: number): void => {
-          const newRecommendations: IRecommendation[] = Object.assign([], recommendations);
+          const newRecommendations: IRecommendation[] = { ...recommendations };
 
           newRecommendations.filter((currentRecommendation: IRecommendation) => {
                return String(currentRecommendation.id) === String(id);

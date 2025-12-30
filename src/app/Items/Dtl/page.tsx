@@ -31,7 +31,7 @@ export default function ItemsDtl() {
      const router = useRouter();
 
      const addWatchListItemDetailChangeHandler = (fieldName: string, fieldValue: number | string) => {
-          const newAddWatchListItemDtl = Object.assign({}, addWatchListItemDtl);
+          const newAddWatchListItemDtl = { ...addWatchListItemDtl } as IWatchListItem;
 
           newAddWatchListItemDtl[fieldName] = fieldValue;
           newAddWatchListItemDtl.IsModified = true;
@@ -126,7 +126,7 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
                     setWatchListItemDtlLoadingCheck(APIStatus.Success);
                }
           } catch (e) {
-               alert(e.errorMessage);
+               alert(e.message);
           }
      }
 
@@ -138,13 +138,13 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
           const result = await checkURL(URL);
 
           if (isAdding) {
-               const newAddWatchListItemDtl = Object.assign([], addWatchListItemDtl);
+               const newAddWatchListItemDtl = { ...addWatchListItemDtl } as IWatchListItem;
 
                newAddWatchListItemDtl["IMDB_Poster_Error"] = !result;
 
                setAddWatchListItemDtl(newAddWatchListItemDtl);
           } else {
-               const newWatchListItemDtl = Object.assign([], watchListItemDtl);
+               const newWatchListItemDtl = { ...watchListItemDtl } as IWatchListItem;
                newWatchListItemDtl["IMDB_Poster_Error"] = !result;
                setWatchListItemDtl(newWatchListItemDtl);
           }
@@ -162,8 +162,8 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
      const reloadImageClickHandler = async (watchListItemID: number) => {
           const result = await getMissingPoster(watchListItemID);
 
-          if (result !== null && result[0].Status === "OK") {
-               const newWatchListItemDtl = Object.assign([], watchListItemDtl);
+          if (Array.isArray(result) && result.length > 0 && result[0]["Status"] === "OK") {
+               const newWatchListItemDtl = { ...watchListItemDtl } as IWatchListItem;
                newWatchListItemDtl["IMDB_Poster"] = result[0].IMDB_Poster;
 
                setWatchListItemDtl(newWatchListItemDtl);
@@ -177,7 +177,7 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
 
                     getWatchListItems();
                } catch (e) {
-                    console.log(e.errorMessage);
+                    console.log(e.message);
                }
           }
      }
@@ -247,7 +247,7 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
                                         return;
                                    }
 
-                                   const newWatchListItemDtl = Object.assign({}, watchListItemDtl);
+                                   const newWatchListItemDtl = { ...watchListItemDtl } as IWatchListItem;
 
                                    newWatchListItemDtl["WatchListTypeName"] = result[0].WatchListTypeName;
 
@@ -259,7 +259,7 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
                               setEditModified(true);
                          }
                     } catch (e) {
-                         alert(e.errorMessage);
+                         alert(e.message);
                     }
                } else {
                     alert("query params is empty in saveClickHandler()");
@@ -326,19 +326,19 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
                     }
                }
           } catch (e) {
-               alert(e.errorMessage);
+               alert(e.message);
           }
      };
 
      const showDefaultSrc = () => {
           if (isAdding) {
-               const newAddWatchListItemDtl = Object.assign([], addWatchListItemDtl);
+               const newAddWatchListItemDtl = { ...addWatchListItemDtl } as IWatchListItem;
 
                newAddWatchListItemDtl["IMDB_Poster_Error"] = true;
 
                setAddWatchListItemDtl(newAddWatchListItemDtl);
           } else {
-               const newWatchListItemDtl = Object.assign([], watchListItemDtl);
+               const newWatchListItemDtl = { ...watchListItemDtl } as IWatchListItem;
 
                newWatchListItemDtl["IMDB_Poster_Error"] = true;
 
@@ -352,7 +352,7 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
      };
 
      const watchListItemDetailChangeHandler = (fieldName: string, fieldValue: boolean | string) => {
-          const newWatchListItemDtl: IWatchListItem = Object.assign({}, watchListItemDtl);
+          const newWatchListItemDtl = { ...watchListItemDtl } as IWatchListItem;
 
           newWatchListItemDtl[fieldName] = fieldValue;
           newWatchListItemDtl[`${fieldName}IsModified`] = true;

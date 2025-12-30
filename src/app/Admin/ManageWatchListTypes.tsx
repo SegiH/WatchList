@@ -50,7 +50,7 @@ const ManageWatchListTypes = () => {
                     setWatchListTypesLoadingCheck(APIStatus.Idle);
                }
           } catch (e) {
-               alert(e.errorMessage);
+               alert(e.message);
           }
      }
 
@@ -75,7 +75,9 @@ const ManageWatchListTypes = () => {
                return;
           }
 
-          const currentType = Object.assign({}, isAdding ? addingType : editingType);
+          const currentType = {
+               ...(isAdding ? addingType : editingType),
+          } as IWatchListType;
 
           // validate row
           if (typeof currentType.WatchListTypeName === "undefined" || currentType.WatchListTypeName === "") {
@@ -113,12 +115,14 @@ const ManageWatchListTypes = () => {
                     alert(saveBugLogResult[1]);
                }
           } catch (e) {
-               alert(e.errorMessage);
+               alert(e.message);
           }
      }
 
      const typeChangeHandler = (fieldName: string, fieldValue: string) => {
-          const newType = Object.assign({}, isAdding ? addingType : editingType);
+          const newType = {
+               ...(isAdding ? addingType : editingType),
+          } as IWatchListType;
 
           newType[fieldName] = fieldValue;
           newType.IsModified = true;

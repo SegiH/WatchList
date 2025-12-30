@@ -72,7 +72,7 @@ const ManageUserAccounts = () => {
 
                setUsersLoadingCheck(APIStatus.Success);
           } catch (e) {
-               setErrorMessage(e.errorMessage);
+               setErrorMessage(e.message);
                setIsError(true);
           }
      }
@@ -82,8 +82,8 @@ const ManageUserAccounts = () => {
                alert("Adding a user is disabled in demo mode");
                return;
           }
-
-          const currentUser = Object.assign({}, isAdding ? addingUser : editingUser) as IUser;
+          
+          let currentUser = {...(isAdding ? addingUser : editingUser)};
 
           // validate rows
           if (typeof currentUser.Username === "undefined" || currentUser.Username === "") {
@@ -165,12 +165,12 @@ const ManageUserAccounts = () => {
                     alert(saveUserAccountResult[1]);
                }
           } catch (e) {
-               alert(e.errorMessage);
+               alert(e.message);
           }
      }
 
      const userChangeHandler = (fieldName: string, fieldValue: string) => {
-          const newUser: IUser = Object.assign({}, isAdding ? addingUser : editingUser) as IUser;
+          const newUser: IUser = {...(isAdding ? addingUser : editingUser)};
 
           if (fieldName === "Admin") {
                newUser[fieldName] = fieldValue === "true" ? true : false;

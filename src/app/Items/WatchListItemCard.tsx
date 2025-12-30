@@ -23,7 +23,6 @@ export default function WatchListItemCard({ currentWatchListItem, setImdbJSON }:
 
     const showDefaultSrc = async (watchListItemID: number) => {
         const newFilteredWatchListItems: IWatchListItem[] = filteredWatchListItems.map(item => ({ ...item}));
-        //const newFilteredWatchListItems: IWatchListItem[] = Object.assign([], filteredWatchListItems);
 
         const newWatchListItemsResult: IWatchListItem[] = newFilteredWatchListItems?.filter((currentWatchListItems: IWatchListItem) => {
             return String(currentWatchListItems.WatchListItemID) === String(watchListItemID);

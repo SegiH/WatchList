@@ -192,7 +192,7 @@ export default function Data() {
                     break;
             }
         } catch (e) {
-            alert(e.errorMessage);
+            alert(e.message);
         }
     }
 
@@ -216,7 +216,7 @@ export default function Data() {
                 alert(`An error occurred while getting the bug logs`);
             }
         } catch (e) {
-            alert(e.errorMessage);
+            alert(e.message);
         }
     }
 

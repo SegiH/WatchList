@@ -266,7 +266,7 @@ const DataProvider = ({
 
      const getMissingPoster = async (watchListItemID: number) => {
           if (demoMode) {
-               return;
+               return [];
           }
 
           try {
@@ -279,9 +279,11 @@ const DataProvider = ({
                     return missingPostersResult[1];
                } else {
                     console.log(`No result when getting missing poster for ID ${watchListItemID}`)
+                    return [];
                }
           } catch (e) {
-               console.log(`Error ${e.errorMessage} occurred when getting result when getting missing poster for ID ${watchListItemID}`)
+               console.log(`Error ${e.message} occurred when getting result when getting missing poster for ID ${watchListItemID}`)
+               return [];
           }
      }
 
@@ -301,7 +303,7 @@ const DataProvider = ({
           const newSliceStart = (currentWatchListPage - 1) * pageSize;
           const newSliceEnd = newSliceStart + pageSize;
 
-          let newMetaDataFilters = Object.assign({}, metaDataFilters);
+          let newMetaDataFilters = metaDataFilters.map(item => ({ ...item }));
 
           // This key is added automatically for some reason so remove it.
           if (typeof newMetaDataFilters["0"] !== "undefined") {
@@ -331,7 +333,7 @@ const DataProvider = ({
                setFilteredWatchList(watchListResult[1]);
                setWatchListSortingCheck(APIStatus.Success);
           } catch (e) {
-               setErrorMessage("Failed to get WatchList with the error " + e.errorMessage)
+               setErrorMessage("Failed to get WatchList with the error " + e.message)
                setIsError(true);
                return;
           }
@@ -343,7 +345,7 @@ const DataProvider = ({
           const newSliceStart = (currentItemsPage - 1) * pageSize;
           const newSliceEnd = newSliceStart + pageSize;
 
-          let newMetaDataFilters = Object.assign({}, metaDataFilters);
+          let newMetaDataFilters = metaDataFilters.map(item => ({ ...item }));
 
           // This key is added automatically for some reason so remove it.
           if (typeof newMetaDataFilters["0"] !== "undefined") {
@@ -373,7 +375,7 @@ const DataProvider = ({
 
                return watchListItemsResult[1];
           } catch (e) {
-               setErrorMessage("Failed to get WatchList Items with the error " + e.errorMessage)
+               setErrorMessage("Failed to get WatchList Items with the error " + e.message)
                setIsError(true);
                return;
           }
@@ -403,7 +405,7 @@ const DataProvider = ({
                setWatchListSources(wls);
                setWatchListSourcesLoadingCheck(APIStatus.Success);
           } catch (e) {
-               setErrorMessage("Failed to get WatchList Sources with the error " + e.errorMessage);
+               setErrorMessage("Failed to get WatchList Sources with the error " + e.message);
                setIsError(true);
                return;
           }
@@ -426,7 +428,7 @@ const DataProvider = ({
 
                setIsLoading(false);
           } catch (e) {
-               setErrorMessage("Failed to get WatchList Types with the error " + e.errorMessage);
+               setErrorMessage("Failed to get WatchList Types with the error " + e.message);
                setIsError(true);
                return;
           }
@@ -464,7 +466,7 @@ const DataProvider = ({
                     setImdbSearchEnabled(true);
                }
           } catch (e) {
-               setErrorMessage("Failed to check if IMDB search is enabled with the error " + e.errorMessage);
+               setErrorMessage("Failed to check if IMDB search is enabled with the error " + e.message);
                setIsError(true);
                return;
           }
@@ -480,7 +482,7 @@ const DataProvider = ({
                     setRecommendationsEnabled(true);
                }
           } catch (e) {
-               setErrorMessage("Failed to check if recommendations enabled with the error " + e.errorMessage);
+               setErrorMessage("Failed to check if recommendations enabled with the error " + e.message);
                setIsError(true);
                return;
           }
@@ -534,7 +536,7 @@ const DataProvider = ({
                     setIsError(true);
                }
           } catch (e) {
-               setErrorMessage("Failed to update options with the error " + e.errorMessage);
+               setErrorMessage("Failed to update options with the error " + e.message);
                setIsError(true);
                return;
           }
@@ -576,7 +578,7 @@ const DataProvider = ({
           const newSortColumn = typeof newOptions.WatchListSortColumn !== "undefined" ? newOptions.WatchListSortColumn : "Name";
           setWatchListSortColumn(newSortColumn);
 
-          const newSortDirection = typeof newOptions.WatchListSortDirection !== "undefined" ? newOptions.WatchListSortDirection : "Name";
+          const newSortDirection = typeof newOptions.WatchListSortDirection !== "undefined" ? newOptions.WatchListSortDirection : "DESC";
           setWatchListSortDirection(newSortDirection);
 
           const newVisibleSections = typeof newOptions.VisibleSections !== "undefined" ? JSON.parse(newOptions.VisibleSections) : [{ name: 'Stats', id: 2 }];
@@ -610,14 +612,14 @@ const DataProvider = ({
                     alert(signOutResult[1]);
                }
           } catch (e) {
-               setErrorMessage("Failed to sign out with the error " + e.errorMessage);
+               setErrorMessage("Failed to sign out with the error " + e.message);
                setIsError(true);
                return;
           }
      };
 
      const signOutActions = () => {
-          const newUserData = Object.assign({}, userData);
+          const newUserData = { ...userData };
           newUserData.UserID = 0;
           newUserData.Username = "";
           newUserData.RealName = "";
@@ -661,14 +663,14 @@ const DataProvider = ({
                const writeLogResult = await writeLogResponse.json();
 
                if (writeLogResponse[0] !== "OK") {
-                    writeLog(writeLogResult[1]);
+                    alert(writeLogResult[1]);
                } else {
                     setLoggedInCheck(APIStatus.Success);
 
                     router.push("/Login");
                }
           } catch (e) {
-               console.log("Failed to check if recommendations enabled with the error " + e.errorMessage);
+               console.log("Failed to check if recommendations enabled with the error " + e.message);
                return;
           }
      }, [router]);
@@ -689,7 +691,7 @@ const DataProvider = ({
                if (isLoggedInResult[0] === "OK") {
                     pullToRefreshEnabled(true);
 
-                    const newUserData = Object.assign({}, userData);
+                    const newUserData = { ...userData };
                     newUserData.UserID = isLoggedInResult[1].UserID;
                     newUserData.Username = isLoggedInResult[1].Username;
                     newUserData.RealName = isLoggedInResult[1].RealName;
@@ -741,7 +743,7 @@ const DataProvider = ({
                     router.push("/Login");
                }
           } catch (e) {
-               setErrorMessage("Failed to check if user is logged in with the error " + e.errorMessage);
+               setErrorMessage("Failed to check if user is logged in with the error " + e.message);
                setIsError(true);
                return;
           }
@@ -986,7 +988,7 @@ const DataProvider = ({
                          setBuildDate(newBuildDate);
                     });
           } catch (e) {
-               setErrorMessage("Failed to get nuild date with the error " + e.errorMessage);
+               setErrorMessage("Failed to get nuild date with the error " + e.message);
                setIsError(true);
                return;
           }
@@ -996,7 +998,7 @@ const DataProvider = ({
                setRecommendationsEnabled(false);
                setLoggedInCheck(APIStatus.Success);
 
-               const newUserData = Object.assign({}, userData);
+               const newUserData = { ...userData };
                newUserData.UserID = 0;
                newUserData.Username = "";
                newUserData.RealName = "";

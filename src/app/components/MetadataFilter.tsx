@@ -11,7 +11,7 @@ const MetaDataFilter = (props) => {
     const [selectedValues, setSelectedValues] = useState<any>([]);
 
     const filterChangeHandler = (key: string, newList: []) => {
-        const newMetaDataFilters = Object.assign({}, selectedValues);
+        const newMetaDataFilters = { ...selectedValues };
 
         // This key is added automatically for some reason so remove it.
         if (typeof newMetaDataFilters["0"] !== "undefined") {
@@ -44,13 +44,13 @@ const MetaDataFilter = (props) => {
 
             setMetaDataLoadingCheck(APIStatus.Success);
         } catch (e) {
-            alert(e.errorMessage);
+            alert(e.message);
         }
     }
 
     const setFiltersClickHandler = () => {
         // Delete empty selected arrays
-        const newSelectedValues = Object.assign({}, selectedValues);
+        const newSelectedValues = { ...selectedValues };
 
         Object.keys(newSelectedValues).forEach((selectedKey, index) => {
             if (selectedValues[selectedKey].length === 0) {

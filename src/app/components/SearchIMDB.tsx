@@ -65,14 +65,14 @@ export default function SearchIMDB() {
                     }
 
                     // Remove this item from the the search results since its been added
-                    const newSearchResults = Object.assign([], imdbSearchResults);
+                    const newSearchResults: ISearchImdb[] = { ...imdbSearchResults };
                     newSearchResults.splice(index, 1);
                     setIMDBSearchResults(newSearchResults);
 
                     setSearchModalVisible(false);
                }
           } catch (e) {
-               alert(e.errorMessage);
+               alert(e.message);
           }
      };
 
@@ -115,7 +115,7 @@ export default function SearchIMDB() {
                     setSearchLoadingCheck(APIStatus.Success);
                }
           } catch (e) {
-               alert(e.errorMessage);
+               alert(e.message);
           }
      }
 
@@ -224,7 +224,7 @@ export default function SearchIMDB() {
                                                                                           {currentResult.Title} ({currentResult.Year})
                                                                                      </span>
 
-                                                                                     <span className="searchResultPoster">broken{BrokenImageIconComponent}</span>
+                                                                                     <span className="searchResultPoster">{BrokenImageIconComponent}</span>
                                                                                 </>
                                                                            )}
                                                                       </span>

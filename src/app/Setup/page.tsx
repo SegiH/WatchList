@@ -83,7 +83,7 @@ export default function Setup() {
                     setSubmitClicked(false);
                }
           } catch (e) {
-               alert(e.errorMessage);
+               alert(e.message);
           }
      };
 

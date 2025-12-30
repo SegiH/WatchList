@@ -18,10 +18,10 @@ export default function WatchList() {
      } = useContext(WatchListContext) as WatchListContextType;
 
      const [imdbCardvisible, setImdbCardvisible] = useState(false);
-     const [imdbJSON, setImdbJSON] = useState<any | null>(null);
+     const [imdbJSON, setImdbJSON] = useState<[] | null>(null);
 
      const closeIMDBCard = () => {
-          setImdbJSON([]);
+          setImdbJSON(null);
           setImdbCardvisible(false);
      }
 

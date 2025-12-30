@@ -65,7 +65,7 @@ const ManageWatchListSources = () => {
                     setWatchListSourcesLoadingCheck(APIStatus.Idle);
                }
           } catch (e) {
-               alert(e.errorMessage);
+               alert(e.message);
           }
      }
 
@@ -90,7 +90,7 @@ const ManageWatchListSources = () => {
                return;
           }
 
-          const currentSource = Object.assign({}, isAdding ? addingSource : editingSource);
+          const currentSource = { ...(isAdding ? addingSource : editingSource) };
 
           // validate rows
           if (typeof currentSource.WatchListSourceName === "undefined" || currentSource.WatchListSourceName === "") {
@@ -132,20 +132,22 @@ const ManageWatchListSources = () => {
                     alert(sourceSourceResult[1]);
                }
           } catch (e) {
-               alert(e.errorMessage);
+               alert(e.message);
           }
      }
 
      const sourceChangeHandler = (fieldName: string, fieldValue: string) => {
-          const newUser = Object.assign({}, isAdding ? addingSource : editingSource);
+          const newSource = {
+               ...(isAdding ? addingSource : editingSource),
+          } as IWatchListSource;
 
-          newUser[fieldName] = fieldValue;
-          newUser.IsModified = true;
+          newSource[fieldName] = fieldValue;
+          newSource.IsModified = true;
 
           if (isAdding) {
-               setAddingSource(newUser);
+               setAddingSource(newSource);
           } else {
-               setEditingSource(newUser);
+               setEditingSource(newSource);
           }
      }
 

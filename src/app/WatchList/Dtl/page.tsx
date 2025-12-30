@@ -82,7 +82,7 @@ export default function WatchListDtl() {
      };
 
      const addWatchListDetailChangeHandler = (fieldName: string, fieldValue: string | number | boolean) => {
-          const newAddWatchListDtl = Object.assign({}, addWatchListDtl);
+          const newAddWatchListDtl = { ...addWatchListDtl } as IWatchList;
 
           if (fieldName === "Archived") {
                newAddWatchListDtl[fieldName] = fieldValue === true ? 1 : 0;
@@ -119,13 +119,13 @@ export default function WatchListDtl() {
 
           if (watchListItem.length === 1) {
                if (isAdding) {
-                    const newAddWatchListDtl = Object.assign({}, addWatchListDtl);
+                    const newAddWatchListDtl = { ...addWatchListDtl } as IWatchList;
                     newAddWatchListDtl["WatchListItemID"] = watchListItem[0].WatchListItemID;
                     newAddWatchListDtl["WatchListItem"] = watchListItem[0];
                     setAddWatchListDtl(newAddWatchListDtl);
                     setAddModified(true);
                } else if (isEditing) {
-                    const newWatchListDtl = Object.assign({}, watchListDtl);
+                    const newWatchListDtl = { ...watchListDtl } as IWatchList;
                     newWatchListDtl["WatchListItemID"] = watchListItem[0].WatchListItemID;
                     newWatchListDtl["WatchListItem"] = watchListItem[0];
                     newWatchListDtl[`WatchListItemIDIsModified`] = true;
@@ -219,7 +219,7 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
                     setWatchListDtlLoadingCheck(APIStatus.Success);
                }
           } catch (e) {
-               alert(e.errorMessage);
+               alert(e.message);
           }
      }
 
@@ -322,7 +322,7 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
 
                setFormattedNamesWithId(namesWithIdItemsSorted);
           } catch (e) {
-               setErrorMessage("Failed to get WatchList Items with the error " + e.errorMessage);
+               setErrorMessage("Failed to get WatchList Items with the error " + e.message);
                setIsError(true);
                return;
           }
@@ -435,7 +435,7 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
                          router.push("/WatchList");
                     }
                } catch (e) {
-                    alert(`The error ${e.errorMessage} occurred while adding the detail`);
+                    alert(`The error ${e.message} occurred while adding the detail`);
                }
           } else { // This shouldn't ever happen
                alert("Unable to save new record. addWatchListDtl is null!");
@@ -449,13 +449,13 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
 
      const showDefaultSrc = () => {
           if (isAdding) {
-               const newAddWatchListDtl = Object.assign([], addWatchListDtl);
+               const newAddWatchListDtl = { ...addWatchListDtl } as IWatchList;
 
                newAddWatchListDtl["IMDB_Poster_Error"] = true;
 
                setAddWatchListDtl(newAddWatchListDtl);
           } else {
-               const newWatchListDtl = Object.assign([], watchListDtl);
+               const newWatchListDtl = { ...watchListDtl } as IWatchList;
 
                newWatchListDtl["IMDB_Poster_Error"] = true;
 
@@ -548,7 +548,7 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
                               setIsEditing(false);
                          }
                     } catch (e) {
-                         alert(e.errorMessage);
+                         alert(e.message);
                     }
                } else {
                     setIsEditing(false);
@@ -557,7 +557,7 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
      }
 
      const watchListDetailChangeHandler = (fieldName: string, fieldValue: boolean | string | number) => {
-          const newWatchListDtl = Object.assign({}, watchListDtl);
+          const newWatchListDtl = { ...watchListDtl } as IWatchList;
 
           if (fieldName === "Archived") {
                newWatchListDtl[fieldName] = fieldValue === true ? 1 : 0;

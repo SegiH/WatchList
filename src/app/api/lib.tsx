@@ -590,7 +590,7 @@ export const getMissingArtwork = async (watchListItemID: number) => {
                };
           }
      } catch (e) {
-          alert(e.errorMessage);
+          alert(e.message);
      }
 }
 

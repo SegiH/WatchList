@@ -29,7 +29,9 @@ export default function BugLogs() {
      };
 
      const bugLogChangeHandler = (fieldName: string, fieldValue: string) => {
-          const newBugLog = Object.assign({}, isAdding ? addingBugLog : editingBugLog);
+          const newBugLog = {
+               ...(isAdding ? addingBugLog : editingBugLog),
+          } as IBugLog;
 
           newBugLog[fieldName] = fieldValue;
           newBugLog.IsModified = true;
@@ -81,7 +83,7 @@ export default function BugLogs() {
                     setBugLogs(newBugLogs);
                }
           } catch (e) {
-               alert(e.errorMessage);
+               alert(e.message);
           }
      }
 
@@ -137,12 +139,14 @@ export default function BugLogs() {
                     alert(`An error occurred while getting the bug logs`);
                }
           } catch (e) {
-               alert(e.errorMessage);
+               alert(e.message);
           }
      }
 
      const saveRow = async () => {
-          const currentBugLog = Object.assign({}, isAdding ? addingBugLog : editingBugLog);
+          const currentBugLog = {
+               ...(isAdding ? addingBugLog : editingBugLog),
+          } as IBugLog;
 
           // validate rows
           if (typeof currentBugLog.BugName === "undefined" || currentBugLog.BugName === "") {
@@ -192,7 +196,7 @@ export default function BugLogs() {
                     alert(saveBugLogResult[1]);
                }
           } catch (e) {
-               alert(e.errorMessage);
+               alert(e.message);
           }
      }
 

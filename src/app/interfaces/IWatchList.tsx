@@ -5,7 +5,7 @@ export default interface WatchList {
      StartDate: string,
      EndDate: string,
      WatchListSourceID: number,
-     Season: number
+     Season: number,
      Archived: number,
      Notes: string,
      Rating: number,

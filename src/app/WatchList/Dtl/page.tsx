@@ -178,23 +178,24 @@ export default function WatchListDtl() {
      }, [currentDate]);
 
      const getWatchListDtl = async (watchListDtlID: number) => {
-          const getWatchListDtlResponse = await fetch(`/api/GetWatchListDtl?WatchListID=${watchListDtlID}`, { credentials: 'include' });
+          try {
+               const getWatchListDtlResponse = await fetch(`/api/GetWatchListDtl?WatchListID=${watchListDtlID}`, { credentials: 'include' });
 
-          const getWatchListDtlResult = await getWatchListDtlResponse.json();
+               const getWatchListDtlResult = await getWatchListDtlResponse.json();
 
-          if (getWatchListDtlResult[0] === "ERROR") {
-               setErrorMessage(`The error ${getWatchListDtlResult[1]} occurred while getting the detail`);
-               setIsError(true);
-               return;
-          } else {
-               // Sanitize object by replacing all fields with null
-               const wld = getWatchListDtlResult[1];
+               if (getWatchListDtlResult[0] === "ERROR") {
+                    setErrorMessage(`The error ${getWatchListDtlResult[1]} occurred while getting the detail`);
+                    setIsError(true);
+                    return;
+               } else {
+                    // Sanitize object by replacing all fields with null
+                    const wld = getWatchListDtlResult[1];
 
-               if (wld[0]?.IMDB_JSON !== null && typeof wld[0]?.IMDB_JSON !== "undefined") {
-                    const IMDB_JSON = (JSON.parse(wld[0]?.IMDB_JSON));
+                    if (wld[0]?.IMDB_JSON !== null && typeof wld[0]?.IMDB_JSON !== "undefined") {
+                         const IMDB_JSON = (JSON.parse(wld[0]?.IMDB_JSON));
 
-                    const tooltip = IMDB_JSON && IMDB_JSON !== null &&
-                         `Rated: ${IMDB_JSON.Rated} 
+                         const tooltip = IMDB_JSON && IMDB_JSON !== null &&
+                              `Rated: ${IMDB_JSON.Rated} 
 Year: ${IMDB_JSON.Year}
 Rated: ${IMDB_JSON.imdbRating}
 Genre: ${IMDB_JSON.Genre}
@@ -205,117 +206,126 @@ Plot: ${IMDB_JSON.Plot}
 ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSeasons}` : ""}
      `;
 
-                    wld[0].Tooltip = tooltip;
-               }
-
-               Object.keys(wld[0]).map((keyName) => {
-                    if (wld[0][keyName] === null) {
-                         wld[0][keyName] = "";
+                         wld[0].Tooltip = tooltip;
                     }
-               });
 
-               setWatchListDtl(wld[0]);
-               setWatchListDtlLoadingCheck(APIStatus.Success);
+                    Object.keys(wld[0]).map((keyName) => {
+                         if (wld[0][keyName] === null) {
+                              wld[0][keyName] = "";
+                         }
+                    });
+
+                    setWatchListDtl(wld[0]);
+                    setWatchListDtlLoadingCheck(APIStatus.Success);
+               }
+          } catch (e) {
+               alert(e.errorMessage);
           }
      }
 
      const getWatchListItems = async () => {
-          const getAllWatchListItemsResponse = await fetch(`/api/GetWatchListItems?AllData=true`, { credentials: 'include' });
+          try {
+               const getAllWatchListItemsResponse = await fetch(`/api/GetWatchListItems?AllData=true`, { credentials: 'include' });
 
-          const getAllWatchListItemsResult = await getAllWatchListItemsResponse.json();
+               const getAllWatchListItemsResult = await getAllWatchListItemsResponse.json();
 
-          if (getAllWatchListItemsResult[0] !== "OK") {
-               setErrorMessage("Failed to get WatchList Items with the error " + getAllWatchListItemsResult[1]);
+               if (getAllWatchListItemsResult[0] !== "OK") {
+                    setErrorMessage("Failed to get WatchList Items with the error " + getAllWatchListItemsResult[1]);
+                    setIsError(true);
+                    return;
+               }
+
+               setWatchListItems(getAllWatchListItemsResult[1]);
+
+               // Generate names for auto complete
+               const namesOnlyItems: IAutoCompleteOption[] = getAllWatchListItemsResult[1].map((watchListItem: IWatchListItem) => {
+                    const IMDB_JSON = watchListItem?.IMDB_JSON !== null && typeof watchListItem?.IMDB_JSON !== "undefined" ? JSON.parse(watchListItem?.IMDB_JSON) : null;
+
+                    let itemName = watchListItem.WatchListItemName + (IMDB_JSON !== null && IMDB_JSON.Year !== null ? ` (${IMDB_JSON.Year})` : ``);
+
+
+                    if (getAllWatchListItemsResult[1]?.filter((watchListItemDupe: IWatchListItem) => {
+                         return String(watchListItemDupe.WatchListItemName) === String(watchListItem.WatchListItemName);
+                    }).length > 1) {
+                         itemName += ` (${watchListItem.WatchListTypeName})`;
+                    }
+
+                    return { name: itemName };
+               });
+
+               const namesSorted = namesOnlyItems.sort((a: any, b: any) => {
+                    // Convert names to lowercase for case-insensitive sorting
+                    const nameA = a.name.toLowerCase().trim();
+                    const nameB = b.name.toLowerCase().trim();
+
+                    // Compare the names
+                    if (nameA < nameB) {
+                         return -1;
+                    }
+                    if (nameA > nameB) {
+                         return 1;
+                    }
+
+                    // Names are equal
+                    return 0;
+               });
+
+               const seenNames = new Map<string, number>();
+               const duplicateMessages: string[] = [];
+
+               namesSorted.forEach((item, index) => {
+                    if (seenNames.has(item.name)) {
+                         duplicateMessages.push(`Duplicate found for "${item.name}"`);
+                    }
+                    seenNames.set(item.name, index); // Overwrite to keep the last occurrence
+               });
+
+               if (duplicateMessages.length > 0) {
+                    console.log(duplicateMessages.join("\n"));
+               }
+
+               setFormattedNames(namesSorted);
+
+               const namesWithIdItems = getAllWatchListItemsResult[1].map((watchListItem: IWatchListItem) => {
+                    let itemName = watchListItem.WatchListItemName
+
+                    if (watchListItems?.filter((watchListItemDupe: IWatchListItem) => {
+                         return String(watchListItemDupe.WatchListItemName) === String(watchListItem.WatchListItemName);
+                    }).length > 1) {
+                         itemName += " (" + watchListItem.WatchListTypeName + ")"
+                    }
+
+                    let newItem: AutoCompleteWatchListItem = {
+                         WatchListItemID: watchListItem.WatchListItemID,
+                         WatchListItemName: itemName
+                    }
+
+                    return newItem;
+               });
+
+               const namesWithIdItemsSorted = namesWithIdItems.sort((a: IWatchListItem, b: IWatchListItem) => {
+                    // Convert names to lowercase for case-insensitive sorting
+                    const nameA = a.WatchListItemName.toLowerCase().trim();
+                    const nameB = b.WatchListItemName.toLowerCase().trim();
+
+                    // Compare the names
+                    if (nameA < nameB) {
+                         return -1;
+                    }
+                    if (nameA > nameB) {
+                         return 1;
+                    }
+
+                    // Names are equal
+                    return 0;
+               });
+
+               setFormattedNamesWithId(namesWithIdItemsSorted);
+          } catch (e) {
+               setErrorMessage("Failed to get WatchList Items with the error " + e.errorMessage);
                setIsError(true);
                return;
           }
-
-          setWatchListItems(getAllWatchListItemsResult[1]);
-
-          // Generate names for auto complete
-          const namesOnlyItems: IAutoCompleteOption[] = getAllWatchListItemsResult[1].map((watchListItem: IWatchListItem) => {
-               const IMDB_JSON = watchListItem?.IMDB_JSON !== null && typeof watchListItem?.IMDB_JSON !== "undefined" ? JSON.parse(watchListItem?.IMDB_JSON) : null;
-
-               let itemName = watchListItem.WatchListItemName + (IMDB_JSON !== null && IMDB_JSON.Year !== null ? ` (${IMDB_JSON.Year})` : ``);
-
-
-               if (getAllWatchListItemsResult[1]?.filter((watchListItemDupe: IWatchListItem) => {
-                    return String(watchListItemDupe.WatchListItemName) === String(watchListItem.WatchListItemName);
-               }).length > 1) {
-                    itemName += ` (${watchListItem.WatchListTypeName})`;
-               }
-
-               return { name: itemName };
-          });
-
-          const namesSorted = namesOnlyItems.sort((a: any, b: any) => {
-               // Convert names to lowercase for case-insensitive sorting
-               const nameA = a.name.toLowerCase().trim();
-               const nameB = b.name.toLowerCase().trim();
-
-               // Compare the names
-               if (nameA < nameB) {
-                    return -1;
-               }
-               if (nameA > nameB) {
-                    return 1;
-               }
-
-               // Names are equal
-               return 0;
-          });
-
-          const seenNames = new Map<string, number>();
-          const duplicateMessages: string[] = [];
-
-          namesSorted.forEach((item, index) => {
-               if (seenNames.has(item.name)) {
-                    duplicateMessages.push(`Duplicate found for "${item.name}"`);
-               }
-               seenNames.set(item.name, index); // Overwrite to keep the last occurrence
-          });
-
-          if (duplicateMessages.length > 0) {
-               console.log(duplicateMessages.join("\n"));
-          }
-
-          setFormattedNames(namesSorted);
-
-          const namesWithIdItems = getAllWatchListItemsResult[1].map((watchListItem: IWatchListItem) => {
-               let itemName = watchListItem.WatchListItemName
-
-               if (watchListItems?.filter((watchListItemDupe: IWatchListItem) => {
-                    return String(watchListItemDupe.WatchListItemName) === String(watchListItem.WatchListItemName);
-               }).length > 1) {
-                    itemName += " (" + watchListItem.WatchListTypeName + ")"
-               }
-
-               let newItem: AutoCompleteWatchListItem = {
-                    WatchListItemID: watchListItem.WatchListItemID,
-                    WatchListItemName: itemName
-               }
-
-               return newItem;
-          });
-
-          const namesWithIdItemsSorted = namesWithIdItems.sort((a: IWatchListItem, b: IWatchListItem) => {
-               // Convert names to lowercase for case-insensitive sorting
-               const nameA = a.WatchListItemName.toLowerCase().trim();
-               const nameB = b.WatchListItemName.toLowerCase().trim();
-
-               // Compare the names
-               if (nameA < nameB) {
-                    return -1;
-               }
-               if (nameA > nameB) {
-                    return 1;
-               }
-
-               // Names are equal
-               return 0;
-          });
-
-          setFormattedNamesWithId(namesWithIdItemsSorted);
      }
 
      const getWatchListTypeID = (watchListItemID: number) => {
@@ -406,22 +416,26 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
                     queryURL += `&Notes=${addWatchListDtl.Notes}`;
                }
 
-               const saveNewWatchListResponse = await fetch(queryURL, { method: 'PUT', credentials: 'include' });
+               try {
+                    const saveNewWatchListResponse = await fetch(queryURL, { method: 'PUT', credentials: 'include' });
 
-               const saveNewWatchListResult = await saveNewWatchListResponse.json();
+                    const saveNewWatchListResult = await saveNewWatchListResponse.json();
 
-               if (saveNewWatchListResult[0] === "ERROR") {
-                    alert(`The error ${saveNewWatchListResult[1]} occurred while adding the detail`);
-               } else {
-                    setIsAdding(false);
-                    getWatchList();
-                    addingStarted = false;
+                    if (saveNewWatchListResult[0] === "ERROR") {
+                         alert(`The error ${saveNewWatchListResult[1]} occurred while adding the detail`);
+                    } else {
+                         setIsAdding(false);
+                         getWatchList();
+                         addingStarted = false;
 
-                    if (typeof addWatchListDtl.EndDate !== "undefined" && !stillWatching) {
-                         setStillWatching(true);
+                         if (typeof addWatchListDtl.EndDate !== "undefined" && !stillWatching) {
+                              setStillWatching(true);
+                         }
+
+                         router.push("/WatchList");
                     }
-
-                    router.push("/WatchList");
+               } catch (e) {
+                    alert(`The error ${e.errorMessage} occurred while adding the detail`);
                }
           } else { // This shouldn't ever happen
                alert("Unable to save new record. addWatchListDtl is null!");
@@ -523,14 +537,18 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
                if (queryURL != "") {
                     queryURL = `/api/UpdateWatchList?WatchListID=${watchListDtl.WatchListID}${queryURL}`;
 
-                    const updateWatchListResponse = await fetch(queryURL, { method: 'PUT', credentials: 'include' });
+                    try {
+                         const updateWatchListResponse = await fetch(queryURL, { method: 'PUT', credentials: 'include' });
 
-                    const updateWatchListResult = await updateWatchListResponse.json();
+                         const updateWatchListResult = await updateWatchListResponse.json();
 
-                    if (updateWatchListResult[0] === "ERROR" && !silent) {
-                         alert(`The error ${updateWatchListResult[1]} occurred while updating the detail`);
-                    } else {
-                         setIsEditing(false);
+                         if (updateWatchListResult[0] === "ERROR" && !silent) {
+                              alert(`The error ${updateWatchListResult[1]} occurred while updating the detail`);
+                         } else {
+                              setIsEditing(false);
+                         }
+                    } catch (e) {
+                         alert(e.errorMessage);
                     }
                } else {
                     setIsEditing(false);

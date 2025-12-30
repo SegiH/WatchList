@@ -48,13 +48,17 @@ export default function ItemsDtl() {
      };
 
      const checkURL = async (URL: string) => {
-          const checkURLResponse = await fetch(URL);
+          try {
+               const checkURLResponse = await fetch(URL);
 
-          const checkURLResult = await checkURLResponse.json();
+               const checkURLResult = await checkURLResponse.json();
 
-          if (checkURLResult) {
-               return true;
-          } else {
+               if (checkURLResult) {
+                    return true;
+               } else {
+                    return false;
+               }
+          } catch (e) {
                return false;
           }
      };
@@ -78,25 +82,26 @@ export default function ItemsDtl() {
      }
 
      const getWatchListItemDtl = async (id: number) => {
-          const getWatchListItemDtlResponse = await fetch(`/api/GetWatchListItemDtl?WatchListItemID=${watchListItemDtlID}`, { credentials: 'include' });
+          try {
+               const getWatchListItemDtlResponse = await fetch(`/api/GetWatchListItemDtl?WatchListItemID=${watchListItemDtlID}`, { credentials: 'include' });
 
-          const getWatchListItemDtlResult = await getWatchListItemDtlResponse.json();
+               const getWatchListItemDtlResult = await getWatchListItemDtlResponse.json();
 
-          setWatchListItemDtlLoadingCheck(APIStatus.Success);
+               setWatchListItemDtlLoadingCheck(APIStatus.Success);
 
-          if (getWatchListItemDtlResult[0] === "ERROR") {
-               setErrorMessage(`The error ${getWatchListItemDtlResult[1]} occurred while getting the item detail`);
-               setIsError(true);
-               return;
-          } else {
-               // Sanitize object by replacing all null fields with "". There are issues with binding to input fields when the value is null
-               const wlid = getWatchListItemDtlResult[1];
+               if (getWatchListItemDtlResult[0] === "ERROR") {
+                    setErrorMessage(`The error ${getWatchListItemDtlResult[1]} occurred while getting the item detail`);
+                    setIsError(true);
+                    return;
+               } else {
+                    // Sanitize object by replacing all null fields with "". There are issues with binding to input fields when the value is null
+                    const wlid = getWatchListItemDtlResult[1];
 
-               if (wlid[0]?.IMDB_JSON !== null && typeof wlid[0]?.IMDB_JSON !== "undefined") {
-                    const IMDB_JSON = (JSON.parse(wlid[0]?.IMDB_JSON));
+                    if (wlid[0]?.IMDB_JSON !== null && typeof wlid[0]?.IMDB_JSON !== "undefined") {
+                         const IMDB_JSON = (JSON.parse(wlid[0]?.IMDB_JSON));
 
-                    const tooltip = IMDB_JSON && IMDB_JSON !== null &&
-                         `Rated: ${IMDB_JSON.Rated} 
+                         const tooltip = IMDB_JSON && IMDB_JSON !== null &&
+                              `Rated: ${IMDB_JSON.Rated} 
 Year: ${IMDB_JSON.Year}
 Rated: ${IMDB_JSON.imdbRating}
 Genre: ${IMDB_JSON.Genre}
@@ -107,18 +112,21 @@ Plot: ${IMDB_JSON.Plot}
 ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSeasons}` : ""}
      `;
 
-                    wlid[0].Tooltip = tooltip;
-               }
-
-               Object.keys(wlid[0]).map((keyName) => {
-                    if (wlid[0][keyName] === null) {
-                         wlid[0][keyName] = "";
+                         wlid[0].Tooltip = tooltip;
                     }
-               });
 
-               setWatchListItemDtl(wlid[0]);
+                    Object.keys(wlid[0]).map((keyName) => {
+                         if (wlid[0][keyName] === null) {
+                              wlid[0][keyName] = "";
+                         }
+                    });
 
-               setWatchListItemDtlLoadingCheck(APIStatus.Success);
+                    setWatchListItemDtl(wlid[0]);
+
+                    setWatchListItemDtlLoadingCheck(APIStatus.Success);
+               }
+          } catch (e) {
+               alert(e.errorMessage);
           }
      }
 
@@ -162,11 +170,15 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
 
                const queryURL = `/api/UpdateWatchListItem?WatchListItemID=${watchListItemDtl?.WatchListItemID}&IMDB_Poster=${result[0].IMDB_Poster}`;
 
-               const reloadImageResponse = await fetch(queryURL, { method: 'PUT', credentials: 'include' });
+               try {
+                    const reloadImageResponse = await fetch(queryURL, { method: 'PUT', credentials: 'include' });
 
-               await reloadImageResponse.json();
+                    await reloadImageResponse.json();
 
-               getWatchListItems();
+                    getWatchListItems();
+               } catch (e) {
+                    console.log(e.errorMessage);
+               }
           }
      }
 
@@ -216,34 +228,38 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
                if (queryURL != "") {
                     queryURL = `/api/UpdateWatchListItem?WatchListItemID=${watchListItemDtl?.WatchListItemID}${queryURL}`;
 
-                    const saveItemDtlResponse = await fetch(queryURL, { method: 'PUT', credentials: 'include' });
+                    try {
+                         const saveItemDtlResponse = await fetch(queryURL, { method: 'PUT', credentials: 'include' });
 
-                    const saveItemDtlResult = await saveItemDtlResponse.json();
+                         const saveItemDtlResult = await saveItemDtlResponse.json();
 
-                    if (saveItemDtlResult[0] === "ERROR") {
-                         alert(`The error ${saveItemDtlResult[1]} occurred while updating the item detail`);
-                    } else {
-                         // Update type name if needed
-                         if (watchListItemDtl?.WatchListTypeIDIsModified === true) {
-                              const result = watchListTypes?.filter((currentWatchList: IWatchListType) => {
-                                   return String(currentWatchList.WatchListTypeID) === String(watchListItemDtl["WatchListTypeID"]);
-                              });
+                         if (saveItemDtlResult[0] === "ERROR") {
+                              alert(`The error ${saveItemDtlResult[1]} occurred while updating the item detail`);
+                         } else {
+                              // Update type name if needed
+                              if (watchListItemDtl?.WatchListTypeIDIsModified === true) {
+                                   const result = watchListTypes?.filter((currentWatchList: IWatchListType) => {
+                                        return String(currentWatchList.WatchListTypeID) === String(watchListItemDtl["WatchListTypeID"]);
+                                   });
 
-                              if (result.length !== 1) {
-                                   alert("Unable to update type name");
-                                   return;
+                                   if (result.length !== 1) {
+                                        alert("Unable to update type name");
+                                        return;
+                                   }
+
+                                   const newWatchListItemDtl = Object.assign({}, watchListItemDtl);
+
+                                   newWatchListItemDtl["WatchListTypeName"] = result[0].WatchListTypeName;
+
+                                   setWatchListItemDtl(newWatchListItemDtl);
                               }
 
-                              const newWatchListItemDtl = Object.assign({}, watchListItemDtl);
+                              setIsEditing(false);
 
-                              newWatchListItemDtl["WatchListTypeName"] = result[0].WatchListTypeName;
-
-                              setWatchListItemDtl(newWatchListItemDtl);
+                              setEditModified(true);
                          }
-
-                         setIsEditing(false);
-
-                         setEditModified(true);
+                    } catch (e) {
+                         alert(e.errorMessage);
                     }
                } else {
                     alert("query params is empty in saveClickHandler()");
@@ -287,26 +303,30 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
                queryURL += `&ItemNotes=${addWatchListItemDtl?.ItemNotes}`;
           }
 
-          const saveNewItemDtlResponse = await fetch(queryURL, { method: 'PUT', credentials: 'include' });
+          try {
+               const saveNewItemDtlResponse = await fetch(queryURL, { method: 'PUT', credentials: 'include' });
 
-          const saveNewItemDtlResult = await saveNewItemDtlResponse.json();
+               const saveNewItemDtlResult = await saveNewItemDtlResponse.json();
 
-          if (saveNewItemDtlResult[0] === "ERROR") {
-               alert(`The error ${saveNewItemDtlResult[1]} occurred while adding the detail`);
-          } else if (saveNewItemDtlResult[0] === "ERROR-ALREADY-EXISTS") {
-               alert(saveNewItemDtlResult[1]);
-          } else {
-               setAddModified(true);
+               if (saveNewItemDtlResult[0] === "ERROR") {
+                    alert(`The error ${saveNewItemDtlResult[1]} occurred while adding the detail`);
+               } else if (saveNewItemDtlResult[0] === "ERROR-ALREADY-EXISTS") {
+                    alert(saveNewItemDtlResult[1]);
+               } else {
+                    setAddModified(true);
 
-               setIsAdding(false);
+                    setIsAdding(false);
 
-               const addNewWatchListPrompt = confirm("Do you want to add a new WatchList record now ?");
+                    const addNewWatchListPrompt = confirm("Do you want to add a new WatchList record now ?");
 
-               if (addNewWatchListPrompt) {
-                    setIsAdding(true);
-                    router.push(`/WatchList/Dtl?WatchListItemID=${saveNewItemDtlResult[1]}`);
-                    getWatchListItems();
+                    if (addNewWatchListPrompt) {
+                         setIsAdding(true);
+                         router.push(`/WatchList/Dtl?WatchListItemID=${saveNewItemDtlResult[1]}`);
+                         getWatchListItems();
+                    }
                }
+          } catch (e) {
+               alert(e.errorMessage);
           }
      };
 

@@ -15,7 +15,16 @@ export default function WatchListCard({ currentWatchList, setImdbJSON }: WatchLi
         BrokenImageIconComponent, darkMode, filteredWatchList, getMissingPoster, openDetailClickHandler, setFilteredWatchList
     } = useContext(WatchListCardContext) as WatchListCardContextType;
 
-    const IMDB_JSON = currentWatchList?.IMDB_JSON !== null && typeof currentWatchList?.IMDB_JSON !== "undefined" && currentWatchList?.IMDB_JSON !== "" ? JSON.parse(currentWatchList?.IMDB_JSON) : null;
+    let IMDB_JSON :any = null;
+
+    if (currentWatchList?.IMDB_JSON) {
+        try {
+            IMDB_JSON = JSON.parse(currentWatchList.IMDB_JSON);
+        } catch (e) {
+            console.log(`An error occurred parsing the IMDB_JSON for ${currentWatchList.WatchListID}`);
+        }
+    }
+    //const IMDB_JSON = currentWatchList?.IMDB_JSON !== null && typeof currentWatchList?.IMDB_JSON !== "undefined" && currentWatchList?.IMDB_JSON !== "" ? JSON.parse(currentWatchList?.IMDB_JSON) : null;
 
     const formatWatchListDates = (startDate: string, endDate: string) => {
         // Helper function to format a date string from "yyyy-mm-dd" to "mm/dd/yy"
@@ -42,7 +51,7 @@ export default function WatchListCard({ currentWatchList, setImdbJSON }: WatchLi
     }
 
     const showDefaultSrc = async (watchListID: number) => {
-        const newFilteredWatchList: IWatchList[] = Object.assign([], filteredWatchList);
+        const newFilteredWatchList: IWatchList[] = filteredWatchList.map(item => ({ ...item}));
 
         const newWatchListResult: IWatchList[] = newFilteredWatchList?.filter((currentWatchList: IWatchList) => {
             return String(currentWatchList.WatchListID) === String(watchListID);
@@ -71,13 +80,13 @@ export default function WatchListCard({ currentWatchList, setImdbJSON }: WatchLi
         <>
             <li className="show-item">
                 <span className="item-id">
-                    <div>{currentWatchList?.WatchListID}</div>
+                    <div>{currentWatchList.WatchListID}</div>
                 </span>
 
-                <a className="clickable show-link" onClick={() => openDetailClickHandler(currentWatchList?.WatchListID, "WatchList")}>
+                <a className="clickable show-link" onClick={() => openDetailClickHandler(currentWatchList.WatchListID, "WatchList")}>
                     <div>
                         {typeof currentWatchList?.IMDB_Poster !== "undefined" && currentWatchList?.IMDB_Poster !== null && currentWatchList?.IMDB_Poster !== "" && currentWatchList?.IMDB_Poster_Error !== true &&
-                            <Image width="128" height="187" alt={currentWatchList?.WatchListItemName ?? ""} src={currentWatchList?.IMDB_Poster ?? currentWatchList?.IMDB_Poster ?? BrokenImageIconComponent} onError={() => showDefaultSrc(currentWatchList.WatchListID)} />
+                            <Image width="128" height="187" alt={currentWatchList.WatchListItemName ?? ""} src={currentWatchList?.IMDB_Poster ?? currentWatchList?.IMDB_Poster ?? BrokenImageIconComponent} onError={() => showDefaultSrc(currentWatchList.WatchListID)} />
                         }
 
                         {currentWatchList?.IMDB_Poster_Error === true && <>{BrokenImageIconComponent}</>}
@@ -86,19 +95,19 @@ export default function WatchListCard({ currentWatchList, setImdbJSON }: WatchLi
 
                 <div className="show-title">
                     {typeof currentWatchList?.IMDB_URL !== "undefined" &&
-                        <a href={currentWatchList?.IMDB_URL} target='_blank'>{currentWatchList?.WatchListItemName}{IMDB_JSON !== null && IMDB_JSON.Year !== null ? ` (${IMDB_JSON.Year})` : ""}</a>
+                        <a href={currentWatchList?.IMDB_URL} target='_blank'>{currentWatchList.WatchListItemName}{IMDB_JSON !== null && IMDB_JSON.Year !== null ? ` (${IMDB_JSON.Year})` : ""}</a>
                     }
 
                     {typeof currentWatchList?.IMDB_URL === "undefined" &&
                         <span>
-                            {currentWatchList?.WatchListItemName}{IMDB_JSON !== null && IMDB_JSON.Year !== null ? ` (${IMDB_JSON.Year})` : ""}
+                            {currentWatchList.WatchListItemName}{IMDB_JSON !== null && IMDB_JSON.Year !== null ? ` (${IMDB_JSON.Year})` : ""}
                         </span>
                     }
 
                     {currentWatchList?.Archived === 1 ? <span>&nbsp;(A)</span> : <></>}
                 </div>
 
-                {currentWatchList?.WatchListTypeID === 2 ? (
+                {currentWatchList.WatchListTypeID === 2 ? (
                     <div className={`${!darkMode ? "lightMode" : "darkMode"} show-season`}>
                         <div>Season {currentWatchList?.Season}</div>
                     </div>
@@ -117,7 +126,7 @@ export default function WatchListCard({ currentWatchList, setImdbJSON }: WatchLi
                 </div>
 
                 <div className={`${!darkMode ? "lightMode" : "darkMode"} show-type`}>
-                    {currentWatchList?.WatchListTypeName}
+                    {currentWatchList.WatchListTypeName}
                 </div>
 
                 <div className={`${!darkMode ? "lightMode" : "darkMode"} show-source`}>

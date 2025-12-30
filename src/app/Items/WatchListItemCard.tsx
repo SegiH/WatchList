@@ -22,7 +22,8 @@ export default function WatchListItemCard({ currentWatchListItem, setImdbJSON }:
     }
 
     const showDefaultSrc = async (watchListItemID: number) => {
-        const newFilteredWatchListItems: IWatchListItem[] = Object.assign([], filteredWatchListItems);
+        const newFilteredWatchListItems: IWatchListItem[] = filteredWatchListItems.map(item => ({ ...item}));
+        //const newFilteredWatchListItems: IWatchListItem[] = Object.assign([], filteredWatchListItems);
 
         const newWatchListItemsResult: IWatchListItem[] = newFilteredWatchListItems?.filter((currentWatchListItems: IWatchListItem) => {
             return String(currentWatchListItems.WatchListItemID) === String(watchListItemID);
@@ -37,7 +38,7 @@ export default function WatchListItemCard({ currentWatchListItem, setImdbJSON }:
 
         const result = await getMissingPoster(currentWatchListItem.WatchListItemID);
 
-        if (typeof result !== "undefined" && result !== null && result[0]["Status"] === "OK") {
+        if (Array.isArray(result) && result.length > 0 && result[0]["Status"] === "OK") {
             newWatchListItem["IMDB_Poster"] = result[0]["IMDB_Poster"];
             newWatchListItem["IMDB_Poster_Error"] = false;
         } else {

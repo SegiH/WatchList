@@ -49,26 +49,30 @@ export default function SearchIMDB() {
 
           paramStr += `&IMDB_Poster=${imdbSearchResults[index].Poster}`;
 
-          const searchIMDBResponse = await fetch(paramStr, { method: 'PUT', credentials: 'include' });
+          try {
+               const searchIMDBResponse = await fetch(paramStr, { method: 'PUT', credentials: 'include' });
 
-          const searchIMDBResult = await searchIMDBResponse.json();
+               const searchIMDBResult = await searchIMDBResponse.json();
 
-          if (searchIMDBResult[0] === "ERROR") {
-               alert(`The error ${searchIMDBResult[1]} occurred while adding the search result`);
-          } else if (searchIMDBResult[0] === "ERROR-ALREADY-EXISTS") {
-               alert(searchIMDBResult[1]);
-          } else {
-               if (autoAdd) {
-                    setIsAdding(true);
-                    router.push(`/WatchList/Dtl?WatchListItemID=${searchIMDBResult[1]}`);
+               if (searchIMDBResult[0] === "ERROR") {
+                    alert(`The error ${searchIMDBResult[1]} occurred while adding the search result`);
+               } else if (searchIMDBResult[0] === "ERROR-ALREADY-EXISTS") {
+                    alert(searchIMDBResult[1]);
+               } else {
+                    if (autoAdd) {
+                         setIsAdding(true);
+                         router.push(`/WatchList/Dtl?WatchListItemID=${searchIMDBResult[1]}`);
+                    }
+
+                    // Remove this item from the the search results since its been added
+                    const newSearchResults = Object.assign([], imdbSearchResults);
+                    newSearchResults.splice(index, 1);
+                    setIMDBSearchResults(newSearchResults);
+
+                    setSearchModalVisible(false);
                }
-
-               // Remove this item from the the search results since its been added
-               const newSearchResults = Object.assign([], imdbSearchResults);
-               newSearchResults.splice(index, 1);
-               setIMDBSearchResults(newSearchResults);
-
-               setSearchModalVisible(false);
+          } catch (e) {
+               alert(e.errorMessage);
           }
      };
 
@@ -99,15 +103,19 @@ export default function SearchIMDB() {
           //     setSearchLoadingCheck(APIStatus.Success);
           //}, 5000);
 
-          const searchIMDBResponse = await fetch(`/api/SearchIMDB?SearchTerm=${searchTerm}&SearchCount=${searchCount}`, { credentials: 'include' });
+          try {
+               const searchIMDBResponse = await fetch(`/api/SearchIMDB?SearchTerm=${searchTerm}&SearchCount=${searchCount}`, { credentials: 'include' });
 
-          const searchIMDBResult = await searchIMDBResponse.json();
+               const searchIMDBResult = await searchIMDBResponse.json();
 
-          if (searchIMDBResult[0] === "ERROR") {
-               alert(`The error ${searchIMDBResult[1]} occurred while searching IMDB`);
-          } else {
-               setIMDBSearchResults(searchIMDBResult[1]);
-               setSearchLoadingCheck(APIStatus.Success);
+               if (searchIMDBResult[0] === "ERROR") {
+                    alert(`The error ${searchIMDBResult[1]} occurred while searching IMDB`);
+               } else {
+                    setIMDBSearchResults(searchIMDBResult[1]);
+                    setSearchLoadingCheck(APIStatus.Success);
+               }
+          } catch (e) {
+               alert(e.errorMessage);
           }
      }
 

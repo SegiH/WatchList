@@ -29,19 +29,23 @@ const MetaDataFilter = (props) => {
     }
 
     const getMetaData = async () => {
-        const getMetaDataResponse = await fetch(`/api/GetMetadata`, { credentials: 'include' });
+        try {
+            const getMetaDataResponse = await fetch(`/api/GetMetadata`, { credentials: 'include' });
 
-        const getMetaDataResult = await getMetaDataResponse.json();
+            const getMetaDataResult = await getMetaDataResponse.json();
 
-        if (getMetaDataResult[0] === "OK") {
-            setMetaDataObj(getMetaDataResult[1])
-        } else {
-            alert(`An error occurred while getting the metadata`);
+            if (getMetaDataResult[0] === "OK") {
+                setMetaDataObj(getMetaDataResult[1])
+            } else {
+                alert(`An error occurred while getting the metadata`);
+            }
+
+            setSelectedValues(props.metaDataFilters);
+
+            setMetaDataLoadingCheck(APIStatus.Success);
+        } catch (e) {
+            alert(e.errorMessage);
         }
-
-        setSelectedValues(props.metaDataFilters);
-
-        setMetaDataLoadingCheck(APIStatus.Success);
     }
 
     const setFiltersClickHandler = () => {

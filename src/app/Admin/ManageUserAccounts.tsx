@@ -58,19 +58,23 @@ const ManageUserAccounts = () => {
      }
 
      const getUsers = async () => {
-          const getUsersResponse = await fetch(`/api/GetUsers`, { credentials: 'include' });
+          try {
+               const getUsersResponse = await fetch(`/api/GetUsers`, { credentials: 'include' });
 
-          const getUsersResult = await getUsersResponse.json();
+               const getUsersResult = await getUsersResponse.json();
 
-          if (getUsersResult[0] === "OK") {
-               setUsers(getUsersResult[1]);
-          } else {
-               alert(getUsersResult[1])
-               setErrorMessage(getUsersResult[1]);
+               if (getUsersResult[0] === "OK") {
+                    setUsers(getUsersResult[1]);
+               } else {
+                    setErrorMessage(getUsersResult[1]);
+                    setIsError(true);
+               }
+
+               setUsersLoadingCheck(APIStatus.Success);
+          } catch (e) {
+               setErrorMessage(e.errorMessage);
                setIsError(true);
           }
-
-          setUsersLoadingCheck(APIStatus.Success);
      }
 
      const saveRow = async () => {
@@ -145,19 +149,23 @@ const ManageUserAccounts = () => {
 
           const endPoint = (isAdding ? `/api/AddUser` : `/api/UpdateUser`) + columns;
 
-          const saveUserAccountResponse = await fetch(endPoint, { method: 'PUT', credentials: 'include' });
+          try {
+               const saveUserAccountResponse = await fetch(endPoint, { method: 'PUT', credentials: 'include' });
 
-          const saveUserAccountResult = await saveUserAccountResponse.json();
+               const saveUserAccountResult = await saveUserAccountResponse.json();
 
-          if (saveUserAccountResult[0] === "OK") {
-               alert("Saved");
+               if (saveUserAccountResult[0] === "OK") {
+                    alert("Saved");
 
-               setUsersLoadingCheck(APIStatus.Idle);
+                    setUsersLoadingCheck(APIStatus.Idle);
 
-               setIsAdding(false);
-               setIsEditing(false);
-          } else {
-               alert(saveUserAccountResult[1]);
+                    setIsAdding(false);
+                    setIsEditing(false);
+               } else {
+                    alert(saveUserAccountResult[1]);
+               }
+          } catch (e) {
+               alert(e.errorMessage);
           }
      }
 

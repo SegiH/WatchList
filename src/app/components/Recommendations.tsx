@@ -27,18 +27,22 @@ const Recommendations = ({ queryTerm, setRecommendationName, setRecommendationTy
      }
 
      const getRecommendations = async () => {
-          const getRecommendationsResponse = await fetch(`/api/Recommendations?SearchTerm=${encodeURIComponent(queryTerm)}&Type=${type}`, { credentials: 'include' });
+          try {
+               const getRecommendationsResponse = await fetch(`/api/Recommendations?SearchTerm=${encodeURIComponent(queryTerm)}&Type=${type}`, { credentials: 'include' });
 
-          const getRecommendationsResult = await getRecommendationsResponse.json();
+               const getRecommendationsResult = await getRecommendationsResponse.json();
 
-          setRecommendationsLoadingCheck(APIStatus.Success);
+               setRecommendationsLoadingCheck(APIStatus.Success);
 
-          if (getRecommendationsResult[0] === "OK") {
-               setRecommendations(getRecommendationsResult[1]);
-          } else { // I do not want to display an alert if the recommendations returns an error
-               writeLog(`The error ${getRecommendationsResult[1].length} occurred while searching for recommendations`);
+               if (getRecommendationsResult[0] === "OK") {
+                    setRecommendations(getRecommendationsResult[1]);
+               } else { // I do not want to display an alert if the recommendations returns an error
+                    writeLog(`The error ${getRecommendationsResult[1].length} occurred while searching for recommendations`);
 
-               setRecommendationsError(true);
+                    setRecommendationsError(true);
+               }
+          } catch (e) {
+               alert(e.errorMessage);
           }
      }
 

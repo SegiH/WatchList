@@ -98,117 +98,125 @@ export default function Data() {
     const activeSectionCHangeHandler = async (newActiveSection: string) => {
         setActiveSection(newActiveSection);
 
-        switch (newActiveSection) {
-            case "WatchList":
-                if (watchList.length === 0 || watchListSortingCheck !== APIStatus.Success) {
-                    const getAllWatchListResponse = await fetch(`/api/GetWatchList?AllData=true`, { credentials: 'include' });
+        try {
+            switch (newActiveSection) {
+                case "WatchList":
+                    if (watchList.length === 0 || watchListSortingCheck !== APIStatus.Success) {
+                        const getAllWatchListResponse = await fetch(`/api/GetWatchList?AllData=true`, { credentials: 'include' });
 
-                    const getAllWatchListResult = await getAllWatchListResponse.json();
+                        const getAllWatchListResult = await getAllWatchListResponse.json();
 
-                    if (getAllWatchListResult[0] !== "OK") {
-                        setErrorMessage("Failed to get WatchList with the error " + getAllWatchListResult[1]);
+                        if (getAllWatchListResult[0] !== "OK") {
+                            setErrorMessage("Failed to get WatchList with the error " + getAllWatchListResult[1]);
+                            setIsError(true);
+                            return;
+                        } else {
+                            setDataSource(getAllWatchListResult[1]);
+                        }
+                    } else {
+                        setDataSource(watchList);
+                    }
+
+                    break;
+                case "Items":
+                    if (watchListItems.length == 0 || watchListItemsSortingCheck !== APIStatus.Success) {
+                        const getAllWatchListItemsResponse = await fetch(`/api/GetWatchListItems?AllData=true`, { credentials: 'include' });
+
+                        const getAllWatchListItemsResult = await getAllWatchListItemsResponse.json();
+
+                        if (getAllWatchListItemsResult[0] !== "OK") {
+                            setErrorMessage("Failed to get WatchList Items with the error " + getAllWatchListItemsResult[1]);
+                            setIsError(true);
+                            return;
+                        } else {
+                            setDataSource(getAllWatchListItemsResult[1]);
+                        }
+                    } else {
+                        setDataSource(watchListItems);
+                    }
+                    break;
+                case "BugLogs":
+                    if (bugLogs.length === 0) {
+                        await getBugLogs();
+                        break;
+                    } else {
+                        setDataSource(bugLogs);
+                        break;
+                    }
+                //case "Options": // TODO: Fix me
+                //setDataSource(userData.)
+                //break;
+                case "Logs":
+                    const getLogsResponse = await fetch(`/api/GetLogs`, { credentials: 'include' });
+
+                    const getLogsResult = await getLogsResponse.json();
+
+                    if (getLogsResult[0] !== "OK") {
+                        setErrorMessage("Failed to get logs with the error " + getLogsResult[1]);
                         setIsError(true);
                         return;
                     } else {
-                        setDataSource(getAllWatchListResult[1]);
+                        setDataSource(getLogsResult[1]);
                     }
-                } else {
-                    setDataSource(watchList);
-                }
-
-                break;
-            case "Items":
-                if (watchListItems.length == 0 || watchListItemsSortingCheck !== APIStatus.Success) {
-                    const getAllWatchListItemsResponse = await fetch(`/api/GetWatchListItems?AllData=true`, { credentials: 'include' });
-
-                    const getAllWatchListItemsResult = await getAllWatchListItemsResponse.json();
-
-                    if (getAllWatchListItemsResult[0] !== "OK") {
-                        setErrorMessage("Failed to get WatchList Items with the error " + getAllWatchListItemsResult[1]);
-                        setIsError(true);
+                    break;
+                case "VisibleSections":
+                    setDataSource(visibleSections);
+                    break;
+                case "WatchListSources":
+                    setDataSource(watchListSources);
+                    break;
+                case "WatchListTypes":
+                    setDataSource(watchListTypes);
+                    break;
+                case "Users":
+                    if (users.length > 0) {
+                        setDataSource(users);
                         return;
-                    } else {
-                        setDataSource(getAllWatchListItemsResult[1]);
                     }
-                } else {
-                    setDataSource(watchListItems);
-                }
-                break;
-            case "BugLogs":
-                if (bugLogs.length === 0) {
-                    await getBugLogs();
+
+                    const getUsersResponse = await fetch(`/api/GetUsers`, { credentials: 'include' });
+
+                    const getUsersResult = await getUsersResponse.json();
+
+                    if (getUsersResult[0] === "OK") {
+                        setDataSource(getUsersResult[1]);
+                        setUsers(getUsersResult[1]); // Save copy to avoid multiple calls to API
+                    } else {
+                        alert(getUsersResult[1])
+                        setErrorMessage(getUsersResult[1]);
+                        setIsError(true);
+                    }
                     break;
-                } else {
-                    setDataSource(bugLogs);
+                default:
+                    setDataSource([]);
                     break;
-                }
-            //case "Options": // TODO: Fix me
-            //setDataSource(userData.)
-            //break;
-            case "Logs":
-                const getLogsResponse = await fetch(`/api/GetLogs`, { credentials: 'include' });
-
-                const getLogsResult = await getLogsResponse.json();
-
-                if (getLogsResult[0] !== "OK") {
-                    setErrorMessage("Failed to get logs with the error " + getLogsResult[1]);
-                    setIsError(true);
-                    return;
-                } else {
-                    setDataSource(getLogsResult[1]);
-                }
-                break;
-            case "VisibleSections":
-                setDataSource(visibleSections);
-                break;
-            case "WatchListSources":
-                setDataSource(watchListSources);
-                break;
-            case "WatchListTypes":
-                setDataSource(watchListTypes);
-                break;
-            case "Users":
-                if (users.length > 0) {
-                    setDataSource(users);
-                    return;
-                }
-
-                const getUsersResponse = await fetch(`/api/GetUsers`, { credentials: 'include' });
-
-                const getUsersResult = await getUsersResponse.json();
-
-                if (getUsersResult[0] === "OK") {
-                    setDataSource(getUsersResult[1]);
-                    setUsers(getUsersResult[1]); // Save copy to avoid multiple calls to API
-                } else {
-                    alert(getUsersResult[1])
-                    setErrorMessage(getUsersResult[1]);
-                    setIsError(true);
-                }
-                break;
-            default:
-                setDataSource([]);
-                break;
+            }
+        } catch (e) {
+            alert(e.errorMessage);
         }
     }
 
     const getBugLogs = async () => {
-        const getBugLogsResponse = await fetch(`/api/GetBugLogs`, { credentials: 'include' });
+        try {
+            const getBugLogsResponse = await fetch(`/api/GetBugLogs`, { credentials: 'include' });
 
-        const getBugLogsResult = await getBugLogsResponse.json();
+            const getBugLogsResult = await getBugLogsResponse.json();
 
-        if (getBugLogsResult[0] === "OK") {
-            getBugLogsResult[1].forEach(async (element: IBugLog) => {
-                element.AddDate = String(element.AddDate).trim();
+            if (getBugLogsResult[0] === "OK") {
+                getBugLogsResult[1].forEach(async (element: IBugLog) => {
+                    element.AddDate = String(element.AddDate).trim();
 
-                if (element.CompletedDate !== null) {
-                    element.CompletedDate = String(element.CompletedDate).trim();
-                }
-            });
+                    if (element.CompletedDate !== null) {
+                        element.CompletedDate = String(element.CompletedDate).trim();
+                    }
+                });
 
-            setDataSource(getBugLogsResult[1]);
-        } else {
-            alert(`An error occurred while getting the bug logs`);
+                setDataSource(getBugLogsResult[1]);
+            } else {
+                alert(`An error occurred while getting the bug logs`);
+            }
+        } catch (e) {
+            alert(e.errorMessage);
         }
     }
 

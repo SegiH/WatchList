@@ -63,17 +63,23 @@ export default function Login() {
                return;
           }
 
-          const loginResponse = await fetch(`/api/Login`, { headers: { wl_username: username, wl_password: password }, method: 'PUT',credentials: 'include' });
+          try {
+               const loginResponse = await fetch(`/api/Login`, { headers: { wl_username: username, wl_password: password }, method: 'PUT', credentials: 'include' });
 
-          const loginResult = await loginResponse.json();
+               const loginResult = await loginResponse.json();
 
-          if (loginResult[0] === "OK") {
-               loginSuccessfullActions(loginResult[1]);
-          } else {
-               alert(loginResult[1]);
+               if (loginResult[0] === "OK") {
+                    loginSuccessfullActions(loginResult[1]);
+               } else {
+                    alert(loginResult[1]);
+                    setLoginSubmitted(false);
+                    setUserNameNeedsFocus(true);
+               }
+          } catch (e) {
+               alert(e.errorMessage);
                setLoginSubmitted(false);
                setUserNameNeedsFocus(true);
-          }          
+          }
      };
 
      const loginSuccessfullActions = useCallback(async (response: IUser) => {

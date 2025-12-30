@@ -269,15 +269,19 @@ const DataProvider = ({
                return;
           }
 
-          // Get artwork for missing poster
-          const missingPostersResponse = await fetch(`/api/UpdateMissingPosters?IDs=${watchListItemID}`, { credentials: 'include' });
+          try {
+               // Get artwork for missing poster
+               const missingPostersResponse = await fetch(`/api/UpdateMissingPosters?IDs=${watchListItemID}`, { credentials: 'include' });
 
-          const missingPostersResult = await missingPostersResponse.json();
+               const missingPostersResult = await missingPostersResponse.json();
 
-          if (missingPostersResult[0] === "OK") {
-               return missingPostersResult[1];
-          } else {
-               console.log(`No result when getting missing poster for ID ${watchListItemID}`)
+               if (missingPostersResult[0] === "OK") {
+                    return missingPostersResult[1];
+               } else {
+                    console.log(`No result when getting missing poster for ID ${watchListItemID}`)
+               }
+          } catch (e) {
+               console.log(`Error ${e.errorMessage} occurred when getting result when getting missing poster for ID ${watchListItemID}`)
           }
      }
 
@@ -307,24 +311,30 @@ const DataProvider = ({
           const watchListSortColumnParam = watchListSortColumn !== "" ? watchListSortColumn : "ID";
           const watchListSortDirectionParam = watchListSortDirection !== "" ? watchListSortDirection : "ASC";
 
-          const watchListResponse = await fetch(`/api/GetWatchList?StartIndex=${newSliceStart}&EndIndex=${newSliceEnd}&StillWatching=${stillWatching}&SortColumn=${watchListSortColumnParam}&SortDirection=${watchListSortDirectionParam}&ArchivedVisible=${archivedVisible}${sourceFilter !== null && sourceFilter !== -1 ? `&SourceFilter=${sourceFilter}` : ``}${typeFilter !== null && typeFilter !== -1 ? `&TypeFilter=${typeFilter}` : ``}${(searchTerm !== "" ? `&SearchTerm=${searchTerm}` : ``)}${Object.keys(newMetaDataFilters).length > 0 ? `&MetadataFilters=${JSON.stringify(newMetaDataFilters)}` : ""}`, { credentials: 'include' });
+          try {
+               const watchListResponse = await fetch(`/api/GetWatchList?StartIndex=${newSliceStart}&EndIndex=${newSliceEnd}&StillWatching=${stillWatching}&SortColumn=${watchListSortColumnParam}&SortDirection=${watchListSortDirectionParam}&ArchivedVisible=${archivedVisible}${sourceFilter !== null && sourceFilter !== -1 ? `&SourceFilter=${sourceFilter}` : ``}${typeFilter !== null && typeFilter !== -1 ? `&TypeFilter=${typeFilter}` : ``}${(searchTerm !== "" ? `&SearchTerm=${searchTerm}` : ``)}${Object.keys(newMetaDataFilters).length > 0 ? `&MetadataFilters=${JSON.stringify(newMetaDataFilters)}` : ""}`, { credentials: 'include' });
 
-          const watchListResult = await watchListResponse.json();
+               const watchListResult = await watchListResponse.json();
 
-          if (watchListResult[0] !== "OK") {
-               setErrorMessage("Failed to get WatchList with the error " + watchListResult[1])
+               if (watchListResult[0] !== "OK") {
+                    setErrorMessage("Failed to get WatchList with the error " + watchListResult[1])
+                    setIsError(true);
+                    return;
+               }
+
+               if (activeRoute === "WatchList" && watchListResult[1].length < pageSize) {
+                    setLastPage(true);
+               } else {
+                    setLastPage(false);
+               }
+
+               setFilteredWatchList(watchListResult[1]);
+               setWatchListSortingCheck(APIStatus.Success);
+          } catch (e) {
+               setErrorMessage("Failed to get WatchList with the error " + e.errorMessage)
                setIsError(true);
                return;
           }
-
-          if (activeRoute === "WatchList" && watchListResult[1].length < pageSize) {
-               setLastPage(true);
-          } else {
-               setLastPage(false);
-          }
-
-          setFilteredWatchList(watchListResult[1]);
-          setWatchListSortingCheck(APIStatus.Success);
      }
 
      const getWatchListItems = async () => {
@@ -340,68 +350,86 @@ const DataProvider = ({
                delete newMetaDataFilters["0"];
           }
 
-          const watchListItemsResponse = await fetch(`/api/GetWatchListItems?StartIndex=${newSliceStart}&EndIndex=${newSliceEnd}&SortColumn=${watchListSortColumn}&SortDirection=${watchListSortDirection}&ArchivedVisible=${archivedVisible}&ShowMissingArtwork=${showMissingArtwork}${typeFilter !== null && typeFilter !== -1 ? `&TypeFilter=${typeFilter}` : ``}${(searchTerm !== "" ? `&SearchTerm=${searchTerm}` : ``)}${Object.keys(newMetaDataFilters).length > 0 ? `&MetadataFilters=${JSON.stringify(newMetaDataFilters)}` : ""}`, { credentials: 'include' });
+          try {
+               const watchListItemsResponse = await fetch(`/api/GetWatchListItems?StartIndex=${newSliceStart}&EndIndex=${newSliceEnd}&SortColumn=${watchListSortColumn}&SortDirection=${watchListSortDirection}&ArchivedVisible=${archivedVisible}&ShowMissingArtwork=${showMissingArtwork}${typeFilter !== null && typeFilter !== -1 ? `&TypeFilter=${typeFilter}` : ``}${(searchTerm !== "" ? `&SearchTerm=${searchTerm}` : ``)}${Object.keys(newMetaDataFilters).length > 0 ? `&MetadataFilters=${JSON.stringify(newMetaDataFilters)}` : ""}`, { credentials: 'include' });
 
-          const watchListItemsResult = await watchListItemsResponse.json();
+               const watchListItemsResult = await watchListItemsResponse.json();
 
-          if (watchListItemsResult[0] !== "OK") {
-               setErrorMessage("Failed to get WatchList Items with the error " + watchListItemsResult[1]);
+               if (watchListItemsResult[0] !== "OK") {
+                    setErrorMessage("Failed to get WatchList Items with the error " + watchListItemsResult[1]);
+                    setIsError(true);
+                    return;
+               }
+
+               if (activeRoute === "Items" && watchListItemsResult[1].length < pageSize) {
+                    setLastPage(true);
+               } else {
+                    setLastPage(false);
+               }
+
+               setFilteredWatchListItems(watchListItemsResult[1]);
+
+               setWatchListItemsSortingCheck(APIStatus.Success);
+
+               return watchListItemsResult[1];
+          } catch (e) {
+               setErrorMessage("Failed to get WatchList Items with the error " + e.errorMessage)
                setIsError(true);
                return;
           }
-
-          if (activeRoute === "Items" && watchListItemsResult[1].length < pageSize) {
-               setLastPage(true);
-          } else {
-               setLastPage(false);
-          }
-
-          setFilteredWatchListItems(watchListItemsResult[1]);
-
-          setWatchListItemsSortingCheck(APIStatus.Success);
-
-          return watchListItemsResult[1];
      }
 
      const getWatchListSources = async () => {
-          const getWatchListSourcesResponse = await fetch(`/api/GetWatchListSources`, { credentials: 'include' });
+          try {
+               const getWatchListSourcesResponse = await fetch(`/api/GetWatchListSources`, { credentials: 'include' });
 
-          const getWatchListSourcesResult = await getWatchListSourcesResponse.json();
+               const getWatchListSourcesResult = await getWatchListSourcesResponse.json();
 
-          if (getWatchListSourcesResult[0] !== "OK") {
-               setErrorMessage("Failed to get WatchList Sources with the error " + getWatchListSourcesResult[1]);
+               if (getWatchListSourcesResult[0] !== "OK") {
+                    setErrorMessage("Failed to get WatchList Sources with the error " + getWatchListSourcesResult[1]);
+                    setIsError(true);
+                    return;
+               }
+
+               const wls = getWatchListSourcesResult[1];
+
+               wls.sort((a: IWatchListSource, b: IWatchListSource) => {
+                    const aName = a.WatchListSourceName;
+                    const bName = b.WatchListSourceName;
+
+                    return String(aName) > String(bName) ? 1 : -1;
+               });
+
+               setWatchListSources(wls);
+               setWatchListSourcesLoadingCheck(APIStatus.Success);
+          } catch (e) {
+               setErrorMessage("Failed to get WatchList Sources with the error " + e.errorMessage);
                setIsError(true);
                return;
           }
-
-          const wls = getWatchListSourcesResult[1];
-
-          wls.sort((a: IWatchListSource, b: IWatchListSource) => {
-               const aName = a.WatchListSourceName;
-               const bName = b.WatchListSourceName;
-
-               return String(aName) > String(bName) ? 1 : -1;
-          });
-
-          setWatchListSources(wls);
-          setWatchListSourcesLoadingCheck(APIStatus.Success);
      }
 
      const getWatchListTypes = async () => {
-          const getWatchListTypesResponse = await fetch(`/api/GetWatchListTypes`, { credentials: 'include' });
+          try {
+               const getWatchListTypesResponse = await fetch(`/api/GetWatchListTypes`, { credentials: 'include' });
 
-          const getWatchListTypesResult = await getWatchListTypesResponse.json();
+               const getWatchListTypesResult = await getWatchListTypesResponse.json();
 
-          if (getWatchListTypesResult[0] !== "OK") {
-               setErrorMessage("Failed to get WatchList Types with the error " + getWatchListTypesResult[1]);
+               if (getWatchListTypesResult[0] !== "OK") {
+                    setErrorMessage("Failed to get WatchList Types with the error " + getWatchListTypesResult[1]);
+                    setIsError(true);
+                    return;
+               }
+
+               setWatchListTypes(getWatchListTypesResult[1]);
+               setWatchListTypesLoadingCheck(APIStatus.Success);
+
+               setIsLoading(false);
+          } catch (e) {
+               setErrorMessage("Failed to get WatchList Types with the error " + e.errorMessage);
                setIsError(true);
                return;
           }
-
-          setWatchListTypes(getWatchListTypesResult[1]);
-          setWatchListTypesLoadingCheck(APIStatus.Success);
-
-          setIsLoading(false);
      }
 
      const isAdmin = () => {
@@ -427,22 +455,34 @@ const DataProvider = ({
      }
 
      const isIMDBSearchEnabled = async () => {
-          const isIMDBSearchEnabledResponse = await fetch(`/api/IsIMDBSearchEnabled`, { credentials: 'include' });
+          try {
+               const isIMDBSearchEnabledResponse = await fetch(`/api/IsIMDBSearchEnabled`, { credentials: 'include' });
 
-          const isIMDBSearchEnabledResult = await isIMDBSearchEnabledResponse.json();
+               const isIMDBSearchEnabledResult = await isIMDBSearchEnabledResponse.json();
 
-          if (isIMDBSearchEnabledResult[0] === "OK") {
-               setImdbSearchEnabled(true);
+               if (isIMDBSearchEnabledResult[0] === "OK") {
+                    setImdbSearchEnabled(true);
+               }
+          } catch (e) {
+               setErrorMessage("Failed to check if IMDB search is enabled with the error " + e.errorMessage);
+               setIsError(true);
+               return;
           }
      }
 
      const isRecommendationsEnabled = async () => {
-          const isRecommendationsEnabledResponse = await fetch(`/api/IsRecommendationsEnabled`, { credentials: 'include' });
+          try {
+               const isRecommendationsEnabledResponse = await fetch(`/api/IsRecommendationsEnabled`, { credentials: 'include' });
 
-          const isRecommendationsEnabledResult = await isRecommendationsEnabledResponse.json();
+               const isRecommendationsEnabledResult = await isRecommendationsEnabledResponse.json();
 
-          if (isRecommendationsEnabledResult[0] === "OK") {
-               setRecommendationsEnabled(true);
+               if (isRecommendationsEnabledResult[0] === "OK") {
+                    setRecommendationsEnabled(true);
+               }
+          } catch (e) {
+               setErrorMessage("Failed to check if recommendations enabled with the error " + e.errorMessage);
+               setIsError(true);
+               return;
           }
      }
 
@@ -484,13 +524,19 @@ const DataProvider = ({
      }
 
      const saveOptions = async (newOptions: IUserOption) => {
-          const saveOptionsResponse = await fetch(`/api/UpdateOptions?Options=${JSON.stringify(newOptions)}`, { credentials: 'include' });
+          try {
+               const saveOptionsResponse = await fetch(`/api/UpdateOptions?Options=${JSON.stringify(newOptions)}`, { credentials: 'include' });
 
-          const saveOptionsResult = await saveOptionsResponse.json();
+               const saveOptionsResult = await saveOptionsResponse.json();
 
-          if (saveOptionsResult[0] != "OK") {
-               setErrorMessage("Failed to update option with the error " + saveOptionsResult[1]);
+               if (saveOptionsResult[0] != "OK") {
+                    setErrorMessage("Failed to update options with the error " + saveOptionsResult[1]);
+                    setIsError(true);
+               }
+          } catch (e) {
+               setErrorMessage("Failed to update options with the error " + e.errorMessage);
                setIsError(true);
+               return;
           }
      }
 
@@ -553,14 +599,20 @@ const DataProvider = ({
                return;
           }
 
-          const signOutResponse = await fetch(`/api/SignOut`, { credentials: 'include' });
+          try {
+               const signOutResponse = await fetch(`/api/SignOut`, { credentials: 'include' });
 
-          const signOutResult = await signOutResponse.json();
+               const signOutResult = await signOutResponse.json();
 
-          if (signOutResult[0] === "OK") {
-               signOutActions();
-          } else {
-               alert(signOutResult[1]);
+               if (signOutResult[0] === "OK") {
+                    signOutActions();
+               } else {
+                    alert(signOutResult[1]);
+               }
+          } catch (e) {
+               setErrorMessage("Failed to sign out with the error " + e.errorMessage);
+               setIsError(true);
+               return;
           }
      };
 
@@ -603,16 +655,21 @@ const DataProvider = ({
      };
 
      const writeLog = useCallback(async (logMessage: string) => {
-          const writeLogResponse = await fetch(`/api/WriteLog?LogMessage=${encodeURIComponent(logMessage)}`, { method: 'PUT', credentials: 'include' });
+          try {
+               const writeLogResponse = await fetch(`/api/WriteLog?LogMessage=${encodeURIComponent(logMessage)}`, { method: 'PUT', credentials: 'include' });
 
-          const writeLogResult = await writeLogResponse.json();
+               const writeLogResult = await writeLogResponse.json();
 
-          if (writeLogResponse[0] !== "OK") {
-               writeLog(writeLogResult[1]);
-          } else {
-               setLoggedInCheck(APIStatus.Success);
+               if (writeLogResponse[0] !== "OK") {
+                    writeLog(writeLogResult[1]);
+               } else {
+                    setLoggedInCheck(APIStatus.Success);
 
-               router.push("/Login");
+                    router.push("/Login");
+               }
+          } catch (e) {
+               console.log("Failed to check if recommendations enabled with the error " + e.errorMessage);
+               return;
           }
      }, [router]);
 
@@ -624,63 +681,69 @@ const DataProvider = ({
 
           let params = '';
 
-          const isLoggedInResponse = await fetch(`/api/IsLoggedIn${params}`, { credentials: 'include' });
+          try {
+               const isLoggedInResponse = await fetch(`/api/IsLoggedIn${params}`, { credentials: 'include' });
 
-          const isLoggedInResult = await isLoggedInResponse.json();
+               const isLoggedInResult = await isLoggedInResponse.json();
 
-          if (isLoggedInResult[0] === "OK") {
-               pullToRefreshEnabled(true);
+               if (isLoggedInResult[0] === "OK") {
+                    pullToRefreshEnabled(true);
 
-               const newUserData = Object.assign({}, userData);
-               newUserData.UserID = isLoggedInResult[1].UserID;
-               newUserData.Username = isLoggedInResult[1].Username;
-               newUserData.RealName = isLoggedInResult[1].RealName;
-               newUserData.Admin = isLoggedInResult[1].Admin;
+                    const newUserData = Object.assign({}, userData);
+                    newUserData.UserID = isLoggedInResult[1].UserID;
+                    newUserData.Username = isLoggedInResult[1].Username;
+                    newUserData.RealName = isLoggedInResult[1].RealName;
+                    newUserData.Admin = isLoggedInResult[1].Admin;
 
-               if (newUserData.Admin) {
-                    routeList["Admin"].Enabled = true;
-               }
-
-               if (typeof isLoggedInResult[1].Options !== "undefined") {
-                    setOptions(isLoggedInResult[1].Options);
-               }
-
-               setLoggedInCheck(APIStatus.Success);
-               setUserData(newUserData);
-
-               if (!noReroute) {
-                    setActiveRoute("WatchList");
-                    setCurrentWatchListPage(1);
-
-                    router.push("/WatchList");
-               }
-          } else {
-               pullToRefreshEnabled(false);
-
-               if (isLoggedInResult[1] === false) {
-                    setLoggedInCheck(APIStatus.Unauthorized);
-                    setActiveRoute("Setup");
-                    router.push("/Setup");
-                    return;
-               } else if (isLoggedInResult[1] !== "") {
-                    if (typeof isLoggedInResult[2] !== "undefined" && isLoggedInResult[2] === true) {
-                         setErrorMessage(isLoggedInResult[1]);
-
-                         setActiveRoute("404");
-
-                         setIsError(true);
-
-                         return;
-                    } else {
-                         alert(isLoggedInResult[1]);
+                    if (newUserData.Admin) {
+                         routeList["Admin"].Enabled = true;
                     }
+
+                    if (typeof isLoggedInResult[1].Options !== "undefined") {
+                         setOptions(isLoggedInResult[1].Options);
+                    }
+
+                    setLoggedInCheck(APIStatus.Success);
+                    setUserData(newUserData);
+
+                    if (!noReroute) {
+                         setActiveRoute("WatchList");
+                         setCurrentWatchListPage(1);
+
+                         router.push("/WatchList");
+                    }
+               } else {
+                    pullToRefreshEnabled(false);
+
+                    if (isLoggedInResult[1] === false) {
+                         setLoggedInCheck(APIStatus.Unauthorized);
+                         setActiveRoute("Setup");
+                         router.push("/Setup");
+                         return;
+                    } else if (isLoggedInResult[1] !== "") {
+                         if (typeof isLoggedInResult[2] !== "undefined" && isLoggedInResult[2] === true) {
+                              setErrorMessage(isLoggedInResult[1]);
+
+                              setActiveRoute("404");
+
+                              setIsError(true);
+
+                              return;
+                         } else {
+                              alert(isLoggedInResult[1]);
+                         }
+                    }
+
+                    setActiveRoute("Login");
+
+                    setLoggedInCheck(APIStatus.Unauthorized);
+
+                    router.push("/Login");
                }
-
-               setActiveRoute("Login");
-
-               setLoggedInCheck(APIStatus.Unauthorized);
-
-               router.push("/Login");
+          } catch (e) {
+               setErrorMessage("Failed to check if user is logged in with the error " + e.errorMessage);
+               setIsError(true);
+               return;
           }
      }, [isError, routeList, router, setOptions, userData]);
 
@@ -903,24 +966,30 @@ const DataProvider = ({
 
           setClientCheck(APIStatus.Success);
 
-          /* Gets the build date from the JSON file generated by the scripts section in package.json */
-          fetch('/build-info.json')
-               .then((response) => response.json())
-               .then((data) => {
-                    const language = typeof navigator.languages != undefined ? navigator.languages[0] : "en-us";
-                    const options: Intl.DateTimeFormatOptions = {
-                         year: '2-digit',
-                         month: '2-digit',
-                         day: '2-digit',
-                         hour: '2-digit',
-                         minute: '2-digit',
-                         hour12: true
-                    };
+          try {
+               /* Gets the build date from the JSON file generated by the scripts section in package.json */
+               fetch('/build-info.json')
+                    .then((response) => response.json())
+                    .then((data) => {
+                         const language = typeof navigator.languages != undefined ? navigator.languages[0] : "en-us";
+                         const options: Intl.DateTimeFormatOptions = {
+                              year: '2-digit',
+                              month: '2-digit',
+                              day: '2-digit',
+                              hour: '2-digit',
+                              minute: '2-digit',
+                              hour12: true
+                         };
 
-                    const newBuildDate = new Date(data.buildDate).toLocaleDateString(language, options).replace(",", "");
+                         const newBuildDate = new Date(data.buildDate).toLocaleDateString(language, options).replace(",", "");
 
-                    setBuildDate(newBuildDate);
-               });
+                         setBuildDate(newBuildDate);
+                    });
+          } catch (e) {
+               setErrorMessage("Failed to get nuild date with the error " + e.errorMessage);
+               setIsError(true);
+               return;
+          }
 
           if (demoMode) {
                setImdbSearchEnabled(false);

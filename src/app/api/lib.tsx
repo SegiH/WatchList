@@ -496,97 +496,101 @@ export const getMissingArtwork = async (watchListItemID: number) => {
 
      logText = `${getCurrentDate()}: Checking ${thisWLI.WatchListItemID} ${thisWLI.WatchListItemName} with the URL ${thisWLI.IMDB_URL}`;
 
-     const mediaViewerPageResponse = await fetch(thisWLI.IMDB_URL, {
-          headers: {
-               'User-Agent': 'Next.js server',
-          },
-     });
+     try {
+          const mediaViewerPageResponse = await fetch(thisWLI.IMDB_URL, {
+               headers: {
+                    'User-Agent': 'Next.js server',
+               },
+          });
 
-     if (!mediaViewerPageResponse.ok) {
-          const newResult = {
-               ID: watchListItemID,
-               Name: "",
-               IMDB_URL: "",
-               Status: "ERROR",
-               Message: `Failed to fetch the HTML from ${thisWLI.IMDB_URL}`
-          };
+          if (!mediaViewerPageResponse.ok) {
+               const newResult = {
+                    ID: watchListItemID,
+                    Name: "",
+                    IMDB_URL: "",
+                    Status: "ERROR",
+                    Message: `Failed to fetch the HTML from ${thisWLI.IMDB_URL}`
+               };
 
-          logText += `\n${getCurrentDate()}: Failed to fetch the HTML for ${thisWLI.WatchListItemID} ${thisWLI.WatchListItemName} with the error ${mediaViewerPageResponse.statusText} and status: ${mediaViewerPageResponse.status}`
-          logMessage(logText, true);
+               logText += `\n${getCurrentDate()}: Failed to fetch the HTML for ${thisWLI.WatchListItemID} ${thisWLI.WatchListItemName} with the error ${mediaViewerPageResponse.statusText} and status: ${mediaViewerPageResponse.status}`
+               logMessage(logText, true);
 
-          return newResult;
-     }
+               return newResult;
+          }
 
-     const linkToMediaViewerHTML = await mediaViewerPageResponse.text();
+          const linkToMediaViewerHTML = await mediaViewerPageResponse.text();
 
-     if (typeof linkToMediaViewerHTML === "undefined" || linkToMediaViewerHTML === null || linkToMediaViewerHTML === "") {
-          const newResult = {
-               ID: watchListItemID,
-               Name: "",
-               IMDB_URL: "",
-               Status: "ERROR",
-               Message: `Failed to parse the HTML from ${thisWLI.IMDB_URL}`
-          };
+          if (typeof linkToMediaViewerHTML === "undefined" || linkToMediaViewerHTML === null || linkToMediaViewerHTML === "") {
+               const newResult = {
+                    ID: watchListItemID,
+                    Name: "",
+                    IMDB_URL: "",
+                    Status: "ERROR",
+                    Message: `Failed to parse the HTML from ${thisWLI.IMDB_URL}`
+               };
 
-          logText += `\n${getCurrentDate()}: Failed to parse the HTML for ${thisWLI.WatchListItemID} ${thisWLI.WatchListItemName} with the error ${mediaViewerPageResponse.statusText} and status: ${mediaViewerPageResponse.status}`
-          logMessage(logText, true);
+               logText += `\n${getCurrentDate()}: Failed to parse the HTML for ${thisWLI.WatchListItemID} ${thisWLI.WatchListItemName} with the error ${mediaViewerPageResponse.statusText} and status: ${mediaViewerPageResponse.status}`
+               logMessage(logText, true);
 
-          return newResult;
-     }
+               return newResult;
+          }
 
-     const imdbPage = cheerio.load(linkToMediaViewerHTML);
+          const imdbPage = cheerio.load(linkToMediaViewerHTML);
 
-     const imageUrlPage = imdbPage('.ipc-lockup-overlay.ipc-focusable');
+          const imageUrlPage = imdbPage('.ipc-lockup-overlay.ipc-focusable');
 
-     // Add domain to this src which is a relative path
-     const newImageURL = "https://imdb.com" + imageUrlPage.attr('href');
+          // Add domain to this src which is a relative path
+          const newImageURL = "https://imdb.com" + imageUrlPage.attr('href');
 
-     const imageResponse = await fetch(newImageURL, {
-          headers: {
-               'User-Agent': 'Next.js server',
-          },
-     });
+          const imageResponse = await fetch(newImageURL, {
+               headers: {
+                    'User-Agent': 'Next.js server',
+               },
+          });
 
-     if (!imageResponse.ok) {
-          const newResult = {
-               ID: thisWLI.WatchListItemID,
-               Name: thisWLI.WatchListItemName,
-               IMDB_URL: thisWLI.IMDB_URL,
-               ImageURL: newImageURL,
-               Status: "ERROR",
-               Message: imageResponse.statusText
-          };
+          if (!imageResponse.ok) {
+               const newResult = {
+                    ID: thisWLI.WatchListItemID,
+                    Name: thisWLI.WatchListItemName,
+                    IMDB_URL: thisWLI.IMDB_URL,
+                    ImageURL: newImageURL,
+                    Status: "ERROR",
+                    Message: imageResponse.statusText
+               };
 
-          logText += `\n${getCurrentDate()}: Error getting the 2nd page response for ${thisWLI.WatchListItemID} ${thisWLI.WatchListItemName} ${thisWLI.IMDB_URL}`;
-          logMessage(logText, true);
+               logText += `\n${getCurrentDate()}: Error getting the 2nd page response for ${thisWLI.WatchListItemID} ${thisWLI.WatchListItemName} ${thisWLI.IMDB_URL}`;
+               logMessage(logText, true);
 
-          return newResult;
-     }
+               return newResult;
+          }
 
-     const imgHtml = await imageResponse.text();
+          const imgHtml = await imageResponse.text();
 
-     const imagePage = cheerio.load(imgHtml);
+          const imagePage = cheerio.load(imgHtml);
 
-     const imgSources = imagePage('.sc-b66608db-2.cEjYQy img:not(.peek)')
-          .map((_, el) => imagePage(el).attr('src'))
-          .get();
+          const imgSources = imagePage('.sc-b66608db-2.cEjYQy img:not(.peek)')
+               .map((_, el) => imagePage(el).attr('src'))
+               .get();
 
-     if (imgSources.length === 0) {
-          return {
-               ID: watchListItemID,
-               Name: thisWLI.WatchListItemName,
-               IMDB_URL: thisWLI.IMDB_URL,
-               Status: "ERROR",
-               Message: "No results when matching css class .sc-b66608db-2.cEjYQy img:not(.peek)"
-          };
-     } else {
-          return {
-               ID: watchListItemID,
-               Name: thisWLI.WatchListItemName,
-               IMDB_URL: thisWLI.IMDB_URL,
-               IMDB_Poster: imgSources[0],
-               Status: "OK"
-          };
+          if (imgSources.length === 0) {
+               return {
+                    ID: watchListItemID,
+                    Name: thisWLI.WatchListItemName,
+                    IMDB_URL: thisWLI.IMDB_URL,
+                    Status: "ERROR",
+                    Message: "No results when matching css class .sc-b66608db-2.cEjYQy img:not(.peek)"
+               };
+          } else {
+               return {
+                    ID: watchListItemID,
+                    Name: thisWLI.WatchListItemName,
+                    IMDB_URL: thisWLI.IMDB_URL,
+                    IMDB_Poster: imgSources[0],
+                    Status: "OK"
+               };
+          }
+     } catch (e) {
+          alert(e.errorMessage);
      }
 }
 

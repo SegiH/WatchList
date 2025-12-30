@@ -59,53 +59,57 @@ export default function WatchListStats() {
      const [watchListTopRatedStats, setWatchListTopRatedStats] = useState<IWatchListTopRatedStat[]>([]);
 
      const getWatchListStats = async () => {
-          const getWatchListStatsResponse = await fetch(`/api/GetWatchListStats`, { credentials: 'include' });
+          try {
+               const getWatchListStatsResponse = await fetch(`/api/GetWatchListStats`, { credentials: 'include' });
 
-          const getWatchListStatsResult = await getWatchListStatsResponse.json();
+               const getWatchListStatsResult = await getWatchListStatsResponse.json();
 
-          if (getWatchListStatsResult[0] === "OK") {
-               setHasStats(true);
+               if (getWatchListStatsResult[0] === "OK") {
+                    setHasStats(true);
 
-               const newMovieTop10Stats: any = [];
+                    const newMovieTop10Stats: any = [];
 
-               getWatchListStatsResult[1]["WatchListTop10MoviesStats"].map((stat: any) => {
-                    newMovieTop10Stats.push(
-                         {
-                              WatchListItemName: stat.WatchListItemName,
-                              ItemCount: stat.count
-                         }
-                    )
-               });
+                    getWatchListStatsResult[1]["WatchListTop10MoviesStats"].map((stat: any) => {
+                         newMovieTop10Stats.push(
+                              {
+                                   WatchListItemName: stat.WatchListItemName,
+                                   ItemCount: stat.count
+                              }
+                         )
+                    });
 
-               setWatchListMovieTop10Stats(newMovieTop10Stats);
+                    setWatchListMovieTop10Stats(newMovieTop10Stats);
 
-               setWatchListMovieCountStats(getWatchListStatsResult[1]["WatchListMovieCountStats"]);
-               setWatchListSourceStats(getWatchListStatsResult[1]["WatchListSourceStats"]);
-               setWatchListSourceDtlStats(getWatchListStatsResult[1]["WatchListSourceDetailStats"]);
-               setWatchListTopRatedStats(getWatchListStatsResult[1]["WatchListTopRatedStats"]);
-               setWatchListTVTop10Stats(getWatchListStatsResult[1]["WatchListTVTop10Stats"]);
-               setWatchListTVSeasonsCountStats(getWatchListStatsResult[1]["WatchListTVSeasonsStats"]);
-               setWatchListTVTotalCountStats(getWatchListStatsResult[1]["WatchListTVTotalCountStats"]);
-               setWatchListMovieTop10Stats(getWatchListStatsResult[1]["WatchListTop10MoviesStats"]);
+                    setWatchListMovieCountStats(getWatchListStatsResult[1]["WatchListMovieCountStats"]);
+                    setWatchListSourceStats(getWatchListStatsResult[1]["WatchListSourceStats"]);
+                    setWatchListSourceDtlStats(getWatchListStatsResult[1]["WatchListSourceDetailStats"]);
+                    setWatchListTopRatedStats(getWatchListStatsResult[1]["WatchListTopRatedStats"]);
+                    setWatchListTVTop10Stats(getWatchListStatsResult[1]["WatchListTVTop10Stats"]);
+                    setWatchListTVSeasonsCountStats(getWatchListStatsResult[1]["WatchListTVSeasonsStats"]);
+                    setWatchListTVTotalCountStats(getWatchListStatsResult[1]["WatchListTVTotalCountStats"]);
+                    setWatchListMovieTop10Stats(getWatchListStatsResult[1]["WatchListTop10MoviesStats"]);
 
-               const uniqueTVSeasonsYears = getWatchListStatsResult[1]["WeeklyBreakdownTVSeasonsStats"].map((item: IWatchListWeeklyTVStat) => item.Year).filter((value: string, index: number, current_value: [string]) => { return current_value.indexOf(value) === index }).sort();
-               setWatchListWeeklyTVSeasonsYearsStats(uniqueTVSeasonsYears);
-               setWatchListWeeklyTVSeasonStats(getWatchListStatsResult[1]["WeeklyBreakdownTVSeasonsStats"]);
+                    const uniqueTVSeasonsYears = getWatchListStatsResult[1]["WeeklyBreakdownTVSeasonsStats"].map((item: IWatchListWeeklyTVStat) => item.Year).filter((value: string, index: number, current_value: [string]) => { return current_value.indexOf(value) === index }).sort();
+                    setWatchListWeeklyTVSeasonsYearsStats(uniqueTVSeasonsYears);
+                    setWatchListWeeklyTVSeasonStats(getWatchListStatsResult[1]["WeeklyBreakdownTVSeasonsStats"]);
 
-               const uniqueMovieYears = getWatchListStatsResult[1]["WeeklyBreakdownMovieStats"].map((item: IWatchListWeeklyMovieStat) => item.Year).filter((value: string, index: number, current_value: [string]) => { return current_value.indexOf(value) === index }).sort();
-               setWatchListWeeklyMovieYearsStats(uniqueMovieYears);
-               setWatchListWeeklyMovieStats(getWatchListStatsResult[1]["WeeklyBreakdownMovieStats"]);
+                    const uniqueMovieYears = getWatchListStatsResult[1]["WeeklyBreakdownMovieStats"].map((item: IWatchListWeeklyMovieStat) => item.Year).filter((value: string, index: number, current_value: [string]) => { return current_value.indexOf(value) === index }).sort();
+                    setWatchListWeeklyMovieYearsStats(uniqueMovieYears);
+                    setWatchListWeeklyMovieStats(getWatchListStatsResult[1]["WeeklyBreakdownMovieStats"]);
 
-               const uniqueTVTotalYears = getWatchListStatsResult[1]["WeeklyBreakdownTVTotalResultsStats"].map((item: IWatchListWeeklyTVStat) => item.Year).filter((value: string, index: number, current_value: [string]) => { return current_value.indexOf(value) === index }).sort();
-               setWatchListWeeklyTVTotalYearsStats(uniqueTVTotalYears);
-               setWatchListWeeklyTVTotalStats(getWatchListStatsResult[1]["WeeklyBreakdownTVTotalResultsStats"]);
+                    const uniqueTVTotalYears = getWatchListStatsResult[1]["WeeklyBreakdownTVTotalResultsStats"].map((item: IWatchListWeeklyTVStat) => item.Year).filter((value: string, index: number, current_value: [string]) => { return current_value.indexOf(value) === index }).sort();
+                    setWatchListWeeklyTVTotalYearsStats(uniqueTVTotalYears);
+                    setWatchListWeeklyTVTotalStats(getWatchListStatsResult[1]["WeeklyBreakdownTVTotalResultsStats"]);
 
-               setStatsLoadingCheck(APIStatus.Success);
-          } else {
-               setErrorMessage(`The following error occurred getting the WatchList Stats: ${getWatchListStatsResult[1]}`);
-               setIsError(true);
+                    setStatsLoadingCheck(APIStatus.Success);
+               } else {
+                    setErrorMessage(`The following error occurred getting the WatchList Stats: ${getWatchListStatsResult[1]}`);
+                    setIsError(true);
 
-               setStatsLoadingCheck(APIStatus.Error);
+                    setStatsLoadingCheck(APIStatus.Error);
+               }
+          } catch (e) {
+               alert(e.errorMessage);
           }
      }
 

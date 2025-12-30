@@ -54,14 +54,18 @@ const ManageWatchListSources = () => {
                return;
           }
 
-          const deleteSourceResponse = await fetch(`/api/DeleteWatchListSource?WatchListSourceID=${id}`, { method: 'PUT', credentials: 'include' });
+          try {
+               const deleteSourceResponse = await fetch(`/api/DeleteWatchListSource?WatchListSourceID=${id}`, { method: 'PUT', credentials: 'include' });
 
-          const deleteSourceResult = await deleteSourceResponse.json();
+               const deleteSourceResult = await deleteSourceResponse.json();
 
-          if (deleteSourceResult[0] === "ERROR") {
-               alert(deleteSourceResult[1])
-          } else {
-               setWatchListSourcesLoadingCheck(APIStatus.Idle);
+               if (deleteSourceResult[0] === "ERROR") {
+                    alert(deleteSourceResult[1])
+               } else {
+                    setWatchListSourcesLoadingCheck(APIStatus.Idle);
+               }
+          } catch (e) {
+               alert(e.errorMessage);
           }
      }
 
@@ -113,18 +117,22 @@ const ManageWatchListSources = () => {
 
           const endPoint = (isAdding == true ? `/api/AddWatchListSource` : `/api/UpdateWatchListSource`) + columns;
 
-          const sourceSourceResponse = await fetch(endPoint, { method: 'PUT', credentials: 'include' });
+          try {
+               const sourceSourceResponse = await fetch(endPoint, { method: 'PUT', credentials: 'include' });
 
-          const sourceSourceResult = await sourceSourceResponse.json();
+               const sourceSourceResult = await sourceSourceResponse.json();
 
-          if (sourceSourceResult !== null && sourceSourceResult[0] === "OK") {
-               alert("Saved");
+               if (sourceSourceResult !== null && sourceSourceResult[0] === "OK") {
+                    alert("Saved");
 
-               setWatchListSourcesLoadingCheck(APIStatus.Idle);
-               setIsAdding(false);
-               setIsEditing(false);
-          } else {
-               alert(sourceSourceResult[1]);
+                    setWatchListSourcesLoadingCheck(APIStatus.Idle);
+                    setIsAdding(false);
+                    setIsEditing(false);
+               } else {
+                    alert(sourceSourceResult[1]);
+               }
+          } catch (e) {
+               alert(e.errorMessage);
           }
      }
 

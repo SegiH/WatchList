@@ -66,18 +66,22 @@ export default function BugLogs() {
                return;
           }
 
-          const deleteBugLogResponse = await fetch(`/api/DeleteBugLog?BugLogId=${id}`, { method: 'PUT', credentials: 'include' });
+          try {
+               const deleteBugLogResponse = await fetch(`/api/DeleteBugLog?BugLogId=${id}`, { method: 'PUT', credentials: 'include' });
 
-          const deleteBugLogResult = await deleteBugLogResponse.json();
+               const deleteBugLogResult = await deleteBugLogResponse.json();
 
-          if (deleteBugLogResult[0] === "ERROR") {
-               alert(deleteBugLogResult[1])
-          } else {
-               alert("The bug log has been deleted");
+               if (deleteBugLogResult[0] === "ERROR") {
+                    alert(deleteBugLogResult[1])
+               } else {
+                    alert("The bug log has been deleted");
 
-               const newBugLogs = bugLogs?.filter((bugLog: IBugLog) => bugLog.BugLogId !== id);
+                    const newBugLogs = bugLogs?.filter((bugLog: IBugLog) => bugLog.BugLogId !== id);
 
-               setBugLogs(newBugLogs);
+                    setBugLogs(newBugLogs);
+               }
+          } catch (e) {
+               alert(e.errorMessage);
           }
      }
 
@@ -113,23 +117,27 @@ export default function BugLogs() {
      };
 
      const getBugLogs = async () => {
-          const getBugLogsResponse = await fetch(`/api/GetBugLogs`, { credentials: 'include' });
+          try {
+               const getBugLogsResponse = await fetch(`/api/GetBugLogs`, { credentials: 'include' });
 
-          const getBugLogsResult = await getBugLogsResponse.json();
+               const getBugLogsResult = await getBugLogsResponse.json();
 
-          if (getBugLogsResult[0] === "OK") {
-               getBugLogsResult[1].forEach(async (element: IBugLog) => {
-                    element.AddDate = String(element.AddDate).trim();
+               if (getBugLogsResult[0] === "OK") {
+                    getBugLogsResult[1].forEach(async (element: IBugLog) => {
+                         element.AddDate = String(element.AddDate).trim();
 
-                    if (element.CompletedDate !== null) {
-                         element.CompletedDate = String(element.CompletedDate).trim();
-                    }
-               });
+                         if (element.CompletedDate !== null) {
+                              element.CompletedDate = String(element.CompletedDate).trim();
+                         }
+                    });
 
-               setBugLogs(getBugLogsResult[1]);
-               setBugLogsLoadingCheck(APIStatus.Success);
-          } else {
-               alert(`An error occurred while getting the bug logs`);
+                    setBugLogs(getBugLogsResult[1]);
+                    setBugLogsLoadingCheck(APIStatus.Success);
+               } else {
+                    alert(`An error occurred while getting the bug logs`);
+               }
+          } catch (e) {
+               alert(e.errorMessage);
           }
      }
 
@@ -168,19 +176,23 @@ export default function BugLogs() {
 
           const endPoint = (currentBugLog.isNew == true ? `/api/AddBugLog` : `/api/UpdateBugLog`) + columns;
 
-          const saveBugLogResponse = await fetch(endPoint, { method: 'PUT', credentials: 'include' });
+          try {
+               const saveBugLogResponse = await fetch(endPoint, { method: 'PUT', credentials: 'include' });
 
-          const saveBugLogResult = await saveBugLogResponse.json();
+               const saveBugLogResult = await saveBugLogResponse.json();
 
-          if (saveBugLogResult !== null && saveBugLogResult[0] === "OK") {
-               alert("Saved");
+               if (saveBugLogResult !== null && saveBugLogResult[0] === "OK") {
+                    alert("Saved");
 
-               setBugLogsLoadingCheck(APIStatus.Idle);
+                    setBugLogsLoadingCheck(APIStatus.Idle);
 
-               setIsAdding(false);
-               setIsEditing(false);
-          } else {
-               alert(saveBugLogResult[1]);
+                    setIsAdding(false);
+                    setIsEditing(false);
+               } else {
+                    alert(saveBugLogResult[1]);
+               }
+          } catch (e) {
+               alert(e.errorMessage);
           }
      }
 

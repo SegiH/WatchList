@@ -39,14 +39,18 @@ const ManageWatchListTypes = () => {
                return;
           }
 
-          const deleteTypeResponse = await fetch(`/api/DeleteWatchListType?WatchListTypeID=${id}`, { method: 'PUT', credentials: 'include' });
+          try {
+               const deleteTypeResponse = await fetch(`/api/DeleteWatchListType?WatchListTypeID=${id}`, { method: 'PUT', credentials: 'include' });
 
-          const deleteTypeResult = await deleteTypeResponse.json();
+               const deleteTypeResult = await deleteTypeResponse.json();
 
-          if (deleteTypeResult[0] === "ERROR") {
-               alert(deleteTypeResult[1])
-          } else {
-               setWatchListTypesLoadingCheck(APIStatus.Idle);
+               if (deleteTypeResult[0] === "ERROR") {
+                    alert(deleteTypeResult[1])
+               } else {
+                    setWatchListTypesLoadingCheck(APIStatus.Idle);
+               }
+          } catch (e) {
+               alert(e.errorMessage);
           }
      }
 
@@ -94,18 +98,22 @@ const ManageWatchListTypes = () => {
 
           const endPoint = (isAdding == true ? `/api/AddWatchListType` : `/api/UpdateWatchListType`) + columns;
 
-          const saveBugLogResponse = await fetch(endPoint, { method: 'PUT', credentials: 'include' });
+          try {
+               const saveBugLogResponse = await fetch(endPoint, { method: 'PUT', credentials: 'include' });
 
-          const saveBugLogResult = await saveBugLogResponse.json();
+               const saveBugLogResult = await saveBugLogResponse.json();
 
-          if (saveBugLogResult !== null && saveBugLogResult[0] === "OK") {
-               alert("Saved");
+               if (saveBugLogResult !== null && saveBugLogResult[0] === "OK") {
+                    alert("Saved");
 
-               setWatchListTypesLoadingCheck(APIStatus.Idle);
-               setIsAdding(false);
-               setIsEditing(false);
-          } else {
-               alert(saveBugLogResult[1]);
+                    setWatchListTypesLoadingCheck(APIStatus.Idle);
+                    setIsAdding(false);
+                    setIsEditing(false);
+               } else {
+                    alert(saveBugLogResult[1]);
+               }
+          } catch (e) {
+               alert(e.errorMessage);
           }
      }
 

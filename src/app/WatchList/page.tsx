@@ -18,7 +18,7 @@ export default function WatchList() {
      } = useContext(WatchListContext) as WatchListContextType;
 
      const [imdbCardvisible, setImdbCardvisible] = useState(false);
-     const [imdbJSON, setImdbJSON] = useState([]);
+     const [imdbJSON, setImdbJSON] = useState<any | null>(null);
 
      const closeIMDBCard = () => {
           setImdbJSON([]);
@@ -47,9 +47,9 @@ export default function WatchList() {
 
                          <span className="topMarginContent">
                               <ul className={`show-list${!darkMode ? " lightMode" : " darkMode"} ${hideTabs ? "noTabs" : ""}`}>
-                                   {filteredWatchList?.map((currentWatchList: IWatchList, index: number) => {
+                                   {filteredWatchList?.map((currentWatchList: IWatchList) => {
                                         return (
-                                             <WatchListCard key={index} currentWatchList={currentWatchList} setImdbJSON={setImdbJSON} />
+                                             <WatchListCard key={currentWatchList.WatchListID} currentWatchList={currentWatchList} setImdbJSON={setImdbJSON} />
                                         );
                                    })}
                               </ul>

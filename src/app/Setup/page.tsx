@@ -68,18 +68,22 @@ export default function Setup() {
 
           setSubmitClicked(true);
 
-          // First user account created in this WatchList instance is automatically made an admin
-          const setupInitialUserAccountResponse = await fetch(`/api/Setup?wl_username=${encodeURIComponent(username)}&wl_realname=${encodeURIComponent(realname)}&wl_password=${encodeURIComponent(password)}&wl_admin=true`, { method: 'PUT', credentials: 'include' });
+          try {
+               // First user account created in this WatchList instance is automatically made an admin
+               const setupInitialUserAccountResponse = await fetch(`/api/Setup?wl_username=${encodeURIComponent(username)}&wl_realname=${encodeURIComponent(realname)}&wl_password=${encodeURIComponent(password)}&wl_admin=true`, { method: 'PUT', credentials: 'include' });
 
-          const setupInitialUserAccountResult = await setupInitialUserAccountResponse.json();
+               const setupInitialUserAccountResult = await setupInitialUserAccountResponse.json();
 
-          if (setupInitialUserAccountResult[0] === "OK") {
-               alert("User account was successfully created");
+               if (setupInitialUserAccountResult[0] === "OK") {
+                    alert("User account was successfully created");
 
-               router.push("/Login");
-          } else {
-               alert("User account was NOT created. " + setupInitialUserAccountResult[1]);
-               setSubmitClicked(false);
+                    router.push("/Login");
+               } else {
+                    alert("User account was NOT created. " + setupInitialUserAccountResult[1]);
+                    setSubmitClicked(false);
+               }
+          } catch (e) {
+               alert(e.errorMessage);
           }
      };
 

@@ -1,5 +1,5 @@
 import { NextRequest } from 'next/server';
-import { fetchData, getRapidAPIKey, isLoggedIn } from '../lib';
+import { fetchRapidAPIData, isLoggedIn } from '../lib';
 
 export async function GET(request: NextRequest) {
      if (!isLoggedIn(request)) {
@@ -16,33 +16,22 @@ export async function GET(request: NextRequest) {
           return Response.json(["ERROR", "Search term not provided"]);
      }
 
-     const rapidapi_key = await getRapidAPIKey();
-
-     if (rapidapi_key === null) {
-          return Response.json(["ERROR", "API key is not set"]);
-     }
-
      const results: [{}] = [{}];
 
      try {
           for (let i = 0; i < parseInt(searchCount !== null ? searchCount : "10", 10); i++) {
-               let options = {
-                    method: "GET",
-                    url: "https://imdb107.p.rapidapi.com/",
-                    params: { s: searchTerm, page: i + 1, r: "json" },
-                    headers: {
-                         "x-rapidapi-host": "movie-database-alternative.p.rapidapi.com",
-                         "x-rapidapi-key": rapidapi_key,
-                         useQueryString: true,
-                    },
-               };
+               try {
+                    const url = `https://movie-database-alternative.p.rapidapi.com/?s=${searchTerm}&r=json&page=${i + 1}`;
 
-               const result = await fetchData(options);
+                    const result = await fetchRapidAPIData(url);
 
-               if (typeof result.Search !== "undefined") {
-                    try {
-                         results.push(...result.Search);
-                    } catch (e) { }
+                    if (typeof result.Search !== "undefined") {
+                         try {
+                              results.push(...result.Search);
+                         } catch (e) { }
+                    }
+               } catch (e) {
+                    console.log(e)
                }
           }
 

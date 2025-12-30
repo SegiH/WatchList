@@ -139,9 +139,9 @@ const SharedLayout = () => {
                               {loggedInCheck === APIStatus.Success && watchListSourcesLoadingCheck === APIStatus.Success && watchListTypesLoadingCheck === APIStatus.Success && !isLoading &&
                                    <span>
                                         <span className={`menuBar ${!darkMode ? "lightMode" : "darkMode"} ${demoModeNotificationVisible === true ? "demoNotificationVisible" : ""}`}>
-                                             {/*{demoModeNotificationVisible &&
+                                             {demoModeNotificationVisible &&
                                                   <span className={`leftMargin menuBarActiveRoute${!darkMode ? " lightMode" : " darkMode"}`}>Demo</span>
-                                             }*/}
+                                             }
 
                                              {activeRoute === "Stats" &&
                                                   <span className={`leftMargin menuBarActiveRoute${!darkMode ? " lightMode" : " darkMode"}`}>Stats</span>
@@ -149,31 +149,34 @@ const SharedLayout = () => {
 
                                              {(activeRoute === "WatchList" || activeRoute === "Items") &&
                                                   <>
-                                                       {searchInputVisible && imdbSearchEnabled &&
-                                                            <Button variant="contained" className={`imdbButton ${searchInputVisible ? "visible" : ""}`} style={{ marginLeft: "30px" }} onClick={() => setSearchModalVisible(true)}>IMDB</Button>
+                                                       {!searchInputVisible &&
+                                                            <>
+                                                                 <span className={`bottomMargin20 clickable customTopMargin leftMargin40 ${!darkMode ? " lightMode" : " darkMode"}`} onClick={() => openDetailClickHandler(-1)}>
+                                                                      {AddIconComponent}
+                                                                 </span>
+                                                            </>
                                                        }
-
-                                                       {!isError && (
-                                                            <span className={`bottomMargin20 clickable customTopMargin leftMargin40 ${!darkMode ? " lightMode" : " darkMode"}`} onClick={() => openDetailClickHandler(-1)}>
-                                                                 {AddIconComponent}
-                                                            </span>
-                                                       )}
 
                                                        <span className={`clickable leftMargin50${!darkMode ? " lightMode" : " darkMode"}`} onClick={toggleSearch}>
                                                             {SearchIconComponent}
                                                        </span>
 
-                                                       <span className={`clickable leftMargin${!darkMode ? " lightMode" : " darkMode"} searchInputStyle ${searchInputVisible ? "visible" : ""}`}>
-                                                            <input className={`inputStyle lightMode`} ref={inputRef} value={newSearchTerm} onKeyUp={handleKeyUp} onChange={(event) => setNewSearchTerm(event.target.value)} />
-                                                       </span>
+                                                       {imdbSearchEnabled && searchInputVisible &&
+                                                            <>
+                                                                 <span className={`clickable leftMargin${!darkMode ? " lightMode" : " darkMode"} searchInputStyle ${searchInputVisible ? "visible" : ""}`}>
+                                                                      <input className={`inputStyle lightMode`} ref={inputRef} value={newSearchTerm} onKeyUp={handleKeyUp} onChange={(event) => setNewSearchTerm(event.target.value)} />
+                                                                 </span>
 
-                                                       {imdbSearchEnabled &&
-                                                            <Button variant="contained" className={`searchButton ${searchInputVisible ? "visible" : ""}`} style={{ marginLeft: "30px" }} onClick={() => searchTermGoClickHandler()}>Go</Button>
+                                                                 <Button variant="contained" className={`searchButton ${searchInputVisible ? "visible" : ""}`} style={{ marginLeft: "30px" }} onClick={() => searchTermGoClickHandler()}>Go</Button>
+
+                                                                 <Button variant="contained" color="secondary" className={`imdbButton ${searchInputVisible ? "visible" : ""}`} style={{ marginLeft: "30px" }} onClick={() => setSearchModalVisible(true)}>IMDB</Button>
+                                                            </>
                                                        }
+
                                                   </>
                                              }
 
-                                             {hideTabs &&
+                                             {hideTabs&& !searchInputVisible &&
                                                   <>
                                                        <span className="leftMargin">
                                                             <span className={`stillWatching${!darkMode ? " lightMode" : " darkMode"}`}>Tab</span>
@@ -204,7 +207,7 @@ const SharedLayout = () => {
                                                   </>
                                              }
 
-                                             {activeRoute === "WatchList" &&
+                                             {!searchInputVisible && activeRoute === "WatchList" &&
                                                   <>
                                                        <span className="firstItem leftMargin">
                                                             <span className={`stillWatching${!darkMode ? " lightMode" : " darkMode"}`}>Still Watching</span>
@@ -216,11 +219,7 @@ const SharedLayout = () => {
                                                                  <span className="slider round"></span>
                                                             </label>
                                                        </span>
-                                                  </>
-                                             }
 
-                                             {activeRoute === "WatchList" &&
-                                                  <>
                                                        <span className={`firstItem leftMargin${!darkMode ? " lightMode" : " darkMode"}`}>
                                                             <span>Source</span>
                                                        </span>
@@ -241,7 +240,7 @@ const SharedLayout = () => {
                                                   </>
                                              }
 
-                                             {(activeRoute === "WatchList" || activeRoute === "Items") &&
+                                             {!searchInputVisible && (activeRoute === "WatchList" || activeRoute === "Items") &&
                                                   <>
                                                        <span className={`firstItem leftMargin ${!darkMode ? " lightMode" : " darkMode"}`}>
                                                             <span>Type</span>

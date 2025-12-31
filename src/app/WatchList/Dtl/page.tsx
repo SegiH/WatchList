@@ -28,7 +28,7 @@ interface AutoCompleteWatchListItem {
 
 export default function WatchListDtl() {
      const {
-          BrokenImageIconComponent, CancelIconComponent, EditIconComponent, SaveIconComponent, darkMode, demoMode, getWatchList, imdbSearchEnabled, isAdding, isEditing, isLoading, pullToRefreshEnabled, recommendationsEnabled, setErrorMessage, setIsAdding, setIsEditing, setIsError, setStillWatching, showSearch, stillWatching, watchListSortDirection, watchListSources, writeLog
+          BrokenImageIconComponent, CancelIconComponent, darkMode, demoMode, EditIconComponent, getWatchList, imdbSearchEnabled, isAdding, isEditing, isLoading, pullToRefreshEnabled, recommendationsEnabled, SaveIconComponent, setErrorMessage, setIsAdding, setIsEditing, setIsError, setStillWatching, showSearch, stillWatching, watchListSortDirection, watchListSources, writeLog
      } = useContext(WatchListDtlContext) as WatchListDtlContextType
 
      const currentDate = new Date().toLocaleDateString();
@@ -270,24 +270,22 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
                     return 0;
                });
 
-               const seenNames: IAutoCompleteOption[] = [];
+               const uniqueNames: IAutoCompleteOption[] = [];
                const duplicateMessages: string[] = [];
 
                namesSorted.forEach((item, index) => {
-                    if (seenNames.filter((seenName: IAutoCompleteOption) => String(seenName.name) === String(item.name)).length > 0) {
+                    if (uniqueNames.filter((seenName: IAutoCompleteOption) => String(seenName.name) === String(item.name)).length > 0) {
                          duplicateMessages.push(`Duplicate found for "${item.name}"`);
-                    } else {
-                         const newItem: IAutoCompleteOption = { name: item.name }
-                         seenNames.push(newItem);
-                         //seenNames.set(item.name, index); // Overwrite to keep the last occurrence
                     }
+
+                    uniqueNames.push(item);
                });
 
                if (duplicateMessages.length > 0) {
-                    writeLog("something funky happened");
+                    writeLog(duplicateMessages.join("\n"));
                }
 
-               setFormattedNames(seenNames);
+               setFormattedNames(uniqueNames);
 
                const namesWithIdItems = getAllWatchListItemsResult[1].map((watchListItem: IWatchListItem) => {
                     let itemName = watchListItem.WatchListItemName

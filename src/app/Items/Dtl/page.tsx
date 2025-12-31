@@ -12,7 +12,7 @@ import IMDBCard from "@/app/components/IMDBCard";
 
 export default function ItemsDtl() {
      const {
-          BrokenImageIconComponent, CancelIconComponent, EditIconComponent, SaveIconComponent, darkMode, demoMode, getMissingPoster, getWatchListItems, isAdding, isEditing, isEnabled, isLoading, pullToRefreshEnabled, setErrorMessage, setIsAdding, setIsEditing, setIsError, watchListTypes, writeLog
+          BrokenImageIconComponent, CancelIconComponent, darkMode, demoMode, EditIconComponent, getMissingPoster, getWatchListItems, isAdding, isEditing, isEnabled, isLoading, pullToRefreshEnabled, SaveIconComponent, setErrorMessage, setIsAdding, setIsEditing, setIsError, watchListTypes, writeLog
      } = useContext(ItemsDtlContext) as ItemsDtlContextType
 
      const [addWatchListItemDtl, setAddWatchListItemDtl] = useState<IWatchListItem | null>();

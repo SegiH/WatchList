@@ -9,15 +9,15 @@ export interface ItemsDtlContextType {
      getMissingPoster: (watchListItemID: number) => void;
      getWatchListItems: () => void;
      isAdding: boolean;
-     isEnabled: (value: string) => boolean;
      isEditing: boolean;
+     isEnabled: (value: string) => boolean;
      isLoading: boolean;
      pullToRefreshEnabled: (value: boolean) => void;
      SaveIconComponent: React.ReactNode;
+     setErrorMessage: (value: string) => void;
      setIsAdding: (value: boolean) => void;
      setIsEditing: (value: boolean) => void;
      setIsError: (value: boolean) => void;
-     setErrorMessage: (value: string) => void;
      watchListTypes: IWatchListType[];
      writeLog: (writeLogText: string) => void;
 }

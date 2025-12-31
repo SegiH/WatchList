@@ -50,7 +50,7 @@ export default function Login() {
           if (username === demoUsername && password === demoPassword) {
                setDemoMode(true);
 
-               const newUserData: IUser = require("../demo/index").demoUsers[0];
+               const newUserData = require("../demo/index").demoUsers[0];
 
                setActiveRoute("WatchList");
                setUserData(newUserData);
@@ -83,7 +83,7 @@ export default function Login() {
      };
 
      const loginSuccessfullActions = useCallback(async (response: IUser) => {
-          const newUserData: IUserData = { UserID: 0, Username: "", Admin: false };
+          const newUserData: IUserData = { UserID: 0, Username: "", Admin: 0 };
 
           try {
                if (typeof response.UserID !== "undefined") {

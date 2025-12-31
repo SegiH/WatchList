@@ -33,8 +33,8 @@ const ManageUserAccounts = () => {
                Username: "",
                Realname: "",
                Password: "",
-               Admin: false,
-               Enabled: true,
+               Admin: 0,
+               Enabled: 0,
                Options: []
           });
 
@@ -142,8 +142,8 @@ const ManageUserAccounts = () => {
 
           columns += (columns === "" ? "?" : "&") + `wl_username=${encodeURIComponent(currentUser.Username)}`;
           columns += (columns === "" ? "?" : "&") + `wl_realname=${encodeURIComponent(currentUser.Realname)}`;
-          columns += (columns === "" ? "?" : "&") + `wl_admin=${currentUser.Admin === true ? true : false}`;
-          columns += (columns === "" ? "?" : "&") + `wl_enabled=${currentUser.Enabled === true ? true : false}`;
+          columns += (columns === "" ? "?" : "&") + `wl_admin=${currentUser.Admin === 1 ? "1" : "0" }`;
+          columns += (columns === "" ? "?" : "&") + `wl_enabled=${currentUser.Enabled === 1 ? "1" : "0" }`;
 
           const endPoint = (isAdding ? `/api/AddUser` : `/api/UpdateUser`) + columns;
 
@@ -170,8 +170,8 @@ const ManageUserAccounts = () => {
      const userChangeHandler = (fieldName: string, fieldValue: string) => {
           const newUser: IUser = {...(isAdding ? addingUser : editingUser)};
 
-          if (fieldName === "Admin") {
-               newUser[fieldName] = fieldValue === "true" ? true : false;
+          if (fieldName === "Admin" || fieldName === "Enabled") {
+               newUser[fieldName] = fieldValue === "true" ? 1 : 0;
           } else {
                newUser[fieldName] = fieldValue;
           }
@@ -277,7 +277,7 @@ const ManageUserAccounts = () => {
                                         </td>
 
                                         <td>
-                                             <input type="checkbox" checked={addingUser.Admin === true ? true : false} onChange={(event: React.ChangeEvent<HTMLInputElement>) => userChangeHandler("Admin", event.target.checked.toString())} />
+                                             <input type="checkbox" checked={addingUser.Admin === 1 ? true : false} onChange={(event: React.ChangeEvent<HTMLInputElement>) => userChangeHandler("Admin", event.target.checked.toString())} />
                                         </td>
 
                                         <td>
@@ -352,21 +352,21 @@ const ManageUserAccounts = () => {
 
                                                        <td>
                                                             {!isEditing &&
-                                                                 <span>{user.Admin === true ? "Y" : "N"}</span>
+                                                                 <span>{user.Admin === 1 ? "Y" : "N"}</span>
                                                             }
 
                                                             {isEditing &&
-                                                                 <input type="checkbox" checked={editingUser.Admin === true ? true : false} onChange={(event: React.ChangeEvent<HTMLInputElement>) => userChangeHandler("Admin", event.target.checked.toString())} />
+                                                                 <input type="checkbox" checked={editingUser.Admin === 1 ? true : false} onChange={(event: React.ChangeEvent<HTMLInputElement>) => userChangeHandler("Admin", event.target.checked.toString())} />
                                                             }
                                                        </td>
 
                                                        <td>
                                                             {!isEditing &&
-                                                                 <span>{user.Enabled === true ? "Y" : "N"}</span>
+                                                                 <span>{user.Enabled === 1 ? "Y" : "N"}</span>
                                                             }
 
                                                             {isEditing &&
-                                                                 <input type="checkbox" checked={editingUser.Enabled === true ? true : false} onChange={(event: React.ChangeEvent<HTMLInputElement>) => userChangeHandler("Enabled", event.target.checked.toString())} />
+                                                                 <input type="checkbox" checked={editingUser.Enabled === 1 ? true : false} onChange={(event: React.ChangeEvent<HTMLInputElement>) => userChangeHandler("Enabled", event.target.checked.toString())} />
                                                             }
                                                        </td>
                                                   </>

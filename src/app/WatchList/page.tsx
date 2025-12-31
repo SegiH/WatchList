@@ -14,7 +14,7 @@ import IMDBCard from "../components/IMDBCard";
 
 export default function WatchList() {
      const {
-          darkMode, filteredWatchList, hideTabs, isLoading, setActiveRoute, setIsAdding, setIsEditing, watchListSortingCheck, writeLog
+          darkMode, filteredWatchList, hideTabs, isLoading, setActiveRoute, setIsAdding, setIsEditing, watchListSortingCheck
      } = useContext(WatchListContext) as WatchListContextType;
 
      const [imdbCardvisible, setImdbCardvisible] = useState(false);
@@ -49,7 +49,7 @@ export default function WatchList() {
                               <ul className={`show-list${!darkMode ? " lightMode" : " darkMode"} ${hideTabs ? "noTabs" : ""}`}>
                                    {filteredWatchList?.map((currentWatchList: IWatchList) => {
                                         return (
-                                             <WatchListCard key={currentWatchList.WatchListID} currentWatchList={currentWatchList} setImdbJSON={setImdbJSON} writeLog={writeLog}/>
+                                             <WatchListCard key={currentWatchList.WatchListID} currentWatchList={currentWatchList} setImdbJSON={setImdbJSON}/>
                                         );
                                    })}
                               </ul>

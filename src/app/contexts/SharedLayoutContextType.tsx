@@ -41,8 +41,8 @@ export interface SharedLayoutContextType {
      setWatchListSortDirection: (value: string) => void;
      showSettings: () => void;
      sourceFilter: number;
-     typeFilter: number;
      stillWatching: boolean;
+     typeFilter: number;
      watchListItemsSortColumns: IWatchListSortColumn;
      watchListSortColumn: string;
      watchListSortColumns: IWatchListSortColumn;

@@ -4,7 +4,7 @@ import { APIStatus, SettingsContext } from "../context";
 import IUserOption from "../interfaces/IUserOption";
 import Select from 'react-select';
 import { SettingsContextType } from '../contexts/SettingsContextType';
-// etStillWatching, setTypeFilter, setVisibleSections, setWatchListSortColumn, setWatchListSortDirection, settingsVisible, showSettings, signOut, sourceFilter, stillWatching, typeFilter, visibleSections, visibleSectionChoices, watchListSortColumns, watchListSortColumn, watchListSortDirection, watchListSources, watchListSourcesLoadingCheck, watchListTypes, watchListTypesLoadingCheck 
+
 const Settings = () => {
      const {
           activeRoute, archivedVisible, autoAdd, buildDate, darkMode, defaultRoute, demoMode, hideTabs, loggedInCheck, LogOutIconComponent, pullToRefreshEnabled, saveOptions, setActiveRoute, setOptions, setSettingsVisible, setShowMissingArtwork, setStillWatching, setVisibleSections, showMissingArtwork, signOut, visibleSectionChoices, visibleSections, watchListSortColumn

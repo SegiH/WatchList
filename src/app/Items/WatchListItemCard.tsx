@@ -1,9 +1,8 @@
 import IWatchListItem from "../interfaces/IWatchListItem";
 import Image from "next/image";
 import { ItemsCardContext } from "../context";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { ItemsCardContextType } from "../contexts/ItemsCardContextType";
-import IMDBCard from "../components/IMDBCard";
 
 type WatchListCardProps = {
     currentWatchListItem: IWatchListItem;
@@ -12,7 +11,7 @@ type WatchListCardProps = {
 
 export default function WatchListItemCard({ currentWatchListItem, setImdbJSON }: WatchListCardProps) {
     const {
-        BrokenImageIconComponent, darkMode, filteredWatchListItems, getMissingPoster, openDetailClickHandler, setFilteredWatchListItems
+        BrokenImageIconComponent, darkMode, filteredWatchListItems, getMissingPoster, getWatchList, openDetailClickHandler, setFilteredWatchListItems, watchList, watchListSortingCheck
     } = useContext(ItemsCardContext) as ItemsCardContextType;
 
     const IMDB_JSON = currentWatchListItem?.IMDB_JSON !== null && typeof currentWatchListItem?.IMDB_JSON !== "undefined" && currentWatchListItem?.IMDB_JSON !== "" ? JSON.parse(currentWatchListItem?.IMDB_JSON) : null;
@@ -22,7 +21,7 @@ export default function WatchListItemCard({ currentWatchListItem, setImdbJSON }:
     }
 
     const showDefaultSrc = async (watchListItemID: number) => {
-        const newFilteredWatchListItems: IWatchListItem[] = filteredWatchListItems.map(item => ({ ...item}));
+        const newFilteredWatchListItems: IWatchListItem[] = filteredWatchListItems.map(item => ({ ...item }));
 
         const newWatchListItemsResult: IWatchListItem[] = newFilteredWatchListItems?.filter((currentWatchListItems: IWatchListItem) => {
             return String(currentWatchListItems.WatchListItemID) === String(watchListItemID);
@@ -46,6 +45,13 @@ export default function WatchListItemCard({ currentWatchListItem, setImdbJSON }:
 
         setFilteredWatchListItems(newFilteredWatchListItems);
     };
+
+    // Load WatchList if it hasn't been retrieved yet, otherwise, it will show watched 0 times
+    useEffect(() => {
+        if (watchListSortingCheck !== "Success") {
+            getWatchList();
+        }
+    }, [watchListSortingCheck]);
 
     return (
         <>
@@ -85,6 +91,8 @@ export default function WatchListItemCard({ currentWatchListItem, setImdbJSON }:
                 {IMDB_JSON !== null &&
                     <a className="clickable fontStyle" onClick={() => IMDBCardOpenClickHandler(IMDB_JSON)}>IMDB Info</a>
                 }
+
+                Watched {currentWatchListItem?.WatchListCount} time(s)
             </li>
         </>
     )

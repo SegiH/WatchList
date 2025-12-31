@@ -10,12 +10,11 @@ export interface SettingsContextType {
      defaultRoute: string;
      demoMode: boolean;
      hideTabs: boolean;
-     LogOutIconComponent: React.ReactNode;
      loggedInCheck: string;
+     LogOutIconComponent: React.ReactNode;
      pullToRefreshEnabled: (value: boolean) => void;
      saveOptions: (newOptions: IUserOption) => void;
      setActiveRoute: (value: string) => void;
-     setNewPage: (value: number) => void;
      setOptions: (value: IUserOption) => void;
      setSettingsVisible: (value: boolean) => void;
      setShowMissingArtwork: (value: boolean) => void;

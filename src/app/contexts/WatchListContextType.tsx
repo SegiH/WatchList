@@ -9,5 +9,4 @@ export interface WatchListContextType {
      setIsAdding: (value: boolean) => void;
      setIsEditing: (value: boolean) => void;
      watchListSortingCheck: string;
-     writeLog: (writeLogText: string) => void;
 }

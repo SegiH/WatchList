@@ -88,7 +88,7 @@ export const addUser = async (request: NextRequest, isNewInstance = false) => {
      const userName = searchParams.get("wl_username");
      const realName = searchParams.get("wl_realname");
      const password = searchParams.get("wl_password");
-     const isAdmin = ((searchParams.get("wl_admin") !== "undefined" && (searchParams.get("wl_admin") === "true") || isNewInstance === true)) ? true : false;
+     const isAdmin = ((searchParams.get("wl_admin") !== "undefined" && (searchParams.get("wl_admin") === "1") || isNewInstance === true)) ? 1 : 0;
 
      if (userName === null) {
           return Response.json(["User Name was not provided"]);
@@ -119,7 +119,7 @@ export const addUser = async (request: NextRequest, isNewInstance = false) => {
                "Realname": encrypt(String(realName)),
                "Password": encrypt(String(password)),
                "Admin": isAdmin,
-               "Enabled": true
+               "Enabled": 1
           });
 
           if (isNewInstance) {
@@ -698,7 +698,7 @@ export const isLoggedIn = async (req: NextRequest) => {
 export const isUserAdmin = async (req: NextRequest) => {
      const userSession = await getUserSession(req);
 
-     if (typeof userSession === "undefined" || (typeof userSession !== "undefined" && userSession.Admin !== true)) {
+     if (typeof userSession === "undefined" || (typeof userSession !== "undefined" && userSession.Admin !== 1)) {
           return false;
      } else {
           return true;
@@ -720,7 +720,7 @@ export const login = async (username: string, password: string) => {
                return Response.json(["ERROR", "Invalid username or password"]);
           }
 
-          if (currentUser[0].Enabled !== true) {
+          if (currentUser[0].Enabled !== 1) {
                return Response.json(["ERROR", "This user account is not enabled"]);
           }
 

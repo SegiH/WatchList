@@ -151,7 +151,7 @@ const DataProvider = ({
      const [sourceFilter, setSourceFilter] = useState(-1);
      const [typeFilter, setTypeFilter] = useState(-1);
      const [users, setUsers] = useState<IUser[]>([]);
-     const [userData, setUserData] = useState({ UserID: 0, Username: "", RealName: "", Admin: false }); // cannot use iUserEmpty() here
+     const [userData, setUserData] = useState({ UserID: 0, Username: "", RealName: "", Admin: 0 }); // cannot use iUserEmpty() here
 
      const [watchList, setWatchList] = useState<IWatchList[]>([]);
      const [filteredWatchList, setFilteredWatchList] = useState<IWatchList[]>([]);
@@ -289,7 +289,7 @@ const DataProvider = ({
      }
 
      const getPath = useCallback((routeName: string) => {
-          const matchingRoute = Object.keys(routeList).filter((currentRouteList) => routeList[currentRouteList].Name === routeName)
+          const matchingRoute = Object.keys(routeList).filter((currentRouteList) => routeList[currentRouteList].Name === routeName);
 
           if (matchingRoute.length === 1) {
                return routeList[matchingRoute[0]].Path;
@@ -625,7 +625,7 @@ const DataProvider = ({
           newUserData.UserID = 0;
           newUserData.Username = "";
           newUserData.RealName = "";
-          newUserData.Admin = false;
+          newUserData.Admin = 0;
 
           setUserData(newUserData);
           setIsAdding(false);
@@ -661,7 +661,6 @@ const DataProvider = ({
 
      const writeLog = useCallback(async (writeLogText: string) => {
           try {
-               debugger
                const writeLogResponse = await fetch(`/api/WriteLog?WriteLogText=${encodeURIComponent(writeLogText)}`, { method: 'PUT', credentials: 'include' });
 
                const writeLogResult = await writeLogResponse.json();
@@ -670,7 +669,7 @@ const DataProvider = ({
                     alert(writeLogResult[1]);
                }
           } catch (e: any) {
-               writeLog("Failed to check if recommendations enabled with the error " + e.message);
+               console.log("Failed to write log with the error " + e.message);
                return;
           }
      }, [router]);
@@ -1031,33 +1030,42 @@ const DataProvider = ({
           // eslint-disable-next-line react-hooks/exhaustive-deps
      }, []); // Do not add isLoggedInApi as a dependency. It causes an ends loop of network requests
 
-     const loginContextValues = { activeRoute, darkMode, defaultRoute, demoPassword, demoUsername, loggedInCheck, setActiveRoute, setDemoMode, setLoggedInCheck, setOptions, setUserData };
      const dataContextValues = { bugLogs, darkMode, defaultRoute, demoMode, isAdmin, setIsError, setErrorMessage, visibleSections, watchList, watchListSortingCheck, watchListItems, watchListItemsSortingCheck, watchListSources, watchListTypes };
-     const sharedLayoutContextValues = { AddIconComponent, SearchIconComponent, SettingsIconComponent, activeRoute, darkMode, demoMode, demoModeNotificationVisible, hideTabs, imdbSearchEnabled, isAdmin, isEnabled, isError, isLoading, loggedInCheck, metaDataFilters, openDetailClickHandler, routeList, saveOptions, searchInputVisible, searchModalVisible, searchTerm, setActiveRoute, setDemoModeNotificationVisible, setNewPage, setIsLoading, setMetaDataFilters, setSearchInputVisible, setSearchModalVisible, setSearchTerm, setSourceFilter, setStillWatching, setTypeFilter, setWatchListSortColumn, setWatchListSortDirection, settingsVisible, showSettings, sourceFilter, stillWatching, typeFilter, watchListItemsSortColumns, watchListSortColumn, watchListSortColumns, watchListSortDirection, watchListSources, watchListSourcesLoadingCheck, watchListTypes, watchListTypesLoadingCheck };
-     const navBarContextValues = { activeRoute, currentItemsPage, currentWatchListPage, darkMode, isAdding, isLoading, hideTabs, lastPage, setNewPage };
-     const tabsContextValues = { activeRoute, darkMode, demoMode, getPath, hideTabs, isAdding, isAdmin, isClient, isEditing, isEnabled, isError, isLoading, loggedInCheck, pullToRefreshEnabled, routeList, setActiveRoute, setNewPage, setSearchInputVisible, setSearchTerm, visibleSections };
-     const watchListContextValues = { darkMode, filteredWatchList, hideTabs, isLoading, setActiveRoute, setIsAdding, setIsEditing, watchListSortingCheck, writeLog };
-     const watchListDtlContextValues = { BrokenImageIconComponent, CancelIconComponent, EditIconComponent, getWatchList, SaveIconComponent, darkMode, demoMode, imdbSearchEnabled, isAdding, isEditing, isLoading, pullToRefreshEnabled, recommendationsEnabled, setErrorMessage, setIsAdding, setIsEditing, setIsError, setStillWatching, showSearch, stillWatching, watchListSortDirection, watchListSources, writeLog };
-     const watchListCardContextValues = { BrokenImageIconComponent, darkMode, filteredWatchList, getMissingPoster, openDetailClickHandler, setFilteredWatchList, writeLog };
-     const watchListStatsContextValues = { darkMode, demoMode, errorMessage, ratingMax, setIsError, setErrorMessage };
-     const itemsContextValues = { darkMode, filteredWatchListItems, hideTabs, isLoading, searchModalVisible, setActiveRoute, setIsAdding, setIsEditing, watchListItemsSortingCheck, setWatchListItems, setFilteredWatchListItems, setWatchListItemsSortingCheck };
-     const itemsDtlContextValues = { BrokenImageIconComponent, CancelIconComponent, EditIconComponent, SaveIconComponent, darkMode, demoMode, imdbSearchEnabled, isAdding, isEditing, isEnabled, isLoading, pullToRefreshEnabled, recommendationsEnabled, setErrorMessage, setIsAdding, setIsEditing, setIsError, showSearch, watchListTypes, writeLog };
-     const itemsCardContextValues = { BrokenImageIconComponent, darkMode, filteredWatchListItems, getMissingPoster, openDetailClickHandler, setFilteredWatchListItems, writeLog };
-     const searchIMDBContextValues = { AddIconComponent, autoAdd, BrokenImageIconComponent, darkMode, searchCount, SearchIconComponent, setIsAdding, setSearchCount, setSearchModalVisible };
-     const recommendationsContextValues = { BrokenImageIconComponent, darkMode, writeLog };
-     const settingsContextValues = { activeRoute, archivedVisible, autoAdd, buildDate, darkMode, defaultRoute, demoMode, hideTabs, loggedInCheck, LogOutIconComponent, pullToRefreshEnabled, saveOptions, setActiveRoute, setOptions, setSettingsVisible, setSourceFilter, setStillWatching, setVisibleSections, showMissingArtwork, signOut, sourceFilter, visibleSections, visibleSectionChoices, watchListSortColumns, watchListSortColumn, watchListSortDirection };
-     const setupContextValues = { activeRoute, defaultRoute, darkMode, demoUsername, loggedInCheck, validatePassword, writeLog };
      const errorContextValues = { darkMode, defaultRoute, errorMessage, setActiveRoute };
-     
+     const itemsCardContextValues = { BrokenImageIconComponent, darkMode, filteredWatchListItems, getMissingPoster, getWatchList, openDetailClickHandler, setFilteredWatchListItems, watchList, watchListSortingCheck };
+     const itemsContextValues = { darkMode, filteredWatchListItems, hideTabs, isLoading, searchModalVisible, setActiveRoute, setIsAdding, setIsEditing, setFilteredWatchListItems, watchList, watchListItemsSortingCheck };
+     const itemsDtlContextValues = { BrokenImageIconComponent, CancelIconComponent, darkMode, demoMode, EditIconComponent, getMissingPoster, getWatchListItems, isAdding, isEditing, isEnabled, isLoading, pullToRefreshEnabled, SaveIconComponent, setErrorMessage, setIsAdding, setIsEditing, setIsError, watchListTypes, writeLog };
+     const loginContextValues = { activeRoute, darkMode, defaultRoute, demoPassword, demoUsername, loggedInCheck, setActiveRoute, setDemoMode, setLoggedInCheck, setOptions, setUserData };
+     const navBarContextValues = { activeRoute, currentItemsPage, currentWatchListPage, darkMode, isAdding, isLoading, hideTabs, lastPage, setNewPage };
+     const recommendationsContextValues = { BrokenImageIconComponent, darkMode, writeLog };
+     const searchIMDBContextValues = { AddIconComponent, autoAdd, BrokenImageIconComponent, darkMode, searchCount, SearchIconComponent, setIsAdding, setSearchCount, setSearchModalVisible };
+     const settingsContextValues = { activeRoute, archivedVisible, autoAdd, buildDate, darkMode, defaultRoute, demoMode, hideTabs, loggedInCheck, LogOutIconComponent, pullToRefreshEnabled, saveOptions, setActiveRoute, setOptions, setSettingsVisible, setShowMissingArtwork, setStillWatching, setVisibleSections, showMissingArtwork, signOut, visibleSectionChoices, visibleSections, watchListSortColumn };
+     const setupContextValues = { activeRoute, defaultRoute, darkMode, demoUsername, loggedInCheck, validatePassword, writeLog };
+     const sharedLayoutContextValues = { activeRoute, AddIconComponent, darkMode, demoMode, demoModeNotificationVisible, hideTabs, imdbSearchEnabled, isAdmin, isEnabled, isError, isLoading, loggedInCheck, metaDataFilters, openDetailClickHandler, routeList, saveOptions, SearchIconComponent, searchInputVisible, searchModalVisible, setActiveRoute, setDemoModeNotificationVisible, setIsLoading, setMetaDataFilters, setNewPage, setSearchInputVisible, setSearchModalVisible, setSearchTerm, setSourceFilter, setStillWatching, SettingsIconComponent, settingsVisible, setTypeFilter, setWatchListSortColumn, setWatchListSortDirection, showSettings, sourceFilter, stillWatching, typeFilter, watchListItemsSortColumns, watchListSortColumn, watchListSortColumns, watchListSortDirection, watchListSources, watchListSourcesLoadingCheck, watchListTypes, watchListTypesLoadingCheck };
+     const tabsContextValues = { activeRoute, darkMode, demoMode, getPath, hideTabs, isAdding, isAdmin, isClient, isEditing, isEnabled, isError, isLoading, loggedInCheck, pullToRefreshEnabled, routeList, setActiveRoute, setSearchInputVisible, setSearchTerm, visibleSections };
+     const watchListCardContextValues = { BrokenImageIconComponent, darkMode, filteredWatchList, getMissingPoster, openDetailClickHandler, setFilteredWatchList, writeLog };
+     const watchListContextValues = { darkMode, filteredWatchList, hideTabs, isLoading, setActiveRoute, setIsAdding, setIsEditing, watchListSortingCheck, writeLog };
+     const watchListDtlContextValues = { BrokenImageIconComponent, CancelIconComponent, darkMode, demoMode, EditIconComponent, getWatchList, imdbSearchEnabled, isAdding, isEditing, isLoading, pullToRefreshEnabled, recommendationsEnabled, SaveIconComponent, setErrorMessage, setIsAdding, setIsEditing, setIsError, setStillWatching, showSearch, stillWatching, watchListSortDirection, watchListSources, writeLog };
+     const watchListStatsContextValues = { darkMode, demoMode, errorMessage, ratingMax, setIsError, setErrorMessage };
+
      const baseProviders = [
-          { Provider: LoginContext.Provider, value: loginContextValues },
           { Provider: DataContext.Provider, value: dataContextValues },
-          { Provider: SharedLayoutContext.Provider, value: sharedLayoutContextValues },
-          { Provider: NavBarContext.Provider, value: navBarContextValues },
-          { Provider: TabsContext.Provider, value: tabsContextValues },
-          { Provider: WatchListContext.Provider, value: watchListContextValues }, { Provider: WatchListDtlContext.Provider, value: watchListDtlContextValues }, { Provider: WatchListCardContext.Provider, value: watchListCardContextValues }, { Provider: WatchListStatsContext.Provider, value: watchListStatsContextValues }, { Provider: ItemsContext.Provider, value: itemsContextValues }, { Provider: ItemsDtlContext.Provider, value: itemsDtlContextValues }, { Provider: ItemsCardContext.Provider, value: itemsCardContextValues }, { Provider: SearchIMDBContext.Provider, value: searchIMDBContextValues }, { Provider: RecommendationsContext.Provider, value: recommendationsContextValues }, { Provider: SettingsContext.Provider, value: settingsContextValues }, { Provider: SetupContext.Provider, value: setupContextValues }, { Provider: RecommendationsContext.Provider, value: recommendationsContextValues },
-          { Provider: SearchIMDBContext.Provider, value: searchIMDBContextValues },
           { Provider: ErrorContext.Provider, value: errorContextValues },
+          { Provider: ItemsCardContext.Provider, value: itemsCardContextValues },
+          { Provider: ItemsContext.Provider, value: itemsContextValues },
+          { Provider: ItemsDtlContext.Provider, value: itemsDtlContextValues },
+          { Provider: LoginContext.Provider, value: loginContextValues },
+          { Provider: NavBarContext.Provider, value: navBarContextValues },
+          { Provider: RecommendationsContext.Provider, value: recommendationsContextValues },
+          { Provider: SearchIMDBContext.Provider, value: searchIMDBContextValues },
+          { Provider: SettingsContext.Provider, value: settingsContextValues },
+          { Provider: SetupContext.Provider, value: setupContextValues },
+          { Provider: SharedLayoutContext.Provider, value: sharedLayoutContextValues },
+          { Provider: TabsContext.Provider, value: tabsContextValues },
+          { Provider: WatchListCardContext.Provider, value: watchListCardContextValues },
+          { Provider: WatchListContext.Provider, value: watchListContextValues },
+          { Provider: WatchListDtlContext.Provider, value: watchListDtlContextValues },
+          { Provider: WatchListStatsContext.Provider, value: watchListStatsContextValues },
      ];
 
      // Admin-only blocks — keep them grouped under a single condition when rendering
@@ -1083,60 +1091,3 @@ const DataProvider = ({
 }
 
 export { AdminContext, BugLogsContext, DataContext, DataProvider, ErrorContext, ItemsContext, ItemsCardContext, ItemsDtlContext, LoginContext, ManageUserAccountsContext, ManageWatchListSourcesContext, ManageWatchListTypesContext, NavBarContext, RecommendationsContext, SearchIMDBContext, SettingsContext, SetupContext, SharedLayoutContext, TabsContext, WatchListContext, WatchListCardContext, WatchListDtlContext, WatchListStatsContext };
-
-/*
-<LoginContext.Provider value={{ activeRoute, darkMode, defaultRoute, demoPassword, demoUsername, loggedInCheck, setActiveRoute, setDemoMode, setLoggedInCheck, setOptions, setUserData }}>
-               <DataContext.Provider value={{ bugLogs, darkMode, defaultRoute, demoMode, isAdmin, setIsError, setErrorMessage, visibleSections, watchList, watchListSortingCheck, watchListItems, watchListItemsSortingCheck, watchListSources, watchListTypes }}>
-                    <SharedLayoutContext.Provider value={{ AddIconComponent, SearchIconComponent, SettingsIconComponent, activeRoute, darkMode, demoMode, demoModeNotificationVisible, hideTabs, imdbSearchEnabled, isAdmin, isEnabled, isError, isLoading, loggedInCheck, metaDataFilters, openDetailClickHandler, routeList, saveOptions, searchInputVisible, searchModalVisible, setActiveRoute, setDemoModeNotificationVisible, setNewPage, setIsLoading, setMetaDataFilters, setSearchInputVisible, setSearchModalVisible, setSearchTerm, setSourceFilter, setStillWatching, setTypeFilter, setWatchListSortColumn, setWatchListSortDirection, settingsVisible, showSettings, sourceFilter, stillWatching, typeFilter, watchListItemsSortColumns, watchListSortColumn, watchListSortColumns, watchListSortDirection, watchListSources, watchListSourcesLoadingCheck, watchListTypes, watchListTypesLoadingCheck }}>
-                         <NavBarContext.Provider value={{ activeRoute, currentItemsPage, currentWatchListPage, darkMode, isAdding, isLoading, hideTabs, lastPage, setNewPage }}>
-                              <TabsContext.Provider value={{ activeRoute, darkMode, demoMode, getPath, hideTabs, isAdding, isAdmin, isClient, isEditing, isEnabled, isError, isLoading, loggedInCheck, pullToRefreshEnabled, routeList, setActiveRoute, setNewPage, setSearchInputVisible, setSearchTerm, visibleSections }}>
-                                   <WatchListContext.Provider value={{ darkMode, filteredWatchList, hideTabs, isLoading, setActiveRoute, setIsAdding, setIsEditing, watchListSortingCheck }}>
-                                        <WatchListDtlContext.Provider value={{ BrokenImageIconComponent, CancelIconComponent, EditIconComponent, getWatchList, SaveIconComponent, darkMode, demoMode, imdbSearchEnabled, isAdding, isEditing, isLoading, pullToRefreshEnabled, recommendationsEnabled, setErrorMessage, setIsAdding, setIsEditing, setIsError, setStillWatching, showSearch, stillWatching, watchListSortDirection, watchListSources, writeLog }}>
-                                             <WatchListCardContext.Provider value={{ BrokenImageIconComponent, darkMode, filteredWatchList, getMissingPoster, openDetailClickHandler, setFilteredWatchList, writeLog }}>
-                                                  <WatchListStatsContext.Provider value={{ darkMode, demoMode, errorMessage, ratingMax, setIsError, setErrorMessage }}>
-                                                       <ItemsContext.Provider value={{ darkMode, filteredWatchListItems, hideTabs, isLoading, searchModalVisible, setActiveRoute, setIsAdding, setIsEditing, watchListItemsSortingCheck }}>
-                                                            <ItemsDtlContext.Provider value={{ BrokenImageIconComponent, CancelIconComponent, EditIconComponent, SaveIconComponent, darkMode, demoMode, getMissingPoster, getWatchListItems, isAdding, isEditing, isEnabled, isLoading, pullToRefreshEnabled, setErrorMessage, setIsAdding, setIsEditing, setIsError, watchListTypes, writeLog }}>
-                                                                 <ItemsCardContext.Provider value={{ BrokenImageIconComponent, darkMode, filteredWatchListItems, getMissingPoster, openDetailClickHandler, setFilteredWatchListItems }}>
-                                                                      <SearchIMDBContext.Provider value={{ AddIconComponent, autoAdd, BrokenImageIconComponent, darkMode, searchCount, SearchIconComponent, setIsAdding, setSearchCount, setSearchModalVisible }}>
-                                                                           <RecommendationsContext.Provider value={{ BrokenImageIconComponent, darkMode, writeLog }}>
-                                                                                <SettingsContext.Provider value={{ activeRoute, archivedVisible, autoAdd, buildDate, darkMode, defaultRoute, demoMode, hideTabs, loggedInCheck, LogOutIconComponent, pullToRefreshEnabled, saveOptions, setActiveRoute, setNewPage, setOptions, setSettingsVisible, setShowMissingArtwork, setStillWatching, setVisibleSections, showMissingArtwork, signOut, visibleSectionChoices, visibleSections, watchListSortColumn }}>
-                                                                                     <SetupContext.Provider value={{ activeRoute, defaultRoute, darkMode, demoUsername, loggedInCheck, validatePassword }}>
-                                                                                          <RecommendationsContext.Provider value={{ BrokenImageIconComponent, darkMode, writeLog }}>
-                                                                                               <SearchIMDBContext value={{ AddIconComponent, autoAdd, BrokenImageIconComponent, darkMode, searchCount, SearchIconComponent, setIsAdding, setSearchCount, setSearchModalVisible }}>
-                                                                                                    <BugLogsContext.Provider value={{ bugLogs, CancelIconComponent, darkMode, defaultRoute, DeleteIconComponent, EditIconComponent, isAdding, isAdmin, isEditing, SaveIconComponent, setBugLogs, setIsError, setErrorMessage, setIsAdding, setIsEditing }}>
-                                                                                                         <ErrorContext.Provider value={{ darkMode, defaultRoute, errorMessage, setActiveRoute }}>
-                                                                                                              {userData.Admin ?
-                                                                                                                   <ManageUserAccountsContext.Provider value={{ CancelIconComponent, darkMode, defaultRoute, demoMode, EditIconComponent, isAdding, isAdmin, isEditing, SaveIconComponent, setIsAdding, setIsEditing, setIsError, setErrorMessage, setUsers, users, validatePassword }}>
-                                                                                                                        <ManageWatchListSourcesContext.Provider value={{ CancelIconComponent, darkMode, defaultRoute, DeleteIconComponent, demoMode, EditIconComponent, isAdding, isAdmin, isEditing, SaveIconComponent, setIsAdding, setIsEditing, setWatchListSourcesLoadingCheck, watchListSourcesLoadingCheck, watchListSources }}>
-                                                                                                                             <ManageWatchListTypesContext.Provider value={{ CancelIconComponent, darkMode, defaultRoute, DeleteIconComponent, demoMode, EditIconComponent, isAdding, isAdmin, isEditing, SaveIconComponent, setIsAdding, setIsEditing, setWatchListTypesLoadingCheck, watchListTypes, watchListTypesLoadingCheck }}>
-                                                                                                                                  <AdminContext.Provider value={{ darkMode, defaultRoute, demoMode, isAdding, isAdmin, isEditing }}>
-                                                                                                                                       <BugLogsContext.Provider value={{ bugLogs, CancelIconComponent, darkMode, defaultRoute, DeleteIconComponent, EditIconComponent, isAdding, isAdmin, isEditing, SaveIconComponent, setBugLogs, setIsError, setErrorMessage, setIsAdding, setIsEditing }}>
-                                                                                                                                            {children}
-                                                                                                                                       </BugLogsContext.Provider>
-                                                                                                                                  </AdminContext.Provider>
-                                                                                                                             </ManageWatchListTypesContext.Provider>
-                                                                                                                        </ManageWatchListSourcesContext.Provider>
-                                                                                                                   </ManageUserAccountsContext.Provider>
-                                                                                                                   :
-                                                                                                                   <>{children}</>}
-                                                                                                         </ErrorContext.Provider>
-                                                                                                    </BugLogsContext.Provider>
-                                                                                               </SearchIMDBContext>
-                                                                                          </RecommendationsContext.Provider>
-                                                                                     </SetupContext.Provider>
-                                                                                </SettingsContext.Provider>
-                                                                           </RecommendationsContext.Provider>
-                                                                      </SearchIMDBContext.Provider>
-                                                                 </ItemsCardContext.Provider>
-                                                            </ItemsDtlContext.Provider>
-                                                       </ItemsContext.Provider>
-                                                  </WatchListStatsContext.Provider>
-                                             </WatchListCardContext.Provider>
-                                        </WatchListDtlContext.Provider>
-                                   </WatchListContext.Provider>
-                              </TabsContext.Provider>
-                         </NavBarContext.Provider>
-                    </SharedLayoutContext.Provider>
-               </DataContext.Provider>
-          </LoginContext.Provider>
-*/

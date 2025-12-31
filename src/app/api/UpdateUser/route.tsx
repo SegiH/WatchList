@@ -16,8 +16,8 @@ export async function PUT(request: NextRequest) {
      const userName = searchParams.get("wl_username");
      const realName = searchParams.get("wl_realname");
      const password = searchParams.get("wl_password");
-     const admin = typeof searchParams.get("wl_admin") !== "undefined" && (searchParams.get("wl_admin") === "true" || searchParams.get("wl_admin") === "false") ? (searchParams.get("wl_admin") === "true" ? 1 : 0) : null;
-     const enabled = typeof searchParams.get("wl_enabled") !== "undefined" && (searchParams.get("wl_enabled") === "true" || searchParams.get("wl_enabled") === "false") ? (searchParams.get("wl_enabled") === "true" ? 1 : 0) : null;
+     const admin = typeof searchParams.get("wl_admin") !== "undefined" && (searchParams.get("wl_admin") === "1" || searchParams.get("wl_admin") === "0") ? (searchParams.get("wl_admin") === "1" ? 1 : 0) : null;
+     const enabled = typeof searchParams.get("wl_enabled") !== "undefined" && (searchParams.get("wl_enabled") === "1" || searchParams.get("wl_enabled") === "0") ? (searchParams.get("wl_enabled") === "1" ? 1 : 0) : null;
 
      if (userID === null) {
           return Response.json(["ERROR", "User ID was not provided"]);

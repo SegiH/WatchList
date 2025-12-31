@@ -17,4 +17,5 @@ export default interface WatchListItem {
      ItemNotesIsModified?: boolean, // Virtual field
      ArchivedIsModified?: boolean, // Virtual field
      Tooltip?: string, // Virtual field
+     WatchListCount?: number // Virtual field
 }

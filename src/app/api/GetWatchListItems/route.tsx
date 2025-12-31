@@ -3,6 +3,7 @@ import { getDB, isLoggedIn, writeLog, matchMetadata, metaSearch } from "../lib";
 import IWatchListType from '@/app/interfaces/IWatchListType';
 import IWatchListItem from '@/app/interfaces/IWatchListItem';
 import { sendCompressedJsonBrotli, sendCompressedJsonGZip } from '@/app/proxy';
+import IWatchList from '@/app/interfaces/IWatchList';
 
 export async function GET(request: NextRequest) {
      if (!isLoggedIn(request)) {
@@ -37,6 +38,7 @@ export async function GET(request: NextRequest) {
      try {
           const db: any = await getDB();
 
+          const watchList = db.WatchList;
           const watchListItemsDB = db.WatchListItems;
           const watchListTypesDB = db.WatchListTypes;
 
@@ -95,6 +97,12 @@ export async function GET(request: NextRequest) {
                     });
 
                     watchListItem.WatchListTypeName = watchListType.length > 0 ? watchListType[0].WatchListTypeName : "";
+                    watchListItem.WatchListCount = watchList.filter((currentWatchList: IWatchList) => String(currentWatchList.WatchListItemID) === String(watchListItem.WatchListItemID)).length;
+
+                    // Add log when an unused WLI is found
+                    if (watchListItem.WatchListCount === 0) {
+                         writeLog(`Unused WatchListItem found. ID: ${watchListItem.WatchListItemID}, Name: ${watchListItem.WatchListItemName}`);
+                    }
 
                     return watchListItem;
                });

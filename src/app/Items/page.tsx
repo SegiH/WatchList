@@ -12,7 +12,7 @@ const WatchListItemCard = React.lazy(() => import('./WatchListItemCard'));
 
 export default function WatchListItems() {
      const {
-          darkMode, filteredWatchListItems, hideTabs, isLoading, searchModalVisible, setActiveRoute, setIsAdding, setIsEditing, watchListItemsSortingCheck
+          darkMode, filteredWatchListItems, hideTabs, isLoading, searchModalVisible, setActiveRoute, setIsAdding, setIsEditing, watchList, watchListItemsSortingCheck
      } = useContext(ItemsContext) as ItemsContextType;
 
      const [imdbCardvisible, setImdbCardvisible] = useState(false);

@@ -8,12 +8,11 @@ import { WatchListCardContextType } from "../contexts/WatchListCardContextType";
 type WatchListCardProps = {
     currentWatchList: IWatchList;
     setImdbJSON: (value: []) => void;
-    writeLog: (writeLogText: string) => void;
 }
 
-export default function WatchListCard({ currentWatchList, setImdbJSON, writeLog }: WatchListCardProps) {
+export default function WatchListCard({ currentWatchList, setImdbJSON }: WatchListCardProps) {
     const {
-        BrokenImageIconComponent, darkMode, filteredWatchList, getMissingPoster, openDetailClickHandler, setFilteredWatchList
+        BrokenImageIconComponent, darkMode, filteredWatchList, getMissingPoster, openDetailClickHandler, setFilteredWatchList, writeLog
     } = useContext(WatchListCardContext) as WatchListCardContextType;
 
     let IMDB_JSON :any = null;

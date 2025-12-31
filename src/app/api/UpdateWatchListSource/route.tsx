@@ -1,5 +1,5 @@
 import { NextRequest } from 'next/server';
-import { getDB, isLoggedIn, logMessage, writeDB } from "../lib";
+import { getDB, isLoggedIn, writeLog, writeDB } from "../lib";
 import IWatchListSource from '@/app/interfaces/IWatchListSource';
 
 export async function PUT(request: NextRequest) {
@@ -39,7 +39,7 @@ export async function PUT(request: NextRequest) {
 
           return Response.json(["OK"]);
      } catch (e) {
-          logMessage(e.message)
+          writeLog(e.message)
           return Response.json(["ERROR", e.message]);
      }
 }

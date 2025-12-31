@@ -8,9 +8,10 @@ import { WatchListCardContextType } from "../interfaces/contexts/WatchListCardCo
 type WatchListCardProps = {
     currentWatchList: IWatchList;
     setImdbJSON: (value: []) => void;
+    writeLog: (writeLogText: string) => void;
 }
 
-export default function WatchListCard({ currentWatchList, setImdbJSON }: WatchListCardProps) {
+export default function WatchListCard({ currentWatchList, setImdbJSON, writeLog }: WatchListCardProps) {
     const {
         BrokenImageIconComponent, darkMode, filteredWatchList, getMissingPoster, openDetailClickHandler, setFilteredWatchList
     } = useContext(WatchListCardContext) as WatchListCardContextType;
@@ -20,8 +21,8 @@ export default function WatchListCard({ currentWatchList, setImdbJSON }: WatchLi
     if (currentWatchList?.IMDB_JSON) {
         try {
             IMDB_JSON = JSON.parse(currentWatchList.IMDB_JSON);
-        } catch (e) {
-            console.log(`An error occurred parsing the IMDB_JSON for ${currentWatchList.WatchListID}`);
+        } catch (e: any) {
+            writeLog(`An error occurred parsing the IMDB_JSON for ${currentWatchList.WatchListID}`);
         }
     }
 

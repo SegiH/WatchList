@@ -108,7 +108,7 @@ export default function WatchListStats() {
 
                     setStatsLoadingCheck(APIStatus.Error);
                }
-          } catch (e) {
+          } catch (e: any) {
                alert(e.message);
           }
      }

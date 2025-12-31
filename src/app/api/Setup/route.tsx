@@ -1,5 +1,5 @@
 import { NextRequest } from 'next/server';
-import { addUser, getDB, logMessage } from "../lib";
+import { addUser, getDB, writeLog } from "../lib";
 
 export async function PUT(request: NextRequest) {
      try {
@@ -9,7 +9,7 @@ export async function PUT(request: NextRequest) {
                return Response.json(["ERROR", `Error! WatchList has already been set up. Please move or rename the database`]);
           }
      } catch (e) {
-          logMessage(e.message)
+          writeLog(e.message)
           return Response.json(["ERROR", e.message]);
      }
 

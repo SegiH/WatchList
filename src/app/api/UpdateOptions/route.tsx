@@ -1,5 +1,5 @@
 import { NextRequest } from 'next/server';
-import { getDB, getUserID, logMessage, writeDB } from "../lib";
+import { getDB, getUserID, writeLog, writeDB } from "../lib";
 import IUserOption from '@/app/interfaces/IUser';
 
 export async function GET(request: NextRequest) {
@@ -42,7 +42,7 @@ export async function GET(request: NextRequest) {
 
         return Response.json(["OK"]);
     } catch (e) {
-        logMessage(e.message)
+        writeLog(e.message)
         return Response.json(["ERROR", e.message]);
     }
 }

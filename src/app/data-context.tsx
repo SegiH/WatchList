@@ -278,11 +278,11 @@ const DataProvider = ({
                if (missingPostersResult[0] === "OK") {
                     return missingPostersResult[1];
                } else {
-                    console.log(`No result when getting missing poster for ID ${watchListItemID}`)
+                    writeLog(`No result when getting missing poster for ID ${watchListItemID}`)
                     return [];
                }
-          } catch (e) {
-               console.log(`Error ${e.message} occurred when getting result when getting missing poster for ID ${watchListItemID}`)
+          } catch (e: any) {
+               writeLog(`Error ${e.message} occurred when getting result when getting missing poster for ID ${watchListItemID}`)
                return [];
           }
      }
@@ -326,13 +326,13 @@ const DataProvider = ({
 
                if (activeRoute === "WatchList" && watchListResult[1].length < pageSize) {
                     setLastPage(true);
-               } else {
+               } /*else {
                     setLastPage(false);
-               }
+               }*/
 
                setFilteredWatchList(watchListResult[1]);
                setWatchListSortingCheck(APIStatus.Success);
-          } catch (e) {
+          } catch (e: any) {
                setErrorMessage("Failed to get WatchList with the error " + e.message)
                setIsError(true);
                return;
@@ -365,16 +365,16 @@ const DataProvider = ({
 
                if (activeRoute === "Items" && watchListItemsResult[1].length < pageSize) {
                     setLastPage(true);
-               } else {
+               } /*else {
                     setLastPage(false);
-               }
+               }*/
 
                setFilteredWatchListItems(watchListItemsResult[1]);
 
                setWatchListItemsSortingCheck(APIStatus.Success);
 
                return watchListItemsResult[1];
-          } catch (e) {
+          } catch (e: any) {
                setErrorMessage("Failed to get WatchList Items with the error " + e.message)
                setIsError(true);
                return;
@@ -404,7 +404,7 @@ const DataProvider = ({
 
                setWatchListSources(wls);
                setWatchListSourcesLoadingCheck(APIStatus.Success);
-          } catch (e) {
+          } catch (e: any) {
                setErrorMessage("Failed to get WatchList Sources with the error " + e.message);
                setIsError(true);
                return;
@@ -427,7 +427,7 @@ const DataProvider = ({
                setWatchListTypesLoadingCheck(APIStatus.Success);
 
                setIsLoading(false);
-          } catch (e) {
+          } catch (e: any) {
                setErrorMessage("Failed to get WatchList Types with the error " + e.message);
                setIsError(true);
                return;
@@ -465,7 +465,7 @@ const DataProvider = ({
                if (isIMDBSearchEnabledResult[0] === "OK") {
                     setImdbSearchEnabled(true);
                }
-          } catch (e) {
+          } catch (e: any) {
                setErrorMessage("Failed to check if IMDB search is enabled with the error " + e.message);
                setIsError(true);
                return;
@@ -481,7 +481,7 @@ const DataProvider = ({
                if (isRecommendationsEnabledResult[0] === "OK") {
                     setRecommendationsEnabled(true);
                }
-          } catch (e) {
+          } catch (e: any) {
                setErrorMessage("Failed to check if recommendations enabled with the error " + e.message);
                setIsError(true);
                return;
@@ -490,8 +490,6 @@ const DataProvider = ({
 
      const isLoggedInCheck = useCallback(() => {
           if (loggedInCheck == APIStatus.Error || loggedInCheck == APIStatus.Idle || loggedInCheck == APIStatus.Loading || loggedInCheck == APIStatus.Unauthorized) return false;
-
-          if (loggedInCheck === APIStatus.Unauthorized) return false;
 
           return true;
      }, [loggedInCheck]);
@@ -535,7 +533,7 @@ const DataProvider = ({
                     setErrorMessage("Failed to update options with the error " + saveOptionsResult[1]);
                     setIsError(true);
                }
-          } catch (e) {
+          } catch (e: any) {
                setErrorMessage("Failed to update options with the error " + e.message);
                setIsError(true);
                return;
@@ -544,9 +542,9 @@ const DataProvider = ({
 
      const setNewPage = (adjustValue: number) => {
           if (activeRoute === "WatchList") {
-               setCurrentWatchListPage(currentWatchListPage + adjustValue);
+               setCurrentWatchListPage(p => p + adjustValue);
           } else if (activeRoute === "Items") {
-               setCurrentItemsPage(currentItemsPage + adjustValue);
+               setCurrentItemsPage(p => p + adjustValue);
           }
      }
 
@@ -581,7 +579,10 @@ const DataProvider = ({
           const newSortDirection = typeof newOptions.WatchListSortDirection !== "undefined" ? newOptions.WatchListSortDirection : "DESC";
           setWatchListSortDirection(newSortDirection);
 
-          const newVisibleSections = typeof newOptions.VisibleSections !== "undefined" ? JSON.parse(newOptions.VisibleSections) : [{ name: 'Stats', id: 2 }];
+          const newVisibleSections = typeof newOptions.VisibleSections !== "undefined"
+               ? JSON.parse(newOptions.VisibleSections)
+               : [{ value: "2", label: 'Stats' }];
+
           setVisibleSections(newVisibleSections);
      }, [sourceFilter, typeFilter]);
 
@@ -611,7 +612,7 @@ const DataProvider = ({
                } else {
                     alert(signOutResult[1]);
                }
-          } catch (e) {
+          } catch (e: any) {
                setErrorMessage("Failed to sign out with the error " + e.message);
                setIsError(true);
                return;
@@ -623,6 +624,7 @@ const DataProvider = ({
           newUserData.UserID = 0;
           newUserData.Username = "";
           newUserData.RealName = "";
+          newUserData.Admin = false;
 
           setUserData(newUserData);
           setIsAdding(false);
@@ -656,21 +658,21 @@ const DataProvider = ({
           return strongRegex.test(value);
      };
 
-     const writeLog = useCallback(async (logMessage: string) => {
+     const writeLog = useCallback(async (writeLogText: string) => {
           try {
-               const writeLogResponse = await fetch(`/api/WriteLog?LogMessage=${encodeURIComponent(logMessage)}`, { method: 'PUT', credentials: 'include' });
+               const writeLogResponse = await fetch(`/api/WriteLog?WriteLogText=${encodeURIComponent(writeLogText)}`, { method: 'PUT', credentials: 'include' });
 
                const writeLogResult = await writeLogResponse.json();
 
-               if (writeLogResponse[0] !== "OK") {
+               if (writeLogResult[0] !== "OK") {
                     alert(writeLogResult[1]);
                } else {
                     setLoggedInCheck(APIStatus.Success);
 
                     router.push("/Login");
                }
-          } catch (e) {
-               console.log("Failed to check if recommendations enabled with the error " + e.message);
+          } catch (e: any) {
+               writeLog("Failed to check if recommendations enabled with the error " + e.message);
                return;
           }
      }, [router]);
@@ -742,7 +744,7 @@ const DataProvider = ({
 
                     router.push("/Login");
                }
-          } catch (e) {
+          } catch (e: any) {
                setErrorMessage("Failed to check if user is logged in with the error " + e.message);
                setIsError(true);
                return;
@@ -973,7 +975,7 @@ const DataProvider = ({
                fetch('/build-info.json')
                     .then((response) => response.json())
                     .then((data) => {
-                         const language = typeof navigator.languages != undefined ? navigator.languages[0] : "en-us";
+                         const language = typeof navigator.languages != undefined && navigator.languages.length > 0 ? navigator.languages[0] : "en-us";
                          const options: Intl.DateTimeFormatOptions = {
                               year: '2-digit',
                               month: '2-digit',
@@ -987,7 +989,7 @@ const DataProvider = ({
 
                          setBuildDate(newBuildDate);
                     });
-          } catch (e) {
+          } catch (e: any) {
                setErrorMessage("Failed to get nuild date with the error " + e.message);
                setIsError(true);
                return;
@@ -1025,8 +1027,8 @@ const DataProvider = ({
           if ('serviceWorker' in navigator) {
                navigator.serviceWorker
                     .register('/sw.js')
-                    .then(reg => console.log('SW registered', reg))
-                    .catch(err => console.error('SW registration failed', err));
+                    .then(reg => writeLog('SW registered'))
+                    .catch ((err: any) => console.error('SW registration failed', err));
           }
           // eslint-disable-next-line react-hooks/exhaustive-deps
      }, []); // Do not add isLoggedInApi as a dependency. It causes an ends loop of network requests
@@ -1038,11 +1040,11 @@ const DataProvider = ({
                          <NavBarContext.Provider value={{ activeRoute, currentItemsPage, currentWatchListPage, darkMode, isAdding, isLoading, hideTabs, lastPage, setNewPage }}>
                               <TabsContext.Provider value={{ activeRoute, darkMode, demoMode, getPath, hideTabs, isAdding, isAdmin, isClient, isEditing, isEnabled, isError, isLoading, loggedInCheck, pullToRefreshEnabled, routeList, setActiveRoute, setNewPage, setSearchInputVisible, setSearchTerm, visibleSections }}>
                                    <WatchListContext.Provider value={{ darkMode, filteredWatchList, hideTabs, isLoading, setActiveRoute, setIsAdding, setIsEditing, watchListSortingCheck }}>
-                                        <WatchListDtlContext.Provider value={{ BrokenImageIconComponent, CancelIconComponent, EditIconComponent, getWatchList, SaveIconComponent, darkMode, demoMode, imdbSearchEnabled, isAdding, isEditing, isLoading, pullToRefreshEnabled, recommendationsEnabled, setErrorMessage, setIsAdding, setIsEditing, setIsError, setStillWatching, showSearch, stillWatching, watchListSortDirection, watchListSources }}>
-                                             <WatchListCardContext.Provider value={{ BrokenImageIconComponent, darkMode, filteredWatchList, getMissingPoster, openDetailClickHandler, setFilteredWatchList }}>
+                                        <WatchListDtlContext.Provider value={{ BrokenImageIconComponent, CancelIconComponent, EditIconComponent, getWatchList, SaveIconComponent, darkMode, demoMode, imdbSearchEnabled, isAdding, isEditing, isLoading, pullToRefreshEnabled, recommendationsEnabled, setErrorMessage, setIsAdding, setIsEditing, setIsError, setStillWatching, showSearch, stillWatching, watchListSortDirection, watchListSources, writeLog }}>
+                                             <WatchListCardContext.Provider value={{ BrokenImageIconComponent, darkMode, filteredWatchList, getMissingPoster, openDetailClickHandler, setFilteredWatchList, writeLog }}>
                                                   <WatchListStatsContext.Provider value={{ darkMode, demoMode, errorMessage, ratingMax, setIsError, setErrorMessage }}>
                                                        <ItemsContext.Provider value={{ darkMode, filteredWatchListItems, hideTabs, isLoading, searchModalVisible, setActiveRoute, setIsAdding, setIsEditing, watchListItemsSortingCheck }}>
-                                                            <ItemsDtlContext.Provider value={{ BrokenImageIconComponent, CancelIconComponent, EditIconComponent, SaveIconComponent, darkMode, demoMode, getMissingPoster, getWatchListItems, isAdding, isEditing, isEnabled, isLoading, pullToRefreshEnabled, setErrorMessage, setIsAdding, setIsEditing, setIsError, watchListTypes }}>
+                                                            <ItemsDtlContext.Provider value={{ BrokenImageIconComponent, CancelIconComponent, EditIconComponent, SaveIconComponent, darkMode, demoMode, getMissingPoster, getWatchListItems, isAdding, isEditing, isEnabled, isLoading, pullToRefreshEnabled, setErrorMessage, setIsAdding, setIsEditing, setIsError, watchListTypes, writeLog }}>
                                                                  <ItemsCardContext.Provider value={{ BrokenImageIconComponent, darkMode, filteredWatchListItems, getMissingPoster, openDetailClickHandler, setFilteredWatchListItems }}>
                                                                       <SearchIMDBContext.Provider value={{ AddIconComponent, autoAdd, BrokenImageIconComponent, darkMode, searchCount, SearchIconComponent, setIsAdding, setSearchCount, setSearchModalVisible }}>
                                                                            <RecommendationsContext.Provider value={{ BrokenImageIconComponent, darkMode, writeLog }}>

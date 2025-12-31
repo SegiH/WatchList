@@ -71,7 +71,7 @@ export default function SearchIMDB() {
 
                     setSearchModalVisible(false);
                }
-          } catch (e) {
+          } catch (e: any) {
                alert(e.message);
           }
      };
@@ -114,7 +114,7 @@ export default function SearchIMDB() {
                     setIMDBSearchResults(searchIMDBResult[1]);
                     setSearchLoadingCheck(APIStatus.Success);
                }
-          } catch (e) {
+          } catch (e: any) {
                alert(e.message);
           }
      }

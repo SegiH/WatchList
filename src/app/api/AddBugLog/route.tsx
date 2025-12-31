@@ -1,5 +1,5 @@
 import { NextRequest } from 'next/server';
-import { getDB, isLoggedIn, logMessage, writeDB } from "../lib";
+import { getDB, isLoggedIn, writeLog, writeDB } from "../lib";
 
 export async function PUT(request: NextRequest) {
      const searchParams = request.nextUrl.searchParams;
@@ -39,8 +39,8 @@ export async function PUT(request: NextRequest) {
           writeDB(db);
 
           return Response.json(["OK", buglogsDB.length]); // New ID
-     } catch (e) {
-          console.log(e.message)
+     } catch (e: any) {
+          writeLog(e.message)
           return Response.json(["ERROR", e.message]);
      }
 }

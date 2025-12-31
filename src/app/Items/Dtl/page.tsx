@@ -12,7 +12,7 @@ import IMDBCard from "@/app/components/IMDBCard";
 
 export default function ItemsDtl() {
      const {
-          BrokenImageIconComponent, CancelIconComponent, EditIconComponent, SaveIconComponent, darkMode, demoMode, getMissingPoster, getWatchListItems, isAdding, isEditing, isEnabled, isLoading, pullToRefreshEnabled, setErrorMessage, setIsAdding, setIsEditing, setIsError, watchListTypes
+          BrokenImageIconComponent, CancelIconComponent, EditIconComponent, SaveIconComponent, darkMode, demoMode, getMissingPoster, getWatchListItems, isAdding, isEditing, isEnabled, isLoading, pullToRefreshEnabled, setErrorMessage, setIsAdding, setIsEditing, setIsError, watchListTypes, writeLog
      } = useContext(ItemsDtlContext) as ItemsDtlContextType
 
      const [addWatchListItemDtl, setAddWatchListItemDtl] = useState<IWatchListItem | null>();
@@ -58,7 +58,7 @@ export default function ItemsDtl() {
                } else {
                     return false;
                }
-          } catch (e) {
+          } catch (e: any) {
                return false;
           }
      };
@@ -125,7 +125,7 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
 
                     setWatchListItemDtlLoadingCheck(APIStatus.Success);
                }
-          } catch (e) {
+          } catch (e: any) {
                alert(e.message);
           }
      }
@@ -176,8 +176,8 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
                     await reloadImageResponse.json();
 
                     getWatchListItems();
-               } catch (e) {
-                    console.log(e.message);
+               } catch (e: any) {
+                    writeLog(e.message);
                }
           }
      }
@@ -258,7 +258,7 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
 
                               setEditModified(true);
                          }
-                    } catch (e) {
+                    } catch (e: any) {
                          alert(e.message);
                     }
                } else {
@@ -325,7 +325,7 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
                          getWatchListItems();
                     }
                }
-          } catch (e) {
+          } catch (e: any) {
                alert(e.message);
           }
      };

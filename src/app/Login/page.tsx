@@ -75,7 +75,7 @@ export default function Login() {
                     setLoginSubmitted(false);
                     setUserNameNeedsFocus(true);
                }
-          } catch (e) {
+          } catch (e: any) {
                alert(e.message);
                setLoginSubmitted(false);
                setUserNameNeedsFocus(true);
@@ -115,7 +115,7 @@ export default function Login() {
                setTimeout(() => {
                     router.push("/WatchList");
                }, 1000);
-          } catch (err) { }
+          } catch (err: any) { }
      }, [defaultRoute, router, setActiveRoute, setLoggedInCheck, setOptions, setUserData]);
 
      useEffect(() => {

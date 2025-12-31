@@ -27,7 +27,7 @@ export async function GET(request: NextRequest) {
         // Loop through each log line
         for (const line of logLines) {
             const [dateString, ...messageParts] = line.split(': '); // Split date and log message
-            const logMessage = messageParts.join(' ');
+            const writeLog = messageParts.join(' ');
             const logDate: any = new Date(dateString);
 
             // If daysBack is provided, filter by date
@@ -42,13 +42,13 @@ export async function GET(request: NextRequest) {
 
             logs.push({
                 Date: dateString,
-                Message: logMessage,
+                Message: writeLog,
             });
         }
 
         return Response.json(["OK", logs]);
 
-    } catch (error) {
+    } catch (error: any) {
         return new Response(JSON.stringify({ error: 'Error reading the log file.' }), { status: 500 });
     }
 }

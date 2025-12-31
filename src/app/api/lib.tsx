@@ -129,8 +129,8 @@ export const addUser = async (request: NextRequest, isNewInstance = false) => {
           writeDB(db);
 
           return Response.json(["OK", usersDB.length]);
-     } catch (e) {
-          logMessage(e.message)
+     } catch (e: any) {
+          writeLog(e.message)
           return Response.json(["ERROR", e.message]);
      }
 }
@@ -168,7 +168,7 @@ export const fetchRapidAPIData = async (url) => {
      try {
           const response = await fetch(url, headers);
           return await response.json();
-     } catch (error) {
+     } catch (error: any) {
           throw error;
      }
 }
@@ -189,8 +189,8 @@ export const getDB = () => {
           const data = fs.readFileSync(filePath, 'utf8');
 
           return JSON.parse(data);
-     } catch (e) {
-          console.log(e.message)
+     } catch (e: any) {
+          writeLog(e.message)
           return {};
      }
 }
@@ -284,8 +284,8 @@ export const generateMetaData = async () => {
                     if (typeof WLIPayload["Language"] !== "undefined" && languageArrayValues.indexOf(WLIPayload["Language"]) === -1) {
                          languageArrayValues.push(WLIPayload["Language"]);
                     }
-               } catch (e) {
-                    console.log("error id=" + watchListItem.WatchListItemID + `${e.message}`)
+               } catch (e: any) {
+                    writeLog("error id=" + watchListItem.WatchListItemID + `${e.message}`)
                }
           }
      });
@@ -487,7 +487,7 @@ export const getMissingArtwork = async (watchListItemID: number) => {
                Message: `${watchListItemID} did not have an exact match`
           };
 
-          logMessage(`Error response for ${watchListItemID}. No results for this ID`);
+          writeLog(`Error response for ${watchListItemID}. No results for this ID`);
 
           return newResult;
      }
@@ -513,7 +513,7 @@ export const getMissingArtwork = async (watchListItemID: number) => {
                };
 
                logText += `\n${getCurrentDate()}: Failed to fetch the HTML for ${thisWLI.WatchListItemID} ${thisWLI.WatchListItemName} with the error ${mediaViewerPageResponse.statusText} and status: ${mediaViewerPageResponse.status}`
-               logMessage(logText, true);
+               writeLog(logText, true);
 
                return newResult;
           }
@@ -530,7 +530,7 @@ export const getMissingArtwork = async (watchListItemID: number) => {
                };
 
                logText += `\n${getCurrentDate()}: Failed to parse the HTML for ${thisWLI.WatchListItemID} ${thisWLI.WatchListItemName} with the error ${mediaViewerPageResponse.statusText} and status: ${mediaViewerPageResponse.status}`
-               logMessage(logText, true);
+               writeLog(logText, true);
 
                return newResult;
           }
@@ -559,7 +559,7 @@ export const getMissingArtwork = async (watchListItemID: number) => {
                };
 
                logText += `\n${getCurrentDate()}: Error getting the 2nd page response for ${thisWLI.WatchListItemID} ${thisWLI.WatchListItemName} ${thisWLI.IMDB_URL}`;
-               logMessage(logText, true);
+               writeLog(logText, true);
 
                return newResult;
           }
@@ -589,7 +589,7 @@ export const getMissingArtwork = async (watchListItemID: number) => {
                     Status: "OK"
                };
           }
-     } catch (e) {
+     } catch (e: any) {
           alert(e.message);
      }
 }
@@ -628,7 +628,7 @@ export const getUserOptions = async (userID: number, isAdmin: boolean) => {
 
           if (existingWatchListItemResult.length !== 1) {
                if (existingWatchListItemResult.length !== 0) {// Should never happen. Means theres more than 1 result
-                    logMessage("Fatal error! more than 1 option for this user id");
+                    writeLog("Fatal error! more than 1 option for this user id");
                     return Response.json(["ERROR", "Fatal error! more than 1 option for this user id"]);
                }
 
@@ -667,8 +667,8 @@ export const getUserOptions = async (userID: number, isAdmin: boolean) => {
           } else {
                return existingWatchListItemResult[0];
           }
-     } catch (e) {
-          logMessage(e)
+     } catch (e: any) {
+          writeLog(e)
           return null;
      }
 }
@@ -726,7 +726,7 @@ export const login = async (username: string, password: string) => {
 
           return loginSuccessfullActions(currentUser);
 
-     } catch (err) {
+     } catch (err: any) {
           if (err instanceof Error) {
                return Response.json(["ERROR", `The error ${err.message} occurred logging in`]);
           }
@@ -752,12 +752,12 @@ const loginSuccessfullActions = async (currentUser: IUser) => {
           currentCookies.set('userData', JSON.stringify(userData), { expires: expires });
 
           return Response.json(["OK", userData]);
-     } catch (e) {
+     } catch (e: any) {
           return Response.json(["ERROR", `An error occurred getting the options with the error ${e.message}`]);
      }
 }
 
-export const logMessage = async (message, noDate = false) => { // No Date says don't write the date to allow for more flexibility to write multiple logs at once and have each line have its own date time stamp
+export const writeLog = async (message, noDate = false) => { // No Date says don't write the date to allow for more flexibility to write multiple logs at once and have each line have its own date time stamp
      const now = new Date();
      let formattedDate = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')} ` +
           `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`;
@@ -820,9 +820,8 @@ export const validateSettings = async () => {
 export const writeDB = (newDB) => {
      try {
           fs.writeFileSync(dbFile, JSON.stringify(newDB));
-     } catch (e) {
-          console.log(`The error ${e.message} occurred while saving the DB`);
-          //console.log(newDB);
+     } catch (e: any) {
+          writeLog(`The error ${e.message} occurred while saving the DB`);
      }
 }
 

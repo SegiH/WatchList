@@ -1,5 +1,5 @@
 import { NextRequest } from 'next/server';
-import { getDB, getIMDBDetails, isLoggedIn, writeDB } from "../lib";
+import { getDB, getIMDBDetails, isLoggedIn, writeLog, writeDB } from "../lib";
 import IWatchListItem from '@/app/interfaces/IWatchListItem';
 
 export async function GET(request: NextRequest) {
@@ -27,7 +27,7 @@ export async function GET(request: NextRequest) {
                     (findMissing === "true" && (watchListItem.IMDB_JSON == null || typeof watchListItem.IMDB_JSON === "undefined") && typeof watchListItem.IMDB_URL !== "undefined" && watchListItem.IMDB_URL !== null && watchListItem.IMDB_URL !== "")
           })
           .map(async (watchListItem: IWatchListItem) => {
-               console.log(`Processing ${watchListItem.WatchListItemID}`)
+               writeLog(`Processing ${watchListItem.WatchListItemID}`)
                const urlSplit = watchListItem.IMDB_URL.split("/");
 
                if (urlSplit[2].toString().indexOf("imdb.com") !== -1 && urlSplit[3].toString() === "title") {
@@ -37,12 +37,12 @@ export async function GET(request: NextRequest) {
                          const result = await getIMDBDetails(id);
 
                          if (result !== null) {
-                              console.log(`Sucessfully processed ${watchListItem.WatchListItemID}`)
+                              writeLog(`Sucessfully processed ${watchListItem.WatchListItemID}`)
                               watchListItem["IMDB_JSON"] = JSON.stringify(result);
 
                               await writeDB(db);
                          }
-                    } catch (e) {
+                    } catch (e: any) {
                          return Response.json(["ERROR", e.message]);
                     }
                }

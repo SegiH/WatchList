@@ -24,4 +24,5 @@ export interface WatchListDtlContextType {
      stillWatching: boolean;
      watchListSortDirection: string;
      watchListSources: IWatchListSource[];
+     writeLog: (writeLogText: string) => void;
 }

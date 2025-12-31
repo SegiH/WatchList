@@ -7,4 +7,5 @@ export interface WatchListCardContextType {
      getMissingPoster: (watchListItemID: number) => Promise<any[] | undefined>;
      openDetailClickHandler: (value: number, activeRouteOverride?: string) => void;
      setFilteredWatchList: React.Dispatch<React.SetStateAction<IWatchList[]>>;
+     writeLog: (writeLogText: string) => void;
 }

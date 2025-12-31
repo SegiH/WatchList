@@ -191,7 +191,7 @@ export default function Data() {
                     setDataSource([]);
                     break;
             }
-        } catch (e) {
+        } catch (e: any) {
             alert(e.message);
         }
     }
@@ -215,7 +215,7 @@ export default function Data() {
             } else {
                 alert(`An error occurred while getting the bug logs`);
             }
-        } catch (e) {
+        } catch (e: any) {
             alert(e.message);
         }
     }

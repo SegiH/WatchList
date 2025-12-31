@@ -1,5 +1,5 @@
 import { NextRequest } from 'next/server';
-import { getDB, getMissingArtwork, logMessage, writeDB } from "../lib";
+import { getDB, getMissingArtwork, writeLog, writeDB } from "../lib";
 import IWatchListItem from '@/app/interfaces/IWatchListItem';
 
 //const delayInSeconds = 2;
@@ -35,7 +35,7 @@ export async function GET(request: NextRequest) {
           });
 
           if (missingPosters.length === 0) {
-               logMessage("No results when looking for missing posters");
+               writeLog("No results when looking for missing posters");
                return Response.json(["OK"]);
           }
 
@@ -53,7 +53,7 @@ export async function GET(request: NextRequest) {
 
                // Pause before checking next image
                //if (i % 10 === 0) {
-               //     logMessage(`Pausing for ${delayInSeconds} seconds`);
+               //     writeLog(`Pausing for ${delayInSeconds} seconds`);
 
                //     await new Promise(r => setTimeout(r, delayInSeconds * 1000));
                //}
@@ -65,7 +65,7 @@ export async function GET(request: NextRequest) {
 
           return Response.json(["OK", resultsSummary]);
      } catch (e) {
-          logMessage(e.message);
+          writeLog(e.message);
           return Response.json(["ERROR", e.message]);
      }
 }

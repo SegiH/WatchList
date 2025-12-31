@@ -171,7 +171,7 @@ export default function WatchListDtl() {
           } else { // Date is in format dd/mm/yyyy
                try {
                     return `${dateSpl[2]}-${dateSpl[1].padStart(2, '0')}-${dateSpl[0].padStart(2, '0')}`;
-               } catch (e) {
+               } catch (e: any) {
                     return "";
                }
           }
@@ -218,7 +218,7 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
                     setWatchListDtl(wld[0]);
                     setWatchListDtlLoadingCheck(APIStatus.Success);
                }
-          } catch (e) {
+          } catch (e: any) {
                alert(e.message);
           }
      }
@@ -321,7 +321,7 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
                });
 
                setFormattedNamesWithId(namesWithIdItemsSorted);
-          } catch (e) {
+          } catch (e: any) {
                setErrorMessage("Failed to get WatchList Items with the error " + e.message);
                setIsError(true);
                return;
@@ -434,7 +434,7 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
 
                          router.push("/WatchList");
                     }
-               } catch (e) {
+               } catch (e: any) {
                     alert(`The error ${e.message} occurred while adding the detail`);
                }
           } else { // This shouldn't ever happen
@@ -547,7 +547,7 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
                          } else {
                               setIsEditing(false);
                          }
-                    } catch (e) {
+                    } catch (e: any) {
                          alert(e.message);
                     }
                } else {

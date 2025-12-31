@@ -1,5 +1,5 @@
 import { NextRequest } from 'next/server';
-import { fetchRapidAPIData, isLoggedIn } from '../lib';
+import { fetchRapidAPIData, isLoggedIn, writeLog } from '../lib';
 
 export async function GET(request: NextRequest) {
      if (!isLoggedIn(request)) {
@@ -31,7 +31,7 @@ export async function GET(request: NextRequest) {
                          } catch (e) { }
                     }
                } catch (e) {
-                    console.log(e)
+                    writeLog(e)
                }
           }
 

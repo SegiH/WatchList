@@ -1,4 +1,4 @@
-import { getDB, defaultSources, isLoggedIn, writeDB, logMessage } from "../lib";
+import { getDB, defaultSources, isLoggedIn, writeDB, writeLog } from "../lib";
 import { NextRequest } from 'next/server';
 import { sendCompressedJsonBrotli, sendCompressedJsonGZip } from '@/app/proxy';
 
@@ -41,7 +41,7 @@ export async function GET(request: NextRequest) {
                });
           }
      } catch (e) {
-          logMessage(e)
+          writeLog(e)
           return Response.json(["OK", []]);
      }
 }

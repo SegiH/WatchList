@@ -49,7 +49,7 @@ const ManageWatchListTypes = () => {
                } else {
                     setWatchListTypesLoadingCheck(APIStatus.Idle);
                }
-          } catch (e) {
+          } catch (e: any) {
                alert(e.message);
           }
      }
@@ -114,7 +114,7 @@ const ManageWatchListTypes = () => {
                } else {
                     alert(saveBugLogResult[1]);
                }
-          } catch (e) {
+          } catch (e: any) {
                alert(e.message);
           }
      }

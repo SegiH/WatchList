@@ -1,5 +1,5 @@
 import { NextRequest } from 'next/server';
-import { getDB, logMessage } from '../lib';
+import { getDB, writeLog } from '../lib';
 import { sendCompressedJsonBrotli, sendCompressedJsonGZip } from '@/app/proxy';
 
 export async function GET(request: NextRequest) {
@@ -26,7 +26,7 @@ export async function GET(request: NextRequest) {
                });
           }
      } catch (e) {
-          logMessage(e)
+          writeLog(e)
           return Response.json(["OK", []]);
      }
 }

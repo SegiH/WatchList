@@ -1,5 +1,5 @@
 import { NextRequest } from 'next/server';
-import { getDB, isLoggedIn, logMessage } from "../lib";
+import { getDB, isLoggedIn, writeLog } from "../lib";
 import IWatchListItem from '@/app/interfaces/IWatchListItem';
 import IWatchListType from '@/app/interfaces/IWatchListType';
 
@@ -36,7 +36,7 @@ export async function GET(request: NextRequest) {
 
           return Response.json(["OK", filteredWatchListItem]);
      } catch (e) {
-          logMessage(e.message);
+          writeLog(e.message);
           return Response.json(["ERROR", e.message]);
      }
 }

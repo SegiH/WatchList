@@ -82,7 +82,7 @@ export default function Setup() {
                     alert("User account was NOT created. " + setupInitialUserAccountResult[1]);
                     setSubmitClicked(false);
                }
-          } catch (e) {
+          } catch (e: any) {
                alert(e.message);
           }
      };

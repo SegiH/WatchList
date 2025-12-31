@@ -1,5 +1,5 @@
 import { NextRequest } from 'next/server';
-import { getDB, getUserID, isLoggedIn, logMessage, matchMetadata, metaSearch } from "../lib";
+import { getDB, getUserID, isLoggedIn, writeLog, matchMetadata, metaSearch } from "../lib";
 import IWatchList from '@/app/interfaces/IWatchList';
 import IWatchListItem from '@/app/interfaces/IWatchListItem';
 import IWatchListType from '@/app/interfaces/IWatchListType';
@@ -156,8 +156,8 @@ export async function GET(request: NextRequest) {
                     },
                });
           }
-     } catch (e) {
-          logMessage(e.message);
+     } catch (e: any) {
+          writeLog(e.message);
           return Response.json(["ERROR", e.message]);
      }
 }

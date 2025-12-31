@@ -1,16 +1,16 @@
 import { NextRequest } from 'next/server';
-import { logMessage } from '../lib';
+import { writeLog } from '../lib';
 
 export async function PUT(request: NextRequest) {
      const searchParams = request.nextUrl.searchParams;
 
-     const logMessageText = searchParams.get("LogMessage");
+     const writeLogText = searchParams.get("WriteLogText");
 
-     if (logMessageText === null) {
+     if (writeLogText === null) {
           return Response.json(["ERROR", "Log message was not provided"]);
      }
 
-     logMessage(logMessageText);
+     writeLog(writeLogText);
 
      return Response.json(["OK"]);
 }

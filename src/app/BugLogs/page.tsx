@@ -82,7 +82,7 @@ export default function BugLogs() {
 
                     setBugLogs(newBugLogs);
                }
-          } catch (e) {
+          } catch (e: any) {
                alert(e.message);
           }
      }
@@ -138,7 +138,7 @@ export default function BugLogs() {
                } else {
                     alert(`An error occurred while getting the bug logs`);
                }
-          } catch (e) {
+          } catch (e: any) {
                alert(e.message);
           }
      }
@@ -195,7 +195,7 @@ export default function BugLogs() {
                } else {
                     alert(saveBugLogResult[1]);
                }
-          } catch (e) {
+          } catch (e: any) {
                alert(e.message);
           }
      }

@@ -1,4 +1,4 @@
-import { getDB, isUserAdmin, logMessage, writeDB } from "../lib";
+import { getDB, isUserAdmin, writeLog, writeDB } from "../lib";
 import { NextRequest } from 'next/server';
 import IWatchListSource from "@/app/interfaces/IWatchListSource";
 import IWatchList from "@/app/interfaces/IWatchList";
@@ -53,8 +53,8 @@ export async function PUT(request: NextRequest) {
           writeDB(db);
 
           return Response.json(["OK"]);
-     } catch (e) {
-          logMessage(e.message);
+     } catch (e: any) {
+          writeLog(e.message);
           return Response.json(["ERROR", e.message]);
      }
 }

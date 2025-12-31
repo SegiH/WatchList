@@ -58,7 +58,7 @@ export async function GET(request: NextRequest) {
           } else {
                return Response.json(["OK", filteredOptions[0]]);
           }
-     } catch (e) {
+     } catch (e: any) {
           return Response.json(["ERROR", `An error occurred getting the options with the error ${e.message}`]);
      }
 }

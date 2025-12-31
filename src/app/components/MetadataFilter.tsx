@@ -43,7 +43,7 @@ const MetaDataFilter = (props) => {
             setSelectedValues(props.metaDataFilters);
 
             setMetaDataLoadingCheck(APIStatus.Success);
-        } catch (e) {
+        } catch (e: any) {
             alert(e.message);
         }
     }

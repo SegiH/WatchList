@@ -71,7 +71,7 @@ const ManageUserAccounts = () => {
                }
 
                setUsersLoadingCheck(APIStatus.Success);
-          } catch (e) {
+          } catch (e: any) {
                setErrorMessage(e.message);
                setIsError(true);
           }
@@ -131,7 +131,6 @@ const ManageUserAccounts = () => {
                }
           }
 
-
           let columns = ``;
 
           if (isAdding !== true) {
@@ -164,7 +163,7 @@ const ManageUserAccounts = () => {
                } else {
                     alert(saveUserAccountResult[1]);
                }
-          } catch (e) {
+          } catch (e: any) {
                alert(e.message);
           }
      }

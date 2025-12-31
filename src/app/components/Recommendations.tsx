@@ -41,7 +41,7 @@ const Recommendations = ({ queryTerm, setRecommendationName, setRecommendationTy
 
                     setRecommendationsError(true);
                }
-          } catch (e) {
+          } catch (e: any) {
                alert(e.message);
           }
      }

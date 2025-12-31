@@ -19,4 +19,5 @@ export interface ItemsDtlContextType {
      setIsError: (value: boolean) => void;
      setErrorMessage: (value: string) => void;
      watchListTypes: IWatchListType[];
+     writeLog: (writeLogText: string) => void;
 }

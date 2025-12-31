@@ -1,6 +1,6 @@
 'use server'
 import { NextRequest } from 'next/server';
-import { getDB, getUserOptions, getUserSession, logMessage, validateSettings } from "../lib";
+import { getDB, getUserOptions, getUserSession, writeLog, validateSettings } from "../lib";
 //import { sendCompressedJsonBrotli, sendCompressedJsonGZip } from '@/app/middleware';
 
 export async function GET(request: NextRequest) {
@@ -19,7 +19,7 @@ export async function GET(request: NextRequest) {
                return Response.json(["ERROR", false]);
           }
      } catch (e) {
-          logMessage(e.message)
+          writeLog(e.message)
           return Response.json(["ERROR", e.message]);
      }
 

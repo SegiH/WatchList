@@ -64,7 +64,7 @@ const ManageWatchListSources = () => {
                } else {
                     setWatchListSourcesLoadingCheck(APIStatus.Idle);
                }
-          } catch (e) {
+          } catch (e: any) {
                alert(e.message);
           }
      }
@@ -131,7 +131,7 @@ const ManageWatchListSources = () => {
                } else {
                     alert(sourceSourceResult[1]);
                }
-          } catch (e) {
+          } catch (e: any) {
                alert(e.message);
           }
      }

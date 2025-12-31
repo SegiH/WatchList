@@ -749,7 +749,7 @@ const DataProvider = ({
                setIsError(true);
                return;
           }
-     }, [isError, routeList, router, setOptions, userData]);
+     }, [isError, routeList, router, setOptions]); // , userData
 
      // Check if user is logged in already
      useEffect(() => {

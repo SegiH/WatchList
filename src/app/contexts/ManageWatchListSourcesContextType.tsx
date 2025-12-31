@@ -1,9 +1,10 @@
-import IUser from "../IUser";
+import IWatchListSource from "../interfaces/IWatchListSource";
 
-export interface ManageUserAccountsContextType {
+export interface ManageWatchListSourcesContextType {
      CancelIconComponent: React.ReactNode;
      darkMode: boolean;
      defaultRoute: string;
+     DeleteIconComponent: React.ReactNode;
      demoMode: boolean;
      EditIconComponent: React.ReactNode;
      isAdding: boolean;
@@ -12,9 +13,7 @@ export interface ManageUserAccountsContextType {
      SaveIconComponent: React.ReactNode;
      setIsAdding: (value: boolean) => void;
      setIsEditing: (value: boolean) => void;
-     setIsError: (value: boolean) => void;
-     setErrorMessage: (value: string) => void;
-     setUsers: React.Dispatch<React.SetStateAction<IUser[]>>;
-     users: IUser[],
-     validatePassword: (value: string) => boolean;
+     setWatchListSourcesLoadingCheck: (value: string) => void;
+     watchListSources: IWatchListSource[];
+     watchListSourcesLoadingCheck: string;
 }

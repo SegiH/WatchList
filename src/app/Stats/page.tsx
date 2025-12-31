@@ -12,11 +12,11 @@ import IWatchListTVTop10Stat from "../interfaces/IWatchListTVTop10Stat";
 import IWatchListWeeklyMovieStat from "../interfaces/IWatchListWeeklyMovieStat";
 import IWatchListWeeklyTVStat from "../interfaces/IWatchListWeeklyTVStat";
 
-import { APIStatus, WatchListStatsContext } from "../data-context";
+import { APIStatus, WatchListStatsContext } from "../context";
 
 import "../css/tablestyle.css";
 import "./watchliststats.css";
-import { WatchListStatsContextType } from "../interfaces/contexts/WatchListStatsContextType";
+import { WatchListStatsContextType } from "../contexts/WatchListStatsContextType";
 import Loader from "../components/Loader";
 
 export default function WatchListStats() {

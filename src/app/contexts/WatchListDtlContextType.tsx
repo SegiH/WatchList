@@ -1,5 +1,5 @@
-import IWatchListItem from "../IWatchListItem";
-import IWatchListSource from "../IWatchListSource";
+import IWatchListItem from "../interfaces/IWatchListItem";
+import IWatchListSource from "../interfaces/IWatchListSource";
 
 export interface WatchListDtlContextType {
      BrokenImageIconComponent: React.ReactNode;

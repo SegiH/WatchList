@@ -5,8 +5,8 @@ import { useRouter } from 'next/navigation';
 import React, { useContext, useEffect, useState } from "react";
 import IWatchListSource from "../interfaces/IWatchListSource";
 
-import { APIStatus, ManageWatchListSourcesContext } from "../data-context";
-import { ManageWatchListSourcesContextType } from "../interfaces/contexts/ManageWatchListSourcesContextType";
+import { APIStatus, ManageWatchListSourcesContext } from "../context";
+import { ManageWatchListSourcesContextType } from "../contexts/ManageWatchListSourcesContextType";
 
 const ManageWatchListSources = () => {
      const {

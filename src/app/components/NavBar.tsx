@@ -1,9 +1,9 @@
 import { act, useContext } from "react";
 
-import { NavBarContext } from "../data-context";
+import { NavBarContext } from "../context";
 
 import "./NavBar.css";
-import { NavBarContextType } from "../interfaces/contexts/NavBarContextType";
+import { NavBarContextType } from "../contexts/NavBarContextType";
 
 const NavBar = (props) => {
     const {

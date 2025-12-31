@@ -1,5 +1,5 @@
-import ISectionChoice from "../ISectionChoice";
-import IUserOption from "../IUserOption";
+import ISectionChoice from "../interfaces/ISectionChoice";
+import IUserOption from "../interfaces/IUserOption";
 
 export interface SettingsContextType {
      activeRoute: string;

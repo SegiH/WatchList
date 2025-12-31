@@ -3,8 +3,8 @@
 import { useContext } from "react";
 import { useRouter } from 'next/navigation';
 
-import { ErrorContext } from "../data-context";
-import { ErrorContextType } from "../interfaces/contexts/ErrorContextType";
+import { ErrorContext } from "../context";
+import { ErrorContextType } from "../contexts/ErrorContextType";
 
 export default function ErrorPage() {
      const {

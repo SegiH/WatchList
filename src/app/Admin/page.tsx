@@ -4,13 +4,13 @@ import Tab from "@mui/material/Tab";
 import Tabs from "@mui/material/Tabs";
 import { useRouter } from 'next/navigation';
 import React, { useContext, useEffect, useState } from "react";
-import { AdminContext } from "../data-context";
+import { AdminContext } from "../context";
 import ManageUserAccounts from "./ManageUserAccounts";
 import ManageWatchListSources from "./ManageWatchListSources";
 import ManageWatchListTypes from "./ManageWatchListTypes";
 
 import "../page.css";
-import { AdminContextType } from "../interfaces/contexts/AdminContextType";
+import { AdminContextType } from "../contexts/AdminContextType";
 
 export default function Admin() {
      const {
@@ -47,9 +47,9 @@ export default function Admin() {
 
      useEffect(() => {
           // Make sure current user is an admin
-          if (!isAdmin() && !demoMode) {
+          /*if (!isAdmin() && !demoMode) {
                router.push(defaultRoute)
-          }
+          }*/
 
           const newSelectedTab = localStorage.getItem("WatchList.AdminTab");
 

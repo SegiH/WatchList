@@ -88,13 +88,14 @@ export async function GET(request: NextRequest) {
                          (allData == "true") ||
                          (
                               (searchTerm === null || searchTerm === "")
-                              || (searchTerm !== null && searchTerm !== ""
-                                   && (watchList.WatchListItemName?.toString().toLowerCase().includes(searchTerm.toString().toLowerCase())
+                              || (searchTerm !== null && searchTerm !== "" && thisWLI.length === 1
+                                   && (thisWLI[0].WatchListItemName?.toString().toLowerCase().includes(searchTerm.toString().toLowerCase())
                                         || watchList.Notes?.toString().toLowerCase().includes(searchTerm.toString().toLowerCase())
+                                        || thisWLI[0].Notes?.toString().toLowerCase().includes(searchTerm.toString().toLowerCase())
                                    )
                               )
                          )
-                         && // When metadata filters are passed, StillWatcihng will prevent any results from showing up most of the time. 
+                         && // When metadata filters are passed, StillWatching will prevent any results from showing up most of the time. 
                          ((stillWatching !== "true") || (stillWatching === "true" && metaDataFiltersJSONStr === null && (watchList.EndDate === "" || watchList.EndDate == null)))
                          &&
                          (((archivedVisible !== "true" && watchList.Archived !== 1) || (archivedVisible === "true" && watchList.Archived === 1)))

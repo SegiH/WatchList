@@ -1,9 +1,9 @@
-import IBugLog from "../IBugLog";
-import ISectionChoice from "../ISectionChoice";
-import IWatchList from "../IWatchList";
-import IWatchListItem from "../IWatchListItem";
-import IWatchListSource from "../IWatchListSource";
-import IWatchListType from "../IWatchListType";
+import IBugLog from "../interfaces/IBugLog";
+import ISectionChoice from "../interfaces/ISectionChoice";
+import IWatchList from "../interfaces/IWatchList";
+import IWatchListItem from "../interfaces/IWatchListItem";
+import IWatchListSource from "../interfaces/IWatchListSource";
+import IWatchListType from "../interfaces/IWatchListType";
 
 export interface DataContextType {
      bugLogs: IBugLog[];

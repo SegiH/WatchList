@@ -4,11 +4,11 @@ import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import { useRouter } from 'next/navigation';
 import React, { useContext, useEffect, useState } from "react";
-import { APIStatus, BugLogsContext } from "../data-context";
+import { APIStatus, BugLogsContext } from "../context";
 import IBugLog from "../interfaces/IBugLog";
 
 import "../page.css";
-import { BugLogsContextType } from "../interfaces/contexts/BugLogsContextType";
+import { BugLogsContextType } from "../contexts/BugLogsContextType";
 
 export default function BugLogs() {
      const {

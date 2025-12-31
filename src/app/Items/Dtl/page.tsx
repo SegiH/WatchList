@@ -4,10 +4,10 @@ import Image from "next/image";
 import { useRouter } from 'next/navigation';
 import React, { useContext, useEffect, useState } from "react";
 import Recommendations from "../../components/Recommendations";
-import { APIStatus, ItemsDtlContext } from "../../data-context";
+import { APIStatus, ItemsDtlContext } from "../../context";
 import IWatchListItem from "../../interfaces/IWatchListItem";
 import IWatchListType from "../../interfaces/IWatchListType";
-import { ItemsDtlContextType } from "@/app/interfaces/contexts/ItemsDtlContextType";
+import { ItemsDtlContextType } from "@/app/contexts/ItemsDtlContextType";
 import IMDBCard from "@/app/components/IMDBCard";
 
 export default function ItemsDtl() {
@@ -30,7 +30,7 @@ export default function ItemsDtl() {
 
      const router = useRouter();
 
-     const addWatchListItemDetailChangeHandler = (fieldName: string, fieldValue: number | string) => {
+     const addWatchListItemDetailChangeHandler = (fieldName: string, fieldValue: boolean | number | string) => {
           const newAddWatchListItemDtl = { ...addWatchListItemDtl } as IWatchListItem;
 
           newAddWatchListItemDtl[fieldName] = fieldValue;
@@ -354,7 +354,11 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
      const watchListItemDetailChangeHandler = (fieldName: string, fieldValue: boolean | string) => {
           const newWatchListItemDtl = { ...watchListItemDtl } as IWatchListItem;
 
-          newWatchListItemDtl[fieldName] = fieldValue;
+          if (fieldName === "Archived") {
+               newWatchListItemDtl[fieldName] = fieldValue === true ? 1 : 0;
+          } else {
+               newWatchListItemDtl[fieldName] = fieldValue;
+          }
           newWatchListItemDtl[`${fieldName}IsModified`] = true;
 
           if (!editModified) {
@@ -640,7 +644,7 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
 
                                                        {isAdding && typeof addWatchListItemDtl !== "undefined" && addWatchListItemDtl !== null &&
                                                             <div className="narrow card">
-                                                                 <input className={`lightMode`} type="checkbox" checked={addWatchListItemDtl.Archived === 1 ? true : false} onChange={(event) => addWatchListItemDetailChangeHandler("Archived", event.target.value)} />
+                                                                 <input className={`lightMode`} type="checkbox" checked={addWatchListItemDtl.Archived === 1 ? true : false} onChange={(event) => addWatchListItemDetailChangeHandler("Archived", event.target.checked)} />
                                                             </div>
 
                                                        }

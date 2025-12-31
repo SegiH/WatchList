@@ -1,4 +1,4 @@
-import IWatchListItem from "../IWatchListItem";
+import IWatchListItem from "../interfaces/IWatchListItem";
 
 export interface ItemsContextType {
      darkMode: boolean;

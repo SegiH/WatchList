@@ -4,12 +4,11 @@ import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import { useRouter } from 'next/navigation';
 import React, { useContext, useEffect, useState } from "react";
-import { APIStatus, ManageUserAccountsContext } from "../data-context";
+import { APIStatus, ManageUserAccountsContext } from "../context";
 import IUser from "../interfaces/IUser";
 
 import "../page.css";
-import { ManageUserAccountsContextType } from "../interfaces/contexts/ManageUserAccountsContextType";
-import { getUserSession } from "../api/lib";
+import { ManageUserAccountsContextType } from "../contexts/ManageUserAccountsContextType";
 
 const ManageUserAccounts = () => {
      const {
@@ -192,9 +191,9 @@ const ManageUserAccounts = () => {
 
      useEffect(() => {
           // Make sure current user is an admin
-          if (!isAdmin() && !demoMode) {
+          /*if (!isAdmin() && !demoMode) {
                router.push(defaultRoute)
-          }
+          }*/
 
           if (demoMode) {
                const newUserData: IUser[] = require("../demo/index").demoUsers;

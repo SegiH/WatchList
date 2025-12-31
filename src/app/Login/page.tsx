@@ -2,12 +2,12 @@
 
 import { useRouter } from "next/navigation";
 import React, { useCallback, useContext, useEffect, useRef, useState } from "react";
-import { APIStatus, LoginContext } from "../data-context";
+import { APIStatus, LoginContext } from "../context";
 import IUser from "../interfaces/IUser";
 import IUserData from "../interfaces/IUserData";
 
 import "./Login.css";
-import { LoginContextType } from "../interfaces/contexts/LoginContextType";
+import { LoginContextType } from "../contexts/LoginContextType";
 
 export default function Login() {
      const {

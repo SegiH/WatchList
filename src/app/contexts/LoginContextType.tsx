@@ -1,5 +1,5 @@
-import IUserData from "../IUserData";
-import IUserOption from "../IUserOption";
+import IUserData from "../interfaces/IUserData";
+import IUserOption from "../interfaces/IUserOption";
 
 export interface LoginContextType {
      activeRoute: string;

@@ -3,7 +3,7 @@ import Select from 'react-select';
 import { useEffect, useState } from "react";
 
 import "../page.css";
-import { APIStatus } from "../data-context";
+import { APIStatus } from "../context";
 
 const MetaDataFilter = (props) => {
     const [metaDataLoadingCheck, setMetaDataLoadingCheck] = useState(APIStatus.Idle);

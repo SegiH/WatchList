@@ -1,4 +1,4 @@
-import IWatchList from "../IWatchList";
+import IWatchList from "../interfaces/IWatchList";
 
 export interface WatchListCardContextType {
      BrokenImageIconComponent: React.ReactNode;

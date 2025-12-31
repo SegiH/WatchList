@@ -1,10 +1,10 @@
 import { useRouter } from 'next/navigation';
 import { useContext, useEffect, useState } from "react";
-import { APIStatus, SettingsContext } from "../data-context";
+import { APIStatus, SettingsContext } from "../context";
 import IUserOption from "../interfaces/IUserOption";
 import Select from 'react-select';
-import { SettingsContextType } from '../interfaces/contexts/SettingsContextType';
-
+import { SettingsContextType } from '../contexts/SettingsContextType';
+// etStillWatching, setTypeFilter, setVisibleSections, setWatchListSortColumn, setWatchListSortDirection, settingsVisible, showSettings, signOut, sourceFilter, stillWatching, typeFilter, visibleSections, visibleSectionChoices, watchListSortColumns, watchListSortColumn, watchListSortDirection, watchListSources, watchListSourcesLoadingCheck, watchListTypes, watchListTypesLoadingCheck 
 const Settings = () => {
      const {
           activeRoute, archivedVisible, autoAdd, buildDate, darkMode, defaultRoute, demoMode, hideTabs, loggedInCheck, LogOutIconComponent, pullToRefreshEnabled, saveOptions, setActiveRoute, setOptions, setSettingsVisible, setShowMissingArtwork, setStillWatching, setVisibleSections, showMissingArtwork, signOut, visibleSectionChoices, visibleSections, watchListSortColumn
@@ -82,7 +82,7 @@ const Settings = () => {
                                         value={visibleSections as any}
                                         defaultValue={visibleSections as any}
                                         onChange={addRemoveVisibleSectionChange}
-                                        options={visibleSectionChoices.filter((section) => (!demoMode || (demoMode && section["label"] !== "Admin"))) as any}
+                                        options={visibleSectionChoices && visibleSectionChoices.filter((section) => (!demoMode || (demoMode && section["label"] !== "Admin"))) as any}
                                         className="custom-select"
                                         styles={{
                                              control: (provided) => ({

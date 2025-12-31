@@ -1,4 +1,4 @@
-import IWatchListType from "../IWatchListType";
+import IWatchListType from "../interfaces/IWatchListType";
 
 export interface ItemsDtlContextType {
      BrokenImageIconComponent: React.ReactNode;

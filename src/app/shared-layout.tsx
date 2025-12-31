@@ -9,13 +9,13 @@ import Settings from "./components/Settings";
 import IWatchListSource from "./interfaces/IWatchListSource";
 import IWatchListType from "./interfaces/IWatchListType";
 
-import { APIStatus, SharedLayoutContext } from "./data-context";
+import { APIStatus, SharedLayoutContext } from "./context";
 
 import "./page.css";
 import IUserOption from "./interfaces/IUserOption";
 import { Button } from "@mui/material";
 import Loader from "./components/Loader";
-import { SharedLayoutContextType } from "./interfaces/contexts/SharedLayoutContextType";
+import { SharedLayoutContextType } from "./contexts/SharedLayoutContextType";
 
 const SharedLayout = () => {
      const {

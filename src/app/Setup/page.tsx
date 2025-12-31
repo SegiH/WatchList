@@ -2,11 +2,11 @@
 
 import { useRouter } from "next/navigation";
 import React, { useContext, useEffect, useState } from "react";
-import { APIStatus, SetupContext } from "../data-context";
+import { APIStatus, SetupContext } from "../context";
 
 import "../Login/Login.css";
 import IUser from "../interfaces/IUser";
-import { SetupContextType } from "../interfaces/contexts/SetupContextType";
+import { SetupContextType } from "../contexts/SetupContextType";
 
 export default function Setup() {
      const {

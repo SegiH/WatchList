@@ -1,5 +1,5 @@
-import IRouteList from "../IRoute";
-import ISectionChoice from "../ISectionChoice";
+import IRouteList from "../interfaces/IRoute";
+import ISectionChoice from "../interfaces/ISectionChoice";
 
 export interface TabsContextType {
      activeRoute: string;

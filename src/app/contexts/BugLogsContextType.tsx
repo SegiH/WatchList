@@ -1,4 +1,4 @@
-import IBugLog from "../IBugLog";
+import IBugLog from "../interfaces/IBugLog";
 
 export interface BugLogsContextType {
      bugLogs: IBugLog[];

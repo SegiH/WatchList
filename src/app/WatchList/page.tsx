@@ -1,20 +1,20 @@
 "use client"
 
 import { useContext, useEffect, useState } from "react";
-import { APIStatus, WatchListContext } from "../data-context";
+import { APIStatus, WatchListContext } from "../context";
 import IWatchList from "../interfaces/IWatchList";
 import React from "react";
 
 import "../page.css";
 import NavBar from "../components/NavBar";
-import { WatchListContextType } from "../interfaces/contexts/WatchListContextType";
+import { WatchListContextType } from "../contexts/WatchListContextType";
 
 import WatchListCard from "./WatchListCard";
 import IMDBCard from "../components/IMDBCard";
 
 export default function WatchList() {
      const {
-          darkMode, filteredWatchList, hideTabs, isLoading, setActiveRoute, setIsAdding, setIsEditing, watchListSortingCheck
+          darkMode, filteredWatchList, hideTabs, isLoading, setActiveRoute, setIsAdding, setIsEditing, watchListSortingCheck, writeLog
      } = useContext(WatchListContext) as WatchListContextType;
 
      const [imdbCardvisible, setImdbCardvisible] = useState(false);
@@ -49,7 +49,7 @@ export default function WatchList() {
                               <ul className={`show-list${!darkMode ? " lightMode" : " darkMode"} ${hideTabs ? "noTabs" : ""}`}>
                                    {filteredWatchList?.map((currentWatchList: IWatchList) => {
                                         return (
-                                             <WatchListCard key={currentWatchList.WatchListID} currentWatchList={currentWatchList} setImdbJSON={setImdbJSON} />
+                                             <WatchListCard key={currentWatchList.WatchListID} currentWatchList={currentWatchList} setImdbJSON={setImdbJSON} writeLog={writeLog}/>
                                         );
                                    })}
                               </ul>

@@ -3,10 +3,10 @@
 import { useRouter } from 'next/navigation';
 import { useContext } from "react";
 
-import { APIStatus, TabsContext } from "../data-context";
+import { APIStatus, TabsContext } from "../context";
 
 import "./Tabs.css";
-import { TabsContextType } from '../interfaces/contexts/TabsContextType';
+import { TabsContextType } from '../contexts/TabsContextType';
 
 const Tabs = () => {
      const {

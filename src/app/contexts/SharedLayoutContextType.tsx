@@ -1,8 +1,8 @@
-import IRouteList from "../IRoute";
-import IUserOption from "../IUserOption";
-import IWatchListSortColumn from "../IWatchListSortColumn";
-import IWatchListSource from "../IWatchListSource";
-import IWatchListType from "../IWatchListType";
+import IRouteList from "../interfaces/IRoute";
+import IUserOption from "../interfaces/IUserOption";
+import IWatchListSortColumn from "../interfaces/IWatchListSortColumn";
+import IWatchListSource from "../interfaces/IWatchListSource";
+import IWatchListType from "../interfaces/IWatchListType";
 
 export interface SharedLayoutContextType {
      activeRoute: string;

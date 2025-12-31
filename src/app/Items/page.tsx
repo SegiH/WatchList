@@ -1,11 +1,11 @@
 "use client"
 
 import { useContext, useEffect, useState } from "react";
-import { APIStatus, ItemsContext } from "../data-context";
+import { APIStatus, ItemsContext } from "../context";
 import IWatchListItem from "../interfaces/IWatchListItem";
 import React from "react";
 import NavBar from "../components/NavBar";
-import { ItemsContextType } from "../interfaces/contexts/ItemsContextType";
+import { ItemsContextType } from "../contexts/ItemsContextType";
 import IMDBCard from "../components/IMDBCard";
 
 const WatchListItemCard = React.lazy(() => import('./WatchListItemCard'));

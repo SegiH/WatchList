@@ -3,9 +3,9 @@ import TextField from "@mui/material/TextField";
 import { useRouter } from 'next/navigation';
 import React, { useContext, useEffect, useState } from "react";
 
-import { APIStatus, ManageWatchListTypesContext } from "../data-context";
+import { APIStatus, ManageWatchListTypesContext } from "../context";
 import IWatchListType from "../interfaces/IWatchListType";
-import { ManageWatchListTypesContextType } from "../interfaces/contexts/ManageWatchListTypesContextType";
+import { ManageWatchListTypesContextType } from "../contexts/ManageWatchListTypesContextType";
 
 const ManageWatchListTypes = () => {
      const {

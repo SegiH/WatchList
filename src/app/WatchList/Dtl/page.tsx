@@ -17,8 +17,8 @@ import IWatchListSource from "../../interfaces/IWatchListSource";
 
 import "../../page.css";
 
-import { APIStatus, WatchListDtlContext } from "../../data-context";
-import { WatchListDtlContextType } from "@/app/interfaces/contexts/WatchListDtlContextType";
+import { APIStatus, WatchListDtlContext } from "../../context";
+import { WatchListDtlContextType } from "@/app/contexts/WatchListDtlContextType";
 
 // I have a very specific use case here where I'm using a custom type for the Auto Complete dropdown that only has these 2 properties and is only used here so the interface is created here
 interface AutoCompleteWatchListItem {
@@ -28,7 +28,7 @@ interface AutoCompleteWatchListItem {
 
 export default function WatchListDtl() {
      const {
-          BrokenImageIconComponent, CancelIconComponent, EditIconComponent, SaveIconComponent, darkMode, demoMode, getWatchList, imdbSearchEnabled, isAdding, isEditing, isLoading, pullToRefreshEnabled, recommendationsEnabled, setErrorMessage, setIsAdding, setIsEditing, setIsError, setStillWatching, showSearch, stillWatching, watchListSortDirection, watchListSources
+          BrokenImageIconComponent, CancelIconComponent, EditIconComponent, SaveIconComponent, darkMode, demoMode, getWatchList, imdbSearchEnabled, isAdding, isEditing, isLoading, pullToRefreshEnabled, recommendationsEnabled, setErrorMessage, setIsAdding, setIsEditing, setIsError, setStillWatching, showSearch, stillWatching, watchListSortDirection, watchListSources, writeLog
      } = useContext(WatchListDtlContext) as WatchListDtlContextType
 
      const currentDate = new Date().toLocaleDateString();
@@ -250,7 +250,7 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
                          itemName += ` (${watchListItem.WatchListTypeName})`;
                     }
 
-                    return { name: itemName };
+                    return { name: itemName, id: watchListItem.WatchListItemID };
                });
 
                const namesSorted = namesOnlyItems.sort((a: any, b: any) => {
@@ -270,21 +270,24 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
                     return 0;
                });
 
-               const seenNames = new Map<string, number>();
+               const seenNames: IAutoCompleteOption[] = [];
                const duplicateMessages: string[] = [];
 
                namesSorted.forEach((item, index) => {
-                    if (seenNames.has(item.name)) {
+                    if (seenNames.filter((seenName: IAutoCompleteOption) => String(seenName.name) === String(item.name)).length > 0) {
                          duplicateMessages.push(`Duplicate found for "${item.name}"`);
+                    } else {
+                         const newItem: IAutoCompleteOption = { name: item.name }
+                         seenNames.push(newItem);
+                         //seenNames.set(item.name, index); // Overwrite to keep the last occurrence
                     }
-                    seenNames.set(item.name, index); // Overwrite to keep the last occurrence
                });
 
                if (duplicateMessages.length > 0) {
-                    console.log(duplicateMessages.join("\n"));
+                    writeLog("something funky happened");
                }
 
-               setFormattedNames(namesSorted);
+               setFormattedNames(seenNames);
 
                const namesWithIdItems = getAllWatchListItemsResult[1].map((watchListItem: IWatchListItem) => {
                     let itemName = watchListItem.WatchListItemName

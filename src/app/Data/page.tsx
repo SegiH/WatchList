@@ -1,13 +1,13 @@
 "use client"
 
 import React, { useContext, useEffect, useState } from "react";
-import { APIStatus, DataContext } from "../data-context";
+import { APIStatus, DataContext } from "../context";
 import { useRouter } from 'next/navigation';
 
 import "../page.css";
 import IBugLog from "../interfaces/IBugLog";
 import IUser from "../interfaces/IUser";
-import { DataContextType } from "../interfaces/contexts/DataContextType";
+import { DataContextType } from "../contexts/DataContextType";
 
 export default function Data() {
     const {

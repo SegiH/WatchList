@@ -463,7 +463,7 @@ const DataProvider = ({
           if (demoMode) {
                return false;
           } else {
-               return userData.Admin;
+               return userData.Admin === 1;
           }
      }
 

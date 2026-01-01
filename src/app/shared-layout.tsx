@@ -143,8 +143,8 @@ const SharedLayout = () => {
                                                   <span className={`leftMargin menuBarActiveRoute${!darkMode ? " lightMode" : " darkMode"}`}>Demo</span>
                                              }
 
-                                             {activeRoute === "Stats" &&
-                                                  <span className={`leftMargin menuBarActiveRoute${!darkMode ? " lightMode" : " darkMode"}`}>Stats</span>
+                                             {(activeRoute === "Stats" || activeRoute === "Admin") &&
+                                                  <span className={`leftMargin menuBarActiveRoute${!darkMode ? " lightMode" : " darkMode"}`}>{activeRoute}</span>
                                              }
 
                                              {(activeRoute === "WatchList" || activeRoute === "Items") &&

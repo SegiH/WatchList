@@ -48,7 +48,7 @@ export async function GET(request: NextRequest) {
                     Password: "",
                     Admin: currentUser.Admin,
                     Enabled: currentUser.Enabled,
-                    IsModified: false,
+                    IsModified: 0,
                     Options: currentUser.Options
                });
           });

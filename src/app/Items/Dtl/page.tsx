@@ -38,7 +38,7 @@ export default function ItemsDtl() {
           const newAddWatchListItemDtl = { ...addWatchListItemDtl } as IWatchListItem;
 
           newAddWatchListItemDtl[fieldName] = fieldValue;
-          newAddWatchListItemDtl.IsModified = true;
+          newAddWatchListItemDtl.IsModified = 1;
 
           setAddWatchListItemDtl(newAddWatchListItemDtl);
      };
@@ -207,27 +207,27 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
 
                let queryURL = ``;
 
-               if (watchListItemDtl?.WatchListItemNameIsModified === true) {
+               if (watchListItemDtl?.WatchListItemNameIsModified === 1) {
                     queryURL += `&WatchListItemName=${watchListItemDtl.WatchListItemName}`;
                }
 
-               if (watchListItemDtl?.WatchListTypeIDIsModified === true) {
+               if (watchListItemDtl?.WatchListTypeIDIsModified === 1) {
                     queryURL += `&WatchListTypeID=${watchListItemDtl.WatchListTypeID}`;
                }
 
-               if (watchListItemDtl?.IMDB_URLIsModified === true) {
+               if (watchListItemDtl?.IMDB_URLIsModified === 1) {
                     queryURL += `&IMDB_URL=${watchListItemDtl.IMDB_URL}`;
                }
 
-               if (watchListItemDtl?.IMDB_PosterIsModified === true) {
+               if (watchListItemDtl?.IMDB_PosterIsModified === 1) {
                     queryURL += `&IMDB_Poster=${watchListItemDtl.IMDB_Poster}`;
                }
 
-               if (watchListItemDtl?.ItemNotesIsModified === true) {
+               if (watchListItemDtl?.ItemNotesIsModified === 1) {
                     queryURL += `&ItemNotes=${watchListItemDtl.ItemNotes}`;
                }
 
-               if (watchListItemDtl?.ArchivedIsModified === true) {
+               if (watchListItemDtl?.ArchivedIsModified === 1) {
                     queryURL += `&Archived=${watchListItemDtl.Archived}`;
                }
 
@@ -243,7 +243,7 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
                               alert(`The error ${saveItemDtlResult[1]} occurred while updating the item detail`);
                          } else {
                               // Update type name if needed
-                              if (watchListItemDtl?.WatchListTypeIDIsModified === true) {
+                              if (watchListItemDtl?.WatchListTypeIDIsModified === 1) {
                                    const result = watchListTypes?.filter((currentWatchList: IWatchListType) => {
                                         return String(currentWatchList.WatchListTypeID) === String(watchListItemDtl["WatchListTypeID"]);
                                    });

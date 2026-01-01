@@ -21,7 +21,7 @@ const ManageWatchListTypes = () => {
           setAddingType({
                WatchListTypeID: -1,
                WatchListTypeName: "",
-               IsModified: false
+               IsModified: 0
           })
 
           setIsAdding(true);
@@ -125,7 +125,7 @@ const ManageWatchListTypes = () => {
           } as IWatchListType;
 
           newType[fieldName] = fieldValue;
-          newType.IsModified = true;
+          newType.IsModified = 1;
 
           if (isAdding) {
                setAddingType(newType);

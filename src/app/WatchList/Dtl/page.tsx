@@ -90,7 +90,7 @@ export default function WatchListDtl() {
                newAddWatchListDtl[fieldName] = fieldValue;
           }
 
-          newAddWatchListDtl.IsModified = true;
+          newAddWatchListDtl.IsModified = 1;
 
           setAddWatchListDtl(newAddWatchListDtl);
 
@@ -128,7 +128,7 @@ export default function WatchListDtl() {
                     const newWatchListDtl = { ...watchListDtl } as IWatchList;
                     newWatchListDtl["WatchListItemID"] = watchListItem[0].WatchListItemID;
                     newWatchListDtl["WatchListItem"] = watchListItem[0];
-                    newWatchListDtl[`WatchListItemIDIsModified`] = true;
+                    newWatchListDtl[`WatchListItemIDIsModified`] = 1;
                     setWatchListDtl(newWatchListDtl);
                     setEditModified(true);
                }
@@ -493,15 +493,15 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
 
                let queryURL = ``;
 
-               if (watchListDtl.WatchListItemIDIsModified === true) {
+               if (watchListDtl.WatchListItemIDIsModified === 1) {
                     queryURL += `&WatchListItemID=${watchListDtl.WatchListItemID}`;
                }
 
-               if (watchListDtl.WatchListSourceIDIsModified === true) {
+               if (watchListDtl.WatchListSourceIDIsModified === 1) {
                     queryURL += `&WatchListSourceID=${watchListDtl.WatchListSourceID}`;
                }
 
-               if (watchListDtl.StartDateIsModified === true) {
+               if (watchListDtl.StartDateIsModified === 1) {
                     // Fix start date formatting
                     if (watchListDtl.StartDate.toString().indexOf("-") === -1) {
                          watchListDtl.StartDate = `${watchListDtl.StartDate.substring(0, 4)}-${watchListDtl.StartDate.substring(4, 6)}-${watchListDtl.StartDate.substring(6, 8)}`;
@@ -510,7 +510,7 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
                     queryURL += `&StartDate=${watchListDtl.StartDate}`;
                }
 
-               if (watchListDtl.EndDateIsModified === true) {
+               if (watchListDtl.EndDateIsModified === 1) {
                     // Fix end date formatting
                     if (watchListDtl.EndDate.toString().indexOf("-") === -1) {
                          watchListDtl.EndDate = `${watchListDtl.EndDate.substring(0, 4)}-${watchListDtl.EndDate.substring(4, 6)}-${watchListDtl.EndDate.substring(6, 8)}`;
@@ -519,19 +519,19 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
                     queryURL += `&EndDate=${watchListDtl.EndDate.substring(0, 10)}`;
                }
 
-               if (watchListDtl.SeasonIsModified === true) {
+               if (watchListDtl.SeasonIsModified === 1) {
                     queryURL += `&Season=${watchListDtl.Season}`;
                }
 
-               if (watchListDtl.ArchivedIsModified === true) {
+               if (watchListDtl.ArchivedIsModified === 1) {
                     queryURL += `&Archived=${watchListDtl.Archived}`;
                }
 
-               if (watchListDtl.RatingIsModified === true) {
+               if (watchListDtl.RatingIsModified === 1) {
                     queryURL += `&Rating=${watchListDtl.Rating}`;
                }
 
-               if (watchListDtl.NotesIsModified === true) {
+               if (watchListDtl.NotesIsModified === 1) {
                     queryURL += `&Notes=${watchListDtl.Notes}`;
                }
 

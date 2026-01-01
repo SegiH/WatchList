@@ -8,6 +8,6 @@ export default interface IUser {
      ConfirmPassword?: string; // Virtual field used when adding a new user
      Admin: number,
      Enabled: number,
-     IsModified?: boolean,
+     IsModified?: number,
      Options: IUserOption[]
 }

@@ -34,7 +34,7 @@ export default function BugLogs() {
           } as IBugLog;
 
           newBugLog[fieldName] = fieldValue;
-          newBugLog.IsModified = true;
+          newBugLog.IsModified = 1;
 
           if (isAdding) {
                setAddingBugLog(newBugLog);
@@ -98,7 +98,7 @@ export default function BugLogs() {
                AddDate: newFormattedDate,
                CompletedDate: "",
                ResolutionNotes: "",
-               IsModified: false,
+               IsModified: 0,
                isNew: true
           })
 

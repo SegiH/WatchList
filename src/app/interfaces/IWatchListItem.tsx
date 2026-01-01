@@ -11,13 +11,13 @@ export default interface WatchListItem {
      IMDB_JSON?: string,
      ItemNotes: string,
      Archived: number,
-     IsModified?: boolean, // Virtual field
-     WatchListItemNameIsModified?: boolean, // Virtual field
-     WatchListTypeIDIsModified?: boolean, // Virtual field
-     IMDB_URLIsModified?: boolean, // Virtual field
-     IMDB_PosterIsModified?: boolean, // Virtual field
-     ItemNotesIsModified?: boolean, // Virtual field
-     ArchivedIsModified?: boolean, // Virtual field
+     IsModified?: number, // Virtual field
+     WatchListItemNameIsModified?: number, // Virtual field
+     WatchListTypeIDIsModified?: number, // Virtual field
+     IMDB_URLIsModified?: number, // Virtual field
+     IMDB_PosterIsModified?: number, // Virtual field
+     ItemNotesIsModified?: number, // Virtual field
+     ArchivedIsModified?: number, // Virtual field
      Tooltip?: string, // Virtual field
      WatchListCount?: number // Virtual field
      WatchListHistory: IWatchList[];

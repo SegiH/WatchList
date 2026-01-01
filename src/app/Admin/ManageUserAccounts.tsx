@@ -180,7 +180,7 @@ const ManageUserAccounts = () => {
                setIsPasswordModified(true);
           }
 
-          newUser.IsModified = true;
+          newUser.IsModified = 1;
 
           if (isAdding) {
                setAddingUser(newUser);

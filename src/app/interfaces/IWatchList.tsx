@@ -17,14 +17,14 @@ export default interface WatchList {
      IMDB_Poster: string // WLI is joined with WL in the SQL when getting WL,
      IMDB_Poster_Error?: boolean, // WLI is joined with WL in the SQL when getting WL,
      IMDB_URL?: string, // WLI is joined with WL in the SQL when getting WL,
-     IsModified?: boolean, // Virtual field
-     WatchListItemIDIsModified?: boolean, // Virtual field
-     WatchListSourceIDIsModified?: boolean, // Virtual field
-     StartDateIsModified?: boolean, // Virtual field
-     EndDateIsModified?: boolean, // Virtual field
-     SeasonIsModified?: boolean, // Virtual field
-     ArchivedIsModified?: boolean, // Virtual field
-     RatingIsModified?: boolean, // Virtual field
-     NotesIsModified?: boolean, // Virtual field
+     IsModified?: number, // Virtual field
+     WatchListItemIDIsModified?: number, // Virtual field
+     WatchListSourceIDIsModified?: number, // Virtual field
+     StartDateIsModified?: number, // Virtual field
+     EndDateIsModified?: number, // Virtual field
+     SeasonIsModified?: number, // Virtual field
+     ArchivedIsModified?: number, // Virtual field
+     RatingIsModified?: number, // Virtual field
+     NotesIsModified?: number, // Virtual field
      Tooltip?: string, // Virtual field
 }

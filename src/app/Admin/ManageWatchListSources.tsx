@@ -37,7 +37,7 @@ const ManageWatchListSources = () => {
                WatchListSourceID: -1,
                WatchListSourceName: "",
                Enabled: 1,
-               IsModified: false
+               IsModified: 0
           })
 
           setIsAdding(true);
@@ -148,7 +148,7 @@ const ManageWatchListSources = () => {
                newSource[fieldName] = fieldValue;
           }
 
-          newSource.IsModified = true;
+          newSource.IsModified = 1;
 
           if (isAdding) {
                setAddingSource(newSource);

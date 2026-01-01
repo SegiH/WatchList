@@ -1,6 +1,8 @@
 import { getDB, defaultSources, isLoggedIn, writeDB, writeLog } from "../lib";
 import { NextRequest } from 'next/server';
 import { sendCompressedJsonBrotli, sendCompressedJsonGZip } from '@/app/proxy';
+import IWatchListSourceStat from "@/app/interfaces/IWatchListSourceStat";
+import IWatchListSource from "@/app/interfaces/IWatchListSource";
 
 export async function GET(request: NextRequest) {
      if (!isLoggedIn(request)) {
@@ -19,13 +21,28 @@ export async function GET(request: NextRequest) {
                defaultSources.forEach(async (element, index) => {
                     db.WatchListSources.push({
                          "WatchListSourceID": (index + 1),
-                         "WatchListSourceName": element
+                         "WatchListSourceName": element,
+                         "Enabled": 1
                     });
                });
 
                writeDB(db);
           }
 
+          let IsModified = false;
+
+          // If for some reason legacy databases don't have Enabled defined, set this attribute as enabled by default
+          db.WatchListSources.forEach(async (watchListSource: IWatchListSource) => {
+               if (typeof watchListSource.Enabled === "undefined") {
+                    IsModified = true;
+                    watchListSource["Enabled"] = 1;
+               }
+          });
+
+          if (IsModified) {
+               writeDB(db)
+          }
+     
           if (process.env.NODE_ENV === 'development') {
                return Response.json(["OK", db.WatchListSources]);
           } else {

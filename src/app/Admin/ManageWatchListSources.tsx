@@ -36,6 +36,7 @@ const ManageWatchListSources = () => {
           setAddingSource({
                WatchListSourceID: -1,
                WatchListSourceName: "",
+               Enabled: 1,
                IsModified: false
           })
 
@@ -103,7 +104,7 @@ const ManageWatchListSources = () => {
 
           if (isEditing) {
                if (editingSource !== null) {
-                    columns = `?WatchListSourceID=${editingSource.WatchListSourceID}&WatchListSourceName=${encodeURIComponent(editingSource.WatchListSourceName)}`;
+                    columns = `?WatchListSourceID=${editingSource.WatchListSourceID}&WatchListSourceName=${encodeURIComponent(editingSource.WatchListSourceName)}&Enabled=${editingSource.Enabled}`;
                } else { // This shouldn't ever happen
                     alert("Unable to update the source because editingSource is null");
                }
@@ -136,12 +137,17 @@ const ManageWatchListSources = () => {
           }
      }
 
-     const sourceChangeHandler = (fieldName: string, fieldValue: string) => {
+     const sourceChangeHandler = (fieldName: string, fieldValue: boolean | string) => {
           const newSource = {
                ...(isAdding ? addingSource : editingSource),
           } as IWatchListSource;
 
-          newSource[fieldName] = fieldValue;
+          if (fieldName === "Enabled") {
+               newSource[fieldName] = (fieldValue === true) ? 1 : 0;
+          } else {
+               newSource[fieldName] = fieldValue;
+          }
+
           newSource.IsModified = true;
 
           if (isAdding) {
@@ -181,6 +187,8 @@ const ManageWatchListSources = () => {
                                    }
 
                                    <th>Source name</th>
+
+                                   <th>Enabled</th>
 
                                    {!isAdding && !isEditing &&
                                         <th>Delete</th>
@@ -251,6 +259,17 @@ const ManageWatchListSources = () => {
 
                                                   {isEditing && editingSource &&
                                                        <TextField className={`lightMode borderRadius15 minWidth150`} margin="dense" id="sourcename" value={editingSource.WatchListSourceName} variant="standard" onChange={(event: React.ChangeEvent<HTMLInputElement>) => sourceChangeHandler("WatchListSourceName", event.target.value)} />
+                                                  }
+                                             </td>
+
+                                             <td>
+                                                  {!isEditing &&
+                                                       <span>{watchListSource.Enabled === 1 ? "Y" : "N"}</span>
+
+                                                  }
+
+                                                  {isEditing &&
+                                                       <input type="checkbox" checked={editingSource?.Enabled == 1} onChange={(event) => sourceChangeHandler("Enabled", event.target.checked)} />
                                                   }
                                              </td>
 

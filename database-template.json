@@ -5,15 +5,23 @@
     "WatchListSources": [
         {
             "WatchListSourceID": 1,
-            "WatchListSourceName": "Amazon"
+            "WatchListSourceName": "Netflix",
+            "Enabled": 1
         },
         {
             "WatchListSourceID": 2,
-            "WatchListSourceName": "Hulu"
+            "WatchListSourceName": "Amazon",
+            "Enabled": 1
         },
         {
             "WatchListSourceID": 3,
-            "WatchListSourceName": "Movie Theatre"
+            "WatchListSourceName": "Hulu",
+            "Enabled": 1
+        },
+        {
+            "WatchListSourceID": 3,
+            "WatchListSourceName": "Movie Theatre",
+            "Enabled": 1
         }
     ],
     "WatchListTypes": [

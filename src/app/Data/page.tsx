@@ -88,6 +88,7 @@ export default function Data() {
         WatchListSources: [{
             "WatchListSourceID": "ID",
             "WatchListSourceName": "Name",
+            "Enabled": "Enabled"
         }],
         WatchListTypes: [{
             "WatchListTypeID": "ID",

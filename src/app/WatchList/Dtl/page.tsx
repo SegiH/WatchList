@@ -861,7 +861,7 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
                                                        <select className="selectStyle" value={watchListDtl?.WatchListSourceID} onChange={(event) => watchListDetailChangeHandler("WatchListSourceID", event.target.value)}>
                                                             <option value="-1">Please select</option>
 
-                                                            {watchListSources?.map((watchListSource: IWatchListSource, index: number) => {
+                                                            {watchListSources?.filter((watchListSource: IWatchListSource) => { return watchListSource.Enabled === 1}).map((watchListSource: IWatchListSource, index: number) => {
                                                                  return (
                                                                       <option key={index} value={watchListSource?.WatchListSourceID}>
                                                                            {watchListSource?.WatchListSourceName}
@@ -875,7 +875,7 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
                                                        <select className="selectStyle" value={addWatchListDtl?.WatchListSourceID} onChange={(event) => addWatchListDetailChangeHandler("WatchListSourceID", event.target.value)}>
                                                             <option value="-1">Please select</option>
 
-                                                            {watchListSources?.map((watchListSource: IWatchListSource, index: number) => {
+                                                            {watchListSources?.filter((watchListSource: IWatchListSource) => { return watchListSource.Enabled === 1}).map((watchListSource: IWatchListSource, index: number) => {
                                                                  return (
                                                                       <option key={index} value={watchListSource?.WatchListSourceID}>
                                                                            {watchListSource?.WatchListSourceName}

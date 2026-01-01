@@ -23,7 +23,8 @@ export async function PUT(request: NextRequest) {
 
           watchListSourcesDB.push({
                "WatchListSourceID": (highestWatchListSourceID !== null ? highestWatchListSourceID : 0) + 1,
-               "WatchListSourceName": watchListSourceName
+               "WatchListSourceName": watchListSourceName,
+               "Enabled": 1
           });
 
           writeDB(db);

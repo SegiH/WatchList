@@ -11,6 +11,7 @@ export async function PUT(request: NextRequest) {
 
      const watchListSourceID = searchParams.get("WatchListSourceID");
      const watchListSourceName = searchParams.get("WatchListSourceName");
+     const enabled = searchParams.get("Enabled");
 
      if (watchListSourceID === null) {
           return Response.json(["ERROR", "WatchList Source ID was not provided"]);
@@ -34,6 +35,7 @@ export async function PUT(request: NextRequest) {
           const watchListSource = watchListSourceResult[0];
 
           watchListSource.WatchListSourceName = watchListSourceName;
+          watchListSource.Enabled = (enabled !== null && parseInt(enabled, 10) === 1 ? 1 : 0);
 
           writeDB(db);
 

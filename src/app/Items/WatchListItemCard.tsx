@@ -1,7 +1,7 @@
 import IWatchListItem from "../interfaces/IWatchListItem";
 import Image from "next/image";
 import { ItemsCardContext } from "../context";
-import { useContext, useEffect } from "react";
+import { useContext } from "react";
 import { ItemsCardContextType } from "../contexts/ItemsCardContextType";
 
 type WatchListCardProps = {
@@ -45,13 +45,6 @@ export default function WatchListItemCard({ currentWatchListItem, setImdbJSON }:
 
         setFilteredWatchListItems(newFilteredWatchListItems);
     };
-
-    // Load WatchList if it hasn't been retrieved yet, otherwise, it will show watched 0 times
-    useEffect(() => {
-        if (watchListSortingCheck !== "Success") {
-            getWatchList();
-        }
-    }, [watchListSortingCheck]);
 
     return (
         <>

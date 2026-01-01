@@ -1,3 +1,5 @@
+import IWatchList from "./IWatchList";
+
 export default interface WatchListItem {
      WatchListItemID: number,
      WatchListItemName: string,
@@ -18,4 +20,5 @@ export default interface WatchListItem {
      ArchivedIsModified?: boolean, // Virtual field
      Tooltip?: string, // Virtual field
      WatchListCount?: number // Virtual field
+     WatchListHistory: IWatchList[];
 }

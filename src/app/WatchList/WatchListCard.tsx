@@ -12,7 +12,7 @@ type WatchListCardProps = {
 
 export default function WatchListCard({ currentWatchList, setImdbJSON }: WatchListCardProps) {
     const {
-        BrokenImageIconComponent, darkMode, filteredWatchList, getMissingPoster, openDetailClickHandler, setFilteredWatchList, writeLog
+        BrokenImageIconComponent, darkMode, filteredWatchList, formatWatchListDates, getMissingPoster, openDetailClickHandler, setFilteredWatchList, writeLog
     } = useContext(WatchListCardContext) as WatchListCardContextType;
 
     let IMDB_JSON :any = null;
@@ -23,26 +23,6 @@ export default function WatchListCard({ currentWatchList, setImdbJSON }: WatchLi
         } catch (e: any) {
             writeLog(`An error occurred parsing the IMDB_JSON for ${currentWatchList.WatchListID}`);
         }
-    }
-
-    const formatWatchListDates = (startDate: string, endDate: string) => {
-        // Helper function to format a date string from "yyyy-mm-dd" to "mm/dd/yy"
-        const formatDate = (dateStr: string) => {
-            const [year, month, day] = dateStr.split("-");
-            const shortYear = year.slice(-2); // Get last 2 digits of the year
-            return `${month}/${day}/${shortYear}`;
-        }
-
-        if (!startDate) return ""; // Optional: handle missing startDate gracefully
-
-        const formattedStart = formatDate(startDate);
-
-        if (!endDate) {
-            return `${formattedStart}-`;
-        }
-
-        const formattedEnd = formatDate(endDate);
-        return `${formattedStart}-${formattedEnd}`;
     }
 
     const IMDBCardOpenClickHandler = (IMDB_JSON) => {

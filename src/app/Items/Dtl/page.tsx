@@ -9,10 +9,12 @@ import IWatchListItem from "../../interfaces/IWatchListItem";
 import IWatchListType from "../../interfaces/IWatchListType";
 import { ItemsDtlContextType } from "@/app/contexts/ItemsDtlContextType";
 import IMDBCard from "@/app/components/IMDBCard";
+import IWatchList from "../../interfaces/IWatchList";
+import WatchListHistory from "@/app/components/WatchListHistory";
 
 export default function ItemsDtl() {
      const {
-          BrokenImageIconComponent, CancelIconComponent, darkMode, demoMode, EditIconComponent, getMissingPoster, getWatchListItems, isAdding, isEditing, isEnabled, isLoading, pullToRefreshEnabled, SaveIconComponent, setErrorMessage, setIsAdding, setIsEditing, setIsError, watchListTypes, writeLog
+          BrokenImageIconComponent, CancelIconComponent, darkMode, demoMode, EditIconComponent, formatWatchListDates, getMissingPoster, getWatchListItems, isAdding, isEditing, isEnabled, isLoading, pullToRefreshEnabled, SaveIconComponent, setErrorMessage, setIsAdding, setIsEditing, setIsError, watchListTypes, writeLog
      } = useContext(ItemsDtlContext) as ItemsDtlContextType
 
      const [addWatchListItemDtl, setAddWatchListItemDtl] = useState<IWatchListItem | null>();
@@ -24,6 +26,8 @@ export default function ItemsDtl() {
      const [recommendationsVisible, setRecommendationsVisible] = useState(false);
      const [recommendationName, setRecommendationName] = useState<string>("");
      const [recommendationType, setRecommendationType] = useState("");
+     const [watchListHistory, setWatchListHistory] = useState<IWatchList[]>([]);
+     const [watchListHistoryVisible, setWatchListHistoryVisible] = useState(false);
      const [watchListItemDtl, setWatchListItemDtl] = useState<IWatchListItem | null>();
      const [watchListItemDtlLoadingCheck, setWatchListItemDtlLoadingCheck] = useState(APIStatus.Idle);
      const [watchListItemDtlID, setWatchListItemDtlID] = useState<number>(-1);
@@ -122,6 +126,8 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
                     });
 
                     setWatchListItemDtl(wlid[0]);
+
+                    setWatchListHistory(wlid[0]?.WatchListHistory);
 
                     setWatchListItemDtlLoadingCheck(APIStatus.Success);
                }
@@ -346,6 +352,10 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
           }
      };
 
+     const showWatchListHistory = () => {
+          setWatchListHistoryVisible(true);
+     }
+
      const startEditing = () => {
           setOriginalWatchListItemDtl(watchListItemDtl);
           setIsEditing(!isEditing);
@@ -393,7 +403,7 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
 
                getWatchListItemDtl(watchListItemDtlID);
           } else if (isAdding && watchListItemDtlID === -1) {
-               const newAddWatchListItemDtl: IWatchListItem = { WatchListItemID: 0, WatchListItemName: "", WatchListTypeID: -1, WatchListTypeName: "", IMDB_URL: "", IMDB_Poster: "", ItemNotes: "", Archived: 0 };
+               const newAddWatchListItemDtl: IWatchListItem = { WatchListItemID: 0, WatchListItemName: "", WatchListTypeID: -1, WatchListTypeName: "", IMDB_URL: "", IMDB_Poster: "", ItemNotes: "", Archived: 0, WatchListHistory: [] };
                newAddWatchListItemDtl.WatchListItemName = "";
                newAddWatchListItemDtl.WatchListTypeID = -1;
                newAddWatchListItemDtl.IMDB_URL = "";
@@ -660,6 +670,11 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
                                              {IMDB_JSON !== null &&
                                                   <a className="clickable fontStyle" onClick={IMDBCardOpenClickHandler}>IMDB Info</a>
                                              }
+
+                                             {watchListItemDtl !== null && typeof watchListItemDtl?.WatchListHistory !== "undefined" && watchListItemDtl?.WatchListHistory?.length > 0 &&
+                                                  <a className="clickable fontStyle" onClick={showWatchListHistory}>Watched History</a>
+
+                                             }
                                         </div>
                                    </div>
                               }
@@ -672,6 +687,10 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
 
                               {imdbCardvisible &&
                                    <IMDBCard closeIMDBCard={closeIMDBCard} darkMode={darkMode} IMDB_JSON={IMDB_JSON} />
+                              }
+
+                              {watchListHistoryVisible &&
+                                   <WatchListHistory darkMode={darkMode} formatWatchListDates={formatWatchListDates} name={watchListItemDtl?.WatchListItemName} setWatchListHistoryVisible={setWatchListHistoryVisible} watchListHistory={watchListHistory} />
                               }
                          </div>
                     </div>

@@ -2,6 +2,7 @@ import { NextRequest } from 'next/server';
 import { getDB, isLoggedIn, writeLog } from "../lib";
 import IWatchListItem from '@/app/interfaces/IWatchListItem';
 import IWatchListType from '@/app/interfaces/IWatchListType';
+import IWatchList from '@/app/interfaces/IWatchList';
 
 export async function GET(request: NextRequest) {
      if (!isLoggedIn(request)) {
@@ -19,6 +20,7 @@ export async function GET(request: NextRequest) {
      try {
           const db: any = await getDB();
 
+          const watchListDB = db.WatchList;
           const watchListItemsDB = db.WatchListItems;
           const watchListTypesDB = db.WatchListTypes;
 
@@ -32,6 +34,13 @@ export async function GET(request: NextRequest) {
                });
 
                watchListItem.WatchListTypeName = watchListType.length > 0 ? watchListType[0].WatchListTypeName : "";
+
+               watchListItem.WatchListHistory = watchListDB.filter((currentWatchList: IWatchList) => String(currentWatchList.WatchListItemID) === String(watchListItem.WatchListItemID));
+
+               watchListItem.WatchListHistory.forEach(async (watchList: IWatchList) => {
+                    watchList.IMDB_Poster = watchListItem.IMDB_Poster;
+                    watchList.WatchListTypeID = watchListType.length > 0 ? watchListType[0].WatchListTypeID : -1;
+               });
           });
 
           return Response.json(["OK", filteredWatchListItem]);

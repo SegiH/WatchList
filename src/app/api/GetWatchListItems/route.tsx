@@ -38,7 +38,7 @@ export async function GET(request: NextRequest) {
      try {
           const db: any = await getDB();
 
-          const watchList = db.WatchList;
+          const watchListDB = db.WatchList;
           const watchListItemsDB = db.WatchListItems;
           const watchListTypesDB = db.WatchListTypes;
 
@@ -97,7 +97,7 @@ export async function GET(request: NextRequest) {
                     });
 
                     watchListItem.WatchListTypeName = watchListType.length > 0 ? watchListType[0].WatchListTypeName : "";
-                    watchListItem.WatchListCount = watchList.filter((currentWatchList: IWatchList) => String(currentWatchList.WatchListItemID) === String(watchListItem.WatchListItemID)).length;
+                    watchListItem.WatchListCount = watchListDB.filter((currentWatchList: IWatchList) => String(currentWatchList.WatchListItemID) === String(watchListItem.WatchListItemID)).length;
 
                     // Add log when an unused WLI is found
                     if (watchListItem.WatchListCount === 0) {

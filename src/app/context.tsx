@@ -265,6 +265,26 @@ const DataProvider = ({
           }
      }, []);
 
+     const formatWatchListDates = (startDate: string, endDate: string) => {
+          // Helper function to format a date string from "yyyy-mm-dd" to "mm/dd/yy"
+          const formatDate = (dateStr: string) => {
+               const [year, month, day] = dateStr.split("-");
+               const shortYear = year.slice(-2); // Get last 2 digits of the year
+               return `${month}/${day}/${shortYear}`;
+          }
+
+          if (!startDate) return ""; // Optional: handle missing startDate gracefully
+
+          const formattedStart = formatDate(startDate);
+
+          if (!endDate) {
+               return `${formattedStart}-`;
+          }
+
+          const formattedEnd = formatDate(endDate);
+          return `${formattedStart}-${formattedEnd}`;
+     }
+
      const getMissingPoster = async (watchListItemID: number) => {
           if (demoMode) {
                return [];
@@ -299,7 +319,11 @@ const DataProvider = ({
      }, [routeList]);
 
      const getWatchList = async () => {
-          setWatchListSortingCheck(APIStatus.Loading);
+          if (watchListSortingCheck == APIStatus.Loading) {
+               return;
+          } else {
+               setWatchListSortingCheck(APIStatus.Loading);
+          }
 
           const newSliceStart = (currentWatchListPage - 1) * pageSize;
           const newSliceEnd = newSliceStart + pageSize;
@@ -822,6 +846,7 @@ const DataProvider = ({
                return;
           }
 
+          getWatchList();
           getWatchListItems();
      }, [activeRoute, archivedVisible, currentItemsPage, metaDataFilters, searchTerm, showMissingArtwork, typeFilter, watchListSortColumn, watchListSortDirection, watchListItems]);
 
@@ -1034,7 +1059,7 @@ const DataProvider = ({
      const errorContextValues = { darkMode, defaultRoute, errorMessage, setActiveRoute };
      const itemsCardContextValues = { BrokenImageIconComponent, darkMode, filteredWatchListItems, getMissingPoster, getWatchList, openDetailClickHandler, setFilteredWatchListItems, watchList, watchListSortingCheck };
      const itemsContextValues = { darkMode, filteredWatchListItems, hideTabs, isLoading, searchModalVisible, setActiveRoute, setIsAdding, setIsEditing, setFilteredWatchListItems, watchList, watchListItemsSortingCheck };
-     const itemsDtlContextValues = { BrokenImageIconComponent, CancelIconComponent, darkMode, demoMode, EditIconComponent, getMissingPoster, getWatchListItems, isAdding, isEditing, isEnabled, isLoading, pullToRefreshEnabled, SaveIconComponent, setErrorMessage, setIsAdding, setIsEditing, setIsError, watchListTypes, writeLog };
+     const itemsDtlContextValues = { BrokenImageIconComponent, CancelIconComponent, darkMode, demoMode, EditIconComponent, formatWatchListDates, getMissingPoster, getWatchListItems, isAdding, isEditing, isEnabled, isLoading, pullToRefreshEnabled, SaveIconComponent, setErrorMessage, setIsAdding, setIsEditing, setIsError, watchListTypes, writeLog };
      const loginContextValues = { activeRoute, darkMode, defaultRoute, demoPassword, demoUsername, loggedInCheck, setActiveRoute, setDemoMode, setLoggedInCheck, setOptions, setUserData };
      const navBarContextValues = { activeRoute, currentItemsPage, currentWatchListPage, darkMode, isAdding, isLoading, hideTabs, lastPage, setNewPage };
      const recommendationsContextValues = { BrokenImageIconComponent, darkMode, writeLog };
@@ -1043,7 +1068,7 @@ const DataProvider = ({
      const setupContextValues = { activeRoute, defaultRoute, darkMode, demoUsername, loggedInCheck, validatePassword, writeLog };
      const sharedLayoutContextValues = { activeRoute, AddIconComponent, darkMode, demoMode, demoModeNotificationVisible, hideTabs, imdbSearchEnabled, isAdmin, isEnabled, isError, isLoading, loggedInCheck, metaDataFilters, openDetailClickHandler, routeList, saveOptions, SearchIconComponent, searchInputVisible, searchModalVisible, setActiveRoute, setDemoModeNotificationVisible, setIsLoading, setMetaDataFilters, setNewPage, setSearchInputVisible, setSearchModalVisible, setSearchTerm, setSourceFilter, setStillWatching, SettingsIconComponent, settingsVisible, setTypeFilter, setWatchListSortColumn, setWatchListSortDirection, showSettings, sourceFilter, stillWatching, typeFilter, watchListItemsSortColumns, watchListSortColumn, watchListSortColumns, watchListSortDirection, watchListSources, watchListSourcesLoadingCheck, watchListTypes, watchListTypesLoadingCheck };
      const tabsContextValues = { activeRoute, darkMode, demoMode, getPath, hideTabs, isAdding, isAdmin, isClient, isEditing, isEnabled, isError, isLoading, loggedInCheck, pullToRefreshEnabled, routeList, setActiveRoute, setSearchInputVisible, setSearchTerm, visibleSections };
-     const watchListCardContextValues = { BrokenImageIconComponent, darkMode, filteredWatchList, getMissingPoster, openDetailClickHandler, setFilteredWatchList, writeLog };
+     const watchListCardContextValues = { BrokenImageIconComponent, darkMode, filteredWatchList, formatWatchListDates, getMissingPoster, openDetailClickHandler, setFilteredWatchList, writeLog };
      const watchListContextValues = { darkMode, filteredWatchList, hideTabs, isLoading, setActiveRoute, setIsAdding, setIsEditing, watchListSortingCheck, writeLog };
      const watchListDtlContextValues = { BrokenImageIconComponent, CancelIconComponent, darkMode, demoMode, EditIconComponent, getWatchList, imdbSearchEnabled, isAdding, isEditing, isLoading, pullToRefreshEnabled, recommendationsEnabled, SaveIconComponent, setErrorMessage, setIsAdding, setIsEditing, setIsError, setStillWatching, showSearch, stillWatching, watchListSortDirection, watchListSources, writeLog };
      const watchListStatsContextValues = { darkMode, demoMode, errorMessage, ratingMax, setIsError, setErrorMessage };

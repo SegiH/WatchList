@@ -7,3 +7,4 @@ next-env.d.ts
 public/workbox*.js
 *.pem
 certificates
+watchlist.log

@@ -1,7 +1,6 @@
 import { getDB, defaultSources, isLoggedIn, writeDB, writeLog } from "../lib";
 import { NextRequest } from 'next/server';
-import { sendCompressedJsonBrotli, sendCompressedJsonGZip } from '@/app/proxy';
-import IWatchListSourceStat from "@/app/interfaces/IWatchListSourceStat";
+import { sendCompressedJsonBrotli} from '@/app/proxy';
 import IWatchListSource from "@/app/interfaces/IWatchListSource";
 
 export async function GET(request: NextRequest) {

@@ -568,7 +568,7 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
                newWatchListDtl[fieldName] = fieldValue;
           }
 
-          newWatchListDtl[`${fieldName}IsModified`] = true;
+          newWatchListDtl[`${fieldName}IsModified`] = 1;
 
           if (fieldName === "WatchListItemID") {
                if (demoMode) {

@@ -328,7 +328,7 @@ const DataProvider = ({
           const newSliceStart = (currentWatchListPage - 1) * pageSize;
           const newSliceEnd = newSliceStart + pageSize;
 
-          let newMetaDataFilters = metaDataFilters.map(item => ({ ...item }));
+          const newMetaDataFilters = JSON.parse(JSON.stringify(metaDataFilters));
 
           // This key is added automatically for some reason so remove it.
           if (typeof newMetaDataFilters["0"] !== "undefined") {
@@ -370,7 +370,7 @@ const DataProvider = ({
           const newSliceStart = (currentItemsPage - 1) * pageSize;
           const newSliceEnd = newSliceStart + pageSize;
 
-          let newMetaDataFilters = metaDataFilters.map(item => ({ ...item }));
+          const newMetaDataFilters = JSON.parse(JSON.stringify(metaDataFilters));
 
           // This key is added automatically for some reason so remove it.
           if (typeof newMetaDataFilters["0"] !== "undefined") {

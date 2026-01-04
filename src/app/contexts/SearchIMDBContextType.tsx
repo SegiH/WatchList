@@ -9,4 +9,5 @@ export interface SearchIMDBContextType {
      setIsAdding: (value: boolean) => void;
      setSearchCount: (value: number) => void;
      setSearchModalVisible: (value: boolean) => void;
+     setSearchTerm: (value: string) => void;
 }

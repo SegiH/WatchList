@@ -9,7 +9,7 @@ import { SearchIMDBContextType } from "../contexts/SearchIMDBContextType";
 
 export default function SearchIMDB() {
      const {
-          AddIconComponent, autoAdd, BrokenImageIconComponent, darkMode, searchCount, SearchIconComponent, searchTerm, setIsAdding, setSearchCount, setSearchModalVisible
+          AddIconComponent, autoAdd, BrokenImageIconComponent, darkMode, searchCount, SearchIconComponent, searchTerm, setIsAdding, setSearchCount, setSearchModalVisible, setSearchTerm
      } = useContext(SearchIMDBContext) as SearchIMDBContextType
 
      const [imdbSearchResults, setIMDBSearchResults] = useState<ISearchImdb[]>([]);
@@ -66,7 +66,7 @@ export default function SearchIMDB() {
 
                     // Remove this item from the the search results since its been added
                     const newSearchResults: ISearchImdb[] = { ...imdbSearchResults };
-                    newSearchResults.splice(index, 1);
+                    //newSearchResults.splice(index, 1);
                     setIMDBSearchResults(newSearchResults);
 
                     setSearchModalVisible(false);
@@ -121,6 +121,7 @@ export default function SearchIMDB() {
 
      useEffect(() => {
           if (searchTerm !== "") {
+               setSearchTerm("");
                setIMDBSearchTerm(searchTerm);
           }
      }, []);

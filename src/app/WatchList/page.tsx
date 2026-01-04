@@ -11,10 +11,11 @@ import { WatchListContextType } from "../contexts/WatchListContextType";
 
 import WatchListCard from "./WatchListCard";
 import IMDBCard from "../components/IMDBCard";
+import { Button } from "@mui/material";
 
 export default function WatchList() {
      const {
-          darkMode, filteredWatchList, hideTabs, isLoading, setActiveRoute, setIsAdding, setIsEditing, watchListSortingCheck
+          darkMode, filteredWatchList, hideTabs, imdbSearchEnabled, isLoading, searchModalVisible, searchTerm, setActiveRoute, setIsAdding, setIsEditing, setSearchModalVisible, watchListSortingCheck
      } = useContext(WatchListContext) as WatchListContextType;
 
      const [imdbCardvisible, setImdbCardvisible] = useState(false);
@@ -39,30 +40,38 @@ export default function WatchList() {
 
      return (
           <>
+               {!isLoading && searchTerm !== "" && imdbSearchEnabled &&
+                    <h1 className="topMargin100">{filteredWatchList.length === 0 ? "No Results" : ""}<Button variant="contained" color="secondary" style={{ marginLeft: "20px" }} onClick={() => setSearchModalVisible(true)}>IMDB</Button></h1>
+               }
+
                {!isLoading && filteredWatchList && filteredWatchList.length > 0 && !imdbCardvisible &&
                     <>
-                         <span className="top">
-                              <NavBar />
-                         </span>
+                         {!searchModalVisible &&
+                              <span className="top">
+                                   <NavBar />
+                              </span>
+                         }
 
                          <span className="topMarginContent">
                               <ul className={`show-list${!darkMode ? " lightMode" : " darkMode"} ${hideTabs ? "noTabs" : ""}`}>
                                    {filteredWatchList?.map((currentWatchList: IWatchList) => {
                                         return (
-                                             <WatchListCard key={currentWatchList.WatchListID} currentWatchList={currentWatchList} setImdbJSON={setImdbJSON}/>
+                                             <WatchListCard key={currentWatchList.WatchListID} currentWatchList={currentWatchList} setImdbJSON={setImdbJSON} />
                                         );
                                    })}
                               </ul>
                          </span>
 
-                         <span className={`bottom ${hideTabs ? "noTabs" : ""}`}>
-                              <NavBar IsBottomNav={true} />
-                         </span>
+                         {!searchModalVisible &&
+                              <span className={`bottom ${hideTabs ? "noTabs" : ""}`}>
+                                   <NavBar IsBottomNav={true} />
+                              </span>
+                         }
                     </>
                }
 
-               {!isLoading && watchListSortingCheck === APIStatus.Success && filteredWatchList && filteredWatchList.length === 0 &&
-                    <h1 className="topMargin100">No results</h1>
+               {!isLoading && watchListSortingCheck === APIStatus.Success && filteredWatchList && filteredWatchList.length === 0 && !imdbSearchEnabled &&
+                         <h1 className="topMargin100">No results</h1>
                }
 
                {imdbCardvisible &&

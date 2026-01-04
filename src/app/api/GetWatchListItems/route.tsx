@@ -2,7 +2,7 @@ import { NextRequest } from 'next/server';
 import { getDB, isLoggedIn, writeLog, matchMetadata, metaSearch } from "../lib";
 import IWatchListType from '@/app/interfaces/IWatchListType';
 import IWatchListItem from '@/app/interfaces/IWatchListItem';
-import { sendCompressedJsonBrotli, sendCompressedJsonGZip } from '@/app/proxy';
+import { sendCompressedJsonBrotli, sendCompressedJsonGZip } from '@/app/api/proxy';
 import IWatchList from '@/app/interfaces/IWatchList';
 
 export async function GET(request: NextRequest) {

@@ -10,7 +10,7 @@ import { TabsContextType } from '../contexts/TabsContextType';
 
 const Tabs = () => {
      const {
-          activeRoute, darkMode, demoMode, getPath, hideTabs, isAdding, isAdmin, isClient, isEditing, isEnabled, isError, isLoading, loggedInCheck, pullToRefreshEnabled, routeList, setActiveRoute, setSearchInputVisible, setSearchTerm, visibleSections
+          activeRoute, darkMode, demoMode, getPath, hideTabs, isAdding, isAdmin, isClient, isEditing, isEnabled, isError, isLoading, loggedInCheck, pullToRefreshEnabled, routes, setActiveRoute, setSearchTerm, visibleSections
      } = useContext(TabsContext) as TabsContextType;
 
      const router = useRouter();
@@ -19,7 +19,6 @@ const Tabs = () => {
           setActiveRoute(tabClicked);
 
           if (tabClicked === "WatchList" || tabClicked === "Items") {
-               setSearchInputVisible(false);
                setSearchTerm("");
           }
 
@@ -38,28 +37,28 @@ const Tabs = () => {
           <>
                {isClient && loggedInCheck === APIStatus.Success && !isError && !hideTabs && !isLoading && !isAdding && !isEditing && activeRoute !== "" && (
                     <div className={`tabBar ${!darkMode ? "lightMode" : "darkMode"}`}>
-                         {Object.keys(routeList)
+                         {typeof routes !== "undefined" && Object.keys(routes).length > 0 && Object.keys(routes)
                               .filter((routeName) => {
-                                   return routeList[routeName].RequiresAuth === true
+                                   return routes[routeName].RequiresAuth === true
                                         && routeName !== "Setup"
                                         && routeName !== "Search"
                                         && (routeName !== "Data" || (routeName === "Data" && String(process.env.NEXT_PUBLIC_DATA_ROUTE_ENABLED) === "true" && visibleSections.filter((section) => { return section.label === "Data" }).length > 0))
                                         && (routeName !== "Admin" || (routeName === "Admin" && ((isAdmin() === true && visibleSections.filter((section) => { return section.label === "Admin" }).length > 0)))) // You cannot dynamically set Enabled on this route so don't call isEnabled()
-                                        && (routeName !== "Items" || (routeName === "Items" && isEnabled("Items")))
+                                        && (routeName !== "Items" || (routeName === "Items" && isEnabled("/Items")))
                                         && (routeName !== "BugLogs" || (routeName === "BugLogs" && !demoMode && isAdmin() === true && visibleSections.filter(section => { return section.label === "BugLogs" }).length === 1))  // You cannot dynamically set Enabled on this route so don't call isEnabled()
-                                        && (routeName !== "Stats" || (routeName === "Stats" && isEnabled("Stats"))
+                                        && (routeName !== "Stats" || (routeName === "Stats" && isEnabled("/Stats"))
                                         )
                               }
                               )
                               .map((routeName, index) => {
                                    return (
-                                        <span key={index} className={`tab ${activeRoute === routeList[routeName].Name ? "active" : ""} ${!darkMode ? "lightMode" : "darkMode"}`}>
-                                             <span className={`tabitem ${(!darkMode || (darkMode && darkMode && activeRoute === routeList[routeName].Name)) ? " lightMode" : " darkMode"}`}>
-                                                  <span className={`clickable tabIcon`} onClick={() => tabClickHandler(routeList[routeName].Name)}>
-                                                       {routeList[routeName].Icon}
+                                        <span key={index} className={`tab ${String(activeRoute) === String(routes[routeName].Name) ? "active" : ""} ${!darkMode ? "lightMode" : "darkMode"}`}>
+                                             <span className={`tabitem ${(!darkMode || (darkMode && darkMode && activeRoute === routes[routeName].Name)) ? " lightMode" : " darkMode"}`}>
+                                                  <span className={`clickable tabIcon`} onClick={() => tabClickHandler(routes[routeName].Name)}>
+                                                       {routes[routeName].Icon}
                                                   </span>
 
-                                                  <span className="tabLabel">{typeof routeList[routeName].DisplayName !== "undefined" ? routeList[routeName].DisplayName : routeList[routeName].Name}</span>
+                                                  <span className="tabLabel">{typeof routes[routeName].DisplayName !== "undefined" ? routes[routeName].DisplayName : routes[routeName].Name}</span>
                                              </span>
                                         </span>
                                    );

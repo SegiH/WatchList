@@ -233,7 +233,7 @@ export default function Data() {
     return (
         <span className="topMarginContent">
             {isMounted &&
-                <div className="topMargin100">
+                <div>
                     <span className="firstItem">
                         <span>Select section</span>
                     </span>

@@ -698,7 +698,7 @@ export const isLoggedIn = async (req: NextRequest) => {
 export const isUserAdmin = async (req: NextRequest) => {
      const userSession = await getUserSession(req);
 
-     if (typeof userSession === "undefined" || (typeof userSession !== "undefined" && userSession.Admin !== 1)) {
+     if (typeof userSession === "undefined" || (typeof userSession !== "undefined" && userSession.Admin !== '1')) {
           return false;
      } else {
           return true;
@@ -741,7 +741,7 @@ const loginSuccessfullActions = async (currentUser: IUser) => {
                UserID: currentUser[0].UserID,
                Username: decrypt(currentUser[0].Username),
                Realname: decrypt(currentUser[0].Realname),
-               Admin: currentUser[0].Admin,
+               Admin: String(currentUser[0].Admin),
                Options: userOptions
           }
 

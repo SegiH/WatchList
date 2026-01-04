@@ -5,7 +5,6 @@ import React, { useContext, useEffect, useState } from "react";
 import { APIStatus, SetupContext } from "../context";
 
 import "../Login/Login.css";
-import IUser from "../interfaces/IUser";
 import { SetupContextType } from "../contexts/SetupContextType";
 
 export default function Setup() {

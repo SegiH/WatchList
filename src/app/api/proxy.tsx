@@ -1,6 +1,3 @@
-//import compression from 'compression';
-import { NextRequest, NextResponse } from 'next/server';
-//import { Readable } from 'stream';
 import { brotliCompress, constants, gzip } from 'zlib';
 import { promisify } from 'util';
 

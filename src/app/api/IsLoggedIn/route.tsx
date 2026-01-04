@@ -28,14 +28,13 @@ export async function GET(request: NextRequest) {
      const userOptions = await getUserOptions(userSession?.UserID, userSession?.Admin);
 
      if (typeof userSession && userSession?.UserID) {
-
           return Response.json([
                "OK",
                {
                     UserID: userSession?.UserID,
                     Username: userSession?.Username,
                     RealName: userSession?.Realname,
-                    Admin: userSession?.Admin,
+                    Admin: userSession?.Admin === '1' ? 1 : 0,
                     Options: userOptions
                }
           ]);

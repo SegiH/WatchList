@@ -91,14 +91,8 @@ export default function WatchListCard({ currentWatchList, setImdbJSON }: WatchLi
                         <div>Season {currentWatchList?.Season}</div>
                     </div>
                 ) : (
-                    <div className="show-season">{/* Placeholder to align */}</div>
+                    <div className="show-season"></div>
                 )}
-
-                {/*<div className={`${!darkMode ? "lightMode" : "darkMode"} show-date`}>
-                {currentWatchList?.EndDate !== null && currentWatchList?.EndDate !== currentWatchList?.StartDate
-                    ? <>{currentWatchList?.StartDate} <br />-<br /> {currentWatchList?.EndDate}</>
-                    : currentWatchList?.StartDate}
-            </div>*/}
 
                 <div className={`${!darkMode ? "lightMode" : "darkMode"} show-date`}>
                     {formatWatchListDates(currentWatchList?.StartDate, currentWatchList?.EndDate)}

@@ -2,19 +2,19 @@ import Image from 'next/image';
 import ISearchImdb from "../interfaces/ISearchImdb";
 
 import { useRouter } from 'next/navigation';
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 
 import { APIStatus, SearchIMDBContext } from "../context";
 import { SearchIMDBContextType } from "../contexts/SearchIMDBContextType";
 
 export default function SearchIMDB() {
      const {
-          AddIconComponent, autoAdd, BrokenImageIconComponent, darkMode, searchCount, SearchIconComponent, setIsAdding, setSearchCount, setSearchModalVisible
+          AddIconComponent, autoAdd, BrokenImageIconComponent, darkMode, searchCount, SearchIconComponent, searchTerm, setIsAdding, setSearchCount, setSearchModalVisible
      } = useContext(SearchIMDBContext) as SearchIMDBContextType
 
      const [imdbSearchResults, setIMDBSearchResults] = useState<ISearchImdb[]>([]);
      const [searchLoadingCheck, setSearchLoadingCheck] = useState(APIStatus.Idle);
-     const [searchTerm, setSearchTerm] = useState("");
+     const [IMDBSearchTerm, setIMDBSearchTerm] = useState("");
 
      const searchCountOptions = {
           "10 results": 1,
@@ -87,7 +87,7 @@ export default function SearchIMDB() {
      };
 
      const searchIMDB = async () => {
-          if (searchTerm === "") {
+          if (IMDBSearchTerm === "") {
                setIMDBSearchResults([]);
 
                alert("Please enter a search term");
@@ -104,7 +104,7 @@ export default function SearchIMDB() {
           //}, 5000);
 
           try {
-               const searchIMDBResponse = await fetch(`/api/SearchIMDB?SearchTerm=${searchTerm}&SearchCount=${searchCount}`, { credentials: 'include' });
+               const searchIMDBResponse = await fetch(`/api/SearchIMDB?SearchTerm=${IMDBSearchTerm}&SearchCount=${searchCount}`, { credentials: 'include' });
 
                const searchIMDBResult = await searchIMDBResponse.json();
 
@@ -119,24 +119,22 @@ export default function SearchIMDB() {
           }
      }
 
+     useEffect(() => {
+          if (searchTerm !== "") {
+               setIMDBSearchTerm(searchTerm);
+          }
+     }, []);
+
+     useEffect(() => {
+          if (IMDBSearchTerm !== "") {
+               setSearchLoadingCheck(APIStatus.Loading);
+               searchIMDB();
+          }
+     }, [IMDBSearchTerm]);
+
      return (
           <div className={`modal zIndex ${!darkMode ? " lightMode" : " darkMode"}`}>
                <div className={`modal-content ${searchLoadingCheck === APIStatus.Success ? "" : "customModalHeight"}`}>
-                    {searchLoadingCheck === APIStatus.Loading &&
-                         <>
-                              <div className="card rightAligned customCloseButton searchMarginTop">
-                                   <span className="clickable closeButton" onClick={closeSearch}>
-                                        X
-                                   </span>
-                              </div>
-
-                              <div className="spinner-custom">
-                                   <div className="spinner-label">Loading</div>
-                                   <div className="spinner"></div>
-                              </div>
-                         </>
-                    }
-
                     <div className="container searchHeader sticky">
                          {searchLoadingCheck === APIStatus.Success &&
                               <div style={{ marginBottom: "20px" }}>
@@ -163,14 +161,14 @@ export default function SearchIMDB() {
                          }
 
                          <div className="cards searchHeader">
-                              {searchLoadingCheck === APIStatus.Idle &&
+                              {searchLoadingCheck === APIStatus.Idle && searchTerm ===  "" &&
                                    <>
                                         <div className={`card leftMargin searchLabel textLabel${!darkMode ? " lightMode" : " darkMode"}`}>Search</div>
                                         <span className={`card leftMargin searchMarginTop unsetcardwidth${!darkMode ? " lightMode" : " darkMode"}`}>
                                              <span className={`clickable searchIcon${darkMode ? " lightMode" : " darkMode"}`} onClick={searchIMDB}>
                                                   {SearchIconComponent}
 
-                                                  {searchTerm === "" &&
+                                                  {IMDBSearchTerm === "" &&
                                                        <i className="fa fa-search"></i>
                                                   }
                                              </span>
@@ -180,10 +178,10 @@ export default function SearchIMDB() {
                                                   <input
                                                        type="search"
                                                        placeholder="e.g. Anchorman or The Office"
-                                                       value={searchTerm}
+                                                       value={IMDBSearchTerm}
                                                        autoFocus
                                                        className={`searchInput`}
-                                                       onChange={(event) => setSearchTerm(event.target.value)}
+                                                       onChange={(event) => setIMDBSearchTerm(event.target.value)}
                                                        onKeyUp={handleKeypress}
                                                   />
                                              </span>

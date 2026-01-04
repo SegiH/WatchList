@@ -438,7 +438,7 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
 
      useEffect(() => {
           if (isClosing) {
-               if (isEnabled("Items")) {
+               if (isEnabled("/Items")) {
                     router.push("/Items");
                } else {
                     router.push("/WatchList");

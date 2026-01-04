@@ -47,9 +47,9 @@ export default function Admin() {
 
      useEffect(() => {
           // Make sure current user is an admin
-          /*if (!isAdmin() && !demoMode) {
+          if (!isAdmin() && !demoMode) {
                router.push(defaultRoute)
-          }*/
+          }
 
           const newSelectedTab = localStorage.getItem("WatchList.AdminTab");
 
@@ -69,8 +69,6 @@ export default function Admin() {
                               <Tab className={`${!darkMode ? "lightMode" : "darkMode"}`} label="Sources" {...tabProps(1)} />
                               <Tab className={`${!darkMode ? "lightMode" : "darkMode"}`} label="Types" {...tabProps(2)} />
                          </Tabs>
-
-
 
                          {selectedTab === 0 &&
                               <ManageUserAccounts />

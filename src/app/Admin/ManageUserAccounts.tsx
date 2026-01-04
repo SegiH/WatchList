@@ -191,9 +191,9 @@ const ManageUserAccounts = () => {
 
      useEffect(() => {
           // Make sure current user is an admin
-          /*if (!isAdmin() && !demoMode) {
+          if (!isAdmin() && !demoMode) {
                router.push(defaultRoute)
-          }*/
+          }
 
           if (demoMode) {
                const newUserData: IUser[] = require("../demo/index").demoUsers;
@@ -205,7 +205,7 @@ const ManageUserAccounts = () => {
 
           if (usersLoadingCheck === APIStatus.Idle) {
                setUsersLoadingCheck(APIStatus.Loading);
-
+          } else if (usersLoadingCheck === APIStatus.Loading) {
                getUsers();
           }
      }, [defaultRoute, demoMode, isAdmin, router, setErrorMessage, setIsError, setUsers, usersLoadingCheck]);

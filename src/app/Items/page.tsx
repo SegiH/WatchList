@@ -7,12 +7,13 @@ import React from "react";
 import NavBar from "../components/NavBar";
 import { ItemsContextType } from "../contexts/ItemsContextType";
 import IMDBCard from "../components/IMDBCard";
+import { Button } from "@mui/material";
 
 const WatchListItemCard = React.lazy(() => import('./WatchListItemCard'));
 
 export default function WatchListItems() {
      const {
-          darkMode, filteredWatchListItems, hideTabs, isLoading, searchModalVisible, setActiveRoute, setIsAdding, setIsEditing, watchList, watchListItemsSortingCheck
+          darkMode, filteredWatchListItems, hideTabs, imdbSearchEnabled, isLoading, searchModalVisible, searchTerm, setActiveRoute, setIsAdding, setIsEditing, setSearchModalVisible, watchListItemsSortingCheck
      } = useContext(ItemsContext) as ItemsContextType;
 
      const [imdbCardvisible, setImdbCardvisible] = useState(false);
@@ -37,6 +38,10 @@ export default function WatchListItems() {
 
      return (
           <>
+          {!isLoading && searchTerm !== "" && imdbSearchEnabled &&
+                    <h1 className="topMargin100">{filteredWatchListItems.length === 0 ? "No Results" : ""}<Button variant="contained" color="secondary" style={{ marginLeft: "20px" }} onClick={() => setSearchModalVisible(true)}>IMDB</Button></h1>
+               }
+
                {!isLoading && watchListItemsSortingCheck === APIStatus.Success && !imdbCardvisible &&
                     <>
                          {!searchModalVisible &&
@@ -61,7 +66,7 @@ export default function WatchListItems() {
                     </>
                }
 
-               {!isLoading && watchListItemsSortingCheck === APIStatus.Success && filteredWatchListItems && filteredWatchListItems.length === 0 &&
+               {!isLoading && watchListItemsSortingCheck === APIStatus.Success && filteredWatchListItems && filteredWatchListItems.length === 0 && !imdbSearchEnabled &&
                     <h1>No results</h1>
                }
 

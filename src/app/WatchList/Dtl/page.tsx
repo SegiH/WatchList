@@ -38,6 +38,7 @@ export default function WatchListDtl() {
      const [autoComplete, setAutoComplete] = useState<IAutoCompleteOption | null>(null);
      const [formattedNames, setFormattedNames] = useState<IAutoCompleteOption[]>([]);
      const [formattedNamesWithId, setFormattedNamesWithId] = useState<AutoCompleteWatchListItem[]>([]);
+     const [formattedNamesLoadingComplete, setFormattedNamesLoadingComplete] = useState(APIStatus.Idle);
      const [editModified, setEditModified] = useState(false);
      const [imdbCardvisible, setImdbCardvisible] = useState(false);
      const [isClosing, setIsClosing] = useState(false);
@@ -648,6 +649,8 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
      useEffect(() => {
           if (formattedNames.length == 0) {
                getWatchListItems();
+          } else {
+               setFormattedNamesLoadingComplete(APIStatus.Success);
           }
      }, [formattedNames]);
 
@@ -681,7 +684,7 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
 
      return (
           <>
-               {!isLoading && !isClosing && watchListDtlLoadingCheck === APIStatus.Success &&
+               {!isLoading && !isClosing && watchListDtlLoadingCheck === APIStatus.Success && formattedNamesLoadingComplete === APIStatus.Success &&
                     <div className="modal">
                          <div className={`modal-content ${watchListDtlID != null ? "fade-in" : ""}${!darkMode ? " lightMode" : " darkMode"}`}>
                               {!recommendationsVisible &&
@@ -720,7 +723,7 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
                                                        </>
                                                   }
 
-                                                  {(isEditing || isAdding) && formattedNames &&
+                                                  {(isEditing || isAdding) &&
                                                        <div className="narrow card">
                                                             <Autocomplete id="wl_autocomplete" className={`labelWidth lightMode`} size="small" sx={{ width: 250, height: 40 }} {...defaultProps} options={formattedNames} value={autoComplete} onChange={(event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => autoCompleteChangeHandler(event)} renderInput={(params: TextFieldProps) => <TextField {...params} label="Search" />} />
                                                        </div>
@@ -861,7 +864,7 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
                                                        <select className="selectStyle" value={watchListDtl?.WatchListSourceID} onChange={(event) => watchListDetailChangeHandler("WatchListSourceID", event.target.value)}>
                                                             <option value="-1">Please select</option>
 
-                                                            {watchListSources?.filter((watchListSource: IWatchListSource) => { return watchListSource.Enabled === 1}).map((watchListSource: IWatchListSource, index: number) => {
+                                                            {watchListSources?.filter((watchListSource: IWatchListSource) => { return watchListSource.Enabled === 1 }).map((watchListSource: IWatchListSource, index: number) => {
                                                                  return (
                                                                       <option key={index} value={watchListSource?.WatchListSourceID}>
                                                                            {watchListSource?.WatchListSourceName}
@@ -875,7 +878,7 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
                                                        <select className="selectStyle" value={addWatchListDtl?.WatchListSourceID} onChange={(event) => addWatchListDetailChangeHandler("WatchListSourceID", event.target.value)}>
                                                             <option value="-1">Please select</option>
 
-                                                            {watchListSources?.filter((watchListSource: IWatchListSource) => { return watchListSource.Enabled === 1}).map((watchListSource: IWatchListSource, index: number) => {
+                                                            {watchListSources?.filter((watchListSource: IWatchListSource) => { return watchListSource.Enabled === 1 }).map((watchListSource: IWatchListSource, index: number) => {
                                                                  return (
                                                                       <option key={index} value={watchListSource?.WatchListSourceID}>
                                                                            {watchListSource?.WatchListSourceName}

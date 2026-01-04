@@ -9,11 +9,6 @@
      .searchIcon {
           margin-left: auto !important;
      }
-
-     .settingsIcon {
-          margin-left: auto !important;
-          margin-right: 2% !important;
-     }
 }
 
 @media screen and (-webkit-min-device-pixel-ratio:0) {
@@ -37,6 +32,10 @@
           display: unset !important;
      }
 
+     .navBar {
+          width: 103% !important;
+     }
+
      .rating {
           display: none;
      }
@@ -48,12 +47,6 @@
      .favoriteIcon {
           max-width: 15px !important;
           max-height: 15px !important;
-     }
-
-     .settingsIcon {
-          padding-left: 40px;
-          margin-left: auto !important;
-          margin-right: 2% !important;
      }
 
      .stillWatching {
@@ -76,6 +69,11 @@
 html.no-pull-to-refresh {
      overflow: hidden;
      overscroll-behavior: none;
+}
+
+body {
+     position: relative;
+     left: -5px;
 }
 
 #multiselectContainerReact.lightMode .optionListContainer {
@@ -290,6 +288,10 @@ table.simpleTable:last-child {
      display: flex;
 }
 
+.fullWidthInput {
+     min-width: 300px;
+}
+
 .fullWidth {
      width: 100%;
 }
@@ -342,7 +344,8 @@ table.simpleTable:last-child {
      font-family: "Pt Sans", helvetica, sans-serif;
      line-height: 1.6em;
      font-size: 1em;
-     width: fit-content;
+     width: 1000px !important;
+     z-index: 9999;
 }
 
 .item {
@@ -379,6 +382,14 @@ table.simpleTable:last-child {
      margin-left: 50px;
 }
 
+.leftMargin60 {
+     margin-left: 60px;
+}
+
+.leftMargin75 {
+     margin-left: 75px;
+}
+
 .lightMode {
      color: var(--light-mode-foregroundColor) !important;
      background-color: var(--light-mode-backgroundColor) !important;
@@ -409,6 +420,10 @@ table.simpleTable:last-child {
      max-width: 200px;
 }
 
+.maxWidth {
+     min-width: 50%;
+}
+
 .menuBar {
      align-items: center;
      border-radius: 15px;
@@ -416,12 +431,12 @@ table.simpleTable:last-child {
      border-style: solid;
      display: inline-flex;
      min-height: 56px;
-     width: 99%;
+     width: 99.04%;
      overflow: scroll;
      scrollbar-width: none;
      position: fixed;
      top: 0px;
-     left: 0;
+     left: -5;
      margin-left: 8px;
      z-index: 999;
 }
@@ -669,13 +684,11 @@ table.simpleTable:last-child {
 }
 
 .searchInputStyle,
-.imdbButton,
 .searchButton {
      display: none !important;
 }
 
 .searchInputStyle.visible,
-.imdbButton.visible,
 .searchButton.visible {
      display: block !important;
      animation: fadeInAnimation 2s linear;
@@ -714,10 +727,6 @@ table.simpleTable:last-child {
 .selectStyle .editing {
      max-width: 270px !important;
      display: none;
-}
-
-.settingsPanel {
-     width: 270px !important;
 }
 
 .show-date {
@@ -928,7 +937,7 @@ table.simpleTable:last-child {
 
 .topMarginContent {
      position: relative;
-     top: 95px !important;
+     top: 65px !important;
      overflow-y: auto;
      height: 100vh;
 }

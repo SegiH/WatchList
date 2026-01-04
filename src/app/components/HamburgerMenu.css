@@ -1,0 +1,53 @@
+.hamburger-icon {
+  font-size: 30px;
+  cursor: pointer;
+  position: fixed;
+  top: 7px;
+  left: 20px;
+  z-index: 10001;
+  /* Ensure it's on top of other elements */
+  transition: transform 0.3s ease-in-out;
+}
+
+.sidebar-menu {
+  position: fixed;
+  top: 0;
+  left: -100%;
+  width: 325px;
+  height: 100%;
+  background-color: #333 !important;
+  color: white !important;
+  transition: transform 0.3s ease-in-out;
+  z-index: 10000;
+  padding: 20px;
+  overflow-y: auto;
+}
+
+.sidebar-menu.lightMode {
+  background-color: #333;
+  color: white;
+}
+
+.sidebar-menu.open {
+  left: 0;
+  /* Slide in the menu to the left side of the screen */
+}
+
+.menu-content {
+  display: flex;
+  flex-direction: column;
+  padding-top: 45px;
+  gap: 30px;
+}
+
+.menu-row {
+  display: grid;
+  grid-template-columns: 75px 1fr;
+  align-items: center;
+  column-gap: 6px;
+}
+
+.menu-row .title {
+  display: flex;
+  width: 100px;
+}

@@ -1,54 +1,15 @@
 import IRouteList from "../interfaces/IRoute";
-import IUserOption from "../interfaces/IUserOption";
-import IWatchListSortColumn from "../interfaces/IWatchListSortColumn";
-import IWatchListSource from "../interfaces/IWatchListSource";
-import IWatchListType from "../interfaces/IWatchListType";
 
 export interface SharedLayoutContextType {
      activeRoute: string;
-     AddIconComponent: React.ReactNode;
      darkMode: boolean;
-     demoMode: boolean;
      demoModeNotificationVisible: boolean;
-     hideTabs: boolean;
      imdbSearchEnabled: boolean;
-     isAdmin: () => boolean;
-     isEnabled: (value: string) => boolean;
      isError: boolean;
      isLoading: boolean;
      loggedInCheck: string;
-     metaDataFilters: any[];
-     openDetailClickHandler: (value: number, activeRouteOverride?: string) => void;
-     routeList: IRouteList;
-     saveOptions: (newOptions: IUserOption) => void;
-     SearchIconComponent: React.ReactNode;
-     searchInputVisible: boolean,
      searchModalVisible: boolean;
-     setActiveRoute: (value: string) => void;
+     searchTerm: string;
      setDemoModeNotificationVisible: (value: boolean) => void;
-     setIsLoading: (value: boolean) => void;
-     setMetaDataFilters: (value: []) => void;
-     setNewPage: (value: number) => void;
-     setSearchInputVisible: (value: boolean) => void;
-     setSearchModalVisible: (value: boolean) => void;
      setSearchTerm: (value: string) => void;
-     setSourceFilter: (value: number) => void;
-     setStillWatching: (value: boolean) => void;
-     SettingsIconComponent: React.ReactNode;
-     settingsVisible: boolean;
-     setTypeFilter: (value: number) => void;
-     setWatchListSortColumn: (value: string) => void;
-     setWatchListSortDirection: (value: string) => void;
-     showSettings: () => void;
-     sourceFilter: number;
-     stillWatching: boolean;
-     typeFilter: number;
-     watchListItemsSortColumns: IWatchListSortColumn;
-     watchListSortColumn: string;
-     watchListSortColumns: IWatchListSortColumn;
-     watchListSortDirection: string;
-     watchListSources: IWatchListSource[];
-     watchListSourcesLoadingCheck: string;
-     watchListTypes: IWatchListType[];
-     watchListTypesLoadingCheck: string;
 }

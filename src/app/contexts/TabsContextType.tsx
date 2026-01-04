@@ -16,9 +16,8 @@ export interface TabsContextType {
      isLoading: boolean;
      loggedInCheck: string;
      pullToRefreshEnabled: (value: boolean) => void;
-     routeList: IRouteList;
+     routes: IRouteList;
      setActiveRoute: (value: string) => void;
-     setSearchInputVisible: (value: boolean) => void;
      setSearchTerm: (value: string) => void;
      visibleSections: ISectionChoice[],
 }

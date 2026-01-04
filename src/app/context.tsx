@@ -169,8 +169,6 @@ const DataProvider = ({
 
      const [watchListSortColumn, setWatchListSortColumn] = useState("");
      const [watchListSortDirection, setWatchListSortDirection] = useState("");
-
-     //const [routes, setRoutes] = useState<any>([]);
      const [routes, setRoutes] = useState<IRouteList | null>(null);
 
      /* static values */
@@ -809,6 +807,67 @@ const DataProvider = ({
                setWatchList(demoWatchListPayload);
                setFilteredWatchList(demoWatchListPayload);
                setWatchListSortingCheck(APIStatus.Success);
+
+               const newRoutes = {
+                         WatchList: {
+                              Name: "WatchList",
+                              DisplayName: "WatchList",
+                              Path: "/WatchList",
+                              Icon: WatchListIconComponent,
+                              RequiresAuth: true,
+                              Enabled: true
+                         },
+                         Items: {
+                              Name: "Items",
+                              DisplayName: "Items",
+                              Path: "/Items",
+                              Icon: WatchListItemsIconComponent,
+                              RequiresAuth: true,
+                              Enabled: true
+                         },
+                         Stats: {
+                              Name: "Stats",
+                              DisplayName: "Stats",
+                              Path: "/Stats",
+                              Icon: StatsIconComponent,
+                              RequiresAuth: true,
+                              Enabled: true
+                         },
+                         Login: {
+                              Name: "Login",
+                              DisplayName: "Login",
+                              Path: "/Login",
+                              Icon: null,
+                              RequiresAuth: false,
+                              Enabled: true
+                         },
+                         BugLogs: {
+                              Name: "BugLogs",
+                              DisplayName: "Bug Logs",
+                              Path: "/BugLogs",
+                              Icon: BugReportIconComponent,
+                              RequiresAuth: true,
+                              Enabled: false
+                         },
+                         Data: {
+                              Name: "Data",
+                              DisplayName: "Data",
+                              Path: "/Data",
+                              Icon: AdminConsoleIconComponent,
+                              RequiresAuth: true,
+                              Enabled: true
+                         },
+                         Admin: {
+                              Name: "Admin",
+                              DisplayName: "Admin",
+                              Path: "/Admin",
+                              Icon: AdminConsoleIconComponent,
+                              RequiresAuth: true,
+                              Enabled: false
+                         }
+                    };
+
+                    setRoutes(newRoutes);
 
                return;
           }

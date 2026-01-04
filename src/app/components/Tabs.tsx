@@ -37,7 +37,7 @@ const Tabs = () => {
           <>
                {isClient && loggedInCheck === APIStatus.Success && !isError && !hideTabs && !isLoading && !isAdding && !isEditing && activeRoute !== "" && (
                     <div className={`tabBar ${!darkMode ? "lightMode" : "darkMode"}`}>
-                         {typeof routes !== "undefined" && Object.keys(routes).length > 0 && Object.keys(routes)
+                         {typeof routes !== "undefined" && routes !== null && Object.keys(routes).length > 0 && Object.keys(routes)
                               .filter((routeName) => {
                                    return routes[routeName].RequiresAuth === true
                                         && routeName !== "Setup"

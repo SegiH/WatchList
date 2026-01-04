@@ -431,7 +431,7 @@ const HamburgerMenu = () => {
                               )}
 
                               <div className="menu-row">
-                                   <span className="small-text title" style={{width: "185px"}}>Last built on {buildDate}</span>
+                                   <span className="small-text title" style={{width: "205px"}}>Last built on {buildDate}</span>
                               </div>
                          </div>
                     </div>

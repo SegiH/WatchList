@@ -741,7 +741,7 @@ const loginSuccessfullActions = async (currentUser: IUser) => {
                UserID: currentUser[0].UserID,
                Username: decrypt(currentUser[0].Username),
                Realname: decrypt(currentUser[0].Realname),
-               Admin: String(currentUser[0].Admin),
+               Admin: currentUser[0].Admin,
                Options: userOptions
           }
 

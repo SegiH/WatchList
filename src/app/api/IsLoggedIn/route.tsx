@@ -34,7 +34,7 @@ export async function GET(request: NextRequest) {
                     UserID: userSession?.UserID,
                     Username: userSession?.Username,
                     RealName: userSession?.Realname,
-                    Admin: userSession?.Admin === '1' ? 1 : 0,
+                    Admin: userSession?.Admin === 1 ? 1 : 0,
                     Options: userOptions
                }
           ]);

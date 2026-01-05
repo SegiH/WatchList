@@ -14,7 +14,7 @@ import { useRouter } from "next/navigation";
 
 const HamburgerMenu = () => {
      const {
-          activeRoute, archivedVisible, autoAdd, buildDate, darkMode, defaultRoute, demoMode, hideTabs, isAdding, isAdmin, isEditing, isEnabled, loggedInCheck, LogOutIconComponent, metaDataFilters, openDetailClickHandler, routes, saveOptions, setActiveRoute, setIsLoading, setMetaDataFilters, setNewPage, setOptions, setShowMissingArtwork, setSourceFilter, setStillWatching, setTypeFilter, setVisibleSections, setWatchListSortColumn, setWatchListSortDirection, showMissingArtwork, signOut, sourceFilter, stillWatching, typeFilter, visibleSections, visibleSectionChoices, watchListItemsSortColumns, watchListSortColumn, watchListSortColumns, watchListSortDirection, watchListSources, watchListSourcesLoadingCheck, watchListTypes, watchListTypesLoadingCheck
+          activeRoute, archivedVisible, autoAdd, buildDate, darkMode, defaultRoute, demoMode, hideTabs, isAdding, isAdmin, isEditing, isEnabled, loggedInCheck, LogOutIconComponent, metaDataFilters, openDetailClickHandler, routes, saveOptions, setActiveRoute, setIsLoading, setMetaDataFilters, setNewPage, setOptions, setShowMissingArtwork, setSourceFilter, setStillWatching, setTypeFilter, setVisibleSections, setWatchListSortColumn, setWatchListSortDirection, showMissingArtwork, signOut, sourceFilter, stillWatching, typeFilter, visibleSections, visibleSectionChoices, watchListItemsSortColumns, watchListSortColumn, watchListSortColumns, watchListSortDirection, watchListSources, watchListTypes
      } = useContext(HamburgerMenuContext) as HamburgerMenuContextType
 
      const [isOpen, setIsOpen] = useState(false);
@@ -156,7 +156,6 @@ const HamburgerMenu = () => {
                document.removeEventListener("mousedown", handleClickOutside);
           };
      }, [isOpen]);
-
 
      return (
           <>
@@ -306,7 +305,7 @@ const HamburgerMenu = () => {
                                         value={visibleSections as any}
                                         defaultValue={visibleSections as any}
                                         onChange={addRemoveVisibleSectionChange}
-                                        options={visibleSectionChoices && visibleSectionChoices.filter((section) => (!demoMode || (demoMode && section["label"] !== "Admin"))) as any}
+                                        options={visibleSectionChoices}
                                         className="custom-select"
                                         styles={{
                                              control: (provided) => ({

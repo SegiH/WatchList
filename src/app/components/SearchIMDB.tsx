@@ -64,10 +64,7 @@ export default function SearchIMDB() {
                          router.push(`/WatchList/Dtl?WatchListItemID=${searchIMDBResult[1]}`);
                     }
 
-                    // Remove this item from the the search results since its been added
-                    const newSearchResults: ISearchImdb[] = { ...imdbSearchResults };
-                    //newSearchResults.splice(index, 1);
-                    setIMDBSearchResults(newSearchResults);
+                    setIMDBSearchResults(imdbSearchResults);
 
                     setSearchModalVisible(false);
                }

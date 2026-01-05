@@ -77,7 +77,7 @@ import { WatchListStatsContextType } from "./contexts/WatchListStatsContextType"
 
 import ComposeProviders from './components/ComposeProviders';
 
-import IRouteList, {RouteKey} from './interfaces/IRoute';
+import IRouteList, { RouteKey } from './interfaces/IRoute';
 const WatchListItemsIconComponent = <WatchListItemsIcon className="icon" />;
 
 const DataContext = createContext({} as DataContextType);
@@ -169,6 +169,9 @@ const DataProvider = ({
 
      const [watchListSortColumn, setWatchListSortColumn] = useState("");
      const [watchListSortDirection, setWatchListSortDirection] = useState("");
+     const [visibleSectionChoices, setVisibleSectionChoices] = useState<any>(null);
+     const [visibleSections, setVisibleSections] = useState<any>(null);
+
      const [routes, setRoutes] = useState<IRouteList | null>(null);
 
      /* static values */
@@ -178,16 +181,6 @@ const DataProvider = ({
      const demoPassword = "demo";
 
      const router = useRouter();
-
-     const visibleSectionChoices = [
-          { value: "3", label: 'Admin' },
-          { value: "4", label: 'BugLogs' },
-          { value: "1", label: 'Items' },
-          { value: "2", label: 'Stats' },
-          ...(String(process.env.NEXT_PUBLIC_DATA_ROUTE_ENABLED) === "true" ? [{ value: "5", label: 'Data' }] : []), // Only add the Data route as a section choice when enabled via the env var
-     ];
-
-     const [visibleSections, setVisibleSections] = useState([{ value: "2", label: 'Stats' }, { value: "1", label: 'Items' }, ...(String(process.env.NEXT_PUBLIC_DATA_ROUTE_ENABLED) === "true" ? [{ value: "5", label: 'Data' }] : [])]); // Only add the Data route as a section choice when enabled via the env var
 
      const watchListSortColumns = {
           ID: "ID",
@@ -732,6 +725,34 @@ const DataProvider = ({
 
                     setRoutes(newRoutes);
 
+                    const newVisibleSectionChoices = [
+                         ...(isLoggedInResult[1].Admin
+                              ? [
+                                   { value: "3", label: "Admin" },
+                                   { value: "4", label: "BugLogs" },
+                                   { value: "5", label: "Data" },
+                              ]
+                              : []),
+                         { value: "1", label: "Items" },
+                         { value: "2", label: "Stats" },
+                    ];
+
+                    setVisibleSectionChoices(newVisibleSectionChoices);
+
+                    const newVisibleSections = [
+                         ...(isLoggedInResult[1].Admin
+                              ? [
+                                   { value: "3", label: "Admin" },
+                                   { value: "4", label: "BugLogs" },
+                                   { value: "5", label: "Data" },
+                              ]
+                              : []),
+                         { value: "2", label: "Stats" },
+                         { value: "1", label: "Items" },
+                    ];
+
+                    setVisibleSections(newVisibleSections);
+
                     if (typeof isLoggedInResult[1].Options !== "undefined") {
                          setOptions(isLoggedInResult[1].Options);
                     }
@@ -809,65 +830,65 @@ const DataProvider = ({
                setWatchListSortingCheck(APIStatus.Success);
 
                const newRoutes = {
-                         WatchList: {
-                              Name: "WatchList",
-                              DisplayName: "WatchList",
-                              Path: "/WatchList",
-                              Icon: WatchListIconComponent,
-                              RequiresAuth: true,
-                              Enabled: true
-                         },
-                         Items: {
-                              Name: "Items",
-                              DisplayName: "Items",
-                              Path: "/Items",
-                              Icon: WatchListItemsIconComponent,
-                              RequiresAuth: true,
-                              Enabled: true
-                         },
-                         Stats: {
-                              Name: "Stats",
-                              DisplayName: "Stats",
-                              Path: "/Stats",
-                              Icon: StatsIconComponent,
-                              RequiresAuth: true,
-                              Enabled: true
-                         },
-                         Login: {
-                              Name: "Login",
-                              DisplayName: "Login",
-                              Path: "/Login",
-                              Icon: null,
-                              RequiresAuth: false,
-                              Enabled: true
-                         },
-                         BugLogs: {
-                              Name: "BugLogs",
-                              DisplayName: "Bug Logs",
-                              Path: "/BugLogs",
-                              Icon: BugReportIconComponent,
-                              RequiresAuth: true,
-                              Enabled: false
-                         },
-                         Data: {
-                              Name: "Data",
-                              DisplayName: "Data",
-                              Path: "/Data",
-                              Icon: AdminConsoleIconComponent,
-                              RequiresAuth: true,
-                              Enabled: true
-                         },
-                         Admin: {
-                              Name: "Admin",
-                              DisplayName: "Admin",
-                              Path: "/Admin",
-                              Icon: AdminConsoleIconComponent,
-                              RequiresAuth: true,
-                              Enabled: false
-                         }
-                    };
+                    WatchList: {
+                         Name: "WatchList",
+                         DisplayName: "WatchList",
+                         Path: "/WatchList",
+                         Icon: WatchListIconComponent,
+                         RequiresAuth: true,
+                         Enabled: true
+                    },
+                    Items: {
+                         Name: "Items",
+                         DisplayName: "Items",
+                         Path: "/Items",
+                         Icon: WatchListItemsIconComponent,
+                         RequiresAuth: true,
+                         Enabled: true
+                    },
+                    Stats: {
+                         Name: "Stats",
+                         DisplayName: "Stats",
+                         Path: "/Stats",
+                         Icon: StatsIconComponent,
+                         RequiresAuth: true,
+                         Enabled: true
+                    },
+                    Login: {
+                         Name: "Login",
+                         DisplayName: "Login",
+                         Path: "/Login",
+                         Icon: null,
+                         RequiresAuth: false,
+                         Enabled: true
+                    },
+                    BugLogs: {
+                         Name: "BugLogs",
+                         DisplayName: "Bug Logs",
+                         Path: "/BugLogs",
+                         Icon: BugReportIconComponent,
+                         RequiresAuth: true,
+                         Enabled: false
+                    },
+                    Data: {
+                         Name: "Data",
+                         DisplayName: "Data",
+                         Path: "/Data",
+                         Icon: AdminConsoleIconComponent,
+                         RequiresAuth: true,
+                         Enabled: true
+                    },
+                    Admin: {
+                         Name: "Admin",
+                         DisplayName: "Admin",
+                         Path: "/Admin",
+                         Icon: AdminConsoleIconComponent,
+                         RequiresAuth: true,
+                         Enabled: false
+                    }
+               };
 
-                    setRoutes(newRoutes);
+               setRoutes(newRoutes);
 
                return;
           }
@@ -1000,7 +1021,7 @@ const DataProvider = ({
                ) {
                     newRoute = currentPath.replace("/", "");
 
-                     setActiveRoute(newRoute as RouteKey);
+                    setActiveRoute(newRoute as RouteKey);
                } else if (currentPath === "/BugLogs") {
                     setActiveRoute("BugLogs");
                }
@@ -1102,6 +1123,20 @@ const DataProvider = ({
 
                router.push("/WatchList");
 
+               const newVisibleSectionChoices = [
+                         { value: "1", label: "Items" },
+                         { value: "2", label: "Stats" },
+                    ];
+
+                    setVisibleSectionChoices(newVisibleSectionChoices);
+
+                    const newVisibleSections = [
+                         { value: "2", label: "Stats" },
+                         { value: "1", label: "Items" },
+                    ];
+
+                    setVisibleSections(newVisibleSections);
+
                setIsLoading(false);
 
                return;
@@ -1126,7 +1161,7 @@ const DataProvider = ({
 
      const dataContextValues = { bugLogs, darkMode, defaultRoute, demoMode, isAdmin, setIsError, setErrorMessage, visibleSections, watchList, watchListSortingCheck, watchListItems, watchListItemsSortingCheck, watchListSources, watchListTypes };
      const errorContextValues = { darkMode, defaultRoute, errorMessage, setActiveRoute };
-     const hamburgerMenuContextType = { activeRoute, archivedVisible, autoAdd, buildDate, darkMode, defaultRoute, demoMode, hideTabs, isAdding, isAdmin, isEditing, isEnabled, loggedInCheck, LogOutIconComponent, metaDataFilters, openDetailClickHandler, pullToRefreshEnabled, routes, saveOptions, setActiveRoute,  setIsLoading, setMetaDataFilters, setNewPage, setOptions, setShowMissingArtwork, setSourceFilter, setStillWatching, setTypeFilter, setVisibleSections, setWatchListSortColumn, setWatchListSortDirection, showMissingArtwork, signOut, sourceFilter, stillWatching, typeFilter, visibleSections, visibleSectionChoices, watchListItemsSortColumns, watchListSortColumn, watchListSortColumns, watchListSortDirection, watchListSources, watchListSourcesLoadingCheck, watchListTypes, watchListTypesLoadingCheck }
+     const hamburgerMenuContextType = { activeRoute, archivedVisible, autoAdd, buildDate, darkMode, defaultRoute, demoMode, hideTabs, isAdding, isAdmin, isEditing, isEnabled, loggedInCheck, LogOutIconComponent, metaDataFilters, openDetailClickHandler, pullToRefreshEnabled, routes, saveOptions, setActiveRoute, setIsLoading, setMetaDataFilters, setNewPage, setOptions, setShowMissingArtwork, setSourceFilter, setStillWatching, setTypeFilter, setVisibleSections, setWatchListSortColumn, setWatchListSortDirection, showMissingArtwork, signOut, sourceFilter, stillWatching, typeFilter, visibleSections, visibleSectionChoices, watchListItemsSortColumns, watchListSortColumn, watchListSortColumns, watchListSortDirection, watchListSources, watchListTypes }
      const itemsCardContextValues = { BrokenImageIconComponent, darkMode, filteredWatchListItems, getMissingPoster, getWatchList, openDetailClickHandler, setFilteredWatchListItems, watchList, watchListSortingCheck };
      const itemsContextValues = { darkMode, filteredWatchListItems, hideTabs, imdbSearchEnabled, isLoading, searchModalVisible, searchTerm, setActiveRoute, setIsAdding, setIsEditing, setFilteredWatchListItems, setSearchModalVisible, watchListItemsSortingCheck };
      const itemsDtlContextValues = { BrokenImageIconComponent, CancelIconComponent, darkMode, demoMode, EditIconComponent, formatWatchListDates, getMissingPoster, getWatchListItems, isAdding, isEditing, isEnabled, isLoading, pullToRefreshEnabled, SaveIconComponent, setErrorMessage, setIsAdding, setIsEditing, setIsError, watchListTypes, writeLog };

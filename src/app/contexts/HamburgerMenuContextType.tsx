@@ -49,7 +49,5 @@ export interface HamburgerMenuContextType {
     watchListSortColumns: IWatchListSortColumn;
     watchListSortDirection: string;
     watchListSources: IWatchListSource[];
-    watchListSourcesLoadingCheck: string;
     watchListTypes: IWatchListType[];
-    watchListTypesLoadingCheck: string;
 }

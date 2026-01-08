@@ -95,7 +95,7 @@ export async function GET(request: NextRequest) {
                                    )
                               )
                          )
-                         && // When metadata filters are passed, StillWatching will prevent any results from showing up most of the time. 
+                         && // When metadata filters are passed, StillWatching will prevent any results from showing up most of the time.
                          ((stillWatching !== "true") || (stillWatching === "true" && metaDataFiltersJSONStr === null && (watchList.EndDate === "" || watchList.EndDate == null)))
                          &&
                          (((archivedVisible !== "true" && watchList.Archived !== 1) || (archivedVisible === "true" && watchList.Archived === 1)))

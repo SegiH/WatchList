@@ -14,15 +14,17 @@ import { useRouter } from "next/navigation";
 
 const HamburgerMenu = () => {
      const {
-          activeRoute, archivedVisible, autoAdd, buildDate, darkMode, defaultRoute, demoMode, hideTabs, isAdding, isAdmin, isEditing, isEnabled, loggedInCheck, LogOutIconComponent, metaDataFilters, openDetailClickHandler, routes, saveOptions, setActiveRoute, setIsLoading, setMetaDataFilters, setNewPage, setOptions, setShowMissingArtwork, setSourceFilter, setStillWatching, setTypeFilter, setVisibleSections, setWatchListSortColumn, setWatchListSortDirection, showMissingArtwork, signOut, sourceFilter, stillWatching, typeFilter, visibleSections, visibleSectionChoices, watchListItemsSortColumns, watchListSortColumn, watchListSortColumns, watchListSortDirection, watchListSources, watchListTypes
+          activeRoute, archivedVisible, autoAdd, buildDate, darkMode, defaultRoute, demoMode, demoModeNotificationVisible, hideTabs, isAdding, isAdmin, isEditing, isEnabled, loggedInCheck, LogOutIconComponent, metaDataFilters, openDetailClickHandler, routes, saveOptions, setActiveRoute, setIsLoading, setMetaDataFilters, setNewPage, setOptions, setShowMissingArtwork, setSourceFilter, setStillWatching, setTypeFilter, setVisibleSections, setWatchListSortColumn, setWatchListSortDirection, showMissingArtwork, signOut, sourceFilter, stillWatching, typeFilter, visibleSections, visibleSectionChoices, watchListItemsSortColumns, watchListSortColumn, watchListSortColumns, watchListSortDirection, watchListSources, watchListTypes
      } = useContext(HamburgerMenuContext) as HamburgerMenuContextType
 
+     const [drawerCloseCountdown, setDrawerCloseCountdown] = useState(-1);
      const [isOpen, setIsOpen] = useState(false);
      const [metadataFiltervisible, setMetadataFiltervisible] = useState(false);
 
      const menuRef = useRef<HTMLDivElement | null>(null);
      const iconRef = useRef<HTMLDivElement | null>(null);
      const router = useRouter();
+     const closeDrawerTimeout = 5;
 
      const addRemoveVisibleSectionChange = async (newList: []) => {
           setVisibleSections(newList);
@@ -46,6 +48,8 @@ const HamburgerMenu = () => {
 
                saveOptions(options);
           }
+
+          setDrawerCloseCountdown(0);
      }
 
      const addRecordClickHandler = () => {
@@ -57,9 +61,9 @@ const HamburgerMenu = () => {
           setMetadataFiltervisible(false);
      }
 
-     const filterByMetadataclickHandler = () => {
+     const filterByMetadataClickHandler = () => {
           setMetadataFiltervisible(true);
-          setIsOpen(false);
+          setDrawerCloseCountdown(0);
      }
 
      const optionChanged = (columnName: string, columnValue: boolean | string) => {
@@ -74,7 +78,10 @@ const HamburgerMenu = () => {
           }
 
           setOptions(options);
+
           saveOptions(options);
+
+          setDrawerCloseCountdown(0);
      }
 
      const settingChangeHandler = async (name: string, value: string | number | boolean) => {
@@ -86,17 +93,14 @@ const HamburgerMenu = () => {
                case "StillWatching":
                     options["StillWatching"] = (value === true ? 1 : 0);
                     setStillWatching(value as boolean);
-                    setIsOpen(false);
                     break;
                case "SourceFilter":
                     options["SourceFilter"] = (value as number);
                     setSourceFilter(value as number);
-                    setIsOpen(false);
                     break;
                case "TypeFilter":
                     options["TypeFilter"] = (value as number);
                     setTypeFilter(value as number);
-                    setIsOpen(false);
                     break;
                case "SortColumn": // Do not auto close menu bar because sort has 2 dropdowns
                     options["SortColumn"] = value;
@@ -111,6 +115,8 @@ const HamburgerMenu = () => {
           saveOptions(options);
 
           setIsLoading(false);
+
+          setDrawerCloseCountdown(0);
      }
 
      const toggleMenu = () => {
@@ -130,11 +136,15 @@ const HamburgerMenu = () => {
 
           router.push("/" + newTab);
 
-          setIsOpen(false);
+          setDrawerCloseCountdown(0);
      }
 
      useEffect(() => {
-          if (!isOpen) return;
+          if (!isOpen) {
+               return;
+          }
+
+          setDrawerCloseCountdown(0);
 
           const handleClickOutside = (event: MouseEvent) => {
                const target = event.target as Node;
@@ -157,11 +167,32 @@ const HamburgerMenu = () => {
           };
      }, [isOpen]);
 
+     useEffect(() => {
+          if (!isOpen) {
+               setDrawerCloseCountdown(-1);
+               return;
+          }
+
+          if (drawerCloseCountdown < 0) return;
+
+          if (drawerCloseCountdown >= closeDrawerTimeout) {
+               console.log(new Date().toTimeString() + "closing")
+               setIsOpen(false);
+               return;
+          }
+
+          const timer = setTimeout(() => {
+               setDrawerCloseCountdown(c => c + 1);
+          }, 1000);
+
+          return () => clearTimeout(timer);
+     }, [isOpen, drawerCloseCountdown]);
+
      return (
           <>
                <div className="hamburger-container">
-                    <div className="hamburger-icon" onClick={toggleMenu} ref={iconRef}>
-                         ☰ {isOpen && <span className="leftMargin">WatchList</span> }
+                    <div className={`hamburger-icon ${demoModeNotificationVisible ? "demoModeNotificationVisible" : ""}`} onClick={toggleMenu} ref={iconRef}>
+                         ☰ {isOpen && <span className="leftMargin">WatchList</span>}
                     </div>
 
                     <div className={`sidebar-menu ${isOpen ? "open" : ""}`} ref={menuRef}>
@@ -292,7 +323,7 @@ const HamburgerMenu = () => {
                                         </div>
 
                                         <div>
-                                             <Button variant="contained" onClick={filterByMetadataclickHandler}>Filter by Metadata</Button>
+                                             <Button variant="contained" onClick={filterByMetadataClickHandler}>Filter by Metadata</Button>
                                         </div>
                                    </>
                               }
@@ -430,7 +461,7 @@ const HamburgerMenu = () => {
                               )}
 
                               <div className="menu-row">
-                                   <span className="small-text title" style={{width: "205px"}}>Last built on {buildDate}</span>
+                                   <span className="small-text title" style={{ width: "205px" }}>Last built on {buildDate}</span>
                               </div>
                          </div>
                     </div>

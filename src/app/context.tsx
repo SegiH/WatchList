@@ -254,6 +254,10 @@ const DataProvider = ({
      }, [routes]);
 
      const getWatchList = async () => {
+          if (demoMode) {
+               return;
+          }
+
           if (watchListSortingCheck == APIStatus.Loading) {
                return;
           } else {
@@ -286,9 +290,7 @@ const DataProvider = ({
 
                if (activeRoute === "WatchList" && watchListResult[1].length < pageSize) {
                     setLastPage(true);
-               } /*else {
-                    setLastPage(false);
-               }*/
+               }
 
                setFilteredWatchList(watchListResult[1]);
                setWatchListSortingCheck(APIStatus.Success);
@@ -300,6 +302,10 @@ const DataProvider = ({
      }
 
      const getWatchListItems = async () => {
+          if (demoMode) {
+               return;
+          }
+
           setWatchListItemsSortingCheck(APIStatus.Loading);
 
           const newSliceStart = (currentItemsPage - 1) * pageSize;
@@ -328,9 +334,7 @@ const DataProvider = ({
 
                if (activeRoute === "Items" && watchListItemsResult[1].length < pageSize) {
                     setLastPage(true);
-               } /*else {
-                    setLastPage(false);
-               }*/
+               }
 
                setFilteredWatchListItems(watchListItemsResult[1]);
 
@@ -463,6 +467,10 @@ const DataProvider = ({
      }
 
      const isLoggedInCheck = useCallback(() => {
+          if (demoMode) {
+               return true;
+          }
+
           if (loggedInCheck == APIStatus.Idle) return false;
 
           return true;
@@ -500,6 +508,10 @@ const DataProvider = ({
      }
 
      const saveOptions = async (newOptions: IUserOption) => {
+          if (demoMode) {
+               return;
+          }
+
           try {
                const saveOptionsResponse = await fetch(`/api/UpdateOptions?Options=${JSON.stringify(newOptions)}`, { credentials: 'include' });
 
@@ -518,8 +530,77 @@ const DataProvider = ({
 
      const setNewPage = (adjustValue: number) => {
           if (activeRoute === "WatchList") {
+               if (demoMode) {
+                    const demoWatchListPayload = require("./demo/index").demoWatchListPayload;
+                    const newPageStart = (((currentWatchListPage + adjustValue) - 1) * pageSize);
+                    const newPageEnd = newPageStart + pageSize;
+                    const newFilteredWatchList = demoWatchListPayload.slice(newPageStart, newPageEnd)
+
+                    setFilteredWatchList(newFilteredWatchList);
+
+                    // Check if last page
+                    const newPageStartNext = (((currentWatchListPage + adjustValue)) * pageSize);
+                    const newPageEndNext = newPageStartNext + pageSize;
+                    const newFilteredWatchListNext = demoWatchListPayload.slice(newPageStartNext, newPageEndNext).sort((a: IWatchList, b: IWatchList) => {
+                         switch (watchListSortColumn) {
+                              case "ID":
+                                   return a.WatchListID > b.WatchListID ? (watchListSortDirection === "ASC" ? 1 : -1) : watchListSortDirection === "ASC" ? -1 : 1;
+                              case "Name":
+                                   const aName = a.WatchListItemName;
+                                   const bName = b.WatchListItemName;
+
+                                   return String(aName) > String(bName) ? (watchListSortDirection === "ASC" ? 1 : -1) : watchListSortDirection === "ASC" ? -1 : 1;
+                              case "StartDate":
+                                   return parseFloat(new Date(a.StartDate).valueOf().toString()) > parseFloat(new Date(b.StartDate).valueOf().toString()) ? (watchListSortDirection === "ASC" ? 1 : -1) : watchListSortDirection === "ASC" ? -1 : 1;
+                              case "EndDate":
+                                   return parseFloat(new Date(a.EndDate).valueOf().toString()) > parseFloat(new Date(b.EndDate).valueOf().toString()) ? (watchListSortDirection === "ASC" ? 1 : -1) : watchListSortDirection === "ASC" ? -1 : 1;
+                              default:
+                                   return 0;
+                         }
+                    });
+
+                    if (newFilteredWatchListNext.length === 0) {
+                         setLastPage(true);
+                    } else {
+                         setLastPage(false);
+                    }
+               }
+
                setCurrentWatchListPage(p => p + adjustValue);
           } else if (activeRoute === "Items") {
+               if (demoMode) {
+                    const demoWatchListItemsPayload = require("./demo/index").demoWatchListItemsPayload;
+                    const newPageStart = (((currentItemsPage + adjustValue) - 1) * pageSize);
+                    const newPageEnd = newPageStart + pageSize;
+                    const newFilteredWatchListItems = demoWatchListItemsPayload.slice(newPageStart, newPageEnd).sort((a: IWatchListItem, b: IWatchListItem) => {
+                         switch (watchListSortColumn) {
+                              case "ID":
+                                   return a.WatchListItemID > b.WatchListItemID
+                                        ? (watchListSortDirection === "ASC" ? 1 : -1)
+                                        : watchListSortDirection === "ASC" ? -1 : 1;
+                              case "Name":
+                                   return String(a.WatchListItemName) > String(b.WatchListItemName) ? (watchListSortDirection === "ASC" ? 1 : -1) : watchListSortDirection === "ASC" ? -1 : 1;
+                              case "Type":
+                                   return String(a.WatchListItemName) > String(b.WatchListItemName) ? (watchListSortDirection === "ASC" ? 1 : -1) : watchListSortDirection === "ASC" ? -1 : 1;
+                              default:
+                                   return 0;
+                         }
+                    });
+
+                    setFilteredWatchListItems(newFilteredWatchListItems);
+
+                    // Check if last page
+                    const newPageStartNext = (((currentItemsPage + adjustValue)) * pageSize);
+                    const newPageEndNext = newPageStartNext + pageSize;
+                    const newFilteredWatchListItemsNext = demoWatchListItemsPayload.slice(newPageStartNext, newPageEndNext);
+
+                    if (newFilteredWatchListItemsNext.length === 0) {
+                         setLastPage(true);
+                    } else {
+                         setLastPage(false);
+                    }
+               }
+
                setCurrentItemsPage(p => p + adjustValue);
           }
      }
@@ -627,6 +708,10 @@ const DataProvider = ({
      };
 
      const writeLog = useCallback(async (writeLogText: string) => {
+          if (demoMode) {
+               return;
+          }
+
           try {
                const writeLogResponse = await fetch(`/api/WriteLog?WriteLogText=${encodeURIComponent(writeLogText)}`, { method: 'PUT', credentials: 'include' });
 
@@ -643,7 +728,7 @@ const DataProvider = ({
 
      // This method has a dependency on setOptions and writeLog and has to be defined after these functions
      const isLoggedInApi = useCallback(async (noReroute: boolean = false) => {
-          if (isError) {
+          if (isError || demoMode) {
                return;
           }
 
@@ -818,16 +903,8 @@ const DataProvider = ({
 
      // IsLoggedIn check
      useEffect(() => {
-          if (!isLoggedInCheck()) return;
-
           if (demoMode) {
                setDemoModeNotificationVisible(true);
-
-               const demoWatchListPayload = require("./demo/index").demoWatchListPayload;
-
-               setWatchList(demoWatchListPayload);
-               setFilteredWatchList(demoWatchListPayload);
-               setWatchListSortingCheck(APIStatus.Success);
 
                const newRoutes = {
                     WatchList: {
@@ -890,12 +967,90 @@ const DataProvider = ({
 
                setRoutes(newRoutes);
 
+               // Init demo watchlist
+               const demoWatchListPayload = require("./demo/index").demoWatchListPayload;
+               setWatchList(demoWatchListPayload);
+               setFilteredWatchList(demoWatchListPayload.slice(0, pageSize));
+               setWatchListSortingCheck(APIStatus.Success);
+
+               // Init demo watchlist items
+               const demoWatchListItemsPayload = require("./demo/index").demoWatchListItemsPayload;
+               setWatchListItems(demoWatchListItemsPayload);
+               setFilteredWatchListItems(demoWatchListItemsPayload.slice(0, pageSize));
+               setWatchListItemsSortingCheck(APIStatus.Success);
+
+               // Init demo watchlist sources
+               const demoWatchListSourcesPayload = require("./demo/index").demoWatchListSources;
+               setWatchListSources(demoWatchListSourcesPayload);
+               setWatchListSourcesLoadingCheck(APIStatus.Success);
+
+               // Init demo watchlist types
+               const demoWatchListTypesPayload = require("./demo/index").demoWatchListTypes;
+               setWatchListTypes(demoWatchListTypesPayload);
+               setWatchListTypesLoadingCheck(APIStatus.Success);
+
                return;
           }
+
+          if (!isLoggedInCheck()) return;
      }, [demoMode, isLoggedInCheck]);
 
      // Get WatchList
      useEffect(() => {
+          if (demoMode) {
+               const demoWatchListPayload = require("./demo/index").demoWatchListPayload;
+
+               const newDemoWatchListPayload = demoWatchListPayload.filter((watchList: IWatchList) => {
+                    return (
+                         (
+                              (searchTerm === null || searchTerm === "")
+                              || (searchTerm !== null && searchTerm !== ""
+                                   && (watchList.WatchListItemName?.toString().toLowerCase().includes(searchTerm.toString().toLowerCase())
+                                        || watchList.Notes?.toString().toLowerCase().includes(searchTerm.toString().toLowerCase())
+                                        || watchList.Notes?.toString().toLowerCase().includes(searchTerm.toString().toLowerCase())
+                                   )
+                              )
+                         )
+                         && // When metadata filters are passed, StillWatching will prevent any results from showing up most of the time.
+                         (
+                              (stillWatching !== true) || (stillWatching === true && (watchList.EndDate === "" || watchList.EndDate == null)))
+                         &&
+                         (((archivedVisible !== true && watchList.Archived !== 1) || (archivedVisible === true && watchList.Archived === 1)))
+                         &&
+                         (sourceFilter === -1 || (sourceFilter !== -1 && String(sourceFilter) === String(watchList.WatchListSourceID)))
+                         &&
+                         (typeFilter === -1 || (typeFilter !== -1 && watchList.WatchListTypeID === typeFilter)
+                         )
+                    )
+               }).sort((a: IWatchList, b: IWatchList) => {
+                    switch (watchListSortColumn) {
+                         case "ID":
+                              return a.WatchListID > b.WatchListID ? (watchListSortDirection === "ASC" ? 1 : -1) : watchListSortDirection === "ASC" ? -1 : 1;
+                         case "Name":
+                              const aName = a.WatchListItemName;
+                              const bName = b.WatchListItemName;
+
+                              return String(aName) > String(bName) ? (watchListSortDirection === "ASC" ? 1 : -1) : watchListSortDirection === "ASC" ? -1 : 1;
+                         case "StartDate":
+                              return parseFloat(new Date(a.StartDate).valueOf().toString()) > parseFloat(new Date(b.StartDate).valueOf().toString()) ? (watchListSortDirection === "ASC" ? 1 : -1) : watchListSortDirection === "ASC" ? -1 : 1;
+                         case "EndDate":
+                              return parseFloat(new Date(a.EndDate).valueOf().toString()) > parseFloat(new Date(b.EndDate).valueOf().toString()) ? (watchListSortDirection === "ASC" ? 1 : -1) : watchListSortDirection === "ASC" ? -1 : 1;
+                         default:
+                              return 0;
+                    }
+               });
+
+               const newFilteredWatchList = newDemoWatchListPayload.slice(0, pageSize);
+
+               if (newFilteredWatchList.length < pageSize) {
+                    setLastPage(true);
+               }
+
+               setFilteredWatchList(newFilteredWatchList);
+
+               return;
+          }
+
           if (activeRoute !== "WatchList") {
                return;
           }
@@ -913,20 +1068,67 @@ const DataProvider = ({
 
      // Initiate getting WatchListItems
      useEffect(() => {
-          if (!isLoggedInCheck()) return;
-
           if (demoMode) {
-               const demoWatchListItemsPayload = require("./demo/index").demoWatchListItemsPayload;
-
-               setWatchListItems(demoWatchListItemsPayload);
-               setFilteredWatchListItems(demoWatchListItemsPayload);
-               setWatchListItemsSortingCheck(APIStatus.Success);
                return;
           }
+
+          if (!isLoggedInCheck()) return;
      }, [demoMode, isLoggedInCheck]);
 
      // Get WatchListItems
      useEffect(() => {
+          if (demoMode) {
+               const demoWatchListItemsPayload = require("./demo/index").demoWatchListItemsPayload;
+
+               const newDemoWatchListItemsPayload = demoWatchListItemsPayload.filter((watchListItem: IWatchListItem) => {
+                    return (
+                         (
+                              ((searchTerm === null || searchTerm === "")
+                                   || (searchTerm !== null && searchTerm !== ""
+                                        && (watchListItem.WatchListItemName?.toString().toLowerCase().includes(searchTerm.toString().toLowerCase())
+                                             || watchListItem.ItemNotes?.toString().toLowerCase().includes(searchTerm.toString().toLowerCase())
+                                        )
+                                   )
+                              )
+                              &&
+                              (showMissingArtwork !== true || (showMissingArtwork === true && (typeof watchListItem.IMDB_Poster === "undefined" || watchListItem.IMDB_Poster === null || watchListItem.IMDB_Poster === "")))
+                              &&
+                              ((archivedVisible !== true || (archivedVisible === true && watchListItem.Archived === 1)))
+                              &&
+                              (typeFilter === -1 || (typeFilter !== -1 && String(watchListItem.WatchListTypeID) === String(typeFilter)))
+                         )
+                    )
+               }).sort((a: IWatchListItem, b: IWatchListItem) => {
+                    switch (watchListSortColumn) {
+                         case "ID":
+                              return a.WatchListItemID > b.WatchListItemID ? (watchListSortDirection === "ASC" ? 1 : -1) : watchListSortDirection === "ASC" ? -1 : 1;
+                         case "Name":
+                              const aName = a.WatchListItemName;
+                              const bName = b.WatchListItemName;
+
+                              return String(aName) > String(bName) ? (watchListSortDirection === "ASC" ? 1 : -1) : watchListSortDirection === "ASC" ? -1 : 1;
+                         default:
+                              return 0;
+                    }
+               }).sort((a: IWatchListItem, b: IWatchListItem) => {
+                    switch (watchListSortColumn) {
+                         case "ID":
+                              return a.WatchListItemID > b.WatchListItemID
+                                   ? (watchListSortDirection === "ASC" ? 1 : -1)
+                                   : watchListSortDirection === "ASC" ? -1 : 1;
+                         case "Name":
+                              return String(a.WatchListItemName) > String(b.WatchListItemName) ? (watchListSortDirection === "ASC" ? 1 : -1) : watchListSortDirection === "ASC" ? -1 : 1;
+                         case "Type":
+                              return String(a.WatchListItemName) > String(b.WatchListItemName) ? (watchListSortDirection === "ASC" ? 1 : -1) : watchListSortDirection === "ASC" ? -1 : 1;
+                         default:
+                              return 0;
+                    }
+               });
+
+               setFilteredWatchListItems(newDemoWatchListItemsPayload.slice(0, pageSize));
+               return;
+          }
+
           if (activeRoute !== "Items" || (activeRoute === "Items" && watchListItemsSortingCheck === APIStatus.Loading || watchListSortColumn === "" || watchListSortDirection === "")) {
                return;
           }
@@ -939,11 +1141,6 @@ const DataProvider = ({
           if (!isLoggedInCheck()) return;
 
           if (demoMode) {
-               const demoWatchListSourcesPayload = require("./demo/index").demoWatchListSources;
-
-               setWatchListSources(demoWatchListSourcesPayload);
-               setWatchListSourcesLoadingCheck(APIStatus.Success);
-
                return;
           }
 
@@ -959,11 +1156,6 @@ const DataProvider = ({
           if (!isLoggedInCheck()) return;
 
           if (demoMode) {
-               const demoWatchListTypesPayload = require("./demo/index").demoWatchListTypes;
-
-               setWatchListTypes(demoWatchListTypesPayload);
-               setWatchListTypesLoadingCheck(APIStatus.Success);
-
                return;
           }
 
@@ -1121,21 +1313,24 @@ const DataProvider = ({
                setActiveRoute("WatchList");
                setCurrentWatchListPage(1);
 
+               const newSortColumn = "Name";
+               setWatchListSortColumn(newSortColumn);
+
                router.push("/WatchList");
 
                const newVisibleSectionChoices = [
-                         { value: "1", label: "Items" },
-                         { value: "2", label: "Stats" },
-                    ];
+                    { value: "1", label: "Items" },
+                    { value: "2", label: "Stats" },
+               ];
 
-                    setVisibleSectionChoices(newVisibleSectionChoices);
+               setVisibleSectionChoices(newVisibleSectionChoices);
 
-                    const newVisibleSections = [
-                         { value: "2", label: "Stats" },
-                         { value: "1", label: "Items" },
-                    ];
+               const newVisibleSections = [
+                    { value: "2", label: "Stats" },
+                    { value: "1", label: "Items" },
+               ];
 
-                    setVisibleSections(newVisibleSections);
+               setVisibleSections(newVisibleSections);
 
                setIsLoading(false);
 
@@ -1161,7 +1356,7 @@ const DataProvider = ({
 
      const dataContextValues = { bugLogs, darkMode, defaultRoute, demoMode, isAdmin, setIsError, setErrorMessage, visibleSections, watchList, watchListSortingCheck, watchListItems, watchListItemsSortingCheck, watchListSources, watchListTypes };
      const errorContextValues = { darkMode, defaultRoute, errorMessage, setActiveRoute };
-     const hamburgerMenuContextType = { activeRoute, archivedVisible, autoAdd, buildDate, darkMode, defaultRoute, demoMode, hideTabs, isAdding, isAdmin, isEditing, isEnabled, loggedInCheck, LogOutIconComponent, metaDataFilters, openDetailClickHandler, pullToRefreshEnabled, routes, saveOptions, setActiveRoute, setIsLoading, setMetaDataFilters, setNewPage, setOptions, setShowMissingArtwork, setSourceFilter, setStillWatching, setTypeFilter, setVisibleSections, setWatchListSortColumn, setWatchListSortDirection, showMissingArtwork, signOut, sourceFilter, stillWatching, typeFilter, visibleSections, visibleSectionChoices, watchListItemsSortColumns, watchListSortColumn, watchListSortColumns, watchListSortDirection, watchListSources, watchListTypes }
+     const hamburgerMenuContextType = { activeRoute, archivedVisible, autoAdd, buildDate, darkMode, defaultRoute, demoMode, demoModeNotificationVisible, hideTabs, isAdding, isAdmin, isEditing, isEnabled, loggedInCheck, LogOutIconComponent, metaDataFilters, openDetailClickHandler, pullToRefreshEnabled, routes, saveOptions, setActiveRoute, setIsLoading, setMetaDataFilters, setNewPage, setOptions, setShowMissingArtwork, setSourceFilter, setStillWatching, setTypeFilter, setVisibleSections, setWatchListSortColumn, setWatchListSortDirection, showMissingArtwork, signOut, sourceFilter, stillWatching, typeFilter, visibleSections, visibleSectionChoices, watchListItemsSortColumns, watchListSortColumn, watchListSortColumns, watchListSortDirection, watchListSources, watchListTypes }
      const itemsCardContextValues = { BrokenImageIconComponent, darkMode, filteredWatchListItems, getMissingPoster, getWatchList, openDetailClickHandler, setFilteredWatchListItems, watchList, watchListSortingCheck };
      const itemsContextValues = { darkMode, filteredWatchListItems, hideTabs, imdbSearchEnabled, isLoading, searchModalVisible, searchTerm, setActiveRoute, setIsAdding, setIsEditing, setFilteredWatchListItems, setSearchModalVisible, watchListItemsSortingCheck };
      const itemsDtlContextValues = { BrokenImageIconComponent, CancelIconComponent, darkMode, demoMode, EditIconComponent, formatWatchListDates, getMissingPoster, getWatchListItems, isAdding, isEditing, isEnabled, isLoading, pullToRefreshEnabled, SaveIconComponent, setErrorMessage, setIsAdding, setIsEditing, setIsError, watchListTypes, writeLog };
@@ -1173,7 +1368,7 @@ const DataProvider = ({
      const sharedLayoutContextValues = { activeRoute, darkMode, demoModeNotificationVisible, imdbSearchEnabled, isError, isLoading, loggedInCheck, searchModalVisible, searchTerm, setDemoModeNotificationVisible, setSearchTerm };
      const tabsContextValues = { activeRoute, darkMode, demoMode, getPath, hideTabs, isAdding, isAdmin, isClient, isEditing, isEnabled, isError, isLoading, loggedInCheck, pullToRefreshEnabled, routes, setActiveRoute, setSearchTerm, visibleSections };
      const watchListCardContextValues = { BrokenImageIconComponent, darkMode, filteredWatchList, formatWatchListDates, getMissingPoster, openDetailClickHandler, setFilteredWatchList, writeLog };
-     const watchListContextValues = { darkMode, filteredWatchList, hideTabs, imdbSearchEnabled, isLoading, searchModalVisible, searchTerm, setActiveRoute, setIsAdding, setIsEditing, setSearchModalVisible, watchListSortingCheck };
+     const watchListContextValues = { darkMode, filteredWatchList, hideTabs, imdbSearchEnabled, isLoading, lastPage, searchModalVisible, searchTerm, setActiveRoute, setIsAdding, setIsEditing, setSearchModalVisible, watchListSortingCheck };
      const watchListDtlContextValues = { BrokenImageIconComponent, CancelIconComponent, darkMode, demoMode, EditIconComponent, getWatchList, imdbSearchEnabled, isAdding, isEditing, isLoading, pullToRefreshEnabled, recommendationsEnabled, SaveIconComponent, setErrorMessage, setIsAdding, setIsEditing, setIsError, setStillWatching, showSearch, stillWatching, watchListSortDirection, watchListSources, writeLog };
      const watchListStatsContextValues = { darkMode, demoMode, errorMessage, ratingMax, setIsError, setErrorMessage };
 

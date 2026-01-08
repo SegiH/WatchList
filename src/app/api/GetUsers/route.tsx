@@ -17,7 +17,7 @@ export async function GET(request: NextRequest) {
      const userID = await getUserID(request);
 
      if (typeof userID != "number") {
-          return Response.json(["ERROR", "Access denied"]);
+          return Response.json(["ERROR", "Access denied due to unexpected non number"]);
      }
 
      let whereClause = '';

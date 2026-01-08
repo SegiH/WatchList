@@ -51,8 +51,8 @@ export async function GET(request: NextRequest) {
                                    : sortDirection === "ASC" ? -1 : 1;
                          case "Name":
                               return String(a.WatchListItemName) > String(b.WatchListItemName) ? (sortDirection === "ASC" ? 1 : -1) : sortDirection === "ASC" ? -1 : 1;
-                         //case "Type":
-                         //     return String(a.WatchListItemName) > String(b.WatchListItemName) ? (watchListSortDirection === "ASC" ? 1 : -1) : watchListSortDirection === "ASC" ? -1 : 1;     
+                         case "Type":
+                              return String(a.WatchListItemName) > String(b.WatchListItemName) ? (sortDirection === "ASC" ? 1 : -1) : sortDirection === "ASC" ? -1 : 1;
                          default:
                               if (allData === "true") { // SORT DESC
                                    return b.WatchListItemID > a.WatchListItemID ? 1 : -1;

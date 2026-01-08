@@ -59,6 +59,10 @@ export default function WatchListStats() {
      const [watchListTopRatedStats, setWatchListTopRatedStats] = useState<IWatchListTopRatedStat[]>([]);
 
      const getWatchListStats = async () => {
+          if (demoMode) {
+               return;
+          }
+
           try {
                const getWatchListStatsResponse = await fetch(`/api/GetWatchListStats`, { credentials: 'include' });
 
@@ -131,7 +135,7 @@ export default function WatchListStats() {
                setWatchListMovieTop10Stats(demoWatchListMovieTop10StatsPayload);
 
                const demoWatchListMovieCountStatsPayload = require("../demo/index").demoWatchListMovieCountStats;
-               setWatchListMovieCountStats(demoWatchListMovieCountStatsPayload);
+               setWatchListMovieCountStats(demoWatchListMovieCountStatsPayload[0]["MovieCount"]);
 
                const demoWatchListSourceStatsPayload = require("../demo/index").demoWatchListSourceStats;
                setWatchListSourceStats(demoWatchListSourceStatsPayload);
@@ -146,10 +150,10 @@ export default function WatchListStats() {
                setWatchListTVTop10Stats(demoWatchListTVTop10StatsPayload);
 
                const demoWatchListTVSeasonsCountStatsPayload = require("../demo/index").demoWatchListTVSeasonsCountStats;
-               setWatchListTVSeasonsCountStats(demoWatchListTVSeasonsCountStatsPayload);
+               setWatchListTVSeasonsCountStats(demoWatchListTVSeasonsCountStatsPayload[0]["TVSeasonsCount"]);
 
                const demoWatchListTVTotalCountStatsPayload = require("../demo/index").demoTVTotalStats;
-               setWatchListTVTotalCountStats(demoWatchListTVTotalCountStatsPayload);
+               setWatchListTVTotalCountStats(demoWatchListTVTotalCountStatsPayload[0]["TVTotalCount"]);
 
                const demoWatchListWeeklyBreakDown = require("../demo/index").demoWatchListWeeklyBreakDown;
 
@@ -437,12 +441,12 @@ export default function WatchListStats() {
                          </section>
 
                          {/* ===================== CHARTS ===================== */}
-                         <section className={`stats-charts ${!darkMode ? "lightMode" : "darkMode"}`}>
+                         <section className={`bottomMargin75 stats-charts ${!darkMode ? "lightMode" : "darkMode"}`}>
                               {/* ===================== MOVIES ===================== */}
                               <div className={`chart-card stat-style ${!darkMode ? "lightMode" : "darkMode"}`}>
                                    <div className="chart-header">
                                         <h2 className="chart-title">Total Movies Watched</h2>
-                                        <div className="chart-metric">{watchListMovieCountStats}</div>
+                                        <div className="chart-metric">{watchListMovieCountStats && watchListMovieCountStats}</div>
                                    </div>
 
                                    <select
@@ -487,7 +491,7 @@ export default function WatchListStats() {
                               <div className={`chart-card stat-style ${!darkMode ? "lightMode" : "darkMode"}`}>
                                    <div className="chart-header">
                                         <h2 className="chart-title">Total TV Shows Watched</h2>
-                                        <div className="chart-metric">{watchListTVTotalCountStats}</div>
+                                        <div className="chart-metric">{watchListTVTotalCountStats && watchListTVTotalCountStats}</div>
                                    </div>
 
                                    <select
@@ -528,10 +532,10 @@ export default function WatchListStats() {
                               </div>
 
                               {/* ===================== TV SEASONS ===================== */}
-                              <div className={`chart-card stat-style bottomMargin75 ${!darkMode ? "lightMode" : "darkMode"}`}>
+                              <div className={`chart-card stat-style ${!darkMode ? "lightMode" : "darkMode"}`}>
                                    <div className="chart-header">
                                         <h2 className="chart-title">TV Seasons Watched</h2>
-                                        <div className="chart-metric">{watchListTVSeasonsCountStats}</div>
+                                        <div className="chart-metric">{watchListTVSeasonsCountStats && watchListTVSeasonsCountStats}</div>
                                    </div>
 
                                    <select

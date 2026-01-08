@@ -13,6 +13,7 @@ export interface HamburgerMenuContextType {
     darkMode: boolean;
     defaultRoute: string;
     demoMode: boolean;
+    demoModeNotificationVisible: boolean;
     hideTabs: boolean;
     isAdding: boolean;
     isAdmin: () => boolean;

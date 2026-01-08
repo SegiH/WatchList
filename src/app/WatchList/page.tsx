@@ -1,6 +1,6 @@
 "use client"
 
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { APIStatus, WatchListContext } from "../context";
 import IWatchList from "../interfaces/IWatchList";
 import React from "react";
@@ -15,11 +15,13 @@ import { Button } from "@mui/material";
 
 export default function WatchList() {
      const {
-          darkMode, filteredWatchList, hideTabs, imdbSearchEnabled, isLoading, searchModalVisible, searchTerm, setActiveRoute, setIsAdding, setIsEditing, setSearchModalVisible, watchListSortingCheck
+          darkMode, filteredWatchList, hideTabs, imdbSearchEnabled, isLoading, lastPage, searchModalVisible, searchTerm, setActiveRoute, setIsAdding, setIsEditing, setSearchModalVisible, watchListSortingCheck
      } = useContext(WatchListContext) as WatchListContextType;
 
      const [imdbCardvisible, setImdbCardvisible] = useState(false);
      const [imdbJSON, setImdbJSON] = useState<[] | null>(null);
+
+     const topRef = useRef<HTMLDivElement | null>(null);
 
      const closeIMDBCard = () => {
           setImdbJSON(null);
@@ -40,6 +42,8 @@ export default function WatchList() {
 
      return (
           <>
+               <div ref={topRef} ></div>
+
                {!isLoading && searchTerm !== "" && imdbSearchEnabled &&
                     <h1 className="topMargin100">{filteredWatchList.length === 0 ? "No Results" : ""}<Button variant="contained" color="secondary" style={{ marginLeft: "20px" }} onClick={() => setSearchModalVisible(true)}>IMDB</Button></h1>
                }
@@ -48,7 +52,7 @@ export default function WatchList() {
                     <>
                          {!searchModalVisible &&
                               <span className="top">
-                                   <NavBar />
+                                   <NavBar topRef={topRef} />
                               </span>
                          }
 
@@ -63,15 +67,15 @@ export default function WatchList() {
                          </span>
 
                          {!searchModalVisible &&
-                              <span className={`bottom ${hideTabs ? "noTabs" : ""}`}>
-                                   <NavBar IsBottomNav={true} />
+                              <span className={`${lastPage ? "lastPage" : ""} ${hideTabs ? "noTabs" : ""}`}>
+                                   <NavBar IsBottomNav={true} topRef={topRef} />
                               </span>
                          }
                     </>
                }
 
                {!isLoading && watchListSortingCheck === APIStatus.Success && filteredWatchList && filteredWatchList.length === 0 && !imdbSearchEnabled &&
-                         <h1 className="topMargin100">No results</h1>
+                    <h1 className="topMargin100">No results</h1>
                }
 
                {imdbCardvisible &&

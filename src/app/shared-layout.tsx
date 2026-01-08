@@ -39,16 +39,6 @@ const SharedLayout = () => {
 
      return (
           <>
-               {loggedInCheck === APIStatus.Success && demoModeNotificationVisible &&
-                    <div className={`menu-bar-notification ${darkMode ? "darkMode" : "lightMode"}`}>
-                         <span>Demo Mode</span>
-
-                         <button className="menu-notification-close" onClick={() => setDemoModeNotificationVisible(false)}>
-                              ×
-                         </button>
-                    </div>
-               }
-
                <span>
                     {!isError && activeRoute !== "" &&
                          <>
@@ -58,13 +48,9 @@ const SharedLayout = () => {
 
                               {loggedInCheck === APIStatus.Success &&
                                    <span>
-                                        {!searchModalVisible &&
-                                             <HamburgerMenu />
-                                        }
-
                                         <span className={`leftMargin75 menuBar ${!darkMode ? "lightMode" : "darkMode"} ${demoModeNotificationVisible === true ? "demoNotificationVisible" : ""}`}>
-                                             {demoModeNotificationVisible &&
-                                                  <span className={`leftMargin menuBarActiveRoute${!darkMode ? " lightMode" : " darkMode"}`}>Demo</span>
+                                             {!searchModalVisible &&
+                                                  <HamburgerMenu />
                                              }
 
                                              {(activeRoute === "Stats" || activeRoute === "Admin" || activeRoute === "BugLogs" || activeRoute === "Data") &&

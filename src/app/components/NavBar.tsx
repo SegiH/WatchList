@@ -11,6 +11,9 @@ const NavBar = (props) => {
     } = useContext(NavBarContext) as NavBarContextType;
 
     const pageClickHandler = (adjustValue: number) => {
+        if (typeof props.topRef !== "undefined" && props.topRef.scrollIntoView !== null) {
+            props.topRef.current?.scrollIntoView({ behavior: "smooth" });
+        }
         setNewPage(adjustValue);
     }
 

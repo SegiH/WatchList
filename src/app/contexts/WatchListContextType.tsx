@@ -6,6 +6,7 @@ export interface WatchListContextType {
      hideTabs: boolean;
      imdbSearchEnabled: boolean;
      isLoading: boolean;
+     lastPage: boolean;
      searchModalVisible: boolean;
      searchTerm: string;
      setActiveRoute: (value: string) => void;

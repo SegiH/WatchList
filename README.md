@@ -25,6 +25,7 @@ You can test out WatchList in demo mode without any setup. Adding and saving is 
 1. `npm run start`
 1. Visit `http://localhost:3000` in your browser and log in with demo as the username and password.
 
+Please be aware that adding or saving a record, admin page, data page and imdb search are disabled in demo mode.
 # Installation
 Installation instructions and more detailed information can be found in INSTALL.md
 
@@ -44,20 +45,14 @@ Installation instructions and more detailed information can be found in INSTALL.
 ### WatchList Stats Summary
 ![WatchList Stats Summary](https://github.com/SegiH/WatchList/blob/main/screenshots/StatsSummary.png?raw=true)
 
-### WatchList Stats Total Movies Watched
-![WatchList Stats Total Movies Watched](https://github.com/SegiH/WatchList/blob/main/screenshots/TotalMoviesWatchedChart.png?raw=true)
+### WatchList Stats Total Watched Charts
+![WatchList Stats Total Movies Watched](https://github.com/SegiH/WatchList/blob/main/screenshots/TotalCharts.png?raw=true)
 
-### WatchList Stats Total TV Shows Watched
-![WatchList Stats Total TV Shows Watched](https://github.com/SegiH/WatchList/blob/main/screenshots/TotalTVShowsWatchedChart.png?raw=true)
-
-### WatchList Stats Total TV Seasons Watched
-![WatchList Stats Total TV Seasons Watched](https://github.com/SegiH/WatchList/blob/main/screenshots/TVSeasonsWatchedChart.png?raw=true)
+### Options
+![Search](https://github.com/SegiH/WatchList-NextJS/blob/main/screenshots/Options.png?raw=true)
 
 ### Search
 ![Search](https://github.com/SegiH/WatchList-NextJS/blob/main/screenshots/Search.png?raw=true)
-
-### Settings
-![Settings - WatchList](https://github.com/SegiH/WatchList-NextJS/blob/main/screenshots/Settings-WatchList.png?raw=true)
 
 ### Admin Console - Manage Users
 ![Admin - Manage Users](https://github.com/SegiH/WatchList-NextJS/blob/main/screenshots/Admin-ManageUsers.png?raw=true)

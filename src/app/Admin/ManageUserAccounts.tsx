@@ -81,8 +81,8 @@ const ManageUserAccounts = () => {
                alert("Adding a user is disabled in demo mode");
                return;
           }
-          
-          let currentUser = {...(isAdding ? addingUser : editingUser)};
+
+          let currentUser = { ...(isAdding ? addingUser : editingUser) };
 
           // validate rows
           if (typeof currentUser.Username === "undefined" || currentUser.Username === "") {
@@ -142,8 +142,8 @@ const ManageUserAccounts = () => {
 
           columns += (columns === "" ? "?" : "&") + `wl_username=${encodeURIComponent(currentUser.Username)}`;
           columns += (columns === "" ? "?" : "&") + `wl_realname=${encodeURIComponent(currentUser.Realname)}`;
-          columns += (columns === "" ? "?" : "&") + `wl_admin=${currentUser.Admin === 1 ? "1" : "0" }`;
-          columns += (columns === "" ? "?" : "&") + `wl_enabled=${currentUser.Enabled === 1 ? "1" : "0" }`;
+          columns += (columns === "" ? "?" : "&") + `wl_admin=${currentUser.Admin === 1 ? "1" : "0"}`;
+          columns += (columns === "" ? "?" : "&") + `wl_enabled=${currentUser.Enabled === 1 ? "1" : "0"}`;
 
           const endPoint = (isAdding ? `/api/AddUser` : `/api/UpdateUser`) + columns;
 
@@ -168,7 +168,7 @@ const ManageUserAccounts = () => {
      }
 
      const userChangeHandler = (fieldName: string, fieldValue: string) => {
-          const newUser: IUser = {...(isAdding ? addingUser : editingUser)};
+          const newUser: IUser = { ...(isAdding ? addingUser : editingUser) };
 
           if (fieldName === "Admin" || fieldName === "Enabled") {
                newUser[fieldName] = fieldValue === "true" ? 1 : 0;
@@ -205,10 +205,14 @@ const ManageUserAccounts = () => {
 
           if (usersLoadingCheck === APIStatus.Idle) {
                setUsersLoadingCheck(APIStatus.Loading);
-          } else if (usersLoadingCheck === APIStatus.Loading) {
-               getUsers();
           }
      }, [defaultRoute, demoMode, isAdmin, router, setErrorMessage, setIsError, setUsers, usersLoadingCheck]);
+
+     useEffect(() => {
+          if (usersLoadingCheck === APIStatus.Loading) {
+               getUsers();
+          }
+     }, [usersLoadingCheck]);
 
      return (
           <>

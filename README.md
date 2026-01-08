@@ -31,7 +31,7 @@ Installation instructions and more detailed information can be found in INSTALL.
 
 # Screenshots
 ### Main WatchList
-![WatchList](https://github.com/SegiH/WatchList-NextJS/blob/main/screenshots/Watchlist.png?raw=true)
+![WatchList](https://github.com/SegiH/WatchList-NextJS/blob/main/screenshots/WatchList.png?raw=true)
 
 ### View a WatchList record
 ![View a WatchList](https://github.com/SegiH/WatchList-NextJS/blob/main/screenshots/WatchList-ViewItem.png?raw=true)

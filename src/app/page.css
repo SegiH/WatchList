@@ -32,7 +32,7 @@
           display: unset !important;
      }
 
-     .navBar {
+     .pageNavigationBar {
           width: 103% !important;
      }
 
@@ -103,7 +103,7 @@ input:checked+.slider:before {
 
 table.simpleTable {
      width: fit-content;
-     margin: 20px 0;
+     margin: 0;
      font-family: Arial, sans-serif;
      border: 1px solid black;
      border-collapse: collapse;
@@ -113,6 +113,12 @@ table.simpleTable {
 /* This prevents the last buglog from being cut off due to the bottom nav bar */
 table.simpleTable:last-child {
      margin-bottom: 120px !important;
+}
+
+.simpleTableContainer {
+     overflow-x: auto;
+    overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
 }
 
 #wl_autocomplete {
@@ -424,36 +430,36 @@ table.simpleTable:last-child {
      min-width: 50%;
 }
 
-.menuBar {
+.topBar {
      align-items: center;
      border-radius: 15px;
      border-width: 1px;
      border-style: solid;
      display: inline-flex;
      min-height: 56px;
-     width: 99.04%;
+     width: 99%;
      overflow: scroll;
      scrollbar-width: none;
      position: fixed;
-     top: 0px;
+     top: 1px;
      left: -5;
      margin-left: 8px;
      z-index: 999;
 }
 
-.menuBar .lightMode {
+.topBar .lightMode {
      border-color: var(--light-mode-foregroundColor);
 }
 
-.menuBar .darkMode {
+.topBar .darkMode {
      border-color: var(--dark-mode-foregroundColor) !important;
 }
 
-.menuBarActive {
+.topBarActive {
      width: fit-content;
 }
 
-.menuBarActive ul {
+.topBarActive ul {
      display: flex;
      flex-direction: column;
      list-style-type: none;
@@ -461,20 +467,20 @@ table.simpleTable:last-child {
      left: -27px;
 }
 
-.menuBarActive ul li {
+.topBarActive ul li {
      margin-top: 20px;
 }
 
-.menuBarActive ul li span {
+.topBarActive ul li span {
      float: left;
      width: 120px;
 }
 
-.menuBarActive .row {
+.topBarActive .row {
      margin-bottom: 20px;
 }
 
-.menuBarActiveRoute {
+.topBarActiveRoute {
      font-size: 2.5em;
      font-weight: bold;
 }

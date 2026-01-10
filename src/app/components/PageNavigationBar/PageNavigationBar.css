@@ -1,15 +1,15 @@
-.navBar {
+.pageNavigationBar {
     border: 1px solid lightgray;
     box-sizing: border-box;
     height: 35px;
     text-align: center;
-    width: 100%;
+    width: 103%;
     display: flex;
     justify-content: space-between;
     z-index: 100;
 }
 
-.navBar.lastPage {
+.pageNavigationBar.lastPage {
     position: relative;
     bottom: 0;
 }
@@ -35,6 +35,8 @@ span.top {
     display: flex;
     align-items: center;
     justify-content: center;
+    height: 100%;
+    transform: translateY(-5px);
 }
 
 .left {
@@ -43,9 +45,9 @@ span.top {
 
 .right {
     text-align: right;
-    margin-left: auto; 
+    margin-left: auto;     
 }
 
-.navBar.noTabs {
+.pageNavigationBar.noTabs {
     bottom: 0px !important;
 }

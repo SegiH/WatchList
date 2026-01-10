@@ -11,6 +11,7 @@ export interface DataContextType {
      defaultRoute: string;
      demoMode: boolean;
      isAdmin: () => boolean;
+     lastPage: boolean;
      setIsError: (value: boolean) => void;
      setErrorMessage: (value: string) => void;
      visibleSections: ISectionChoice[],

@@ -3,7 +3,7 @@
 import { useContext, useEffect, useRef, useState } from "react";
 
 import SearchIMDB from "./components/SearchIMDB";
-import HamburgerMenu from "./components/HamburgerMenu";
+import HamburgerMenu from "./components/HamburgerMenu/HamburgerMenu";
 
 import { APIStatus, SharedLayoutContext } from "./context";
 
@@ -48,13 +48,13 @@ const SharedLayout = () => {
 
                               {loggedInCheck === APIStatus.Success &&
                                    <span>
-                                        <span className={`leftMargin75 menuBar ${!darkMode ? "lightMode" : "darkMode"} ${demoModeNotificationVisible === true ? "demoNotificationVisible" : ""}`}>
+                                        <span className={`leftMargin75 topBar ${!darkMode ? "lightMode" : "darkMode"} ${demoModeNotificationVisible === true ? "demoNotificationVisible" : ""}`}>
                                              {!searchModalVisible &&
                                                   <HamburgerMenu />
                                              }
 
                                              {(activeRoute === "Stats" || activeRoute === "Admin" || activeRoute === "BugLogs" || activeRoute === "Data") &&
-                                                  <span className={`leftMargin50 menuBarActiveRoute${!darkMode ? " lightMode" : " darkMode"}`}>{activeRoute}</span>
+                                                  <span className={`leftMargin50 topBarActiveRoute${!darkMode ? " lightMode" : " darkMode"}`}>{activeRoute}</span>
                                              }
 
                                              {(activeRoute === "WatchList" || activeRoute === "Items") &&

@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 
-import Tabs from './components/Tabs';
+import Tabs from './components/Tabs/Tabs';
 import { DataProvider } from "./context";
 import SharedLayout from "./shared-layout";
 

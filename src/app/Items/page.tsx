@@ -4,7 +4,7 @@ import { useContext, useEffect, useState } from "react";
 import { APIStatus, ItemsContext } from "../context";
 import IWatchListItem from "../interfaces/IWatchListItem";
 import React from "react";
-import NavBar from "../components/NavBar";
+import PageNavigationBar from "../components/PageNavigationBar/PageNavigationBar";
 import { ItemsContextType } from "../contexts/ItemsContextType";
 import IMDBCard from "../components/IMDBCard";
 import { Button } from "@mui/material";
@@ -46,7 +46,7 @@ export default function WatchListItems() {
                     <>
                          {!searchModalVisible &&
                               <span className="top">
-                                   <NavBar />
+                                   <PageNavigationBar />
                               </span>
                          }
 
@@ -61,7 +61,7 @@ export default function WatchListItems() {
                          </span>
 
                          <span className="bottom">
-                              <NavBar IsBottomNav={true} />
+                              <PageNavigationBar isBottomNav={true} />
                          </span>
                     </>
                }

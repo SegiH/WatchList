@@ -1,4 +1,4 @@
-export interface NavBarContextType {
+export interface PageNavigationBarContextType {
      activeRoute: string;
      currentItemsPage: number;
      currentWatchListPage: number;

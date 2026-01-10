@@ -1,4 +1,4 @@
-interface Route {
+export interface Route {
      Name: string;
      DisplayName: string;
      Path: string;

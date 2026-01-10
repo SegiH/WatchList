@@ -1,7 +1,5 @@
-'use server'
 import { NextRequest } from 'next/server';
 import { getDB, getUserOptions, getUserSession, writeLog, validateSettings } from "../lib";
-//import { sendCompressedJsonBrotli, sendCompressedJsonGZip } from '@/app/middleware';
 
 export async function GET(request: NextRequest) {
      const searchParams = request.nextUrl.searchParams;

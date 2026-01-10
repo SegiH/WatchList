@@ -1,4 +1,3 @@
-import IWatchListItem from "../interfaces/IWatchListItem";
 import IWatchListSource from "../interfaces/IWatchListSource";
 
 export interface WatchListDtlContextType {

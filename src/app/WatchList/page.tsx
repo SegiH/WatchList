@@ -6,7 +6,7 @@ import IWatchList from "../interfaces/IWatchList";
 import React from "react";
 
 import "../page.css";
-import NavBar from "../components/NavBar";
+import PageNavigationBar from "../components/PageNavigationBar/PageNavigationBar";
 import { WatchListContextType } from "../contexts/WatchListContextType";
 
 import WatchListCard from "./WatchListCard";
@@ -52,7 +52,7 @@ export default function WatchList() {
                     <>
                          {!searchModalVisible &&
                               <span className="top">
-                                   <NavBar topRef={topRef} />
+                                   <PageNavigationBar topRef={topRef} />
                               </span>
                          }
 
@@ -67,8 +67,8 @@ export default function WatchList() {
                          </span>
 
                          {!searchModalVisible &&
-                              <span className={`${lastPage ? "lastPage" : ""} ${hideTabs ? "noTabs" : ""}`}>
-                                   <NavBar IsBottomNav={true} topRef={topRef} />
+                              <span className={`bottom ${lastPage ? "lastPage" : ""} ${hideTabs ? "noTabs" : ""}`}>
+                                   <PageNavigationBar isBottomNav={true} />
                               </span>
                          }
                     </>

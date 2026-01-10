@@ -17,8 +17,6 @@ export const defaultSources = ['Amazon', 'Hulu', 'Movie Theatre', 'Netflix', 'Pl
 const secretKey = typeof process.env.SECRET !== "undefined" ? String(process.env.SECRET) : "";
 const sessionDuration = 604800000;
 
-//const metaDataKeys = ["Actors", "Director", "Genre", "imdbRating", "imdbVotes", "Language", "Rated", "Released", "Runtime", "Total Seasons", "Writer", "Year"];
-
 export const metaSearch = {
      "Actors": {
           Key: "Actors",
@@ -757,26 +755,6 @@ const loginSuccessfullActions = async (currentUser: IUser) => {
      }
 }
 
-export const writeLog = async (message, noDate = false) => { // No Date says don't write the date to allow for more flexibility to write multiple logs at once and have each line have its own date time stamp
-     const now = new Date();
-     let formattedDate = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')} ` +
-          `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`;
-     //new Date().toISOString().replace("T", " ").replace("Z", "");
-
-     // Strip milliseconds
-     //formattedDate = formattedDate.slice(0, formattedDate.indexOf("."));
-
-     if (noDate !== true) {
-          message = formattedDate + " " + message
-     }
-
-     fs.appendFile('watchlist.log', message + '\n', (err) => {
-          if (err) {
-               console.error('Error appending to log file:', err);
-          }
-     });
-}
-
 export const matchMetadata = (IMDB_JSON, metaDataFilters) => {
      let metadataMatch: boolean = false;
      let matchCount = 0;
@@ -804,6 +782,22 @@ export const matchMetadata = (IMDB_JSON, metaDataFilters) => {
      return metadataMatch;
 }
 
+export const writeLog = async (message, noDate = false) => { // No Date says don't write the date to allow for more flexibility to write multiple logs at once and have each line have its own date time stamp
+     const now = new Date();
+     let formattedDate = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')} ` +
+          `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`;
+
+     if (noDate !== true) {
+          message = formattedDate + " " + message
+     }
+
+     fs.appendFile('watchlist.log', message + '\n', (err) => {
+          if (err) {
+               console.error('Error appending to log file:', err);
+          }
+     });
+}
+
 export const validateSettings = async () => {
      if (!fs.existsSync(dbFile)) {
           return `Database file is missing`;
@@ -824,198 +818,3 @@ export const writeDB = (newDB) => {
           writeLog(`The error ${e.message} occurred while saving the DB`);
      }
 }
-
-/*
-
-import { JsonStreamStringify } from 'json-stream-stringify';
-import { parser } from 'stream-json';
-import { streamValues } from 'stream-json/streamers/StreamValues';
-
-export const getDB_delete_me = () => {
-     return new Promise((resolve) => {
-          const filePath = path.join(process.cwd(), dbFile);
-
-          const fileStream = fs.createReadStream(filePath, { encoding: 'utf8' });
-          const jsonParser = parser();
-          const jsonStream = fileStream.pipe(jsonParser).pipe(streamValues());
-
-          let isArray: any = null;
-
-          const result = isArray === null ? (null) : (isArray ? [] : {});
-
-          // We'll rebuild the entire object/array progressively:
-          // For a top-level array, streamValues emits each item.
-          // For a top-level object, it emits {key, value} pairs.
-          // So we accumulate those to reconstruct the DB.
-
-          let topLevelValue: any = null; // Will hold the full DB if primitive
-
-          // We buffer object properties if the root is an object
-          let objectAccumulator = {};
-
-          let hasItems = false;
-
-          jsonStream.on('data', ({ key, value }) => {
-               hasItems = true;
-
-               if (isArray === null) {
-                    // Detect root type:
-                    isArray = key === null; // For arrays, key is null
-                    if (isArray) {
-                         topLevelValue = [];
-                    } else {
-                         objectAccumulator = {};
-                    }
-               }
-
-               if (isArray) {
-                    topLevelValue.push(value);
-               } else {
-                    objectAccumulator[key] = value;
-               }
-          });
-
-
-          jsonStream.on('end', () => {
-               if (hasItems) {
-                    resolve(isArray ? topLevelValue as any : objectAccumulator[0]);
-               } else {
-                    // Empty file or no data
-                    resolve({});
-               }
-          });
-
-          jsonStream.on('error', (err) => {
-               console.error('Error parsing JSON:', err.message);
-               resolve({});  // fallback like your original method
-          });
-
-          fileStream.on('error', (err) => {
-               console.error('Error reading file:', err.message);
-               resolve({});  // fallback like your original method
-          });
-     });
-};
-
-export const writeDB_delete_me = (newDB) => {
-     return new Promise((resolve, reject) => {
-          if (typeof newDB !== 'object' || newDB === null) {
-               return reject(new Error('newDB must be a non-null object or array'));
-          }
-
-          const tmpFile = `${dbFile}.tmp`;
-
-          // Step: open the writable first (this truncates the tmp file)
-          const writable = fs.createWriteStream(tmpFile, { encoding: 'utf8' });
-
-          let jsonStream;
-          try {
-               // Use a streaming library that supports objects properly
-               jsonStream = new JsonStreamStringify(newDB);
-          } catch (e) {
-               writable.destroy();
-               return reject(new Error('Could not initiate JSON stream: ' + e.message));
-          }
-
-          let hadError = false;
-
-          // On write stream error
-          writable.on('error', (err) => {
-               hadError = true;
-               console.error('[writeDB] Writable error:', err);
-               // Clean up: remove tmp file if exists
-               try { fs.unlinkSync(tmpFile); } catch (e) { // ignore
-               reject(err);
-          });
-
-          writable.on('finish', () => {
-               if (hadError) {
-                    // someone already rejected
-                    return;
-               }
-               // Everything succeeded — replace the original
-               fs.copyFile(tmpFile, dbFile, (err) => {
-                    if (err) {
-                         console.error('[writeDB] Copy failed:', err);
-                         reject(err);
-                         return;
-                    }
-
-                    fs.unlink(tmpFile, (unlinkErr) => {
-                         if (unlinkErr) {
-                              console.warn('[writeDB] Warning: temp file was not deleted:', unlinkErr);
-                         }
-                         resolve(null);
-                    });
-               });
-          });
-
-          jsonStream.on('error', (err) => {
-               hadError = true;
-               console.error('[writeDB] JSON stream error:', err);
-               // destroy writable so finish won't be called
-               writable.destroy();
-               // cleanup tmp
-               try { fs.unlinkSync(tmpFile); } catch (e) { }
-               reject(err);
-          });
-
-          // Pipe the JSON stream into the writable
-          jsonStream.pipe(writable);
-     });
-};
-
-const getImageBase64 = async (URL: string) => {
-
-     const response = await fetch(URL);
-
-     if (!response.ok) {
-          return new Response('Failed to fetch image.', { status: 500 });
-     }
-
-     const arrayBuffer = await response.arrayBuffer();
-     const base64 = Buffer.from(arrayBuffer).toString('base64');
-
-     // Get the MIME type from headers, default to image/jpeg if unknown
-     const contentType = response.headers.get('content-type') || 'image/jpeg';
-
-     const base64Data = `data:${contentType};base64,${base64}`;
-
-     return base64Data;
-}
-*/
-// writes in chunks
-// Generator that chunks a string into smaller pieces
-/*function* chunkString(str, size = 65536) {
-  let index = 0;
-  while (index < str.length) {
-    yield str.slice(index, index + size);
-    index += size;
-  }
-}
-
-export const writeDB2 = (newDB) => {
-  return new Promise((resolve, reject) => {
-    try {
-      // Convert the entire object to JSON string (this is still one big string in memory)
-      // You can tweak JSON.stringify parameters for indentation or filtering
-      const jsonString = JSON.stringify(newDB);
-
-      // Create a readable stream from chunks of the JSON string
-      const readable = Readable.from(chunkString(jsonString));
-
-      const writable = fs.createWriteStream(dbFile);
-
-      writable.on('finish', () => resolve(null));
-      writable.on('error', (err) => reject(err));
-      readable.on('error', (err) => reject(err));
-
-      // Pipe the chunked string stream to file
-      readable.pipe(writable);
-
-    } catch (e) {
-      console.error(`The error ${e.message} occurred while saving the DB`);
-      reject(e);
-    }
-  });
-};*/

@@ -20,7 +20,7 @@ export interface HamburgerMenuContextType {
     isEditing: boolean;
     isEnabled: (value: string) => boolean;
     loggedInCheck: string;
-     LogOutIconComponent: React.ReactNode;
+    LogOutIconComponent: React.ReactNode;
     metaDataFilters: any[];
     openDetailClickHandler: (value: number, activeRouteOverride?: string) => void; // *
     pullToRefreshEnabled: (value: boolean) => void;

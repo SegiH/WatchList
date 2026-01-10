@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { APIStatus, DataContext } from "../context";
 import { useRouter } from 'next/navigation';
 
@@ -11,93 +11,103 @@ import { DataContextType } from "../contexts/DataContextType";
 
 export default function Data() {
     const {
-        bugLogs, darkMode, defaultRoute, demoMode, isAdmin, setIsError, setErrorMessage, visibleSections, watchList, watchListSortingCheck, watchListItems, watchListItemsSortingCheck, watchListSources, watchListTypes,
+        bugLogs, darkMode, defaultRoute, demoMode, isAdmin, lastPage, setErrorMessage, setIsError, visibleSections, watchList, watchListSortingCheck, watchListItems, watchListItemsSortingCheck, watchListSources, watchListTypes,
     } = useContext(DataContext) as DataContextType;
 
     const [activeSection, setActiveSection] = useState("");
+    const [currentDataPage, setCurrentDataPage] = useState(1);
     const [dataSource, setDataSource] = useState<any>([]);
-    const [isMounted, setIsMounted] = useState(false);
+    const [filteredDataSource, setFilteredDataSource] = useState<any>([]);
+    const [isReady, setIsReady] = useState(false);
     const [users, setUsers] = useState<IUser[]>([]);
 
     const router = useRouter();
+    const topRef = useRef<HTMLDivElement | null>(null);
 
     const dataSchema = {
-        WatchList: [{
-            "WatchListID": "ID",
-            "UserID": "User ID",
-            "WatchListItemName": "Item name",
-            "WatchListTypeName": "Type",
-            "IMDB_URL": "URL",
-            "IMDB_Poster": "Image",
-            "Notes": "Notes",
-            "Archived": "Archived",
-            "Enabled": "Enabled",
-            "IMDB_JSON": "JSON", // Always put this last since its big
-        }],
-        Items: [{
-            "WatchListItemID": "ID",
-            "WatchListItemName": "Name",
-            "WatchListTypeName": "Type",
-            "IMDB_URL": "URL",
-            "IMDB_Poster": "Image",
-            "ItemNotes": "Notes",
-            "Archived": "Archived",
-            "Enabled": "Enabled",
-            "IMDB_JSON": "JSON" // Always put this last since its big
-        }],
-        BugLogs: [{
-            "BugLogId": "ID",
-            "BugName": "Name",
-            "AddDate": "Added On",
-            "CompletedDate": "Completed On",
-            "ResolutionNotes": "Resolution Notes"
-        }],
-        Logs: [{
-            "Date": "Date",
-            "Message": "Message"
-        }],
-        /*Options: [{
-            "OptionID": "ID",
-            "UserID": "User ID",
-            "ArchivedVisible": "Archived Visible",
-            "AutoAdd": "Auto Add",
-            "DarkMode": "Dark Mode",
-            "HideTabs": "Hide Tabs",
-            "SearchCount": "Search Count",
-            "StillWatching": "Still Watching",
-            "ShowMissingArtwork": "Show Missing Artwork",
-            "SourceFilter": "Source Filter",
-            "TypeFilter": "Type Filter",
-            "WatchListSortColumn": "Sort Column",
-            "WatchListSortDirection": "Sort Direction",
-            "VisibleSections": "Visible Sections",
-            "SortColumn": "Sort Column",
-            "SortDirection": "Sort Direction"
-        }],*/
-        Users: [{
-            "UserID": "ID",
-            "Username": "Username",
-            "Realname": "Realname",
-            "Admin": "Admin",
-            "Enabled": "Enabled",
-        }],
-        VisibleSections: [{
-            "value": "value",
-            "label": "label",
-        }],
-        WatchListSources: [{
-            "WatchListSourceID": "ID",
-            "WatchListSourceName": "Name",
-            "Enabled": "Enabled"
-        }],
-        WatchListTypes: [{
-            "WatchListTypeID": "ID",
-            "WatchListTypeName": "Name",
-        }]
-    };
+        WatchList: {
+            Columns: {
+                "WatchListID": "ID",
+                "UserID": "User ID",
+                "WatchListItemName": "Item name",
+                "WatchListTypeName": "Type",
+                "IMDB_URL": "URL",
+                "IMDB_Poster": "Image",
+                "Notes": "Notes",
+                "Archived": "Archived",
+                "Enabled": "Enabled",
+                "IMDB_JSON": "JSON", // Always put this last since its big
+            },
+            PageSize: 10
+        },
+        Items: {
+            Columns: {
+                "WatchListItemID": "ID",
+                "WatchListItemName": "Name",
+                "WatchListTypeName": "Type",
+                "IMDB_URL": "URL",
+                "IMDB_Poster": "Image",
+                "ItemNotes": "Notes",
+                "Archived": "Archived",
+                "Enabled": "Enabled",
+                "IMDB_JSON": "JSON" // Always put this last since its big
+            },
+            PageSize: 8
+        },
+        BugLogs: {
+            Columns: {
+                "BugLogId": "ID",
+                "BugName": "Name",
+                "AddDate": "Added On",
+                "CompletedDate": "Completed On",
+                "ResolutionNotes": "Resolution Notes"
+            },
+            PageSize: 8
+        },
+        Logs: {
+            Columns: {
+                "Date": "Date",
+                "Message": "Message"
+            },
+            PageSize: 8
+        },
+        Users: {
+            Columns: {
+                "UserID": "ID",
+                "Username": "Username",
+                "Realname": "Realname",
+                "Admin": "Admin",
+                "Enabled": "Enabled"
+            },
+            PageSize: 8
+        },
+        VisibleSections: {
+            Columns: {
+                "value": "value",
+                "label": "label"
+            },
+            PageSize: 8
+        },
+        WatchListSources: {
+            Columns: {
+                "WatchListSourceID": "ID",
+                "WatchListSourceName": "Name",
+                "Enabled": "Enabled"
+            },
+            PageSize: 8
+        },
+        WatchListTypes: {
+            Columns: {
+                "WatchListTypeID": "ID",
+                "WatchListTypeName": "Name",
+            },
+            PageSize: 8
+        }
+    }
 
-    const activeSectionCHangeHandler = async (newActiveSection: string) => {
+    const activeSectionChangeHandler = async (newActiveSection: string) => {
         setActiveSection(newActiveSection);
+        setIsReady(false);
 
         try {
             switch (newActiveSection) {
@@ -138,7 +148,24 @@ export default function Data() {
                     break;
                 case "BugLogs":
                     if (bugLogs.length === 0) {
-                        await getBugLogs();
+                        const getBugLogsResponse = await fetch(`/api/GetBugLogs`, { credentials: 'include' });
+
+                        const getBugLogsResult = await getBugLogsResponse.json();
+
+                        if (getBugLogsResult[0] === "OK") {
+                            getBugLogsResult[1].forEach(async (element: IBugLog) => {
+                                element.AddDate = String(element.AddDate).trim();
+
+                                if (element.CompletedDate !== null) {
+                                    element.CompletedDate = String(element.CompletedDate).trim();
+                                }
+                            });
+
+                            setDataSource(getBugLogsResult[1]);
+                        } else {
+                            alert(`An error occurred while getting the bug logs`);
+                        }
+
                         break;
                     } else {
                         setDataSource(bugLogs);
@@ -197,48 +224,50 @@ export default function Data() {
         }
     }
 
-    const getBugLogs = async () => {
-        try {
-            const getBugLogsResponse = await fetch(`/api/GetBugLogs`, { credentials: 'include' });
+    const pageClickHandler = (adjustValue: number) => {
+        setIsReady(false);
 
-            const getBugLogsResult = await getBugLogsResponse.json();
-
-            if (getBugLogsResult[0] === "OK") {
-                getBugLogsResult[1].forEach(async (element: IBugLog) => {
-                    element.AddDate = String(element.AddDate).trim();
-
-                    if (element.CompletedDate !== null) {
-                        element.CompletedDate = String(element.CompletedDate).trim();
-                    }
-                });
-
-                setDataSource(getBugLogsResult[1]);
-            } else {
-                alert(`An error occurred while getting the bug logs`);
-            }
-        } catch (e: any) {
-            alert(e.message);
+        if (typeof topRef !== "undefined" && topRef !== null && topRef.current !== null && topRef.current.scrollIntoView !== null) {
+            topRef.current?.scrollIntoView({ behavior: "smooth" });
         }
+
+        setCurrentDataPage(currentDataPage + adjustValue);
     }
+
+    const updateDataSourceFilteredResults = () => {
+        const startIndex = (currentDataPage - 1) * dataSchema[activeSection].PageSize;
+        const endIndex = startIndex + dataSchema[activeSection].PageSize;
+
+        const newFilteredDataSource = dataSource.slice(startIndex, endIndex);
+
+        setFilteredDataSource(newFilteredDataSource);
+    }
+
+    useEffect(() => {
+        if (dataSource.length > 0) {
+            updateDataSourceFilteredResults();
+            setIsReady(true);
+        }
+    }, [currentDataPage, dataSource]);
 
     useEffect(() => {
         // Make sure current user is an admin
         if (!isAdmin() && !demoMode) {
-            router.push(defaultRoute)
+            router.push(defaultRoute);
         }
-
-        setIsMounted(true);
-    }, [defaultRoute, isAdmin, router, setIsMounted]);
+    }, []);
 
     return (
         <span className="topMarginContent">
-            {isMounted &&
-                <div>
+            <div ref={topRef} ></div>
+
+            <div>
+                <span style={{ display: "flex" }}>
                     <span className="firstItem">
                         <span>Select section</span>
                     </span>
 
-                    <select className="leftMargin selectStyle editing" value={activeSection} onChange={(event) => activeSectionCHangeHandler(event.target.value)}>
+                    <select className="leftMargin selectStyle editing" value={activeSection} onChange={(event) => activeSectionChangeHandler(event.target.value)}>
                         <option value="">Please select</option>
 
                         {Object.keys(dataSchema).map((sectionName: any, index: number) => {
@@ -250,39 +279,43 @@ export default function Data() {
                         })}
                     </select>
 
-                    {activeSection !== "" && dataSource && dataSource.length > 0 &&
-                        <table style={{ borderWidth: "1px", borderStyle: "solid" }} className={`simpleTable fullWidth ${!darkMode ? "lightMode" : "darkMode"}`}>
+                    {activeSection !== "" && isReady &&
+                        <span style={{ display: "flex", marginLeft: "10px" }}>
+                            {currentDataPage > 1 &&
+                                <div style={{ fontSize: "30px" }} className={`arrow left`} onClick={() => pageClickHandler(-1)}>&#8592;</div>
+                            }
+
+                            {!lastPage &&
+                                <div style={{ fontSize: "30px", marginLeft: "25px" }} className={`arrow right`} onClick={() => pageClickHandler(1)}>&#8594;</div>
+                            }
+                        </span>
+                    }
+                </span>
+
+                {activeSection !== "" && isReady &&
+                    <div className="simpleTableContainer">
+                        <table className={`simpleTable fullWidth ${!darkMode ? "lightMode" : "darkMode"}`}>
                             <thead>
                                 <tr>
-                                    {dataSchema[activeSection].map((columns: any, index: number) => {
+                                    {Object.entries(dataSchema[activeSection]["Columns"]).map((columns: any, index: number) => {
                                         return (
-                                            <React.Fragment key={index}>
-                                                {Object.values(columns).map((columnName: any, index: number) => {
-                                                    return (<th key={index}>{columnName}</th>);
-                                                })}
-                                            </React.Fragment>
+                                            <th key={index}>{columns[1]}</th>
                                         );
                                     })}
                                 </tr>
                             </thead>
 
                             <tbody>
-                                {dataSource.map((row: any, index: number) => {
+                                {filteredDataSource.map((row: any, index: number) => {
                                     return (
                                         <tr key={index}>
-                                            {dataSchema[activeSection].map((columns: any, columnIndex: number) => {
+                                            {Object.entries(dataSchema[activeSection]["Columns"]).map((columns: any, columnIndex: number) => {
                                                 return (
-                                                    <React.Fragment key={columnIndex}>
-                                                        {Object.keys(columns).map((cell: any, cellIndex: number) => {
-                                                            return (
-                                                                <td key={cellIndex}>
-                                                                    {typeof row[cell] != "undefined" && row[cell] !== null ?
-                                                                        String(row[cell]) : ""
-                                                                    }
-                                                                </td>
-                                                            )
-                                                        })}
-                                                    </React.Fragment>
+                                                    <td key={columnIndex}>
+                                                        {typeof row[columns[0]] != "undefined" && row[columns[0]] !== null ?
+                                                            String(row[columns[0]]) : "FUBAR"
+                                                        }
+                                                    </td>
                                                 )
                                             })}
                                         </tr>
@@ -290,61 +323,9 @@ export default function Data() {
                                 })}
                             </tbody>
                         </table>
-                    }
-
-
-                    {/*<span className="firstItem">
-                        <span>Show WatchList {activeSection ? "Items" : ""}</span>
-                    </span>
-
-                    <span className="leftMargin" title="Show WatchList Items">
-                        <label className="switch">
-                            <input type="checkbox" checked={activeSection} onChange={(event) => setActiveSection(event.target.checked)} />
-                            <span className="slider round"></span>
-                        </label>
-                    </span>
-                    
-
-                    {/*{!activeSection &&
-                        <table style={{ borderWidth: "1px", borderStyle: "solid" }} className={`simpleTable fullWidth ${!darkMode ? "lightMode" : "darkMode"}`}>
-                            <thead>
-                                <tr>
-                                    <th>ID</th>
-                                    <th>User ID</th>
-                                    <th>WatchListItemID</th>
-
-                                    {!isAdding &&
-                                        <th>ID</th>
-                                    }
-
-                                    <th>Bug name</th>
-
-                                    {(isAdding || isEditing) &&
-                                        <>
-                                            <th>Resolution Notes</th>
-                                            <th>Added On</th>
-                                            <th>Completed On</th>
-
-                                            {!isAdding && !isEditing &&
-                                                <th>Delete</th>
-                                            }
-                                        </>
-                                    }
-                                </tr>
-                            </thead>
-                        </table>
-                    }*/}
-                </div>
-            }
+                    </div>
+                }
+            </div>
         </span>
     );
 }
-
-{/*Object.values(columns).map((columnName: any, index: number) => {
-                                                        return (<td key={index}>{columnName}</td>);
-                                                    })*/}
-
-{/*{row.map((cell: any, cellIndex: number) => {
-                                                <td key={cellIndex}>{JSON.stringify(cell)}</td>
-                                            })}*/}
-{/*{JSON.stringify(Object.values(dataSchema[activeSection]))}*/ }

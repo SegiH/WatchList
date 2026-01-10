@@ -2,8 +2,6 @@ import { NextRequest } from 'next/server';
 import { getDB, getMissingArtwork, writeLog, writeDB } from "../lib";
 import IWatchListItem from '@/app/interfaces/IWatchListItem';
 
-//const delayInSeconds = 2;
-
 export async function GET(request: NextRequest) {
      const searchParams = request.nextUrl.searchParams;
 
@@ -50,13 +48,6 @@ export async function GET(request: NextRequest) {
                } else {
                     resultsSummary.push(missingPosterResult);
                }
-
-               // Pause before checking next image
-               //if (i % 10 === 0) {
-               //     writeLog(`Pausing for ${delayInSeconds} seconds`);
-
-               //     await new Promise(r => setTimeout(r, delayInSeconds * 1000));
-               //}
           }
 
           if (dbModified) {

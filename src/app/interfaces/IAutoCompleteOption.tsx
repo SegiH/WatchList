@@ -1,3 +1,3 @@
-interface IAutoCompleteOption {
+export default interface IAutoCompleteOption {
      name: string;
 }

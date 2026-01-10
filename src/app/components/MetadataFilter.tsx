@@ -5,7 +5,14 @@ import { useEffect, useState } from "react";
 import "../page.css";
 import { APIStatus } from "../context";
 
-const MetaDataFilter = (props) => {
+interface MetaDataFilterProps {
+    closeMetaDataFilters: () => void;
+    darkMode: boolean;
+    metaDataFilters: any[];
+    setMetaDataFilters: (value: Record<string, any>) => void;
+}
+
+const MetaDataFilter = ({ closeMetaDataFilters, darkMode, metaDataFilters, setMetaDataFilters }: MetaDataFilterProps) => {
     const [metaDataLoadingCheck, setMetaDataLoadingCheck] = useState(APIStatus.Idle);
     const [metaDataObj, setMetaDataObj] = useState<any>([]);
     const [selectedValues, setSelectedValues] = useState<any>([]);
@@ -24,8 +31,8 @@ const MetaDataFilter = (props) => {
     }
 
     const clearFiltersClickHandler = () => {
-        props.setMetaDataFilters([{}]);
-        props.closeMetaDataFilter();
+        setMetaDataFilters([{}]);
+        closeMetaDataFilters();
     }
 
     const getMetaData = async () => {
@@ -40,7 +47,7 @@ const MetaDataFilter = (props) => {
                 alert(`An error occurred while getting the metadata`);
             }
 
-            setSelectedValues(props.metaDataFilters);
+            setSelectedValues(metaDataFilters);
 
             setMetaDataLoadingCheck(APIStatus.Success);
         } catch (e: any) {
@@ -59,12 +66,12 @@ const MetaDataFilter = (props) => {
         });
 
         if (Object.keys(newSelectedValues).length === 0) {
-            props.setMetaDataFilters([{}]);
+            setMetaDataFilters([{}]);
         } else {
-            props.setMetaDataFilters(selectedValues);
+            setMetaDataFilters(selectedValues);
         }
 
-        props.closeMetaDataFilter();
+        closeMetaDataFilters();
     }
 
     useEffect(() => {
@@ -85,7 +92,7 @@ const MetaDataFilter = (props) => {
         <>
             {metaDataLoadingCheck === APIStatus.Success &&
                 <div className="modal scrollable">
-                    <div className={`modal-content scrollable overflowY settingsPanel textLabel ${!props.darkMode ? " lightMode" : " darkMode"}`} style={{ overflowY: "auto" }}>
+                    <div className={`modal-content scrollable overflowY settingsPanel textLabel ${!darkMode ? " lightMode" : " darkMode"}`} style={{ overflowY: "auto" }}>
                         <div>Metadata Filter</div>
 
                         <div className="metaDataFilterButtons">

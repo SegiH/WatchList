@@ -1,15 +1,15 @@
 "use client"
 
 import { useContext, useState, useRef, useEffect } from "react";
-import { APIStatus, HamburgerMenuContext } from "../context";
+import { APIStatus, HamburgerMenuContext } from "../../context";
 import "./HamburgerMenu.css";
-import { HamburgerMenuContextType } from "../contexts/HamburgerMenuContextType";
-import IUserOption from "../interfaces/IUserOption";
-import IWatchListSource from "../interfaces/IWatchListSource";
+import { HamburgerMenuContextType } from "../../contexts/HamburgerMenuContextType";
+import IUserOption from "../../interfaces/IUserOption";
+import IWatchListSource from "../../interfaces/IWatchListSource";
 import { Button } from "@mui/material";
 import Select from 'react-select';
-import IWatchListType from "../interfaces/IWatchListType";
-import MetaDataFilter from "./MetadataFilter";
+import IWatchListType from "../../interfaces/IWatchListType";
+import MetaDataFilter from "../MetadataFilter";
 import { useRouter } from "next/navigation";
 
 const HamburgerMenu = () => {
@@ -57,7 +57,7 @@ const HamburgerMenu = () => {
           openDetailClickHandler(-1)
      }
 
-     const closeMetaDataFilter = async () => {
+     const closeMetaDataFilters = async () => {
           setMetadataFiltervisible(false);
      }
 
@@ -468,7 +468,7 @@ const HamburgerMenu = () => {
                </div>
 
                {metadataFiltervisible &&
-                    <MetaDataFilter closeMetaDataFilter={closeMetaDataFilter} darkMode={darkMode} metaDataFilters={metaDataFilters} setMetaDataFilters={setMetaDataFilters} />
+                    <MetaDataFilter closeMetaDataFilters={closeMetaDataFilters} darkMode={darkMode} metaDataFilters={metaDataFilters} setMetaDataFilters={setMetaDataFilters} />
                }
           </>
      );

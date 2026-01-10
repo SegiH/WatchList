@@ -1,23 +1,31 @@
 import IWatchList from "../interfaces/IWatchList";
 
-export default function WatchListHistory(props) {
+interface WatchListHistoryProps {
+    darkMode: boolean;
+    formatWatchListDates: (startDate: string, endDate: string) => string;
+    name?: string;
+    setWatchListHistoryVisible: (value: boolean) => void;
+    watchListHistory: IWatchList[];
+}
+
+export default function WatchListHistory({ darkMode, formatWatchListDates, name, setWatchListHistoryVisible, watchListHistory }: WatchListHistoryProps) {
     const closeWatchListHistory = async () => {
-        props.setWatchListHistoryVisible(false);
+        setWatchListHistoryVisible(false);
     }
 
     return (
-        <div className={`modal zIndex ${!props.darkMode ? " lightMode" : " darkMode"}`}>
+        <div className={`modal zIndex ${!darkMode ? " lightMode" : " darkMode"}`}>
             <div className={`modal-content`}>
                 <span className="clickable closeButton" onClick={closeWatchListHistory}>
                     X
                 </span>
 
-                {props.name} History
+                {name} History
                 <br></br>
 
-                {props.watchListHistory.map((watchList: IWatchList) => {
+                {watchListHistory.map((watchList: IWatchList) => {
                     return (
-                        <ul key={watchList.WatchListID} className={`${!props.darkMode ? " lightMode" : " darkMode"}`}>
+                        <ul key={watchList.WatchListID} className={`${!darkMode ? " lightMode" : " darkMode"}`}>
                             <li>
                                 {watchList.WatchListTypeID == 2 &&
                                     <>
@@ -25,7 +33,7 @@ export default function WatchListHistory(props) {
                                     </>
                                 }
 
-                                {" "}watched {props.formatWatchListDates(watchList.StartDate, watchList.EndDate)}
+                                {" "}watched {formatWatchListDates(watchList.StartDate, watchList.EndDate)}
                             </li>
                         </ul>
                     )

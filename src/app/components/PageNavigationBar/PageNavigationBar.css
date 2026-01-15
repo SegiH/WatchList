@@ -3,10 +3,11 @@
     box-sizing: border-box;
     height: 35px;
     text-align: center;
-    width: 103%;
+    width: 100%;
     display: flex;
     justify-content: space-between;
     z-index: 100;
+    -webkit-tap-highlight-color: transparent;
 }
 
 .pageNavigationBar.lastPage {

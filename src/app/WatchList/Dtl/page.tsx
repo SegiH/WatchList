@@ -685,7 +685,7 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
 
      return (
           <>
-               {!isLoading && !isClosing && watchListDtlLoadingCheck === APIStatus.Success && formattedNamesLoadingComplete === APIStatus.Success &&
+               {!isLoading && !isClosing && watchListDtlLoadingCheck === APIStatus.Success &&
                     <div className="modal">
                          <div className={`modal-content ${watchListDtlID != null ? "fade-in" : ""}${!darkMode ? " lightMode" : " darkMode"}`}>
                               {!recommendationsVisible &&
@@ -803,9 +803,9 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
                                              }
 
                                              <div className="narrow card">
-                                                  {((isAdding && addWatchListDtl) || isEditing) && imdbSearchEnabled &&
+                                                  {/*{((isAdding && addWatchListDtl) || isEditing) && imdbSearchEnabled &&
                                                        <div className="clickable hyperlink text-label rightAligned" onClick={addNewChangeHandler}>Add</div>
-                                                  }
+                                                  }*/}
                                              </div>
 
                                              {(isAdding || isEditing) &&

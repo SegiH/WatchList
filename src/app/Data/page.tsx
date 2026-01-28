@@ -8,6 +8,8 @@ import "../page.css";
 import IBugLog from "../interfaces/IBugLog";
 import IUser from "../interfaces/IUser";
 import { DataContextType } from "../contexts/DataContextType";
+import { FieldTypes, FieldValueTypes } from "../components/SegiTable/ISegiTable";
+import SegiTable from "../components/SegiTable/SegiTable";
 
 export default function Data() {
     const {
@@ -16,9 +18,10 @@ export default function Data() {
 
     const [activeSection, setActiveSection] = useState("");
     const [currentDataPage, setCurrentDataPage] = useState(1);
-    const [dataSource, setDataSource] = useState<any>([]);
+    //const [dataSource, setDataSource] = useState<any>([]);
     const [filteredDataSource, setFilteredDataSource] = useState<any>([]);
     const [isReady, setIsReady] = useState(false);
+    const [segiTableTemplate, setSegiTableTemplate] = useState<any>([]);
     const [users, setUsers] = useState<IUser[]>([]);
 
     const router = useRouter();
@@ -105,9 +108,42 @@ export default function Data() {
         }
     }
 
+    const createSegiTableTemplate = (section: string) => {
+        const fields: any = [];
+
+        const dataSection = dataSchema[section];
+
+        Object.keys(dataSection.Columns).forEach((column) => {
+            const newFieldDef = {
+                DisplayName: dataSection.Columns[column],
+                DatabaseColumn: column,
+                FieldType: FieldTypes.TEXTFIELD,
+                FieldValueType: FieldValueTypes.TEXT,
+                ColumnWidth: (100 / Object.keys(dataSection.Columns).length) + "%"
+            };
+
+            fields.push(newFieldDef);
+        });
+
+        const newTemplate = {
+            Fields: fields,
+        }
+
+        return newTemplate;
+    }
+
+
+    const setTemplateDataSource = (template: {}, data: any[]) => {
+        template["Data"] = data;
+
+        setSegiTableTemplate(template)
+    }
+
     const activeSectionChangeHandler = async (newActiveSection: string) => {
         setActiveSection(newActiveSection);
         setIsReady(false);
+
+        const template = createSegiTableTemplate(newActiveSection);
 
         try {
             switch (newActiveSection) {
@@ -122,10 +158,10 @@ export default function Data() {
                             setIsError(true);
                             return;
                         } else {
-                            setDataSource(getAllWatchListResult[1]);
+                            setTemplateDataSource(template, getAllWatchListResult[1]);
                         }
                     } else {
-                        setDataSource(watchList);
+                        setTemplateDataSource(template, watchList);
                     }
 
                     break;
@@ -140,10 +176,10 @@ export default function Data() {
                             setIsError(true);
                             return;
                         } else {
-                            setDataSource(getAllWatchListItemsResult[1]);
+                            setTemplateDataSource(template, getAllWatchListItemsResult[1]);
                         }
                     } else {
-                        setDataSource(watchListItems);
+                        setTemplateDataSource(template, watchListItems);
                     }
                     break;
                 case "BugLogs":
@@ -161,14 +197,14 @@ export default function Data() {
                                 }
                             });
 
-                            setDataSource(getBugLogsResult[1]);
+                            setTemplateDataSource(template, getBugLogsResult[1]);
                         } else {
                             alert(`An error occurred while getting the bug logs`);
                         }
 
                         break;
                     } else {
-                        setDataSource(bugLogs);
+                        setTemplateDataSource(template, bugLogs);
                         break;
                     }
                 //case "Options": // TODO: Fix me
@@ -184,21 +220,21 @@ export default function Data() {
                         setIsError(true);
                         return;
                     } else {
-                        setDataSource(getLogsResult[1]);
+                        setTemplateDataSource(template, getLogsResult[1]);
                     }
                     break;
                 case "VisibleSections":
-                    setDataSource(visibleSections);
+                    setTemplateDataSource(template, visibleSections);
                     break;
                 case "WatchListSources":
-                    setDataSource(watchListSources);
+                    setTemplateDataSource(template, watchListSources);
                     break;
                 case "WatchListTypes":
-                    setDataSource(watchListTypes);
+                    setTemplateDataSource(template, watchListTypes);
                     break;
                 case "Users":
                     if (users.length > 0) {
-                        setDataSource(users);
+                        setTemplateDataSource(template, users);
                         return;
                     }
 
@@ -207,7 +243,7 @@ export default function Data() {
                     const getUsersResult = await getUsersResponse.json();
 
                     if (getUsersResult[0] === "OK") {
-                        setDataSource(getUsersResult[1]);
+                        setTemplateDataSource(template, getUsersResult[1]);
                         setUsers(getUsersResult[1]); // Save copy to avoid multiple calls to API
                     } else {
                         alert(getUsersResult[1])
@@ -216,7 +252,7 @@ export default function Data() {
                     }
                     break;
                 default:
-                    setDataSource([]);
+                    setTemplateDataSource(template, []);
                     break;
             }
         } catch (e: any) {
@@ -238,17 +274,22 @@ export default function Data() {
         const startIndex = (currentDataPage - 1) * dataSchema[activeSection].PageSize;
         const endIndex = startIndex + dataSchema[activeSection].PageSize;
 
-        const newFilteredDataSource = dataSource.slice(startIndex, endIndex);
+        const newFilteredDataSource = segiTableTemplate.Data.slice(startIndex, endIndex);
 
         setFilteredDataSource(newFilteredDataSource);
     }
 
     useEffect(() => {
-        if (dataSource.length > 0) {
+        if (typeof segiTableTemplate !== "undefined" && typeof segiTableTemplate.Data !== "undefined" && segiTableTemplate.Data.length > 0) {
             updateDataSourceFilteredResults();
+        }
+    }, [currentDataPage, segiTableTemplate.Data]);
+
+    useEffect(() => {
+        if (typeof filteredDataSource !== "undefined" && filteredDataSource.length > 0) {
             setIsReady(true);
         }
-    }, [currentDataPage, dataSource]);
+    }, [filteredDataSource])
 
     useEffect(() => {
         // Make sure current user is an admin
@@ -262,7 +303,7 @@ export default function Data() {
             <div ref={topRef} ></div>
 
             <div>
-                <span style={{ display: "flex" }}>
+                <span>
                     <span className="firstItem">
                         <span>Select section</span>
                     </span>
@@ -280,51 +321,23 @@ export default function Data() {
                     </select>
 
                     {activeSection !== "" && isReady &&
-                        <span style={{ display: "flex", marginLeft: "10px" }}>
-                            {currentDataPage > 1 &&
-                                <div style={{ fontSize: "30px" }} className={`arrow left`} onClick={() => pageClickHandler(-1)}>&#8592;</div>
-                            }
-
-                            {!lastPage &&
-                                <div style={{ fontSize: "30px", marginLeft: "25px" }} className={`arrow right`} onClick={() => pageClickHandler(1)}>&#8594;</div>
-                            }
+                        <span>
+                            <br /><br /><br />
+                            <SegiTable
+                                darkMode={darkMode}
+                                defaultPageSize={5}
+                                editable={false}
+                                exportable={false}
+                                //filterable={true}
+                                pageSizeOverride={{ 0: "All", 5: "5", 10: "10", 25: "25", 50: "50" }}
+                                paginationEnabled={true}
+                                searchable={true}
+                                sortable={true}
+                                tableTemplate={segiTableTemplate}
+                            />
                         </span>
                     }
                 </span>
-
-                {activeSection !== "" && isReady &&
-                    <div className="simpleTableContainer">
-                        <table className={`simpleTable fullWidth ${!darkMode ? "lightMode" : "darkMode"}`}>
-                            <thead>
-                                <tr>
-                                    {Object.entries(dataSchema[activeSection]["Columns"]).map((columns: any, index: number) => {
-                                        return (
-                                            <th key={index}>{columns[1]}</th>
-                                        );
-                                    })}
-                                </tr>
-                            </thead>
-
-                            <tbody>
-                                {filteredDataSource.map((row: any, index: number) => {
-                                    return (
-                                        <tr key={index}>
-                                            {Object.entries(dataSchema[activeSection]["Columns"]).map((columns: any, columnIndex: number) => {
-                                                return (
-                                                    <td key={columnIndex}>
-                                                        {typeof row[columns[0]] != "undefined" && row[columns[0]] !== null ?
-                                                            String(row[columns[0]]) : "FUBAR"
-                                                        }
-                                                    </td>
-                                                )
-                                            })}
-                                        </tr>
-                                    )
-                                })}
-                            </tbody>
-                        </table>
-                    </div>
-                }
             </div>
         </span>
     );

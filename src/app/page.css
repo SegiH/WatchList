@@ -716,6 +716,10 @@ table.simpleTable:last-child {
      border-color: white;
 }
 
+.SegiTableDataGrid tr {
+     display: none !important;
+}
+
 .selectStyle {
      max-width: 250px;
      height: 30px;

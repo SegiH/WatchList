@@ -26,8 +26,11 @@ export async function GET(request: NextRequest) {
 
         // Loop through each log line
         for (const line of logLines) {
-            const [dateString, ...messageParts] = line.split(': '); // Split date and log message
-            const writeLog = messageParts.join(' ');
+            //const [dateString, ...messageParts] = line.split(': '); // Split date and log message
+            //const writeLog = messageParts.join(' ');
+            //const {dateString, logMessage} = (([, date, msg]) => ({dateString: date, logMessage: msg}))(line.match(/^(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}) (.+)$/));
+            const { dateString, logMessage } = ((m) => m ? { dateString: m[1], logMessage: m[2] } : { dateString: '', logMessage: '' })(line.match(/^(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}) (.+)$/));
+
             const logDate: any = new Date(dateString);
 
             // If daysBack is provided, filter by date
@@ -40,10 +43,12 @@ export async function GET(request: NextRequest) {
                 }
             }
 
-            logs.push({
-                Date: dateString,
-                Message: writeLog,
-            });
+            if (dateString !== "" && logMessage !== "") {
+                logs.push({
+                    Date: dateString,
+                    Message: logMessage,
+                });
+            }
         }
 
         return Response.json(["OK", logs]);

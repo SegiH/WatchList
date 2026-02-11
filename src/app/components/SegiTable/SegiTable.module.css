@@ -12,11 +12,11 @@
      border-collapse: collapse;
 }
 
-:global(.SegiTable .darkMode) {
+:global(.darkMode) {
      color: var(--dark-mode-foregroundColor) !important;
      background-color: var(--dark-mode-backgroundColor) !important;
-     border: 1px solid var(--dark-mode-foregroundColor) !important;
-     border-collapse: collapse;
+     /*border: 1px solid var(--dark-mode-foregroundColor) !important;
+     border-collapse: collapse;*/
 }
 
 /*:global(.SegiTableDataGrid tbody tr:nth-child(odd) .darkMode) {
@@ -130,6 +130,7 @@
 
 .SegiTableDataGrid {
      width: 100%;
+     table-layout: fixed;
 }
 
 .SegiTableDataGrid thead {
@@ -153,16 +154,32 @@
      display: table-row;
 }
 
-.SegiTableDataGrid tr:nth-child(even) td:not(.SegiTableFilterGrid td) {
+.SegiTableDataGrid tr:not(.SegiTableExpandedTable):nth-child(even) td:not(.SegiTableFilterGrid td) {
      background-color: #eee;
+     color: black;
 }
 
 .SegiTableDataGridHeader {
-     background-color: #999999;
+     /*background-color: #999999;*/
+     position: relative;
      font-weight: bold;
      white-space: nowrap;
      user-select: none;
      -webkit-user-select: none;
+}
+
+.ColumnResizer {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 6px;
+  height: 100%;
+  cursor: col-resize;
+  user-select: none;
+}
+
+.ColumnResizer:hover {
+  background-color: rgba(0, 0, 0, 0.1);
 }
 
 /*.SegiTableDataGridHeader .darkMode {
@@ -170,9 +187,9 @@
      background-color: var(--dark-mode-backgroundColor) !important;
 }*/
 
-.SegiTableExpandableRowContent div {
+/*.SegiTableExpandableRowContent div {
      background-color: white !important;
-}
+}*/
 
 .SegiTableExcelIcon {
      cursor: pointer;

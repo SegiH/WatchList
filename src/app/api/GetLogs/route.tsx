@@ -51,6 +51,10 @@ export async function GET(request: NextRequest) {
             }
         }
 
+        logs.sort((a: any, b: any) => {
+            return b.Date < a.Date ? -1 : 1;
+        })
+
         return Response.json(["OK", logs]);
 
     } catch (error: any) {

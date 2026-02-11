@@ -51,6 +51,8 @@ export async function GET(request: NextRequest) {
                     IsModified: 0,
                     Options: currentUser.Options
                });
+          }).sort((a: IUser, b: IUser) => {
+               return b.UserID < a.UserID ? -1 : 1;
           });
 
           return Response.json(["OK", decryptedUsers]);

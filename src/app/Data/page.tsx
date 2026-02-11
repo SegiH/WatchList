@@ -10,6 +10,8 @@ import IUser from "../interfaces/IUser";
 import { DataContextType } from "../contexts/DataContextType";
 import { FieldTypes, FieldValueTypes } from "../components/SegiTable/ISegiTable";
 import SegiTable from "../components/SegiTable/SegiTable";
+import IWatchListSource from "../interfaces/IWatchListSource";
+import IWatchListType from "../interfaces/IWatchListType";
 
 export default function Data() {
     const {
@@ -224,12 +226,24 @@ export default function Data() {
                     }
                     break;
                 case "VisibleSections":
+                    visibleSections.sort((a: any, b: any) => {
+                        return b.value < a.value ? -1 : 1;
+                    });
+
                     setTemplateDataSource(template, visibleSections);
                     break;
                 case "WatchListSources":
+                    watchListSources.sort((a: IWatchListSource, b: IWatchListSource) => {
+                        return b.WatchListSourceID < a.WatchListSourceID ? -1 : 1;
+                    });
+
                     setTemplateDataSource(template, watchListSources);
                     break;
                 case "WatchListTypes":
+                    watchListTypes.sort((a: IWatchListType, b: IWatchListType) => {
+                        return b.WatchListTypeID < a.WatchListTypeID ? -1 : 1;
+                    });
+
                     setTemplateDataSource(template, watchListTypes);
                     break;
                 case "Users":
@@ -260,7 +274,7 @@ export default function Data() {
         }
     }
 
-    const pageClickHandler = (adjustValue: number) => {
+    /*const pageClickHandler = (adjustValue: number) => {
         setIsReady(false);
 
         if (typeof topRef !== "undefined" && topRef !== null && topRef.current !== null && topRef.current.scrollIntoView !== null) {
@@ -268,7 +282,7 @@ export default function Data() {
         }
 
         setCurrentDataPage(currentDataPage + adjustValue);
-    }
+    }*/
 
     const updateDataSourceFilteredResults = () => {
         const startIndex = (currentDataPage - 1) * dataSchema[activeSection].PageSize;
@@ -324,7 +338,7 @@ export default function Data() {
                         <span>
                             <br /><br /><br />
                             <SegiTable
-                                darkMode={darkMode}
+                                darkMode={true}
                                 defaultPageSize={5}
                                 editable={false}
                                 exportable={false}

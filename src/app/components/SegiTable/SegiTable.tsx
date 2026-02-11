@@ -29,10 +29,15 @@ type SegiTableProps = {
      width?: string;
 }
 
+const MIN_COLUMN_WIDTH = 80; // px
+const COLUMN_STORAGE_KEY = "SegiTable.ColumnWidths";
+
 const SegiTable = ({ addingHasDisabledCheckboxPlaceholder, addingText, addtlPageSizes, cancelEditCallBackHandler, darkMode, defaultPageSize, editable, exportable, height, isAdding, isEditing, pageSizeOverride, paginationEnabled, saveAddCallBackHandler, saveEditCallBackHandler, searchable, setIsAdding, setIsEditing, showDisabled, sortable, tableTemplate, width }: SegiTableProps) => {
+     const [columnWidths, setColumnWidths] = useState<Record<string, number>>({});
      const [currentTableComponent, setCurrentTableComponent] = useState<ITableComponent>(null); // Used for table headers and when adding
      const [currentPage, setCurrentPage] = useState<number>(1);
      const [errorMessage, setErrorMessage] = useState("");
+     const [expandedId, setExpandedId] = React.useState<string | null>(null);
      const [filteredTableData, setFilteredTableData] = useState(null);
      const [filterSearchTerm, setFilterSearchTerm] = useState("");
      const [hasExpandableCriteriaMet, setHasExpandableCriteriaMet] = useState(false);
@@ -525,10 +530,17 @@ const SegiTable = ({ addingHasDisabledCheckboxPlaceholder, addingText, addtlPage
                return;
           }
 
-          const newComponent = Object.assign([], currentTableComponent);
+          const stringId = String(newId);
 
-          // Because of weird issue communicating from parent SegiTable to Child SegiTable I write to localStorage
-          const lastId = localStorage.getItem("SegiTable.LastOpenedId");
+          if (expandedId === stringId) {
+               setExpandedId(null);
+               localStorage.removeItem("SegiTable.LastOpenedId");
+          } else {
+               setExpandedId(stringId);
+               localStorage.setItem("SegiTable.LastOpenedId", stringId);
+          }
+
+          const newComponent = Object.assign([], currentTableComponent);
 
           if (typeof newComponent.ExpandedRows === "undefined") {
                newComponent.ExpandedRows = [];
@@ -544,10 +556,6 @@ const SegiTable = ({ addingHasDisabledCheckboxPlaceholder, addingText, addtlPage
                }
 
                newComponent.ExpandedRows.splice(index, 1);
-
-               if (newId.toString() === lastId) {
-                    localStorage.setItem("SegiTable.LastOpenedId", "-1");
-               }
           } else {
                if (currentTableComponent.MultiExpandableRows !== true) {
                     newComponent.ExpandedRows = [];
@@ -1058,6 +1066,11 @@ const SegiTable = ({ addingHasDisabledCheckboxPlaceholder, addingText, addtlPage
                setPageSize(parseInt(savedRowsPerPage, 10));
           }
 
+          const saved = localStorage.getItem(COLUMN_STORAGE_KEY);
+          if (saved) {
+               setColumnWidths(JSON.parse(saved));
+          }
+
           hasRunInitialEffect.current = true;
      }, []);
 
@@ -1080,7 +1093,9 @@ const SegiTable = ({ addingHasDisabledCheckboxPlaceholder, addingText, addtlPage
           setCurrentPage(1);
      }, [searchTerm]);
 
-     const lastId = localStorage.getItem("SegiTable.LastOpenedId");
+     useEffect(() => {
+          localStorage.setItem(COLUMN_STORAGE_KEY, JSON.stringify(columnWidths));
+     }, [columnWidths]);
 
      return (
           <div className={`${styles.SegiTable}`} style={{ width: typeof width !== "undefined" ? width : "100%" }}>
@@ -1090,7 +1105,7 @@ const SegiTable = ({ addingHasDisabledCheckboxPlaceholder, addingText, addtlPage
 
                {!isError && filterTableData && hasRunInitialEffect.current === true &&
                     <span className="SegiTable">
-                         {filterTableData &&
+                         {filterTableData && expandedId === null &&
                               <SegiTableControls addClickHandler={addClickHandler} addingText={addingText} cancelAddClickHandler={cancelAddClickHandler} cancelEditCallBackHandler={cancelEditCallBackHandler} currentTableComponent={currentTableComponent} editable={editable} editClickHandler={editClickHandler} exportable={exportable} exportCSV={exportCSV} isAdding={isAdding} isEditing={isEditing} saveAddCallBackHandler={saveAddCallBackHandler} saveEditCallBackHandler={saveEditCallBackHandler} searchable={searchable} searchTerm={searchTerm} setSearchTerm={setSearchTerm} tableData={tableData} />
                          }
 
@@ -1101,38 +1116,12 @@ const SegiTable = ({ addingHasDisabledCheckboxPlaceholder, addingText, addtlPage
                                         <SegiTableAddRow addFieldChangeHandler={addFieldChangeHandler} addingHasDisabledCheckboxPlaceholder={addingHasDisabledCheckboxPlaceholder} currentTableComponent={currentTableComponent} darkMode={darkMode} idVisible={idVisible} isAdding={isAdding} />
                                    }
 
-                                   {((tableData.length === 0 && currentTableComponent.ExpandableDataLinked !== true)
-                                        ||
-                                        (currentTableComponent.ExpandableDataLinked === true &&
-                                             currentTableComponent.Data.filter((currentRow: any) => {
-                                                  const expandableDataLinked = currentTableComponent.ExpandableDataLinked === true ? true : false;
-                                                  const expandableDataColumn = typeof currentTableComponent.ExpandableDataColumn !== "undefined" && currentTableComponent.ExpandableDataColumn !== null && currentTableComponent.ExpandableDataColumn !== "" ? currentTableComponent.ExpandableDataColumn : "";
-
-                                                  return (
-                                                       ((!expandableDataLinked || lastId === "")
-                                                            ||
-                                                            (expandableDataLinked && lastId !== "" && expandableDataColumn !== "" && String(currentRow[currentTableComponent.ExpandableDataColumn]).trim() === lastId)
-                                                       )
-                                                  )
-                                             }).length === 0
-                                        )
-                                   )
-                                        &&
+                                   {tableData.length === 0 && currentTableComponent.ExpandableDataLinked !== true &&
                                         <span style={{ fontSize: "24px", fontWeight: "bold" }}>No Data</span>
                                    }
 
-                                   {tableData.length > 0 &&
-                                        (currentTableComponent.ExpandableDataLinked !== true
-                                             || (currentTableComponent.ExpandableDataLinked === true && currentTableComponent.Data.filter((currentRow: any) => {
-                                                  const expandableDataLinked = currentTableComponent.ExpandableDataLinked === true ? true : false;
-
-                                                  return (
-                                                       (!expandableDataLinked || lastId === "") ||
-                                                       (expandableDataLinked && lastId !== "" && String(currentRow[currentTableComponent.ExpandableDataColumn]).trim() === lastId)
-                                                  )
-                                             }).length > 0))
-                                        &&
-                                        <SegiTableDataGrid currentPage={currentPage} currentTableComponent={currentTableComponent} darkMode={darkMode} editFieldChangeHandler={editFieldChangeHandler} filteredTableData={filteredTableData} filterSearchTerm={filterSearchTerm} formatCurrency={formatCurrency} getFormattedDate={getFormattedDate} hasExpandableCriteriaMet={hasExpandableCriteriaMet} height={height} isAdding={isAdding} isEditing={isEditing} isExpandable={isExpandable} isVisible={isVisible} lastPage={lastPage} lastPageNum={lastPageNum} mergedPageSizes={mergedPageSizes} pageClickHandler={pageClickHandler} pageRecordStartEndLabel={pageRecordStartEndLabel} pageSize={pageSize} pageSizeClickHandler={pageSizeClickHandler} paginationEnabled={paginationEnabled} setCurrentTableComponent={setCurrentTableComponent} setFilterSearchTerm={setFilterSearchTerm} sortable={sortable} sortColumn={sortColumn} sortColumnClickHandler={sortColumnClickHandler} sortDirection={sortDirection} tableData={tableData} tableRef={tableRef} toggleIDColumn={toggleIDColumn} toggleExpandableRow={toggleExpandableRow} uniqueValuesClearColumnClickHandler={uniqueValuesClearColumnClickHandler} uniqueValuesColumnClickHandler={uniqueValuesColumnClickHandler} uniqueValuesOptionClickHandler={uniqueValuesOptionClickHandler} uniqueValuesVisibleColumn={uniqueValuesVisibleColumn} />
+                                   {tableData.length > 0 && (currentTableComponent.ExpandableDataLinked !== true || (currentTableComponent.ExpandableDataLinked === true)) &&
+                                        <SegiTableDataGrid columnWidths={columnWidths} currentPage={currentPage} currentTableComponent={currentTableComponent} darkMode={darkMode} editFieldChangeHandler={editFieldChangeHandler} expandedId={expandedId} filteredTableData={filteredTableData} filterSearchTerm={filterSearchTerm} formatCurrency={formatCurrency} getFormattedDate={getFormattedDate} hasExpandableCriteriaMet={hasExpandableCriteriaMet} height={height} isAdding={isAdding} isEditing={isEditing} isExpandable={isExpandable} isVisible={isVisible} lastPage={lastPage} lastPageNum={lastPageNum} mergedPageSizes={mergedPageSizes} pageClickHandler={pageClickHandler} pageRecordStartEndLabel={pageRecordStartEndLabel} pageSize={pageSize} pageSizeClickHandler={pageSizeClickHandler} paginationEnabled={paginationEnabled} setColumnWidths={setColumnWidths} setCurrentTableComponent={setCurrentTableComponent} setExpandedId={setExpandedId} setFilterSearchTerm={setFilterSearchTerm} sortable={sortable} sortColumn={sortColumn} sortColumnClickHandler={sortColumnClickHandler} sortDirection={sortDirection} tableData={tableData} tableRef={tableRef} toggleIDColumn={toggleIDColumn} toggleExpandableRow={toggleExpandableRow} uniqueValuesClearColumnClickHandler={uniqueValuesClearColumnClickHandler} uniqueValuesColumnClickHandler={uniqueValuesColumnClickHandler} uniqueValuesOptionClickHandler={uniqueValuesOptionClickHandler} uniqueValuesVisibleColumn={uniqueValuesVisibleColumn} />
                                    }
                               </>
                          }
@@ -1297,10 +1286,12 @@ const SegiTableAddRow = ({ addFieldChangeHandler, addingHasDisabledCheckboxPlace
 }
 
 type SegiTableDataGridProps = {
+     columnWidths: Record<string, number>;
      currentPage: number;
      currentTableComponent: ITableComponent;
      darkMode: boolean;
      editFieldChangeHandler: (currentRow: any, fieldName: string, fieldValue: string | number | Date) => void;
+     expandedId: string;
      filteredTableData: any;
      filterSearchTerm: string;
      formatCurrency: (price: string, locale?: string, currency?: string) => string;
@@ -1319,7 +1310,9 @@ type SegiTableDataGridProps = {
      pageSize: number;
      pageSizeClickHandler: (value: number) => void;
      paginationEnabled: boolean,
+     setColumnWidths: React.Dispatch<React.SetStateAction<Record<string, number>>>;
      setCurrentTableComponent: (value: ITableComponent) => void;
+     setExpandedId: (value: string | null) => void;
      setFilterSearchTerm: (value: string) => void;
      sortable: boolean;
      sortColumn: string;
@@ -1335,22 +1328,22 @@ type SegiTableDataGridProps = {
      uniqueValuesVisibleColumn: string;
 }
 
-const SegiTableDataGrid = ({ currentPage, currentTableComponent, darkMode, editFieldChangeHandler, filteredTableData, filterSearchTerm, formatCurrency, getFormattedDate, hasExpandableCriteriaMet, height, isAdding, isEditing, isExpandable, isVisible, lastPage, lastPageNum, mergedPageSizes, pageClickHandler, pageRecordStartEndLabel, pageSize, pageSizeClickHandler, paginationEnabled, setCurrentTableComponent, setFilterSearchTerm, sortable, sortColumn, sortColumnClickHandler, sortDirection, tableData, tableRef, toggleIDColumn, toggleExpandableRow, uniqueValuesClearColumnClickHandler, uniqueValuesColumnClickHandler, uniqueValuesOptionClickHandler, uniqueValuesVisibleColumn }: SegiTableDataGridProps) => {
+const SegiTableDataGrid = ({ columnWidths, currentPage, currentTableComponent, darkMode, editFieldChangeHandler, expandedId, filteredTableData, filterSearchTerm, formatCurrency, getFormattedDate, hasExpandableCriteriaMet, height, isAdding, isEditing, isExpandable, isVisible, lastPage, lastPageNum, mergedPageSizes, pageClickHandler, pageRecordStartEndLabel, pageSize, pageSizeClickHandler, paginationEnabled, setColumnWidths, setCurrentTableComponent, setExpandedId, setFilterSearchTerm, sortable, sortColumn, sortColumnClickHandler, sortDirection, tableData, tableRef, toggleIDColumn, toggleExpandableRow, uniqueValuesClearColumnClickHandler, uniqueValuesColumnClickHandler, uniqueValuesOptionClickHandler, uniqueValuesVisibleColumn }: SegiTableDataGridProps) => {
      return (
           <div>
-               <div id="SegiTableGridContent" className={`${styles.SegiTableGridContent}`} style={{ height: typeof height !== "undefined" ? height : "auto", overflow: "auto" }}>
+               <div id={`${styles.SegiTableGridContent}`} className={`${styles.SegiTableGridContent}`} style={{ height: typeof height !== "undefined" ? height : "auto", overflow: "auto" }}>
                     <table className={`${styles.SegiTableDataGrid}`} ref={tableRef}>
                          {/* Table Headers */}
                          {
-                              <SegiTableDataGridHeaders currentTableComponent={currentTableComponent} darkMode={darkMode} filterSearchTerm={filterSearchTerm} hasExpandableCriteriaMet={hasExpandableCriteriaMet} isEditing={isEditing} isExpandable={isExpandable} isVisible={isVisible} setFilterSearchTerm={setFilterSearchTerm} sortable={sortable} sortColumn={sortColumn} sortColumnClickHandler={sortColumnClickHandler} sortDirection={sortDirection} toggleIDColumn={toggleIDColumn} uniqueValuesClearColumnClickHandler={uniqueValuesClearColumnClickHandler} uniqueValuesColumnClickHandler={uniqueValuesColumnClickHandler} uniqueValuesOptionClickHandler={uniqueValuesOptionClickHandler} uniqueValuesVisibleColumn={uniqueValuesVisibleColumn} />
+                              <SegiTableDataGridHeaders columnWidths={columnWidths} currentTableComponent={currentTableComponent} darkMode={darkMode} expandedId={expandedId} filterSearchTerm={filterSearchTerm} hasExpandableCriteriaMet={hasExpandableCriteriaMet} isEditing={isEditing} isExpandable={isExpandable} isVisible={isVisible} setColumnWidths={setColumnWidths} setFilterSearchTerm={setFilterSearchTerm} sortable={sortable} sortColumn={sortColumn} sortColumnClickHandler={sortColumnClickHandler} sortDirection={sortDirection} toggleIDColumn={toggleIDColumn} uniqueValuesClearColumnClickHandler={uniqueValuesClearColumnClickHandler} uniqueValuesColumnClickHandler={uniqueValuesColumnClickHandler} uniqueValuesOptionClickHandler={uniqueValuesOptionClickHandler} uniqueValuesVisibleColumn={uniqueValuesVisibleColumn} />
                          }
 
                          {/* Table body */}
-                         <SegiTableDataGridBody currentTableComponent={currentTableComponent} darkMode={darkMode} editFieldChangeHandler={editFieldChangeHandler} filteredTableData={filteredTableData} formatCurrency={formatCurrency} getFormattedDate={getFormattedDate} isEditing={isEditing} isExpandable={isExpandable} isVisible={isVisible} setCurrentTableComponent={setCurrentTableComponent} toggleExpandableRow={toggleExpandableRow} />
+                         <SegiTableDataGridBody currentTableComponent={currentTableComponent} darkMode={darkMode} editFieldChangeHandler={editFieldChangeHandler} expandedId={expandedId} filteredTableData={filteredTableData} formatCurrency={formatCurrency} getFormattedDate={getFormattedDate} isEditing={isEditing} isExpandable={isExpandable} isVisible={isVisible} onToggleExpandableRow={toggleExpandableRow} setCurrentTableComponent={setCurrentTableComponent} setExpandedId={setExpandedId} />
                     </table>
                </div>
 
-               {paginationEnabled && tableData.length > 0 && !isAdding && !isEditing &&
+               {paginationEnabled && tableData.length > 0 && !isAdding && !isEditing && expandedId === null &&
                     <SegiTablePagination currentPage={currentPage} darkMode={darkMode} lastPage={lastPage} lastPageNum={lastPageNum} mergedPageSizes={mergedPageSizes} pageClickHandler={pageClickHandler} pageRecordStartEndLabel={pageRecordStartEndLabel} pageSize={pageSize} pageSizeClickHandler={pageSizeClickHandler} />
                }
           </div>
@@ -1358,13 +1351,16 @@ const SegiTableDataGrid = ({ currentPage, currentTableComponent, darkMode, editF
 }
 
 type SegiTableDataGridHeadersProps = {
+     columnWidths: Record<string, number>;
      currentTableComponent: ITableComponent;
      darkMode: boolean;
+     expandedId: string;
      filterSearchTerm: string;
      hasExpandableCriteriaMet: boolean;
      isEditing: boolean;
      isExpandable: boolean;
      isVisible: (field: ITableComponentField) => void;
+     setColumnWidths: React.Dispatch<React.SetStateAction<Record<string, number>>>;
      setFilterSearchTerm: (value: string) => void;
      sortable: boolean;
      sortColumn: string;
@@ -1377,42 +1373,56 @@ type SegiTableDataGridHeadersProps = {
      uniqueValuesVisibleColumn: string;
 }
 
-const SegiTableDataGridHeaders = ({ currentTableComponent, darkMode, filterSearchTerm, hasExpandableCriteriaMet, isEditing, isExpandable, isVisible, setFilterSearchTerm, sortable, sortColumn, sortColumnClickHandler, sortDirection, toggleIDColumn, uniqueValuesClearColumnClickHandler, uniqueValuesColumnClickHandler, uniqueValuesOptionClickHandler, uniqueValuesVisibleColumn }: SegiTableDataGridHeadersProps) => {
+const SegiTableDataGridHeaders = ({ columnWidths, currentTableComponent, darkMode, expandedId, filterSearchTerm, hasExpandableCriteriaMet, isEditing, isExpandable, isVisible, setColumnWidths, setFilterSearchTerm, sortable, sortColumn, sortColumnClickHandler, sortDirection, toggleIDColumn, uniqueValuesClearColumnClickHandler, uniqueValuesColumnClickHandler, uniqueValuesOptionClickHandler, uniqueValuesVisibleColumn }: SegiTableDataGridHeadersProps) => {
+     const activeColumnRef = useRef<string | null>(null);
      const defaultOpacity = '1';
+     const startXRef = useRef(0);
+     const startWidthRef = useRef(0);
 
      let eventDisabled = false;
      const spanRef = useRef(null);
-     /*const resizerRef = useRef(null);
 
-     let isResizing = false;
-     let currentHeader;
+     const onMouseDown = (
+          e: React.MouseEvent,
+          columnKey: string,
+          currentWidth: number
+     ) => {
+          debugger
+          if (expandedId !== null) {
+               document.body.style.cursor = 'default'; 
+               return;
+          }
 
-     document.addEventListener('mousemove', (e) => {
-          if (!isResizing) return;
+          document.body.style.cursor = 'col-resize';
+          startXRef.current = e.clientX;
+          startWidthRef.current = currentWidth;
+          activeColumnRef.current = columnKey;
 
-          const offset = e.pageX - currentHeader.getBoundingClientRect().left;
-          currentHeader.style.width = offset + 'px';
+          document.addEventListener("mousemove", onMouseMove);
+          document.addEventListener("mouseup", onMouseUp);
+     }
 
-          // Resize all the cells in the column to match the header width
-          const index = Array.from(currentHeader.parentNode.children).indexOf(currentHeader);
-          const rows = tableRef.current.querySelectorAll('tr');
-          rows.forEach(row => {
-               const cell = row.children[index];
-               cell.style.width = offset + 'px';
-          });
-     });
+     const onMouseMove = (e: MouseEvent) => {
+          if (!activeColumnRef.current || expandedId !== null) return;
 
-     document.addEventListener('mouseup', () => {
-          isResizing = false;
-          document.body.style.cursor = ''; // Reset cursor
-     });
+          const delta = e.clientX - startXRef.current;
+          const newWidth = Math.max(
+               MIN_COLUMN_WIDTH,
+               startWidthRef.current + delta
+          );
 
-     const onResizeMouseDown = (event: any) => {
-          isResizing = true;
-          //currentHeader = header;
-          document.body.style.cursor = 'ew-resize';
-          event.preventDefault();
-     }*/
+          setColumnWidths(prev => ({
+               ...prev,
+               [activeColumnRef.current!]: newWidth
+          }));
+     }
+
+     const onMouseUp = () => {
+          document.body.style.cursor = 'default'; 
+          activeColumnRef.current = null;
+          document.removeEventListener("mousemove", onMouseMove);
+          document.removeEventListener("mouseup", onMouseUp);
+     }
 
      // When the filter span is visible, if you click outside of the span area, this use Effect will make sure that it closes
      useEffect(() => {
@@ -1438,9 +1448,9 @@ const SegiTableDataGridHeaders = ({ currentTableComponent, darkMode, filterSearc
      }, []);
 
      return (
-          <thead className={`styles.SegiTableDataGridHeaders ${darkMode ? `darkMode` : ``}`}>
+          <thead className={`styles.SegiTableDataGridHeaders`}>
                <tr
-                    className={`${darkMode ? `darkMode` : ``}`}
+                    //className={`${darkMode ? `darkMode` : ``}`}
                     style={{
                          opacity:
                               typeof currentTableComponent.SemiTransparentTableHeaderOpacity !== "undefined"
@@ -1448,24 +1458,27 @@ const SegiTableDataGridHeaders = ({ currentTableComponent, darkMode, filterSearc
                                    : defaultOpacity
                     }}>
                     {isExpandable && hasExpandableCriteriaMet && !isEditing &&
-                         <th style={{ minWidth: "65px" }} className={`${styles.SegiTableDataCell} ${styles.SegiTableDataGridHeader} ${darkMode ? `darkMode` : ``}`}></th>
+                         <th style={{ width: "25px" }} className={`${styles.SegiTableDataCell} ${styles.SegiTableDataGridHeader} ${darkMode ? `darkMode` : ``}`}></th>
                     }
 
                     {currentTableComponent && currentTableComponent.Fields
                          .filter((field: ITableComponentField) => {
                               return isVisible(field)
                          }).map((field: ITableComponentField, index: number) => {
+                              const columnKey = field.DatabaseColumn;
+                              const width = columnWidths[columnKey] ?? parseInt(field.ColumnWidth || "150", 10);
+
                               return (
                                    <th key={index}
                                         style={{
                                              opacity: field.SemiTransparentTableColumn === true ? "0.8" : "1",
                                              borderWidth: "1px",
-                                             width: `${typeof field.ColumnWidth === "undefined" ? `calc(100% / ${currentTableComponent.Fields.length - 1})` : field.ColumnWidth}`
+                                             width: columnWidths[field.DatabaseColumn] ?? parseInt(typeof field.ColumnWidth !== "undefined" ? field.ColumnWidth : "150", 10),
+                                             minWidth: MIN_COLUMN_WIDTH
                                         }}
                                         className={`${styles.SegiTableDataCell} ${styles.SegiTableDataGridHeader} ${field.IsIDColumn === true ? `${styles.SegiTableIDColumn}` : ""} ${darkMode ? " darkMode" : ""}`} onDoubleClick={typeof field.TogglesIDColumn !== "undefined" ? toggleIDColumn : typeof field.ClickCallBack !== "undefined" ? field.ClickCallBack : null}>
                                         <span className={`${field.Clickable ? `${styles.SegiTableClickable}` : ""}`} style={{ marginLeft: "10px", userSelect: "none" }}>{field.DisplayName}</span>
 
-                                        <span id="SegiTableResizer" className={styles.resizer}></span>
                                         {sortable === true && field.SortableField !== false && !isEditing &&
                                              <>
                                                   {(sortColumn === "" || (sortColumn !== "" && sortColumn !== field.DatabaseColumn)) &&
@@ -1499,7 +1512,7 @@ const SegiTableDataGridHeaders = ({ currentTableComponent, darkMode, filterSearc
                                                   <table>
                                                        <tbody>
                                                             <tr>
-                                                                 <td>
+                                                                 <td style={{ width: columnWidths[field.DatabaseColumn] ?? parseInt(field.ColumnWidth || "150", 10) }}>
                                                                       <input type="checkbox" className={styles.SegiTableFilterGridInput} checked={typeof field.UniqueValuesSelectAllSelected !== "undefined" && field.UniqueValuesSelectAllSelected === true ? field.UniqueValuesSelectAllSelected : false} onChange={(event) => uniqueValuesOptionClickHandler(field.DisplayName, null, event.target.checked)} /><span className={`${styles.SegiTableFilterGridOption} ${styles.SegiTableMarginLeft10}`}>(Select all)</span>
                                                                  </td>
                                                             </tr>
@@ -1512,7 +1525,11 @@ const SegiTableDataGridHeaders = ({ currentTableComponent, darkMode, filterSearc
                                                                  }).map((uniqueValue: string, index: number) => {
                                                                       return (
                                                                            <tr key={index}>
-                                                                                <td>
+                                                                                <td style={{
+                                                                                     width:
+                                                                                          columnWidths[field.DatabaseColumn] ??
+                                                                                          parseInt(field.ColumnWidth || "150", 10)
+                                                                                }}>
                                                                                      <input type="checkbox" className={styles.SegiTableInputStyle} checked={typeof field.UniqueValuesSelectAllSelected !== "undefined" && field.UniqueValuesSelectAllSelected === true ? true : typeof field.UniqueValuesSelected !== "undefined" ? field.UniqueValuesSelected?.includes(uniqueValue) : false} onChange={() => uniqueValuesOptionClickHandler(field.DisplayName, uniqueValue)} /><span className={`${styles.SegiTableFilterGridOption} ${styles.SegiTableMarginLeft10}`}>{uniqueValue}</span>
                                                                                 </td>
                                                                            </tr>
@@ -1522,6 +1539,13 @@ const SegiTableDataGridHeaders = ({ currentTableComponent, darkMode, filterSearc
                                                   </table>
                                              </span>
                                         }
+
+                                        <div
+                                             className={expandedId === null ? styles.ColumnResizer : ""}
+                                             onMouseDown={(e) =>
+                                                  onMouseDown(e, columnKey, width)
+                                             }
+                                        />
                                    </th>
                               )
                          })}
@@ -1534,17 +1558,19 @@ type SegiTableDataGridBodyProps = {
      currentTableComponent: ITableComponent;
      darkMode: boolean;
      editFieldChangeHandler: (currentRow: any, fieldName: string, fieldValue: string | number | Date) => void;
+     expandedId: string;
      filteredTableData: any;
      formatCurrency: (price: string, locale?: string, currency?: string) => string;
      getFormattedDate: (dateStr: string, separator: string, format?: string) => string;
      isEditing: boolean;
      isExpandable: boolean;
      isVisible: (field: ITableComponentField) => void;
+     onToggleExpandableRow: (value: number) => void;
      setCurrentTableComponent: (value: ITableComponent) => void;
-     toggleExpandableRow: (newId: number) => void;
+     setExpandedId: (value: string | null) => void;
 }
 
-const SegiTableDataGridBody = ({ currentTableComponent, darkMode, editFieldChangeHandler, filteredTableData, formatCurrency, getFormattedDate, isEditing, isExpandable, isVisible, setCurrentTableComponent, toggleExpandableRow }: SegiTableDataGridBodyProps) => {
+const SegiTableDataGridBody = ({ currentTableComponent, darkMode, editFieldChangeHandler, expandedId, filteredTableData, formatCurrency, getFormattedDate, isEditing, isExpandable, isVisible, onToggleExpandableRow, setCurrentTableComponent, setExpandedId }: SegiTableDataGridBodyProps) => {
      // Gets the URL display text
      const getURLText = (currentRow: [], field: any) => {
           return typeof field.IsURLDisplayTextColumn !== "undefined"
@@ -1557,7 +1583,7 @@ const SegiTableDataGridBody = ({ currentTableComponent, darkMode, editFieldChang
      return (
           <tbody>
                {!isEditing &&
-                    <SegiTableDataGridBodyReadOnlyFields currentTableComponent={currentTableComponent} darkMode={darkMode} filteredTableData={filteredTableData} formatCurrency={formatCurrency} getFormattedDate={getFormattedDate} getURLText={getURLText} isExpandable={isExpandable} isVisible={isVisible} setCurrentTableComponent={setCurrentTableComponent} toggleExpandableRow={toggleExpandableRow} />
+                    <SegiTableDataGridBodyReadOnlyFields currentTableComponent={currentTableComponent} darkMode={darkMode} expandedId={expandedId} filteredTableData={filteredTableData} formatCurrency={formatCurrency} getFormattedDate={getFormattedDate} getURLText={getURLText} isExpandable={isExpandable} isVisible={isVisible} onToggleExpandableRow={onToggleExpandableRow} setCurrentTableComponent={setCurrentTableComponent} setExpandedId={setExpandedId} />
                }
 
                {isEditing &&
@@ -1570,92 +1596,62 @@ const SegiTableDataGridBody = ({ currentTableComponent, darkMode, editFieldChang
 type SegiTableDataGridBodyReadOnlyFieldsProps = {
      currentTableComponent: ITableComponent;
      darkMode: boolean;
+     expandedId: string;
      filteredTableData: any;
      formatCurrency: (price: string, locale?: string, currency?: string) => string;
      getFormattedDate: (dateStr: string, separator: string, format?: string) => string;
      getURLText: (currentRow: [], field: any) => string;
      isExpandable: boolean;
      isVisible: (field: ITableComponentField) => void;
+     onToggleExpandableRow: (value: number) => void;
      setCurrentTableComponent: (value: ITableComponent) => void;
-     toggleExpandableRow: (newId: number) => void;
+     setExpandedId: (value: string | null) => void;
 }
 
-const SegiTableDataGridBodyReadOnlyFields = ({ currentTableComponent, darkMode, filteredTableData, formatCurrency, getFormattedDate, getURLText, isExpandable, isVisible, toggleExpandableRow }: SegiTableDataGridBodyReadOnlyFieldsProps) => {
+const SegiTableDataGridBodyReadOnlyFields = ({ currentTableComponent, darkMode, expandedId, filteredTableData, formatCurrency, getFormattedDate, getURLText, isExpandable, isVisible, onToggleExpandableRow, setExpandedId }: SegiTableDataGridBodyReadOnlyFieldsProps) => {
+     useEffect(() => {
+          const storedId = localStorage.getItem("SegiTable.LastOpenedId");
+          localStorage.removeItem("SegiTable.LastOpenedId");
+
+          if (!isExpandable && storedId && storedId !== "") {
+               setExpandedId(storedId);
+          }
+     }, []);
+
      return (
           <>
                {typeof filteredTableData !== "undefined" && filteredTableData && filteredTableData
                     .filter((currentRow: any) => {
-                         const lastId = localStorage.getItem("SegiTable.LastOpenedId");
-                         const expandableDataLinked = currentTableComponent.ExpandableDataLinked === true ? true : false;
+                         if (!expandedId) return true;
 
-                         return (
-                              (!expandableDataLinked || lastId === "") ||
-                              (expandableDataLinked && lastId !== "" && String(currentRow[currentTableComponent.ExpandableDataColumn]).trim() === lastId)
-                         )
+                         // Only show the expanded row
+                         return String(currentRow[currentTableComponent.ExpandableDataColumn]) === String(expandedId);
                     })
                     .map((currentRow: any, rowIndex: number) => {
                          let expandableContent = null;
                          let expandableCriteriaMet = false;
 
-                         if (isExpandable) {
-                              // Match Field level 
-                              const newExpandableContentResult = currentTableComponent.Fields.filter((field: ITableComponentField) => {
-                                   const uniqueValues = field.ExpandableCriteria === null ? null : field.ExpandableCriteria && field.ExpandableCriteria.map(e => e.Match).filter((v, i, a) => a.indexOf(v) === i);
-
-                                   const isAll = typeof uniqueValues !== "undefined" ? uniqueValues.includes("*") : false;
-
-                                   return (
-                                        (uniqueValues === null || (uniqueValues !== null &&
-                                             (
-                                                  (field.ExpandableCriteriaExactMatch === true && uniqueValues.includes(currentRow[field.DatabaseColumn].toString()))
-                                                  ||
-                                                  (field.ExpandableCriteriaExactMatch === false && uniqueValues.some(criteria => currentRow[field.DatabaseColumn].toString().toLowerCase().includes(criteria.toLowerCase()))
-                                                  )
-                                                  || isAll
-                                             )
-                                        ))
-                                   )
-                              });
-
-                              if (newExpandableContentResult.length === 1) { /* Matches the field expandable criteria */
-                                   currentTableComponent.Fields.forEach((field: ITableComponentField) => {
-                                        if (typeof field.ExpandableCriteria !== "undefined" && field.ExpandableCriteria !== null) {
-                                             field.ExpandableCriteria.forEach((criteria: any) => {
-                                                  if (field.ExpandableCriteriaExactMatch === true && currentRow[field.DatabaseColumn].toString() === criteria.Match) {
-                                                       expandableContent = criteria.Show;
-                                                  } else if (field.ExpandableCriteriaExactMatch === false && currentRow[field.DatabaseColumn].toString().includes(criteria.Match)) {
-                                                       expandableContent = criteria.Show;
-                                                  } else if (criteria.Match === "*") {
-                                                       expandableContent = criteria.Show;
-                                                  }
-                                             });
-                                        }
-                                   });
-
-                                   expandableCriteriaMet = true;
-                              } else if (typeof currentTableComponent.ExpandableContent !== "undefined") { // Uses template level expandable content
-                                   expandableCriteriaMet = true;
-                                   expandableContent = currentTableComponent.ExpandableContent;
-                              }
+                         // Match Field level 
+                         if (isExpandable && typeof currentTableComponent.ExpandableContent !== "undefined") { // Uses template level expandable content
+                              expandableCriteriaMet = true;
+                              expandableContent = currentTableComponent.ExpandableContent;
                          }
-
-                         const lastId = localStorage.getItem("SegiTable.LastOpenedId");
 
                          let newDarkMode = "";
 
-                         if (!darkMode) {
+                         if (!darkMode && isExpandable) {
                               newDarkMode = `lightMode 1`;
                          } else {
                               if (rowIndex % 2 !== 0) {
-                                   if (!expandableCriteriaMet) {
+                                   if (!expandableCriteriaMet && darkMode) {
                                         newDarkMode = `darkMode 1`;
                                    } else {
                                         newDarkMode = `lightMode 2`;
                                    }
-                              } else if (lastId !== null && rowIndex == parseInt(lastId, 10) && rowIndex % 2 !== 0) {
+                              } else if (expandedId !== null && rowIndex == parseInt(expandedId, 10) && rowIndex % 2 !== 0) {
                                    newDarkMode = `lightMode 3`;
                               } else if (rowIndex % 2 === 0 && expandableContent !== null) {
-                                   if (lastId !== null) {
+                                   if (expandedId !== null) {
                                         newDarkMode = `darkMode 2`;
                                    } else {
                                         if (rowIndex % 2 === 0 && expandableContent !== null) {
@@ -1665,22 +1661,20 @@ const SegiTableDataGridBodyReadOnlyFields = ({ currentTableComponent, darkMode, 
                               }
                          }
 
-                         if (newDarkMode === "") newDarkMode = "lightMode 4";
+                         if (newDarkMode === "") {
+                              if (rowIndex % 2 === 0 && !darkMode && expandedId === null) {
+                                   newDarkMode = "darkMode 4";
+                              } else {
+                                   newDarkMode = "lightMode 4";
+                              }
+                         }
 
-                         // !darkMode ? `lightMode` 
-                         //           : rowIndex %2 === 0 
-                         //                ? expandableCriteriaMet 
-                         //                     ? `darkMode`
-                         //                     : `lightMode`
-                         //                : lastId !== null && rowIndex === parseInt(lastId, 10)
-                         //                     ? `lightMode`
-                         //                     : `darkMode`
                          return (
                               <React.Fragment key={rowIndex}>
-                                   <tr key={rowIndex} className={newDarkMode}> {/* `${!darkMode ? `lightMode` : rowIndex % 2 === 0 ? expandableCriteriaMet ? `darkMode` : `lightMode` : lastId !== null && rowIndex === parseInt(lastId, 10) ? `lightMode` : `darkMode`}` */}
+                                   <tr key={rowIndex} className={`${newDarkMode}`}>
                                         {isExpandable && expandableCriteriaMet &&
-                                             <td className={`${styles.SegiTableDataCell}`} onClick={() => toggleExpandableRow(currentRow[currentTableComponent.ExpandableDataColumn])}>
-                                                  <div className={`${styles.SegiTableArrow} ${styles.SegiTableClickable}`}>{typeof currentTableComponent.ExpandedRows !== "undefined" && currentTableComponent.ExpandedRows.includes(currentRow[currentTableComponent.ExpandableDataColumn]) ? '▼' : '▶'}</div>
+                                             <td className={`${styles.SegiTableDataCell}`} onClick={() => onToggleExpandableRow(currentRow[currentTableComponent.ExpandableDataColumn])}>
+                                                  <div className={`${styles.SegiTableArrow} ${styles.SegiTableClickable}`}>{expandedId !== null && expandedId === String(currentRow[currentTableComponent.ExpandableDataColumn]) ? '▼' : '▶'}</div>
                                              </td>
                                         }
 
@@ -1772,7 +1766,7 @@ const SegiTableDataGridBodyReadOnlyFields = ({ currentTableComponent, darkMode, 
                                         }
                                    </tr>
 
-                                   {((typeof currentTableComponent.ExpandedRows !== "undefined" && currentTableComponent.ExpandedRows.includes(currentRow[currentTableComponent.ExpandableDataColumn]))) &&
+                                   {((expandedId === String(currentRow[currentTableComponent.ExpandableDataColumn]))) && expandableContent !== null &&
                                         <tr>
                                              <td className={styles.SegiTableExpandableRowContent} colSpan={currentTableComponent.Fields?.length}>
                                                   <div className={`${styles.SegiTableExpandableContent}`}>
@@ -1786,9 +1780,9 @@ const SegiTableDataGridBodyReadOnlyFields = ({ currentTableComponent, darkMode, 
                                                             </>
                                                        }
 
-                                                       {typeof expandableContent !== "string" && typeof expandableContent !== "object" &&
+                                                       {/*{typeof expandableContent !== "string" && typeof expandableContent !== "object" &&
                                                             <div>Default content</div>
-                                                       }
+                                                       }*/}
                                                   </div>
                                              </td>
                                         </tr>

@@ -87,22 +87,22 @@ export default function WatchListCard({ currentWatchList, setImdbJSON }: WatchLi
                 </div>
 
                 {currentWatchList.WatchListTypeID === 2 ? (
-                    <div className={`${!darkMode ? "lightMode" : "darkMode"} show-season`}>
+                    <div className={`show-season`}>
                         <div>Season {currentWatchList?.Season}</div>
                     </div>
                 ) : (
                     <div className="show-season"></div>
                 )}
 
-                <div className={`${!darkMode ? "lightMode" : "darkMode"} show-date`}>
+                <div className={`show-date`}>
                     {formatWatchListDates(currentWatchList?.StartDate, currentWatchList?.EndDate)}
                 </div>
 
-                <div className={`${!darkMode ? "lightMode" : "darkMode"} show-type`}>
+                <div className={`show-type`}>
                     {currentWatchList.WatchListTypeName}
                 </div>
 
-                <div className={`${!darkMode ? "lightMode" : "darkMode"} show-source`}>
+                <div className={`show-source`}>
                     {currentWatchList.WatchListSourceName}
                 </div>
 
@@ -111,7 +111,7 @@ export default function WatchListCard({ currentWatchList, setImdbJSON }: WatchLi
                         sx={{
                             padding: 1,
                             '& .MuiRating-iconEmpty': {
-                                color: darkMode ? 'white' : 'black', // Change the empty star color. Important when dark mode is enabled
+                                color: darkMode ? 'black' : 'white', // Change the empty star color. Important when dark mode is enabled
                             }
                         }}
                         disabled

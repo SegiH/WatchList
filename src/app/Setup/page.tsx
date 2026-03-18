@@ -9,7 +9,7 @@ import { SetupContextType } from "../contexts/SetupContextType";
 
 export default function Setup() {
      const {
-          activeRoute, defaultRoute, darkMode, demoUsername, loggedInCheck, validatePassword
+          activeRoute, defaultRoute, demoUsername, loggedInCheck, validatePassword
      } = useContext(SetupContext) as SetupContextType
 
      const router = useRouter();
@@ -98,7 +98,7 @@ export default function Setup() {
                     <div className={`login-page`}>
                          <div className="form">
                               <form className="login-form">
-                                   <span className={`login-label ${!darkMode ? " lightMode" : " darkMode"}`}>WatchList Setup</span>
+                                   <span className={`login-label`}>WatchList Setup</span>
 
                                    <input type="text" autoFocus disabled={submitClicked} value={realname} placeholder="Name" required onChange={(event) => setRealname(event.target.value)} onKeyUp={handleKeyUp} />
                                    <input type="text" disabled={submitClicked} value={username} placeholder="Username" required onChange={(event) => setUsername(event.target.value)} onKeyUp={handleKeyUp} />

@@ -12,47 +12,12 @@
      border-collapse: collapse;
 }
 
-:global(.darkMode) {
-     color: var(--dark-mode-foregroundColor) !important;
-     background-color: var(--dark-mode-backgroundColor) !important;
-     /*border: 1px solid var(--dark-mode-foregroundColor) !important;
-     border-collapse: collapse;*/
-}
-
-/*:global(.SegiTableDataGrid tbody tr:nth-child(odd) .darkMode) {
+:global(.SegiTable .darkMode) {
      color: var(--dark-mode-foregroundColor) !important;
      background-color: var(--dark-mode-backgroundColor) !important;
      border: 1px solid var(--dark-mode-foregroundColor) !important;
      border-collapse: collapse;
 }
-
-:global(.SegiTableDataGrid tbody tr:nth-child(odd) .lightMode) {
-     color: var(--light-mode-foregroundColor) !important;
-     background-color: var(--light-mode-backgroundColor) !important;
-     border: 1px solid var(--light-mode-foregroundColor) !important;
-     border-collapse: collapse;
-}
-
-:global(.SegiTableDataGrid tbody tr:nth-child(even) .darkMode):not(.SegiTableExpandableRowContent) {
-     color: var(--dark-mode-foregroundColor) !important;
-     background-color: var(--dark-mode-backgroundColor) !important;
-     border: 1px solid var(--dark-mode-foregroundColor) !important;
-     border-collapse: collapse;
-}
-
-:global(.SegiTableDataGrid tbody tr:nth-child(even) .lightMode) {
-     color: var(--light-mode-foregroundColor) !important;
-     background-color: var(--light-mode-backgroundColor) !important;
-     border: 1px solid var(--light-mode-foregroundColor) !important;
-     border-collapse: collapse;
-}*/
-
-/*:global(.SegiTable .darkMode) {
-     color: var(--dark-mode-foregroundColor) !important;
-     background-color: var(--dark-mode-backgroundColor) !important;
-     border: 1px solid var(--dark-mode-foregroundColor) !important;
-     border-collapse: collapse;
-}*/
 
 .SegiTable {
      overflow-y: hidden;
@@ -67,7 +32,11 @@
 .SegiTableArrow {
      font-size: 30px !important;
      user-select: none;
-     border-width: 2px !important;
+     border-right: 2px !important;
+}
+
+.SegiTableArrowLightMode {
+     color: black !important;
 }
 
 .SegiTableButtonStyle {
@@ -92,6 +61,8 @@
      transition: all .2s, box-shadow .08s ease-in;
      user-select: none;
      -webkit-user-select: none;
+     min-width: 40px;
+     padding: 0 10px;
 }
 
 .SegiTableCancelButton {
@@ -114,7 +85,7 @@
 
 .SegiTableDataCell {
      font-family: Arial, Helvetica, sans-serif;
-     border: 0.025em solid #333 outset #999;
+     border: 0.025em solid #333;
      box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.4);
      -webkit-box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.4);
      -moz-box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.4);
@@ -122,11 +93,6 @@
      text-align: left;
      word-wrap: break-word;
 }
-
-/*.SegiTableDataCell .darkMode {
-     color: var(--dark-mode-foregroundColor) !important;
-     background-color: var(--dark-mode-backgroundColor) !important;
-}*/
 
 .SegiTableDataGrid {
      width: 100%;
@@ -136,17 +102,17 @@
 .SegiTableDataGrid thead {
      position: sticky;
      top: 0;
-     z-index: 100;
+     z-index: 9999;
+     color: black;
 }
-
-/*tr .darkMode {
-     color: var(--dark-mode-foregroundColor) !important;
-     background-color: var(--dark-mode-backgroundColor) !important;
-}*/
 
 .SegiTableDataGrid td {
      word-wrap: break-word;
      overflow-wrap: anywhere;
+}
+
+.SegiTableDataGrid thead tr:not(.darkMode) {
+     background-color: #eee;
 }
 
 .SegiTableDataGrid tr:not(.SegiTableFilterGrid tr) {
@@ -154,13 +120,18 @@
      display: table-row;
 }
 
-.SegiTableDataGrid tr:not(.SegiTableExpandedTable):nth-child(even) td:not(.SegiTableFilterGrid td) {
+.SegiTableDataGrid tr:not(.SegiTableExpandedTable)::nth-child(even) td:not(.SegiTableFilterGrid td) {
      background-color: #eee;
      color: black;
 }
 
+.SegiTableDataGrid tr {
+     background-color: #eee;
+     color: black;
+}
+
+
 .SegiTableDataGridHeader {
-     /*background-color: #999999;*/
      position: relative;
      font-weight: bold;
      white-space: nowrap;
@@ -182,33 +153,11 @@
   background-color: rgba(0, 0, 0, 0.1);
 }
 
-/*.SegiTableDataGridHeader .darkMode {
-     color: var(--dark-mode-foregroundColor) !important;
-     background-color: var(--dark-mode-backgroundColor) !important;
-}*/
-
-/*.SegiTableExpandableRowContent div {
-     background-color: white !important;
-}*/
-
-.SegiTableExcelIcon {
-     cursor: pointer;
-     height: 35px;
-     width: 35px;
-     margin-right: 25px;
-     user-select: none;
-     -webkit-user-select: none;
-}
-
-.SegiTableExcelIconEditable {
-     position: relative;
-     top: 10px;
-}
-
 .SegiTableExcelIconReadOnly {
      position: relative;
-     left: 2px;
-     top: 12px;
+     left: 8px;
+     height: 35px;
+     user-select: none;
 }
 
 .SegiTableExpandableContent {
@@ -218,13 +167,18 @@
 
 .SegiTableFilterGrid {
      display: block;
-     background-color: white !important;
+     background-color: gray !important;
      padding-right: 25px;
-     width: fit-content;
-     z-index: 99999;
-     overflow-y: auto;
+     width: max-content;
+     position: fixed;
+     z-index: 99999 !important;
+     opacity: 1;
      max-height: 200px;
      overflow-y: auto;
+}
+
+.SegiTableFilterGrid tbody tr {
+     background-color: gray !important;
 }
 
 .SegiTableFilterGrid tbody tr td {
@@ -233,10 +187,10 @@
 }
 
 .SegiTableFilterGridOption {
+     background-color: gray !important;
      font-family: "Pt Sans", helvetica, sans-serif;
      display: inline-block;
-     max-width: 200px !important;
-     overflow-x: auto;
+     max-width: fit-content;
      position: relative;
      top: 5px;
 }
@@ -246,10 +200,10 @@
      width: 16px;
      height: 16px;
      background-color: #f0f0f0;
-     /* Light gray */
      border: 1px solid #ccc;
      position: relative;
      top: 2px;
+     left: 15px;
      border-radius: 2px;
      z-index: 99999;
 }
@@ -266,37 +220,40 @@
      border-left: 4px solid transparent;
      border-right: 4px solid transparent;
      border-top: 5px solid #666;
-     /* Arrow color */
 }
 
 .SegiTableGridContent {
      display: block;
-     -ms-overflow-style: none;
-     /* Hide scrollbars in IE and Edge */
+     overflow-x: auto;
+     overflow-y: auto;
+     background-color: #ffffff;
+     border: 1px solid #e5e7eb;
+     border-radius: 8px;
+     box-shadow: 0 2px 6px rgba(0,0,0,0.08);
      scrollbar-width: none;
-     /* Hide scrollbars in Firefox */
+     scrollbar-color: #cbd5e1 transparent;
 }
 
-/*.SegiTableDataGridHeaders .darkMode {
-     color: var(--dark-mode-foregroundColor) !important;
-     background-color: var(--dark-mode-backgroundColor) !important;
-}*/
+.SegiTableGridContent::-webkit-scrollbar {
+     height: 8px;
+     width: 8px;
+}
 
-/*.SegiTableDataGridHeaders tr.darkMode {
-     color: var(--dark-mode-foregroundColor) !important;
-     background-color: var(--dark-mode-backgroundColor) !important;
-}*/
+.SegiTableGridContent::-webkit-scrollbar-thumb {
+     background-color: #cbd5e1;
+     border-radius: 6px;
+}
 
-/*tr:nth-child(even).darkMode {
-     color: var(--dark-mode-foregroundColor) !important;
-     background-color: var(--dark-mode-backgroundColor) !important;
-}*/
+.SegiTableGridContent::-webkit-scrollbar-track {
+     background: transparent;
+}
 
 .SegiTableIDColumn {
      max-width: 50px !important;
 }
 
 .SegiTableInputStyle {
+     border: 1px solid #aaa !important;
      border-radius: 10px;
      font-family: "Pt Sans", helvetica, sans-serif;
      line-height: 1.6em;
@@ -318,7 +275,7 @@
 }
 
 .SegiTableMarginLeft25 {
-     margin-left: 25px;
+     margin-left: 25px !important;
 }
 
 .SegiTableMarginTop15 {
@@ -332,7 +289,7 @@
 .SegiTablePagination {
      background-color: lightgray;
      position: sticky;
-     bottom: 0;
+     bottom: 45;
      display: flex;
      justify-content: end;
      z-index: 100;
@@ -341,6 +298,8 @@
      user-select: none;
      overflow: hidden;
      white-space: nowrap;
+     margin-bottom: 55px;
+     z-index: 0;
 }
 
 .SegiTablePaginationSpan {
@@ -437,6 +396,20 @@
      background-color: #2ea44f;
 }
 
+.SegiTableSearch {
+     border: 2px solid #999;
+     height: 25px;
+}
+
+.SegiTableSearchContainer {
+     display: flex;
+     justify-content: flex-start;
+     height: 55px;
+     align-items: center;
+     padding: 0 10px;
+     box-sizing: border-box;
+}
+
 .SegiTableSelectStyle {
      height: 30px;
      border: 1px solid #999;
@@ -444,6 +417,7 @@
      color: #1c87c9;
      background-color: #eee;
      border-radius: 5px;
+     max-width: 90%;
 }
 
 .SegiTableSolidBorder {
@@ -454,8 +428,9 @@
 .SegiTableSortColumnUnselected {
      font-size: 26px;
      color: white;
-     margin: 10px;
      user-select: none;
+     position: relative;
+     left: 7px;
 }
 
 .SegiTableSortColumnSelected {
@@ -463,6 +438,12 @@
      color: black;
      margin: 10px;
      user-select: none;
+}
+
+.SegiTableURL {
+     color: blue;
+     cursor: pointer;
+     text-decoration: underline;
 }
 
 .SegiTableURLButton {

@@ -11,7 +11,7 @@ import { LoginContextType } from "../contexts/LoginContextType";
 
 export default function Login() {
      const {
-          activeRoute, darkMode, defaultRoute, demoPassword, demoUsername, loggedInCheck, setActiveRoute, setDemoMode, setLoggedInCheck, setOptions, setUserData
+          activeRoute, defaultRoute, demoPassword, demoUsername, loggedInCheck, setActiveRoute, setDemoMode, setLoggedInCheck, setOptions, setUserData
      } = useContext(LoginContext) as LoginContextType
 
      const [password, setPassword] = useState("");
@@ -136,7 +136,7 @@ export default function Login() {
                     <div className={`login-page`}>
                          <div className="form">
                               <form className="login-form" onSubmit={login}>
-                                   <span className={`login-label ${!darkMode ? " lightMode" : " darkMode"}`}>WatchList Login</span>
+                                   <span className={`login-label`}>WatchList Login</span>
                                    <input type="text" autoFocus disabled={loginSubmitted} value={username} placeholder="username" required onChange={(event) => setUsername(event.target.value)} onKeyUp={handleKeyUp} ref={usernameRef} />
                                    <input type="password" disabled={loginSubmitted} value={password} placeholder="password" required onChange={(event) => setPassword(event.target.value)} onKeyUp={handleKeyUp} />
 

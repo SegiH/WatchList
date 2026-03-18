@@ -7,12 +7,11 @@ import { APIStatus } from "../context";
 
 interface MetaDataFilterProps {
     closeMetaDataFilters: () => void;
-    darkMode: boolean;
     metaDataFilters: any[];
     setMetaDataFilters: (value: Record<string, any>) => void;
 }
 
-const MetaDataFilter = ({ closeMetaDataFilters, darkMode, metaDataFilters, setMetaDataFilters }: MetaDataFilterProps) => {
+const MetaDataFilter = ({ closeMetaDataFilters, metaDataFilters, setMetaDataFilters }: MetaDataFilterProps) => {
     const [metaDataLoadingCheck, setMetaDataLoadingCheck] = useState(APIStatus.Idle);
     const [metaDataObj, setMetaDataObj] = useState<any>([]);
     const [selectedValues, setSelectedValues] = useState<any>([]);
@@ -92,7 +91,7 @@ const MetaDataFilter = ({ closeMetaDataFilters, darkMode, metaDataFilters, setMe
         <>
             {metaDataLoadingCheck === APIStatus.Success &&
                 <div className="modal scrollable">
-                    <div className={`modal-content scrollable overflowY settingsPanel textLabel ${!darkMode ? " lightMode" : " darkMode"}`} style={{ overflowY: "auto" }}>
+                    <div className={`modal-content scrollable overflowY settingsPanel textLabel`} style={{ overflowY: "auto" }}>
                         <div>Metadata Filter</div>
 
                         <div className="metaDataFilterButtons">

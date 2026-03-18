@@ -48,19 +48,19 @@ const SharedLayout = () => {
 
                               {loggedInCheck === APIStatus.Success &&
                                    <span>
-                                        <span className={`leftMargin75 topBar ${!darkMode ? "lightMode" : "darkMode"} ${demoModeNotificationVisible === true ? "demoNotificationVisible" : ""}`}>
+                                        <span className={`leftMargin75 topBar ${demoModeNotificationVisible === true ? "demoNotificationVisible" : ""}`}>
                                              {!searchModalVisible &&
                                                   <HamburgerMenu />
                                              }
 
                                              {(activeRoute === "Stats" || activeRoute === "Admin" || activeRoute === "BugLogs" || activeRoute === "Data") &&
-                                                  <span className={`leftMargin50 topBarActiveRoute${!darkMode ? " lightMode" : " darkMode"}`}>{activeRoute}</span>
+                                                  <span className={`leftMargin50 topBarActiveRoute`}>{activeRoute}</span>
                                              }
 
                                              {(activeRoute === "WatchList" || activeRoute === "Items") &&
                                                   <>
-                                                       <span className={`clickable leftMargin60 maxWidth ${!darkMode ? " lightMode" : " darkMode"} searchInputStyle visible`}>
-                                                            <input className={`inputStyle lightMode fullWidthInput ${imdbSearchEnabled ? " imdbSearchEnabled" : ""}`} ref={inputRef} value={searchTerm} onChange={(event) => setSearchTerm(event.target.value)} />
+                                                       <span className={`clickable leftMargin60 maxWidth searchInputStyle visible`}>
+                                                            <input className={`inputStyle fullWidthInput`} ref={inputRef} value={searchTerm} onChange={(event) => setSearchTerm(event.target.value)} />
                                                        </span>
                                                   </>
                                              }

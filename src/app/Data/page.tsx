@@ -338,7 +338,7 @@ export default function Data() {
                         <span>
                             <br /><br /><br />
                             <SegiTable
-                                darkMode={true}
+                                darkMode={darkMode}
                                 defaultPageSize={5}
                                 editable={false}
                                 exportable={false}

@@ -15,7 +15,7 @@ import { Button } from "@mui/material";
 
 export default function WatchList() {
      const {
-          darkMode, filteredWatchList, hideTabs, imdbSearchEnabled, isLoading, lastPage, searchModalVisible, searchTerm, setActiveRoute, setIsAdding, setIsEditing, setSearchModalVisible, watchListSortingCheck
+          filteredWatchList, hideTabs, imdbSearchEnabled, isLoading, lastPage, searchModalVisible, searchTerm, setActiveRoute, setIsAdding, setIsEditing, setSearchModalVisible, watchListSortingCheck
      } = useContext(WatchListContext) as WatchListContextType;
 
      const [imdbCardvisible, setImdbCardvisible] = useState(false);
@@ -57,7 +57,7 @@ export default function WatchList() {
                          }
 
                          <span className="topMarginContent">
-                              <ul className={`show-list${!darkMode ? " lightMode" : " darkMode"} ${hideTabs ? "noTabs" : ""}`}>
+                              <ul className={`show-list ${hideTabs ? "noTabs" : ""}`}>
                                    {filteredWatchList?.map((currentWatchList: IWatchList) => {
                                         return (
                                              <WatchListCard key={currentWatchList.WatchListID} currentWatchList={currentWatchList} setImdbJSON={setImdbJSON} />
@@ -79,7 +79,7 @@ export default function WatchList() {
                }
 
                {imdbCardvisible &&
-                    <IMDBCard closeIMDBCard={closeIMDBCard} darkMode={darkMode} IMDB_JSON={imdbJSON} />
+                    <IMDBCard closeIMDBCard={closeIMDBCard} IMDB_JSON={imdbJSON} />
                }
           </>
      )

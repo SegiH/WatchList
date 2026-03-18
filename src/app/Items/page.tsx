@@ -13,7 +13,7 @@ const WatchListItemCard = React.lazy(() => import('./WatchListItemCard'));
 
 export default function WatchListItems() {
      const {
-          darkMode, filteredWatchListItems, hideTabs, imdbSearchEnabled, isLoading, searchModalVisible, searchTerm, setActiveRoute, setIsAdding, setIsEditing, setSearchModalVisible, watchListItemsSortingCheck
+         filteredWatchListItems, hideTabs, imdbSearchEnabled, isLoading, searchModalVisible, searchTerm, setActiveRoute, setIsAdding, setIsEditing, setSearchModalVisible, watchListItemsSortingCheck
      } = useContext(ItemsContext) as ItemsContextType;
 
      const [imdbCardvisible, setImdbCardvisible] = useState(false);
@@ -51,7 +51,7 @@ export default function WatchListItems() {
                          }
 
                          <span className="displayInline topMarginContent">
-                              <ul className={`show-list${!darkMode ? " lightMode" : " darkMode"} ${hideTabs ? "noTabs" : ""}`}>
+                              <ul className={`show-list ${hideTabs ? "noTabs" : ""}`}>
                                    {filteredWatchListItems?.map((currentWatchListItem: IWatchListItem, index: number) => {
                                         return (
                                              <WatchListItemCard key={index} currentWatchListItem={currentWatchListItem} setImdbJSON={setImdbJSON} />
@@ -71,7 +71,7 @@ export default function WatchListItems() {
                }
 
                {imdbCardvisible &&
-                    <IMDBCard closeIMDBCard={closeIMDBCard} darkMode={darkMode} IMDB_JSON={imdbJSON} />
+                    <IMDBCard closeIMDBCard={closeIMDBCard} IMDB_JSON={imdbJSON} />
                }
           </>
      )

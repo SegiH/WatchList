@@ -8,7 +8,7 @@ import { ErrorContextType } from "../contexts/ErrorContextType";
 
 export default function ErrorPage() {
      const {
-          darkMode, defaultRoute, errorMessage, setActiveRoute
+          defaultRoute, errorMessage, setActiveRoute
      } = useContext(ErrorContext) as ErrorContextType
 
      const router = useRouter();
@@ -20,13 +20,13 @@ export default function ErrorPage() {
      }
 
      return (
-          <div className={`${!darkMode ? " lightMode" : " darkMode"}`}>
+          <div>
                <span>
                     <img src="/404.jpg" alt="Uh oh. Something went wrong" />
 
                     <br /><br />
 
-                    <a className={`clickable largeText ${!darkMode ? " lightMode" : " darkMode"}`} onClick={goHomeClick}>Go Home</a>
+                    <a className={`clickable largeText`} onClick={goHomeClick}>Go Home</a>
 
                     <h1>{errorMessage}</h1>
                </span>

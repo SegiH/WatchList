@@ -11,7 +11,7 @@ type WatchListCardProps = {
 
 export default function WatchListItemCard({ currentWatchListItem, setImdbJSON }: WatchListCardProps) {
     const {
-        BrokenImageIconComponent, darkMode, filteredWatchListItems, getMissingPoster, getWatchList, openDetailClickHandler, setFilteredWatchListItems, watchList, watchListSortingCheck
+        BrokenImageIconComponent, filteredWatchListItems, getMissingPoster, getWatchList, openDetailClickHandler, setFilteredWatchListItems, watchList, watchListSortingCheck
     } = useContext(ItemsCardContext) as ItemsCardContextType;
 
     const IMDB_JSON = currentWatchListItem?.IMDB_JSON !== null && typeof currentWatchListItem?.IMDB_JSON !== "undefined" && currentWatchListItem?.IMDB_JSON !== "" ? JSON.parse(currentWatchListItem?.IMDB_JSON) : null;
@@ -65,19 +65,19 @@ export default function WatchListItemCard({ currentWatchListItem, setImdbJSON }:
 
                 <div className="show-title">
                     {typeof currentWatchListItem?.IMDB_URL !== "undefined" &&
-                        <a className={`${!darkMode ? "lightMode" : "darkMode"}`} href={currentWatchListItem?.IMDB_URL} target='_blank'>{currentWatchListItem?.WatchListItemName}{IMDB_JSON !== null && IMDB_JSON.Year !== null ? ` (${IMDB_JSON.Year})` : ""}</a>
+                        <a href={currentWatchListItem?.IMDB_URL} target='_blank'>{currentWatchListItem?.WatchListItemName}{IMDB_JSON !== null && IMDB_JSON.Year !== null ? ` (${IMDB_JSON.Year})` : ""}</a>
                     }
 
                     {typeof currentWatchListItem?.IMDB_URL === "undefined" &&
-                        <div className={`${!darkMode ? "lightMode" : "darkMode"} `}>
+                        <div>
                             {currentWatchListItem?.WatchListItemName}{IMDB_JSON !== null && IMDB_JSON.Year !== null ? ` (${IMDB_JSON.Year})` : ""}
                         </div>
                     }
 
-                    {currentWatchListItem?.Archived === 1 ? <span className={`${!darkMode ? "lightMode" : "darkMode"}`}>&nbsp;(A)</span> : <></>}
+                    {currentWatchListItem?.Archived === 1 ? <span>&nbsp;(A)</span> : <></>}
                 </div>
 
-                <span className={`${!darkMode ? "lightMode" : "darkMode"}`}>
+                <span>
                     <div>{currentWatchListItem?.WatchListTypeName}</div>
                 </span>
 

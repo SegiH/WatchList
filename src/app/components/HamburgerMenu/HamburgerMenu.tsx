@@ -11,6 +11,7 @@ import Select from 'react-select';
 import IWatchListType from "../../interfaces/IWatchListType";
 import MetaDataFilter from "../MetadataFilter";
 import { useRouter } from "next/navigation";
+import { useTheme } from "next-themes";
 
 const HamburgerMenu = () => {
      const {
@@ -25,6 +26,8 @@ const HamburgerMenu = () => {
      const iconRef = useRef<HTMLDivElement | null>(null);
      const router = useRouter();
      const closeDrawerTimeout = 5;
+     const { systemTheme, theme, setTheme } = useTheme();
+     const currentTheme = theme === 'system' ? systemTheme : theme;
 
      const addRemoveVisibleSectionChange = async (newList: []) => {
           setVisibleSections(newList);
@@ -75,6 +78,14 @@ const HamburgerMenu = () => {
                "ShowMissingArtwork": columnName === "ShowMissingArtwork" ? columnValue === true ? 1 : 0 : showMissingArtwork ? 1 : 0,
                "WatchListSortColumn": watchListSortColumn,
                "VisibleSections": JSON.stringify(visibleSections)
+          }
+
+          if (columnName === "DarkMode") {
+               if (columnValue) {
+                    setTheme('dark');
+               } else {
+                    setTheme('light');
+               }
           }
 
           setOptions(options);
@@ -468,7 +479,7 @@ const HamburgerMenu = () => {
                </div>
 
                {metadataFiltervisible &&
-                    <MetaDataFilter closeMetaDataFilters={closeMetaDataFilters} darkMode={darkMode} metaDataFilters={metaDataFilters} setMetaDataFilters={setMetaDataFilters} />
+                    <MetaDataFilter closeMetaDataFilters={closeMetaDataFilters} metaDataFilters={metaDataFilters} setMetaDataFilters={setMetaDataFilters} />
                }
           </>
      );

@@ -2,15 +2,14 @@ import React from "react"
 
 interface IMDBCardProps {
     closeIMDBCard: () => void;
-    darkMode: boolean;
     IMDB_JSON: any;
 }
 
-const IMDBCard = ({ darkMode, closeIMDBCard, IMDB_JSON }: IMDBCardProps) => {
+const IMDBCard = ({ closeIMDBCard, IMDB_JSON }: IMDBCardProps) => {
     return (
         <>
             <div className="modal">
-                <div className={`modal-content scrollable overflowX overflowY imdbCard textLabel ${!darkMode ? " lightMode" : " darkMode"}`} style={{ overflowY: "auto" }}>
+                <div className={`modal-content scrollable overflowX overflowY imdbCard textLabel`} style={{ overflowY: "auto" }}>
                     <div>IMDB Card</div>
 
                     <span className="clickable closeButton closeButtonAdjustment" onClick={closeIMDBCard}>

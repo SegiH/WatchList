@@ -1,6 +1,5 @@
 /** @type {import('next').NextConfig} */
 const path = require('path')
-const withPWA = require("next-pwa");
 
 const nextConfig = {
      output: "standalone",
@@ -21,6 +20,44 @@ const nextConfig = {
                },
           ],
      },
+     async headers() {
+          return [
+               {
+                    source: '/(.*)',
+                    headers: [
+                         {
+                              key: 'X-Content-Type-Options',
+                              value: 'nosniff',
+                         },
+                         {
+                              key: 'X-Frame-Options',
+                              value: 'DENY',
+                         },
+                         {
+                              key: 'Referrer-Policy',
+                              value: 'strict-origin-when-cross-origin',
+                         },
+                    ],
+               },
+               {
+                    source: '/sw.js',
+                    headers: [
+                         {
+                              key: 'Content-Type',
+                              value: 'application/javascript; charset=utf-8',
+                         },
+                         {
+                              key: 'Cache-Control',
+                              value: 'no-cache, no-store, must-revalidate',
+                         },
+                         {
+                              key: 'Content-Security-Policy',
+                              value: "default-src 'self'; script-src 'self'",
+                         },
+                    ],
+               },
+          ]
+     },
      async redirects() {
           return [
                {
@@ -30,14 +67,9 @@ const nextConfig = {
                },
           ]
      },
-     transpilePackages: [
-          "react-syntax-highlighter"
-     ],
+          transpilePackages: [
+               "react-syntax-highlighter"
+          ],
 }
 
-module.exports = withPWA({
-     disable: process.env.NODE_ENV === 'development',
-     dest: "public",
-     register: true,
-     skipWaiting: true
-})(nextConfig);
+module.exports = (nextConfig);

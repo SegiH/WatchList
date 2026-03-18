@@ -14,7 +14,7 @@ import { AdminContextType } from "../contexts/AdminContextType";
 
 export default function Admin() {
      const {
-          darkMode, defaultRoute, demoMode, isAdding, isAdmin, isEditing
+          defaultRoute, demoMode, isAdding, isAdmin, isEditing
      } = useContext(AdminContext) as AdminContextType
 
      const [isMounted, setIsMounted] = useState(false);
@@ -63,11 +63,11 @@ export default function Admin() {
      return (
           <>
                {isMounted &&
-                    <div className={`topMarginContent ${!darkMode ? " lightMode" : " darkMode"}`}>
+                    <div className={`topMarginContent`}>
                          <Tabs value={selectedTab} onChange={tabClickHandler}>
-                              <Tab className={`${!darkMode ? "lightMode" : "darkMode"}`} label="Users" {...tabProps(0)} />
-                              <Tab className={`${!darkMode ? "lightMode" : "darkMode"}`} label="Sources" {...tabProps(1)} />
-                              <Tab className={`${!darkMode ? "lightMode" : "darkMode"}`} label="Types" {...tabProps(2)} />
+                              <Tab label="Users" {...tabProps(0)} />
+                              <Tab label="Sources" {...tabProps(1)} />
+                              <Tab label="Types" {...tabProps(2)} />
                          </Tabs>
 
                          {selectedTab === 0 &&

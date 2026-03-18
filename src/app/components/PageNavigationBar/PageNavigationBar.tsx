@@ -12,7 +12,7 @@ interface PageNavigationBarProps {
 
 const PageNavigationBar = ({ isBottomNav, topRef }: PageNavigationBarProps) => {
     const {
-        activeRoute, currentItemsPage, currentWatchListPage, darkMode, isAdding, isLoading, hideTabs, lastPage, setNewPage
+        activeRoute, currentItemsPage, currentWatchListPage, isAdding, isLoading, hideTabs, lastPage, setNewPage
     } = useContext(PageNavigationBarContext) as PageNavigationBarContextType;
 
     const [currentPage, setCurrentPage] = useState(-1);
@@ -38,7 +38,7 @@ const PageNavigationBar = ({ isBottomNav, topRef }: PageNavigationBarProps) => {
     return (
         <>
             {!isLoading && (activeRoute === "WatchList" || activeRoute === "Items") && !isAdding && (currentPage !== 1 || (currentPage === 1 && !lastPage)) &&
-                <div className={`pageNavigationBar ${!darkMode ? "lightMode" : "darkMode"} ${hideTabs ? "noTabs" : ""}${isBottomNav ? " bottom" : ""}`}>
+                <div className={`pageNavigationBar ${hideTabs ? "noTabs" : ""}${isBottomNav ? " bottom" : ""}`}>
                     {currentPage > 1 &&
                         <div className={`arrow left`} onClick={() => pageClickHandler(-1)}>&#8592;</div>
                     }

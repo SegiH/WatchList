@@ -10,7 +10,7 @@ import { TabsContextType } from '../../contexts/TabsContextType';
 
 const Tabs = () => {
      const {
-          activeRoute, darkMode, demoMode, getPath, hideTabs, isAdding, isAdmin, isClient, isEditing, isEnabled, isError, isLoading, loggedInCheck, pullToRefreshEnabled, routes, setActiveRoute, setSearchTerm, visibleSections
+          activeRoute, demoMode, getPath, hideTabs, isAdding, isAdmin, isClient, isEditing, isEnabled, isError, isLoading, loggedInCheck, pullToRefreshEnabled, routes, setActiveRoute, setSearchTerm, visibleSections
      } = useContext(TabsContext) as TabsContextType;
 
      const router = useRouter();
@@ -36,7 +36,7 @@ const Tabs = () => {
      return (
           <>
                {isClient && loggedInCheck === APIStatus.Success && !isError && !hideTabs && !isLoading && !isAdding && !isEditing && activeRoute !== "" && (
-                    <div className={`tabBar ${!darkMode ? "lightMode" : "darkMode"}`}>
+                    <div className={`tabBar`}>
                          {typeof routes !== "undefined" && routes !== null && Object.keys(routes).length > 0 && Object.keys(routes)
                               .filter((routeName) => {
                                    return routes[routeName].RequiresAuth === true
@@ -52,8 +52,8 @@ const Tabs = () => {
                               )
                               .map((routeName, index) => {
                                    return (
-                                        <span key={index} className={`tab ${String(activeRoute) === String(routes[routeName].Name) ? "active" : ""} ${!darkMode ? "lightMode" : "darkMode"}`}>
-                                             <span className={`tabitem ${(!darkMode || (darkMode && darkMode && activeRoute === routes[routeName].Name)) ? " lightMode" : " darkMode"}`}>
+                                        <span key={index} className={`tab ${String(activeRoute) === String(routes[routeName].Name) ? "active" : ""}`}>
+                                             <span className={`tabitem`}>
                                                   <span className={`clickable tabIcon`} onClick={() => tabClickHandler(routes[routeName].Name)}>
                                                        {routes[routeName].Icon}
                                                   </span>

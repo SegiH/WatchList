@@ -1361,22 +1361,22 @@ const DataProvider = ({
      }, []); // Do not add isLoggedInApi as a dependency. It causes an ends loop of network requests
 
      const dataContextValues = { bugLogs, darkMode, defaultRoute, demoMode, isAdmin, lastPage, pageSize, setErrorMessage, setIsError, visibleSections, watchList, watchListSortingCheck, watchListItems, watchListItemsSortingCheck, watchListSources, watchListTypes };
-     const errorContextValues = { darkMode, defaultRoute, errorMessage, setActiveRoute };
+     const errorContextValues = { defaultRoute, errorMessage, setActiveRoute };
      const hamburgerMenuContextType = { activeRoute, archivedVisible, autoAdd, buildDate, darkMode, defaultRoute, demoMode, demoModeNotificationVisible, hideTabs, isAdding, isAdmin, isEditing, isEnabled, loggedInCheck, LogOutIconComponent, metaDataFilters, openDetailClickHandler, pullToRefreshEnabled, routes, saveOptions, setActiveRoute, setIsLoading, setMetaDataFilters, setNewPage, setOptions, setShowMissingArtwork, setSourceFilter, setStillWatching, setTypeFilter, setVisibleSections, setWatchListSortColumn, setWatchListSortDirection, showMissingArtwork, signOut, sourceFilter, stillWatching, typeFilter, visibleSections, visibleSectionChoices, watchListItemsSortColumns, watchListSortColumn, watchListSortColumns, watchListSortDirection, watchListSources, watchListTypes }
-     const itemsCardContextValues = { BrokenImageIconComponent, darkMode, filteredWatchListItems, getMissingPoster, getWatchList, openDetailClickHandler, setFilteredWatchListItems, watchList, watchListSortingCheck };
-     const itemsContextValues = { darkMode, filteredWatchListItems, hideTabs, imdbSearchEnabled, isLoading, searchModalVisible, searchTerm, setActiveRoute, setIsAdding, setIsEditing, setFilteredWatchListItems, setSearchModalVisible, watchListItemsSortingCheck };
-     const itemsDtlContextValues = { BrokenImageIconComponent, CancelIconComponent, darkMode, demoMode, EditIconComponent, formatWatchListDates, getMissingPoster, getWatchListItems, isAdding, isEditing, isEnabled, isLoading, pullToRefreshEnabled, SaveIconComponent, setErrorMessage, setIsAdding, setIsEditing, setIsError, watchListTypes, writeLog };
-     const loginContextValues = { activeRoute, darkMode, defaultRoute, demoPassword, demoUsername, loggedInCheck, setActiveRoute, setDemoMode, setLoggedInCheck, setOptions, setUserData };
-     const pageNavigationBarContextValues = { activeRoute, currentItemsPage, currentWatchListPage, darkMode, isAdding, isLoading, hideTabs, lastPage, setNewPage };
-     const recommendationsContextValues = { BrokenImageIconComponent, darkMode, writeLog };
-     const searchIMDBContextValues = { AddIconComponent, autoAdd, BrokenImageIconComponent, darkMode, searchCount, SearchIconComponent, searchTerm, setIsAdding, setSearchCount, setSearchModalVisible, setSearchTerm };
-     const setupContextValues = { activeRoute, defaultRoute, darkMode, demoUsername, loggedInCheck, validatePassword };
+     const itemsCardContextValues = { BrokenImageIconComponent, filteredWatchListItems, getMissingPoster, getWatchList, openDetailClickHandler, setFilteredWatchListItems, watchList, watchListSortingCheck };
+     const itemsContextValues = { filteredWatchListItems, hideTabs, imdbSearchEnabled, isLoading, searchModalVisible, searchTerm, setActiveRoute, setIsAdding, setIsEditing, setFilteredWatchListItems, setSearchModalVisible, watchListItemsSortingCheck };
+     const itemsDtlContextValues = { BrokenImageIconComponent, CancelIconComponent, demoMode, EditIconComponent, formatWatchListDates, getMissingPoster, getWatchListItems, isAdding, isEditing, isEnabled, isLoading, pullToRefreshEnabled, SaveIconComponent, setErrorMessage, setIsAdding, setIsEditing, setIsError, watchListTypes, writeLog };
+     const loginContextValues = { activeRoute, defaultRoute, demoPassword, demoUsername, loggedInCheck, setActiveRoute, setDemoMode, setLoggedInCheck, setOptions, setUserData };
+     const pageNavigationBarContextValues = { activeRoute, currentItemsPage, currentWatchListPage, isAdding, isLoading, hideTabs, lastPage, setNewPage };
+     const recommendationsContextValues = { BrokenImageIconComponent, writeLog };
+     const searchIMDBContextValues = { AddIconComponent, autoAdd, BrokenImageIconComponent, searchCount, SearchIconComponent, searchTerm, setIsAdding, setSearchCount, setSearchModalVisible, setSearchTerm };
+     const setupContextValues = { activeRoute, defaultRoute, demoUsername, loggedInCheck, validatePassword };
      const sharedLayoutContextValues = { activeRoute, darkMode, demoModeNotificationVisible, imdbSearchEnabled, isError, isLoading, loggedInCheck, searchModalVisible, searchTerm, setDemoModeNotificationVisible, setSearchTerm };
-     const tabsContextValues = { activeRoute, darkMode, demoMode, getPath, hideTabs, isAdding, isAdmin, isClient, isEditing, isEnabled, isError, isLoading, loggedInCheck, pullToRefreshEnabled, routes, setActiveRoute, setSearchTerm, visibleSections };
-     const watchListCardContextValues = { BrokenImageIconComponent, darkMode, filteredWatchList, formatWatchListDates, getMissingPoster, openDetailClickHandler, setFilteredWatchList, writeLog };
-     const watchListContextValues = { darkMode, filteredWatchList, hideTabs, imdbSearchEnabled, isLoading, lastPage, searchModalVisible, searchTerm, setActiveRoute, setIsAdding, setIsEditing, setSearchModalVisible, watchListSortingCheck };
-     const watchListDtlContextValues = { BrokenImageIconComponent, CancelIconComponent, darkMode, demoMode, EditIconComponent, getWatchList, imdbSearchEnabled, isAdding, isEditing, isLoading, pullToRefreshEnabled, recommendationsEnabled, SaveIconComponent, setErrorMessage, setIsAdding, setIsEditing, setIsError, setStillWatching, showSearch, stillWatching, watchListSortDirection, watchListSources, writeLog };
-     const watchListStatsContextValues = { darkMode, demoMode, errorMessage, ratingMax, setIsError, setErrorMessage };
+     const tabsContextValues = { activeRoute, demoMode, getPath, hideTabs, isAdding, isAdmin, isClient, isEditing, isEnabled, isError, isLoading, loggedInCheck, pullToRefreshEnabled, routes, setActiveRoute, setSearchTerm, visibleSections };
+     const watchListCardContextValues = { BrokenImageIconComponent, filteredWatchList, formatWatchListDates, getMissingPoster, openDetailClickHandler, setFilteredWatchList, writeLog };
+     const watchListContextValues = { filteredWatchList, hideTabs, imdbSearchEnabled, isLoading, lastPage, searchModalVisible, searchTerm, setActiveRoute, setIsAdding, setIsEditing, setSearchModalVisible, watchListSortingCheck };
+     const watchListDtlContextValues = { BrokenImageIconComponent, CancelIconComponent, demoMode, EditIconComponent, getWatchList, imdbSearchEnabled, isAdding, isEditing, isLoading, pullToRefreshEnabled, recommendationsEnabled, SaveIconComponent, setErrorMessage, setIsAdding, setIsEditing, setIsError, setStillWatching, showSearch, stillWatching, watchListSortDirection, watchListSources, writeLog };
+     const watchListStatsContextValues = { demoMode, errorMessage, ratingMax, setIsError, setErrorMessage };
 
      const baseProviders = [
           { Provider: DataContext.Provider, value: dataContextValues },
@@ -1399,11 +1399,11 @@ const DataProvider = ({
      ];
 
      // Admin-only blocks — keep them grouped under a single condition when rendering
-     const adminContextValues = { darkMode, defaultRoute, demoMode, isAdding, isAdmin, isEditing };
-     const bugLogsContextValues = { bugLogs, CancelIconComponent, darkMode, defaultRoute, DeleteIconComponent, EditIconComponent, isAdmin, isAdding, isEditing, SaveIconComponent, setBugLogs, setIsAdding, setIsEditing, setIsError, setErrorMessage };
-     const manageWatchListSourcesContextValues = { CancelIconComponent, darkMode, defaultRoute, DeleteIconComponent, demoMode, EditIconComponent, isAdding, isAdmin, isEditing, SaveIconComponent, setIsAdding, setIsEditing, setWatchListSourcesLoadingCheck, watchListSourcesLoadingCheck, watchListSources };
-     const manageWatchListTypesContextValues = { CancelIconComponent, darkMode, defaultRoute, DeleteIconComponent, demoMode, EditIconComponent, isAdding, isAdmin, isEditing, SaveIconComponent, setIsAdding, setIsEditing, setWatchListTypesLoadingCheck, watchListTypes, watchListTypesLoadingCheck };
-     const manageUserAccountsContextValues = { CancelIconComponent, darkMode, defaultRoute, demoMode, EditIconComponent, isAdding, isAdmin, isEditing, SaveIconComponent, setIsAdding, setIsEditing, setErrorMessage, setIsError, setUsers, users, validatePassword };
+     const adminContextValues = { defaultRoute, demoMode, isAdding, isAdmin, isEditing };
+     const bugLogsContextValues = { bugLogs, CancelIconComponent, defaultRoute, DeleteIconComponent, EditIconComponent, isAdmin, isAdding, isEditing, SaveIconComponent, setBugLogs, setIsAdding, setIsEditing, setIsError, setErrorMessage };
+     const manageWatchListSourcesContextValues = { CancelIconComponent, defaultRoute, DeleteIconComponent, demoMode, EditIconComponent, isAdding, isAdmin, isEditing, SaveIconComponent, setIsAdding, setIsEditing, setWatchListSourcesLoadingCheck, watchListSourcesLoadingCheck, watchListSources };
+     const manageWatchListTypesContextValues = { CancelIconComponent, defaultRoute, DeleteIconComponent, demoMode, EditIconComponent, isAdding, isAdmin, isEditing, SaveIconComponent, setIsAdding, setIsEditing, setWatchListTypesLoadingCheck, watchListTypes, watchListTypesLoadingCheck };
+     const manageUserAccountsContextValues = { CancelIconComponent, defaultRoute, demoMode, EditIconComponent, isAdding, isAdmin, isEditing, SaveIconComponent, setIsAdding, setIsEditing, setErrorMessage, setIsError, setUsers, users, validatePassword };
 
      const adminProviders = [
           { Provider: AdminContext.Provider, value: adminContextValues },

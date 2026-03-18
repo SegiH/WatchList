@@ -12,7 +12,7 @@
     ]
   },
   "scripts": {
-    "dev": "node writeBuildDate.js && next dev",
+    "dev": "node writeBuildDate.js && next dev --experimental-https",
     "dev:https": "node writeBuildDate.js && next dev --experimental-https",
     "build": "next build",
     "start": "next start",
@@ -29,6 +29,7 @@
     "@mui/material": "^5.15.4",
     "@mui/x-charts": "^7.6.2",
     "@mui/x-tree-view": "^7.23.2",
+    "@tailwindcss/postcss": "^4.2.1",
     "@testing-library/dom": "^10.4.0",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.2.0",
@@ -42,13 +43,15 @@
     "jest-environment-jsdom": "^30.3.0",
     "json5": "^2.2.3",
     "next": "^16.1.6",
-    "next-pwa": "^5.6.0",
     "next-router-mock": "^0.9.13",
+    "next-themes": "^0.4.6",
     "node-fetch": "^3.3.2",
+    "postcss": "^8.5.8",
     "prop-types-exact": "^1.2.0",
     "react": "19.2.3",
     "react-dom": "19.2.3",
     "react-select": "^5.10.1",
+    "tailwindcss": "^4.2.1",
     "tedious": "^18.2.3",
     "ts-node": "^10.9.2"
   },

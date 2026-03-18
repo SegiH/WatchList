@@ -1,3 +1,4 @@
+
 export const FieldTypes = Object.freeze({
      TEXTFIELD: 'TEXTFIELD',
      TEXTAREA: 'TEXTAREA',
@@ -21,7 +22,7 @@ export interface ITableComponent {
      Data: any;
      ExpandableContent?: (row: any) => React.ReactNode;
      ExpandableData?: number[]; // Used internally by the app
-     ExpandableDataColumn?: string; // TODO: Add comment and delete main one or delete this one
+     ExpandableDataColumn?: string;
      ExpandableDataLinked?: boolean;
      ExpandedRows?: number[]; // Used internally by the app
      Fields: ITableComponentField[];

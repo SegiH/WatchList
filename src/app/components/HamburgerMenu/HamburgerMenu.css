@@ -23,11 +23,6 @@
   overflow-y: auto;
 }
 
-.sidebar-menu.lightMode {
-  background-color: #333;
-  color: white;
-}
-
 .sidebar-menu.open {
   left: 0;
   /* Slide in the menu to the left side of the screen */

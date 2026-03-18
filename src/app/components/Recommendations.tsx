@@ -13,7 +13,7 @@ const Recommendations = ({ queryTerm, setRecommendationName, setRecommendationTy
           type: string
      }) => {
      const {
-          BrokenImageIconComponent, darkMode, writeLog
+          BrokenImageIconComponent, writeLog
      } = useContext(RecommendationsContext) as RecommendationsContextType
 
      const [recommendations, setRecommendations] = useState<IRecommendation[]>([]);
@@ -72,7 +72,7 @@ const Recommendations = ({ queryTerm, setRecommendationName, setRecommendationTy
      }, [queryTerm, recommendationsLoadingCheck, type, writeLog]);
 
      return (
-          <div className={`flex-container${!darkMode ? " lightMode" : " darkMode"}`}>
+          <div className={`flex-container`}>
                {recommendationsLoadingCheck === APIStatus.Success &&
                     <span className="clickable closeButton" onClick={closeRecommendations}>
                          X

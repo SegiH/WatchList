@@ -9,7 +9,7 @@ import { SearchIMDBContextType } from "../contexts/SearchIMDBContextType";
 
 export default function SearchIMDB() {
      const {
-          AddIconComponent, autoAdd, BrokenImageIconComponent, darkMode, searchCount, SearchIconComponent, searchTerm, setIsAdding, setSearchCount, setSearchModalVisible, setSearchTerm
+          AddIconComponent, autoAdd, BrokenImageIconComponent, searchCount, SearchIconComponent, searchTerm, setIsAdding, setSearchCount, setSearchModalVisible, setSearchTerm
      } = useContext(SearchIMDBContext) as SearchIMDBContextType
 
      const [imdbSearchResults, setIMDBSearchResults] = useState<ISearchImdb[]>([]);
@@ -131,7 +131,7 @@ export default function SearchIMDB() {
      }, [IMDBSearchTerm]);
 
      return (
-          <div className={`modal zIndex ${!darkMode ? " lightMode" : " darkMode"}`}>
+          <div className={`modal zIndex`}>
                <div className={`modal-content ${searchLoadingCheck === APIStatus.Success ? "" : "customModalHeight"}`}>
                     <div className="container searchHeader sticky">
                          {searchLoadingCheck === APIStatus.Success &&
@@ -161,9 +161,9 @@ export default function SearchIMDB() {
                          <div className="cards searchHeader">
                               {searchLoadingCheck === APIStatus.Idle && searchTerm ===  "" &&
                                    <>
-                                        <div className={`card leftMargin searchLabel textLabel${!darkMode ? " lightMode" : " darkMode"}`}>Search</div>
-                                        <span className={`card leftMargin searchMarginTop unsetcardwidth${!darkMode ? " lightMode" : " darkMode"}`}>
-                                             <span className={`clickable searchIcon${darkMode ? " lightMode" : " darkMode"}`} onClick={searchIMDB}>
+                                        <div className={`card leftMargin searchLabel textLabel`}>Search</div>
+                                        <span className={`card leftMargin searchMarginTop unsetcardwidth$`}>
+                                             <span className={`clickable searchIcon`} onClick={searchIMDB}>
                                                   {SearchIconComponent}
 
                                                   {IMDBSearchTerm === "" &&

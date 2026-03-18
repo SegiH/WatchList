@@ -9,7 +9,7 @@ import { ManageWatchListTypesContextType } from "../contexts/ManageWatchListType
 
 const ManageWatchListTypes = () => {
      const {
-          CancelIconComponent, darkMode, defaultRoute, DeleteIconComponent, demoMode, EditIconComponent, isAdding, isAdmin, isEditing, SaveIconComponent, setIsAdding, setIsEditing, setWatchListTypesLoadingCheck, watchListTypes, watchListTypesLoadingCheck
+          CancelIconComponent, defaultRoute, DeleteIconComponent, demoMode, EditIconComponent, isAdding, isAdmin, isEditing, SaveIconComponent, setIsAdding, setIsEditing, setWatchListTypesLoadingCheck, watchListTypes, watchListTypesLoadingCheck
      } = useContext(ManageWatchListTypesContext) as ManageWatchListTypesContextType;
 
      const [addingType, setAddingType] = useState<IWatchListType | null>(null);
@@ -154,7 +154,7 @@ const ManageWatchListTypes = () => {
                }
 
                {watchListTypes && watchListTypes.length > 0 &&
-                    <table style={{ borderWidth: "1px", borderStyle: "solid" }} className={`simpleTable ${!darkMode ? "lightMode" : "darkMode"}`}>
+                    <table style={{ borderWidth: "1px", borderStyle: "solid" }} className={`simpleTable`}>
                          <thead>
                               <tr>
                                    <th>Actions</th>
@@ -188,7 +188,7 @@ const ManageWatchListTypes = () => {
 
                                         <td>
                                              {addingType !== null &&
-                                                  <TextField className={`lightMode borderRadius15 minWidth150`} margin="dense" id="typename" value={addingType.WatchListTypeName} variant="standard" onChange={(event: React.ChangeEvent<HTMLInputElement>) => typeChangeHandler("WatchListTypeName", event.target.value)} />
+                                                  <TextField className={`borderRadius15 minWidth150`} margin="dense" id="typename" value={addingType.WatchListTypeName} variant="standard" onChange={(event: React.ChangeEvent<HTMLInputElement>) => typeChangeHandler("WatchListTypeName", event.target.value)} />
                                              }
                                         </td>
                                    </tr>
@@ -233,7 +233,7 @@ const ManageWatchListTypes = () => {
                                                   }
 
                                                   {isEditing && editingType !== null &&
-                                                       <TextField className={`lightMode borderRadius15 minWidth150`} margin="dense" id="typename" value={editingType.WatchListTypeName} variant="standard" onChange={(event: React.ChangeEvent<HTMLInputElement>) => typeChangeHandler("WatchListTypeName", event.target.value)} />
+                                                       <TextField className={`borderRadius15 minWidth150`} margin="dense" id="typename" value={editingType.WatchListTypeName} variant="standard" onChange={(event: React.ChangeEvent<HTMLInputElement>) => typeChangeHandler("WatchListTypeName", event.target.value)} />
                                                   }
                                              </td>
 

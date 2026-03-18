@@ -12,7 +12,7 @@ import { ManageUserAccountsContextType } from "../contexts/ManageUserAccountsCon
 
 const ManageUserAccounts = () => {
      const {
-          CancelIconComponent, darkMode, defaultRoute, demoMode, EditIconComponent, isAdding, isAdmin, isEditing, SaveIconComponent, setIsAdding, setIsEditing, setIsError, setErrorMessage, setUsers, users, validatePassword
+          CancelIconComponent, defaultRoute, demoMode, EditIconComponent, isAdding, isAdmin, isEditing, SaveIconComponent, setIsAdding, setIsEditing, setIsError, setErrorMessage, setUsers, users, validatePassword
      } = useContext(ManageUserAccountsContext) as ManageUserAccountsContextType;
 
      const [addingUser, setAddingUser] = useState<IUser>({} as IUser);
@@ -227,7 +227,7 @@ const ManageUserAccounts = () => {
                }
 
                {users && users.length > 0 &&
-                    <table style={{ borderWidth: "1px", borderStyle: "solid" }} className={`simpleTable ${!darkMode ? "lightMode" : "darkMode"}`}>
+                    <table style={{ borderWidth: "1px", borderStyle: "solid" }} className={`simpleTable`}>
                          <thead>
                               <tr>
                                    <th>Actions</th>
@@ -265,19 +265,19 @@ const ManageUserAccounts = () => {
                                         </td>
 
                                         <td>
-                                             <TextField className={`lightMode borderRadius15 minWidth150`} margin="dense" id="username" value={addingUser.Username} variant="standard" onChange={(event: React.ChangeEvent<HTMLInputElement>) => userChangeHandler("Username", event.target.value)} />
+                                             <TextField className={`borderRadius15 minWidth150`} margin="dense" id="username" value={addingUser.Username} variant="standard" onChange={(event: React.ChangeEvent<HTMLInputElement>) => userChangeHandler("Username", event.target.value)} />
                                         </td>
 
                                         <td>
-                                             <TextField className={`lightMode borderRadius15 minWidth150`} margin="dense" id="name" value={addingUser.Realname} variant="standard" onChange={(event: React.ChangeEvent<HTMLInputElement>) => userChangeHandler("Realname", event.target.value)} />
+                                             <TextField className={`borderRadius15 minWidth150`} margin="dense" id="name" value={addingUser.Realname} variant="standard" onChange={(event: React.ChangeEvent<HTMLInputElement>) => userChangeHandler("Realname", event.target.value)} />
                                         </td>
 
                                         <td>
-                                             <TextField type="password" className={`lightMode borderRadius15 minWidth150`} margin="dense" id="password" value={addingUser.Password} variant="standard" onChange={(event: React.ChangeEvent<HTMLInputElement>) => userChangeHandler("Password", event.target.value)} />
+                                             <TextField type="password" className={`borderRadius15 minWidth150`} margin="dense" id="password" value={addingUser.Password} variant="standard" onChange={(event: React.ChangeEvent<HTMLInputElement>) => userChangeHandler("Password", event.target.value)} />
                                         </td>
 
                                         <td>
-                                             <TextField type="password" className={`lightMode borderRadius15 minWidth150`} margin="dense" id="password" value={addingUser.ConfirmPassword} variant="standard" onChange={(event: React.ChangeEvent<HTMLInputElement>) => userChangeHandler("ConfirmPassword", event.target.value)} />
+                                             <TextField type="password" className={`borderRadius15 minWidth150`} margin="dense" id="password" value={addingUser.ConfirmPassword} variant="standard" onChange={(event: React.ChangeEvent<HTMLInputElement>) => userChangeHandler("ConfirmPassword", event.target.value)} />
                                         </td>
 
                                         <td>
@@ -330,7 +330,7 @@ const ManageUserAccounts = () => {
                                                   }
 
                                                   {isEditing &&
-                                                       <TextField className={`lightMode borderRadius15 minWidth150`} margin="dense" id="username" value={editingUser.Username} variant="standard" onChange={(event: React.ChangeEvent<HTMLInputElement>) => userChangeHandler("Username", event.target.value)} />
+                                                       <TextField className={`borderRadius15 minWidth150`} margin="dense" id="username" value={editingUser.Username} variant="standard" onChange={(event: React.ChangeEvent<HTMLInputElement>) => userChangeHandler("Username", event.target.value)} />
                                                   }
                                              </td>
 
@@ -340,18 +340,18 @@ const ManageUserAccounts = () => {
                                                   }
 
                                                   {isEditing &&
-                                                       <TextField className={`lightMode borderRadius15 minWidth150`} margin="dense" id="realname" value={editingUser.Realname} variant="standard" onChange={(event: React.ChangeEvent<HTMLInputElement>) => userChangeHandler("Realname", event.target.value)} />
+                                                       <TextField className={`borderRadius15 minWidth150`} margin="dense" id="realname" value={editingUser.Realname} variant="standard" onChange={(event: React.ChangeEvent<HTMLInputElement>) => userChangeHandler("Realname", event.target.value)} />
                                                   }
                                              </td>
 
                                              {isEditing &&
                                                   <>
                                                        <td>
-                                                            <TextField type="password" className={`lightMode borderRadius15 minWidth150`} margin="dense" id="password" value={editingUser.Password} variant="standard" onChange={(event: React.ChangeEvent<HTMLInputElement>) => userChangeHandler("Password", event.target.value)} />
+                                                            <TextField type="password" className={`borderRadius15 minWidth150`} margin="dense" id="password" value={editingUser.Password} variant="standard" onChange={(event: React.ChangeEvent<HTMLInputElement>) => userChangeHandler("Password", event.target.value)} />
                                                        </td>
 
                                                        <td>
-                                                            <TextField type="password" className={`lightMode borderRadius15 minWidth150`} margin="dense" id="password" value={editingUser.ConfirmPassword} variant="standard" onChange={(event: React.ChangeEvent<HTMLInputElement>) => userChangeHandler("ConfirmPassword", event.target.value)} />
+                                                            <TextField type="password" className={`borderRadius15 minWidth150`} margin="dense" id="password" value={editingUser.ConfirmPassword} variant="standard" onChange={(event: React.ChangeEvent<HTMLInputElement>) => userChangeHandler("ConfirmPassword", event.target.value)} />
                                                        </td>
 
                                                        <td>

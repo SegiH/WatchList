@@ -12,7 +12,7 @@ import { BugLogsContextType } from "../contexts/BugLogsContextType";
 
 export default function BugLogs() {
      const {
-          bugLogs, CancelIconComponent, darkMode, defaultRoute, DeleteIconComponent, EditIconComponent, isAdding, isAdmin, isEditing, SaveIconComponent, setBugLogs, setIsError, setErrorMessage, setIsAdding, setIsEditing
+          bugLogs, CancelIconComponent, defaultRoute, DeleteIconComponent, EditIconComponent, isAdding, isAdmin, isEditing, SaveIconComponent, setBugLogs, setIsError, setErrorMessage, setIsAdding, setIsEditing
      } = useContext(BugLogsContext) as BugLogsContextType;
 
      const [addingBugLog, setAddingBugLog] = useState<IBugLog>({} as IBugLog);
@@ -236,7 +236,7 @@ export default function BugLogs() {
 
                                              <span className="leftMargin40">
                                                   Show Active Bug Logs
-                                                  <input className={`${!darkMode ? "lightMode" : "darkMode"}`} type="checkbox" checked={showActiveBugLogs} onChange={(event) => setShowActiveBugLogs(event.target.checked)} />
+                                                  <input type="checkbox" checked={showActiveBugLogs} onChange={(event) => setShowActiveBugLogs(event.target.checked)} />
                                              </span>
                                         </>
                                    }
@@ -244,7 +244,7 @@ export default function BugLogs() {
                          }
 
                          {bugLogsLoadingCheck === APIStatus.Success && bugLogs.length > 0 &&
-                              <table style={{ borderWidth: "1px", borderStyle: "solid" }} className={`simpleTable fullWidth ${!darkMode ? "lightMode" : "darkMode"}`}>
+                              <table style={{ borderWidth: "1px", borderStyle: "solid" }} className={`simpleTable fullWidth`}>
                                    <thead>
                                         <tr>
                                              <th>Actions</th>
@@ -293,11 +293,11 @@ export default function BugLogs() {
                                                   </td>
 
                                                   <td>
-                                                       <TextField type="date" className={`lightMode borderRadius15 minWidth150`} margin="dense" id="addedOn" value={addingBugLog.AddDate} variant="standard" onChange={(event: React.ChangeEvent<HTMLTextAreaElement>) => bugLogChangeHandler("AddDate", event.target.value)} />
+                                                       <TextField type="date" className={`borderRadius15 minWidth150`} margin="dense" id="addedOn" value={addingBugLog.AddDate} variant="standard" onChange={(event: React.ChangeEvent<HTMLTextAreaElement>) => bugLogChangeHandler("AddDate", event.target.value)} />
                                                   </td>
 
                                                   <td>
-                                                       <TextField type="date" className={`lightMode borderRadius15 minWidth150`} margin="dense" id="completedOn" value={addingBugLog.CompletedDate} variant="standard" onChange={(event: React.ChangeEvent<HTMLTextAreaElement>) => bugLogChangeHandler("CompletedDate", event.target.value)} />
+                                                       <TextField type="date" className={`borderRadius15 minWidth150`} margin="dense" id="completedOn" value={addingBugLog.CompletedDate} variant="standard" onChange={(event: React.ChangeEvent<HTMLTextAreaElement>) => bugLogChangeHandler("CompletedDate", event.target.value)} />
                                                   </td>
                                              </tr>
                                         }
@@ -366,7 +366,7 @@ export default function BugLogs() {
                                                                            }
 
                                                                            {isEditing &&
-                                                                                <TextField type="date" className={`lightMode borderRadius15 minWidth150`} margin="dense" id="addedOn" value={typeof editingBugLog.AddDate !== "undefined" ? editingBugLog.AddDate : ""} variant="standard" onChange={(event: React.ChangeEvent<HTMLTextAreaElement>) => bugLogChangeHandler("AddDate", event.target.value)} />
+                                                                                <TextField type="date" className={`borderRadius15 minWidth150`} margin="dense" id="addedOn" value={typeof editingBugLog.AddDate !== "undefined" ? editingBugLog.AddDate : ""} variant="standard" onChange={(event: React.ChangeEvent<HTMLTextAreaElement>) => bugLogChangeHandler("AddDate", event.target.value)} />
                                                                            }
                                                                       </td>
 
@@ -376,7 +376,7 @@ export default function BugLogs() {
                                                                            }
 
                                                                            {isEditing &&
-                                                                                <TextField type="date" className={`lightMode borderRadius15 minWidth150`} margin="dense" id="completedOn" value={typeof editingBugLog.CompletedDate !== "undefined" && editingBugLog.CompletedDate !== null ? editingBugLog.CompletedDate : ""} variant="standard" onChange={(event: React.ChangeEvent<HTMLTextAreaElement>) => bugLogChangeHandler("CompletedDate", event.target.value)} />
+                                                                                <TextField type="date" className={`borderRadius15 minWidth150`} margin="dense" id="completedOn" value={typeof editingBugLog.CompletedDate !== "undefined" && editingBugLog.CompletedDate !== null ? editingBugLog.CompletedDate : ""} variant="standard" onChange={(event: React.ChangeEvent<HTMLTextAreaElement>) => bugLogChangeHandler("CompletedDate", event.target.value)} />
                                                                            }
                                                                       </td>
 

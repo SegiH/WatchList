@@ -120,7 +120,7 @@
      display: table-row;
 }
 
-.SegiTableDataGrid tr:not(.SegiTableExpandedTable)::nth-child(even) td:not(.SegiTableFilterGrid td) {
+.SegiTableDataGrid tr:not(.SegiTableExpandedTable):nth-child(even) td:not(.SegiTableFilterGrid td) {
      background-color: #eee;
      color: black;
 }

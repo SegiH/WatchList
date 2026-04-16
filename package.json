@@ -12,7 +12,7 @@
     ]
   },
   "scripts": {
-    "dev": "node writeBuildDate.js && next dev --experimental-https",
+    "dev": "node writeBuildDate.js && next dev",
     "dev:https": "node writeBuildDate.js && next dev --experimental-https",
     "build": "next build",
     "start": "next start",
@@ -42,14 +42,14 @@
     "jest": "^29.7.0",
     "jest-environment-jsdom": "^30.3.0",
     "json5": "^2.2.3",
-    "next": "^16.1.6",
+    "next": "16.2.3",
     "next-router-mock": "^0.9.13",
     "next-themes": "^0.4.6",
     "node-fetch": "^3.3.2",
     "postcss": "^8.5.8",
     "prop-types-exact": "^1.2.0",
-    "react": "19.2.3",
-    "react-dom": "19.2.3",
+    "react": "19.2.5",
+    "react-dom": "19.2.5",
     "react-select": "^5.10.1",
     "tailwindcss": "^4.2.1",
     "tedious": "^18.2.3",
@@ -58,17 +58,17 @@
   "devDependencies": {
     "@babel/preset-typescript": "^7.26.0",
     "@types/node": "^20",
-    "@types/react": "19.2.7",
+    "@types/react": "19.2.14",
     "@types/react-dom": "19.2.3",
     "@types/request": "^2.48.12",
     "baseline-browser-mapping": "^2.9.3",
     "concurrently": "^8.2.2",
-    "eslint-config-next": "16.1.1",
+    "eslint-config-next": "16.2.3",
     "typescript": "^5"
   },
   "packageManager": "pnpm@8.15.4",
   "overrides": {
-    "@types/react": "19.2.7",
+    "@types/react": "19.2.14",
     "@types/react-dom": "19.2.3"
   }
 }

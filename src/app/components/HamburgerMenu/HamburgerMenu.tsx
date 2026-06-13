@@ -25,9 +25,9 @@ const HamburgerMenu = () => {
      const menuRef = useRef<HTMLDivElement | null>(null);
      const iconRef = useRef<HTMLDivElement | null>(null);
      const router = useRouter();
-     const closeDrawerTimeout = 5;
-     const { systemTheme, theme, setTheme } = useTheme();
-     const currentTheme = theme === 'system' ? systemTheme : theme;
+     const closeDrawerTimeout = 15;
+     const { setTheme } = useTheme();
+     //const currentTheme = theme === 'system' ? systemTheme : theme;
 
      const addRemoveVisibleSectionChange = async (newList: []) => {
           setVisibleSections(newList);
@@ -235,7 +235,7 @@ const HamburgerMenu = () => {
                                                        )
                                                        .sort().map((routeName, index) => {
                                                             return (
-                                                                 <option key={index} value={routeName}>
+                                                                 <option key={"routeFilter" + index} value={routeName}>
                                                                       {routes[routeName].DisplayName}
                                                                  </option>
                                                             );
@@ -267,7 +267,7 @@ const HamburgerMenu = () => {
 
                                                        {watchListSources?.map((watchListSource: IWatchListSource, index: number) => {
                                                             return (
-                                                                 <option key={index} value={watchListSource.WatchListSourceID}>
+                                                                 <option key={"SourceFilter" + index} value={watchListSource.WatchListSourceID}>
                                                                       {watchListSource.WatchListSourceName}
                                                                  </option>
                                                             );
@@ -289,7 +289,7 @@ const HamburgerMenu = () => {
 
                                                        {watchListTypes?.map((watchListType: IWatchListType, index: number) => {
                                                             return (
-                                                                 <option key={index} value={watchListType.WatchListTypeID}>
+                                                                 <option key={"TypeFilter" + index} value={watchListType.WatchListTypeID}>
                                                                       {watchListType.WatchListTypeName}
                                                                  </option>
                                                             );
@@ -308,7 +308,7 @@ const HamburgerMenu = () => {
                                                                  return sortColumn !== "EndDate" || (sortColumn === "EndDate" && !stillWatching);
                                                             }).map((sortColumn: string, index: number) => {
                                                                  return (
-                                                                      <option key={index} value={sortColumn}>
+                                                                      <option key={"WatchListSortColumns" + index} value={sortColumn}>
                                                                            {watchListSortColumns[sortColumn]}
                                                                       </option>
                                                                  );
@@ -318,7 +318,7 @@ const HamburgerMenu = () => {
                                                        {activeRoute === "Items" &&
                                                             Object.keys(watchListItemsSortColumns).map((sortColumn: string, index: number) => {
                                                                  return (
-                                                                      <option key={index} value={sortColumn}>
+                                                                      <option key={"ItemsSortColumns" + index} value={sortColumn}>
                                                                            {watchListItemsSortColumns[sortColumn]}
                                                                       </option>
                                                                  );
@@ -339,55 +339,59 @@ const HamburgerMenu = () => {
                                    </>
                               }
 
-                              <span>Visible Sections</span>
+                              {visibleSections && typeof visibleSections !== "undefined" &&
+                                   <>
+                                        <span>Visible Sections</span>
 
-                              <span title="Show WatchList Items">
-                                   <Select
-                                        isMulti
-                                        value={visibleSections as any}
-                                        defaultValue={visibleSections as any}
-                                        onChange={addRemoveVisibleSectionChange}
-                                        options={visibleSectionChoices}
-                                        className="custom-select"
-                                        styles={{
-                                             control: (provided) => ({
-                                                  ...provided,
-                                                  backgroundColor: 'white',  // Set background of the input field to white
-                                                  borderColor: 'black',      // Set border color of the input field to black
-                                                  color: 'black',            // Set text color of the input field to black
-                                             }),
-                                             singleValue: (provided) => ({
-                                                  ...provided,
-                                                  color: 'black',            // Set color of the selected value to black
-                                             }),
-                                             multiValue: (provided) => ({
-                                                  ...provided,
-                                                  backgroundColor: 'white',  // Set background color of the multi-value to white
-                                                  color: 'black',            // Set text color of the multi-value to black
-                                             }),
-                                             multiValueLabel: (provided) => ({
-                                                  ...provided,
-                                                  color: 'black',            // Set text color of the multi-value label to black
-                                             }),
-                                             menu: (provided) => ({
-                                                  ...provided,
-                                                  backgroundColor: 'white',  // Set background color of the dropdown to white
-                                             }),
-                                             option: (provided, state) => ({
-                                                  ...provided,
-                                                  backgroundColor: 'white',  // Set option background color on hover and select
-                                                  color: 'black',            // Set text color of options to black
-                                                  ':hover': {
-                                                       backgroundColor: 'lightgray',  // Set hover background to light gray
-                                                  },
-                                             }),
-                                             placeholder: (provided) => ({
-                                                  ...provided,
-                                                  color: 'black',
-                                             }),
-                                        }}
-                                   />
-                              </span>
+                                        <span title="Show WatchList Items">
+                                             <Select
+                                                  isMulti
+                                                  value={visibleSections as any}
+                                                  defaultValue={visibleSections as any}
+                                                  onChange={addRemoveVisibleSectionChange}
+                                                  options={visibleSectionChoices}
+                                                  className="custom-select"
+                                                  styles={{
+                                                       control: (provided) => ({
+                                                            ...provided,
+                                                            backgroundColor: 'white',  // Set background of the input field to white
+                                                            borderColor: 'black',      // Set border color of the input field to black
+                                                            color: 'black',            // Set text color of the input field to black
+                                                       }),
+                                                       singleValue: (provided) => ({
+                                                            ...provided,
+                                                            color: 'black',            // Set color of the selected value to black
+                                                       }),
+                                                       multiValue: (provided) => ({
+                                                            ...provided,
+                                                            backgroundColor: 'white',  // Set background color of the multi-value to white
+                                                            color: 'black',            // Set text color of the multi-value to black
+                                                       }),
+                                                       multiValueLabel: (provided) => ({
+                                                            ...provided,
+                                                            color: 'black',            // Set text color of the multi-value label to black
+                                                       }),
+                                                       menu: (provided) => ({
+                                                            ...provided,
+                                                            backgroundColor: 'white',  // Set background color of the dropdown to white
+                                                       }),
+                                                       option: (provided, state) => ({
+                                                            ...provided,
+                                                            backgroundColor: 'white',  // Set option background color on hover and select
+                                                            color: 'black',            // Set text color of options to black
+                                                            ':hover': {
+                                                                 backgroundColor: 'lightgray',  // Set hover background to light gray
+                                                            },
+                                                       }),
+                                                       placeholder: (provided) => ({
+                                                            ...provided,
+                                                            color: 'black',
+                                                       }),
+                                                  }}
+                                             />
+                                        </span>
+                                   </>
+                              }
 
                               <div className="menu-row">
                                    <span className={`title`}>Dark Mode</span>

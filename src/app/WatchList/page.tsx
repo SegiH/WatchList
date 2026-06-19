@@ -45,7 +45,7 @@ export default function WatchList() {
                <div ref={topRef} ></div>
 
                {!isLoading && searchTerm !== "" && imdbSearchEnabled &&
-                    <h1 className="topMargin100">{filteredWatchList.length === 0 ? "No Results" : ""}<Button variant="contained" color="secondary" style={{ marginLeft: "20px" }} onClick={() => setSearchModalVisible(true)}>IMDB</Button></h1>
+                    <h1 className="topMargin100"><Button variant="contained" color="secondary" style={{ marginLeft: "10px" }} onClick={() => setSearchModalVisible(true)}>IMDB</Button></h1>
                }
 
                {!isLoading && filteredWatchList && filteredWatchList.length > 0 && !imdbCardvisible &&

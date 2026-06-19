@@ -25,7 +25,7 @@ const HamburgerMenu = () => {
      const menuRef = useRef<HTMLDivElement | null>(null);
      const iconRef = useRef<HTMLDivElement | null>(null);
      const router = useRouter();
-     const closeDrawerTimeout = 15;
+     const closeDrawerTimeout = 10;
      const { setTheme } = useTheme();
      //const currentTheme = theme === 'system' ? systemTheme : theme;
 
@@ -93,6 +93,8 @@ const HamburgerMenu = () => {
           saveOptions(options);
 
           setDrawerCloseCountdown(0);
+
+          setIsOpen(false);
      }
 
      const settingChangeHandler = async (name: string, value: string | number | boolean) => {
@@ -129,7 +131,14 @@ const HamburgerMenu = () => {
 
           setDrawerCloseCountdown(0);
 
-          setIsOpen(false);
+          if (name !== "SortColumn" && name !== "SortDirection") {
+               setIsOpen(false);
+          } else {
+               // You get 5 seconds to close it
+               setTimeout(() => {
+                    setIsOpen(false);
+               }, 5000);
+          }
      }
 
      const toggleMenu = () => {

@@ -128,6 +128,8 @@ const HamburgerMenu = () => {
           setIsLoading(false);
 
           setDrawerCloseCountdown(0);
+
+          setIsOpen(false);
      }
 
      const toggleMenu = () => {

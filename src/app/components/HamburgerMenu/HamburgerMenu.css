@@ -1,3 +1,9 @@
+@media only screen and (max-width:600px) {
+     .sidebar-menu {
+      width: 100% !important;
+     }
+}
+
 .hamburger-icon {
   font-size: 30px;
   cursor: pointer;
@@ -13,7 +19,7 @@
   position: fixed;
   top: 0;
   left: -100%;
-  width: 325px;
+  width: fit-content;
   height: 100%;
   background-color: #333 !important;
   color: white !important;
@@ -23,9 +29,13 @@
   overflow-y: auto;
 }
 
+.sidebar-menu:not(.open) {
+  display: none;
+}
+
 .sidebar-menu.open {
+  display: inline-block;
   left: 0;
-  /* Slide in the menu to the left side of the screen */
 }
 
 .menu-content {

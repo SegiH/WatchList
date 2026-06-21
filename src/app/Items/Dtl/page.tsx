@@ -482,7 +482,7 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
                                                   }
 
                                                   {(isAdding || isEditing) &&
-                                                       <span className={`clickable cancelIcon`} onClick={isAdding ? closeDetail : cancelClickHandler}>
+                                                       <span className={`clickable cancelItemsIcon`} onClick={isAdding ? closeDetail : cancelClickHandler}>
                                                             {CancelIconComponent}
                                                        </span>
                                                   }

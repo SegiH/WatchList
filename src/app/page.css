@@ -85,7 +85,9 @@ table.simpleTable:last-child {
 
 .arrowIcon { @apply float-left ml-[10px] relative top-[-12px] z-[999]; }
 
-.cancelIcon { @apply relative float-right; }
+.cancelItemsIcon { @apply relative scale-[1.5] right-[-375px] top-[-6] }
+
+.cancelWatchListIcon { @apply relative right-[-175px] scale-[1.5] top-[-12] }
 
 .card { @apply flex justify-start items-center h-[40px] mb-[10px]; }
 

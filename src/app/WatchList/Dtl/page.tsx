@@ -37,6 +37,7 @@ export default function WatchListDtl() {
      const [addModified, setAddModified] = useState(false);
      const [addWatchListDtl, setAddWatchListDtl] = useState<IWatchList | null>(null);
      const [autoComplete, setAutoComplete] = useState<IAutoCompleteOption | null>(null);
+     const [defaultProps, setDefaultProps] = useState(null);
      const [formattedNames, setFormattedNames] = useState<IAutoCompleteOption[]>([]);
      const [formattedNamesWithId, setFormattedNamesWithId] = useState<AutoCompleteWatchListItem[]>([]);
      const [formattedNamesLoadingComplete, setFormattedNamesLoadingComplete] = useState(APIStatus.Idle);
@@ -56,11 +57,6 @@ export default function WatchListDtl() {
      const router = useRouter();
 
      let addingStarted = false;
-
-     const defaultProps = {
-          options: formattedNames,
-          getOptionLabel: (option: IAutoCompleteOption) => option?.name.toString(),
-     };
 
      // When you go to add a WL, if you forgot to add the WLI, the Add Link will show the search so you can add it immediately. This only applies to adding a WL, not editing one.
      const addNewChangeHandler = () => {
@@ -288,6 +284,11 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
                }
 
                setFormattedNames(uniqueNames);
+
+               setDefaultProps({
+                    options: uniqueNames,
+                    getOptionLabel: (option: IAutoCompleteOption) => option?.name.toString(),
+               });
 
                const namesWithIdItems = getAllWatchListItemsResult[1].map((watchListItem: IWatchListItem) => {
                     let itemName = watchListItem.WatchListItemName
@@ -724,8 +725,8 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
                                                        </>
                                                   }
 
-                                                  {(isEditing || isAdding) &&
-                                                       <div className="narrow card">
+                                                  {(isEditing || isAdding) && formattedNamesLoadingComplete && formattedNames.length > 0 && defaultProps !== null &&
+                                                       <div className="narrow card" style={{ backgroundColor: "white" }}>
                                                             <Autocomplete id="wl_autocomplete" size="small" sx={{ width: 350, height: 40 }} {...defaultProps} options={formattedNames} value={autoComplete} onChange={(event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => autoCompleteChangeHandler(event)} renderInput={(params: TextFieldProps) => <TextField {...params} label="Search" />} />
                                                        </div>
                                                   }
@@ -737,7 +738,7 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
                                                   }
 
                                                   {(isAdding || isEditing) &&
-                                                       <span className={`clickable cancelIcon`} onClick={isAdding ? closeDetail : cancelClickHandler}>
+                                                       <span className={`clickable cancelWatchListIcon`} onClick={isAdding ? closeDetail : cancelClickHandler}>
                                                             {CancelIconComponent}
                                                        </span>
                                                   }

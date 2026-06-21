@@ -67,6 +67,7 @@ const HamburgerMenu = () => {
      const filterByMetadataClickHandler = () => {
           setMetadataFiltervisible(true);
           setDrawerCloseCountdown(0);
+          setIsOpen(false);
      }
 
      const optionChanged = (columnName: string, columnValue: boolean | string) => {

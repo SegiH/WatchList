@@ -686,7 +686,7 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
 
      return (
           <>
-               {!isLoading && !isClosing && watchListDtlLoadingCheck === APIStatus.Success &&
+               {!isLoading && !isClosing && watchListDtlLoadingCheck === APIStatus.Success && formattedNamesLoadingComplete && formattedNames.length > 0 && defaultProps !== null &&
                     <div className="modal">
                          <div className={`modal-content ${watchListDtlID != null ? "fade-in" : ""}`}>
                               {!recommendationsVisible &&
@@ -725,7 +725,7 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
                                                        </>
                                                   }
 
-                                                  {(isEditing || isAdding) && formattedNamesLoadingComplete && formattedNames.length > 0 && defaultProps !== null &&
+                                                  {(isEditing || isAdding) &&
                                                        <div className="narrow card" style={{ backgroundColor: "white" }}>
                                                             <Autocomplete id="wl_autocomplete" size="small" sx={{ width: 350, height: 40 }} {...defaultProps} options={formattedNames} value={autoComplete} onChange={(event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => autoCompleteChangeHandler(event)} renderInput={(params: TextFieldProps) => <TextField {...params} label="Search" />} />
                                                        </div>

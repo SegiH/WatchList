@@ -199,7 +199,6 @@ const HamburgerMenu = () => {
           if (drawerCloseCountdown < 0) return;
 
           if (drawerCloseCountdown >= closeDrawerTimeout) {
-               console.log(new Date().toTimeString() + "closing")
                setIsOpen(false);
                return;
           }

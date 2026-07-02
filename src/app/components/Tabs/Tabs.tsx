@@ -35,9 +35,9 @@ const Tabs = () => {
 
      return (
           <>
-               {isClient && loggedInCheck === APIStatus.Success && !isError && !hideTabs && !isLoading && !isAdding && !isEditing && activeRoute !== "" && (
+               {isClient && loggedInCheck === APIStatus.Success && !isError && !hideTabs && !isLoading && !isAdding && !isEditing && activeRoute !== "" && typeof routes !== "undefined" && routes !== null && (
                     <div className="tabBar">
-                         {typeof routes !== "undefined" && routes !== null && Object.keys(routes).length > 0 && Object.keys(routes)
+                         {Object.keys(routes).length > 0 && Object.keys(routes)
                               .filter((routeName) => {
                                    return routes[routeName].RequiresAuth === true
                                         && routeName !== "Setup"
@@ -46,7 +46,7 @@ const Tabs = () => {
                                         && (routeName !== "Admin" || (routeName === "Admin" && ((isAdmin() === true && typeof visibleSections !== "undefined" && visibleSections !== null && visibleSections.filter((section) => { return section.label === "Admin" }).length > 0)))) // You cannot dynamically set Enabled on this route so don't call isEnabled()
                                         && (routeName !== "Items" || (routeName === "Items" && isEnabled("/Items")))
                                         && (routeName !== "BugLogs" || (routeName === "BugLogs" && !demoMode && isAdmin() === true && typeof visibleSections !== "undefined" && visibleSections !== null && visibleSections.filter(section => { return section.label === "BugLogs" }).length === 1))  // You cannot dynamically set Enabled on this route so don't call isEnabled()
-                                        && (routeName !== "Stats" || (routeName === "Stats" && isEnabled("/Stats"))
+                                        && (routeName !== "Stats" || (routeName === "Stats" && isEnabled("/Stats") && typeof visibleSections !== "undefined" && visibleSections !== null && visibleSections.filter((section) => { return section.label === "Stats" }).length > 0)
                                         )
                               }
                               )

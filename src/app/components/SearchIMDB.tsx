@@ -9,7 +9,7 @@ import { SearchIMDBContextType } from "../contexts/SearchIMDBContextType";
 
 export default function SearchIMDB() {
      const {
-          AddIconComponent, autoAdd, BrokenImageIconComponent, searchCount, SearchIconComponent, searchTerm, setIsAdding, setSearchCount, setSearchModalVisible, setSearchTerm
+          AddIconComponent, autoAdd, BrokenImageIconComponent, searchCount, SearchIconComponent, searchModalVisible, searchTerm, setIsAdding, setSearchCount, setSearchModalVisible, setSearchTerm
      } = useContext(SearchIMDBContext) as SearchIMDBContextType
 
      const [imdbSearchResults, setIMDBSearchResults] = useState<ISearchImdb[]>([]);
@@ -27,7 +27,7 @@ export default function SearchIMDB() {
      const router = useRouter();
 
      const addIMDBSearchResultClickHandler = async (index: number) => {
-          let itemType = 0; ``
+          let itemType = 0;
 
           if (imdbSearchResults[index].Type === "movie") {
                itemType = 1;
@@ -105,11 +105,21 @@ export default function SearchIMDB() {
 
                const searchIMDBResult = await searchIMDBResponse.json();
 
-               if (searchIMDBResult[0] === "ERROR") {
+               if (searchIMDBResult[0] === "ERROR" || searchIMDBResult[0] === "ERROR-ALREADY-EXISTS") {
                     alert(`The error ${searchIMDBResult[1]} occurred while searching IMDB`);
+                    setIMDBSearchResults([]);
+                    setSearchLoadingCheck(APIStatus.Idle);
+                    setSearchModalVisible(false);
                } else {
+                    if (Object.keys(searchIMDBResult[1]).length === 0) {
+                         alert("No results were found");
+                         setSearchModalVisible(false);
+                         return;
+                    }
+
                     setIMDBSearchResults(searchIMDBResult[1]);
                     setSearchLoadingCheck(APIStatus.Success);
+                    setSearchModalVisible(true);
                }
           } catch (e: any) {
                alert(e.message);
@@ -126,124 +136,129 @@ export default function SearchIMDB() {
      useEffect(() => {
           if (IMDBSearchTerm !== "") {
                setSearchLoadingCheck(APIStatus.Loading);
+
                searchIMDB();
           }
      }, [IMDBSearchTerm]);
 
      return (
-          <div className={`modal zIndex`}>
-               <div className={`modal-content ${searchLoadingCheck === APIStatus.Success ? "" : "customModalHeight"}`}>
-                    <div className="container searchHeader sticky">
-                         {searchLoadingCheck === APIStatus.Success &&
-                              <div style={{ marginBottom: "20px" }}>
-                                   <div className='customWidth flex'>
-                                        <div className="leftMargin searchLabel textLabel">Count</div>
+          <>
+               {(IMDBSearchTerm == "" || (IMDBSearchTerm != "" && searchLoadingCheck === APIStatus.Success)) && searchModalVisible &&
+                    <div className={`modal zIndex`}>
+                         <div className={`modal-content ${searchLoadingCheck === APIStatus.Success ? "" : "customModalHeight"}`}>
+                              <div className="container searchHeader sticky">
+                                   {searchLoadingCheck === APIStatus.Success &&
+                                        <div style={{ marginBottom: "20px" }}>
+                                             <div className='customWidth flex'>
+                                                  <div className="leftMargin searchLabel textLabel">Count</div>
 
-                                        <select className="customBorderRadius leftMargin" value={searchCount} onChange={(event: React.ChangeEvent<HTMLSelectElement>) => setSearchCount(parseInt(event.target.value, 10))}>
-                                             {Object.keys(searchCountOptions).map((searchCount: string, index: number) => {
-                                                  return (
-                                                       <option key={index} value={searchCountOptions[searchCount]}>
-                                                            {searchCount}
-                                                       </option>
-                                                  );
-                                             })}
-                                        </select>
+                                                  <select className="customBorderRadius leftMargin" value={searchCount} onChange={(event: React.ChangeEvent<HTMLSelectElement>) => setSearchCount(parseInt(event.target.value, 10))}>
+                                                       {Object.keys(searchCountOptions).map((searchCount: string, index: number) => {
+                                                            return (
+                                                                 <option key={index} value={searchCountOptions[searchCount]}>
+                                                                      {searchCount}
+                                                                 </option>
+                                                            );
+                                                       })}
+                                                  </select>
 
-                                        <div className="card rightAligned customCloseButton">
-                                             <span className="clickable closeButton" onClick={closeSearch}>
-                                                  X
-                                             </span>
+                                                  <div className="card rightAligned customCloseButton">
+                                                       <span className="clickable closeButton" onClick={closeSearch}>
+                                                            X
+                                                       </span>
+                                                  </div>
+                                             </div>
                                         </div>
+                                   }
+
+                                   <div className="cards searchHeader">
+                                        {searchLoadingCheck === APIStatus.Idle && IMDBSearchTerm === "" &&
+                                             <>
+                                                  <div className={`card leftMargin searchLabel textLabel`}>Search</div>
+                                                  <span className={`card leftMargin searchMarginTop unsetcardwidth$`}>
+                                                       <span className={`clickable searchIcon`} onClick={searchIMDB}>
+                                                            {SearchIconComponent}
+
+                                                            {IMDBSearchTerm === "" &&
+                                                                 <i className="fa fa-search"></i>
+                                                            }
+                                                       </span>
+
+                                                       {/* Credit to https://codepen.io/menelaosly/pen/rZddyb */}
+                                                       <span className={`searchContainer`}>
+                                                            <input
+                                                                 type="search"
+                                                                 placeholder="e.g. Anchorman or The Office"
+                                                                 value={IMDBSearchTerm}
+                                                                 autoFocus
+                                                                 className={`searchIMDBInput`}
+                                                                 onChange={(event) => setIMDBSearchTerm(event.target.value)}
+                                                                 onKeyUp={handleKeypress}
+                                                            />
+                                                       </span>
+                                                  </span>
+
+                                                  <div className="card rightAligned customCloseButton">
+                                                       <span className="clickable closeButton" onClick={closeSearch}>
+                                                            X
+                                                       </span>
+                                                  </div>
+                                             </>
+                                        }
                                    </div>
                               </div>
-                         }
 
-                         <div className="cards searchHeader">
-                              {searchLoadingCheck === APIStatus.Idle && searchTerm ===  "" &&
-                                   <>
-                                        <div className={`card leftMargin searchLabel textLabel`}>Search</div>
-                                        <span className={`card leftMargin searchMarginTop unsetcardwidth$`}>
-                                             <span className={`clickable searchIcon`} onClick={searchIMDB}>
-                                                  {SearchIconComponent}
+                              {searchLoadingCheck === APIStatus.Success &&
+                                   <table className="datagrid">
+                                        <tbody className="data watchList">
+                                             {typeof imdbSearchResults !== "undefined" && imdbSearchResults !== null && imdbSearchResults.length > 0 &&
+                                                  imdbSearchResults.map((currentResult: ISearchImdb, index: number) => {
+                                                       return (
+                                                            <React.Fragment key={index}>
+                                                                 {typeof currentResult.Poster !== "undefined" && currentResult.Poster !== null && currentResult.Poster !== "" && currentResult.Poster !== "N/A" &&
+                                                                      <tr>
+                                                                           <td className="row">
+                                                                                <span className="searchResult">
+                                                                                     <span className="addSearchResultIcon" onClick={() => addIMDBSearchResultClickHandler(index)}>{AddIconComponent}</span>
 
-                                                  {IMDBSearchTerm === "" &&
-                                                       <i className="fa fa-search"></i>
-                                                  }
-                                             </span>
+                                                                                     <Image width="100" height="125" className="searchResultPoster" src={currentResult.Poster} alt={currentResult.Title} />
 
-                                             {/* Credit to https://codepen.io/menelaosly/pen/rZddyb */}
-                                             <span className={`searchContainer`}>
-                                                  <input
-                                                       type="search"
-                                                       placeholder="e.g. Anchorman or The Office"
-                                                       value={IMDBSearchTerm}
-                                                       autoFocus
-                                                       className={`searchInput`}
-                                                       onChange={(event) => setIMDBSearchTerm(event.target.value)}
-                                                       onKeyUp={handleKeypress}
-                                                  />
-                                             </span>
-                                        </span>
-
-                                        <div className="card rightAligned customCloseButton">
-                                             <span className="clickable closeButton" onClick={closeSearch}>
-                                                  X
-                                             </span>
-                                        </div>
-                                   </>
-                              }
-                         </div>
-                    </div>
-
-                    {searchLoadingCheck === APIStatus.Success &&
-                         <table className="datagrid">
-                              <tbody className="data watchList">
-                                   {imdbSearchResults && imdbSearchResults.length > 0 &&
-                                        imdbSearchResults.map((currentResult: ISearchImdb, index: number) => {
-                                             return (
-                                                  <React.Fragment key={index}>
-                                                       {typeof currentResult.Poster !== "undefined" && currentResult.Poster !== null && currentResult.Poster !== "" && currentResult.Poster !== "N/A" &&
-                                                            <tr>
-                                                                 <td className="row">
-                                                                      <span className="searchResult">
-                                                                           <span className="addSearchResultIcon" onClick={() => addIMDBSearchResultClickHandler(index)}>{AddIconComponent}</span>
-
-                                                                           <Image width="100" height="125" className="searchResultPoster" src={currentResult.Poster} alt={currentResult.Title} />
-
-                                                                           <span className="textLabel">
-                                                                                {currentResult.Title} ({currentResult.Year})
-                                                                           </span>
-
-                                                                           {currentResult.Poster === "N/A" && (
-                                                                                <>
                                                                                      <span className="textLabel">
                                                                                           {currentResult.Title} ({currentResult.Year})
                                                                                      </span>
 
-                                                                                     <span className="searchResultPoster">{BrokenImageIconComponent}</span>
-                                                                                </>
-                                                                           )}
-                                                                      </span>
-                                                                 </td>
-                                                            </tr>
-                                                       }
-                                                  </React.Fragment>
-                                             );
-                                        })
-                                   }
-                              </tbody>
-                         </table>
-                    }
+                                                                                     {currentResult.Poster === "N/A" && (
+                                                                                          <>
+                                                                                               <span className="textLabel">
+                                                                                                    {currentResult.Title} ({currentResult.Year})
+                                                                                               </span>
 
-                    {searchLoadingCheck === APIStatus.Loading &&
-                         <div className="bouncing-loader">
-                              <span className="bouncing-loader-text">Loading</span>
-                              <div className="bubble"></div>
-                              <div className="bubble"></div>
-                              <div className="bubble"></div>
+                                                                                               <span className="searchResultPoster">{BrokenImageIconComponent}</span>
+                                                                                          </>
+                                                                                     )}
+                                                                                </span>
+                                                                           </td>
+                                                                      </tr>
+                                                                 }
+                                                            </React.Fragment>
+                                                       );
+                                                  })
+                                             }
+                                        </tbody>
+                                   </table>
+                              }
+
+                              {searchLoadingCheck === APIStatus.Loading &&
+                                   <div className="bouncing-loader">
+                                        <span className="bouncing-loader-text">Loading</span>
+                                        <div className="bubble"></div>
+                                        <div className="bubble"></div>
+                                        <div className="bubble"></div>
+                                   </div>
+                              }
                          </div>
-                    }
-               </div>
-          </div >
+                    </div >
+               }
+          </>
      );
 }

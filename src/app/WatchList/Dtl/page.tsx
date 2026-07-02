@@ -58,27 +58,6 @@ export default function WatchListDtl() {
 
      let addingStarted = false;
 
-     // When you go to add a WL, if you forgot to add the WLI, the Add Link will show the search so you can add it immediately. This only applies to adding a WL, not editing one.
-     const addNewChangeHandler = () => {
-          if (addModified && (addWatchListDtl?.WatchListItemID !== -1 || addWatchListDtl.StartDate !== getLocaleDate() || addWatchListDtl.EndDate !== "" || addWatchListDtl.WatchListSourceID !== -1 || addWatchListDtl.Season !== 0 || addWatchListDtl.Rating !== 0 || addWatchListDtl.Notes !== "")) {
-               const confirmLeave = confirm("You have started to add a record. Are you sure you want to leave ?");
-
-               if (!confirmLeave) {
-                    return;
-               }
-          } else if (editModified) {
-               const confirmLeave = confirm("You have edited this record. Save it now ?");
-
-               if (confirmLeave) {
-                    updateWatchList(true);
-               }
-          }
-
-          closeDetail();
-
-          showSearch();
-     };
-
      const addWatchListDetailChangeHandler = (fieldName: string, fieldValue: string | number | boolean) => {
           const newAddWatchListDtl = { ...addWatchListDtl } as IWatchList;
 
@@ -602,7 +581,7 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
 
      const IMDB_JSON = watchListDtl?.IMDB_JSON !== null && typeof watchListDtl?.IMDB_JSON !== "undefined" && watchListDtl?.IMDB_JSON !== "" ? JSON.parse(watchListDtl?.IMDB_JSON) : null;
 
-     const imdbImage = typeof watchListDtl?.IMDB_Poster !== "undefined" && watchListDtl?.IMDB_Poster !== null && watchListDtl?.IMDB_Poster_Error !== true && watchListDtl?.IMDB_Poster !== "" && watchListDtl?.IMDB_Poster.length > 0
+     const imdbImage = typeof watchListDtl?.IMDB_Poster !== "undefined" && watchListDtl?.IMDB_Poster !== null && watchListDtl?.IMDB_Poster !== "N/A" && watchListDtl?.IMDB_Poster_Error !== true && watchListDtl?.IMDB_Poster !== "" && watchListDtl?.IMDB_Poster.length > 0
           ?
           <Image className="poster-detail" width="175" height="260" alt="Image Not Available" src={watchListDtl?.IMDB_Poster} onError={() => showDefaultSrc()} />
           :
@@ -757,7 +736,7 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
                                                        </>
                                                   }
 
-                                                  {isAdding && addWatchListDtl && watchListItems?.filter((currentWatchListItem: IWatchListItem) => String(currentWatchListItem?.WatchListItemID) === String(addWatchListDtl?.WatchListItemID)).length === 1 && !isClosing &&
+                                                  {isAdding && addWatchListDtl && watchListItems?.filter((currentWatchListItem: IWatchListItem) => String(currentWatchListItem?.WatchListItemID) === String(addWatchListDtl?.WatchListItemID)).length === 1 && !isClosing && watchListItems?.filter((currentWatchListItem: IWatchListItem) => String(currentWatchListItem?.WatchListItemID) === String(addWatchListDtl?.WatchListItemID))[0].IMDB_Poster !== "N/A" &&
                                                        <span className="column"><Image className="poster-detail" width="175" height="280" alt="Image Not Available" src={watchListItems?.filter((currentWatchListItem: IWatchListItem) => String(currentWatchListItem?.WatchListItemID) === String(addWatchListDtl?.WatchListItemID))[0].IMDB_Poster ?? ""} /></span>
                                                   }
                                              </div>

@@ -5,7 +5,7 @@ import { useContext } from "react";
 
 import { APIStatus, TabsContext } from "../../context";
 
-import "./Tabs.css";
+import "../../page.css";
 import { TabsContextType } from '../../contexts/TabsContextType';
 
 const Tabs = () => {
@@ -36,24 +36,24 @@ const Tabs = () => {
      return (
           <>
                {isClient && loggedInCheck === APIStatus.Success && !isError && !hideTabs && !isLoading && !isAdding && !isEditing && activeRoute !== "" && (
-                    <div className={`tabBar`}>
+                    <div className="tabBar">
                          {typeof routes !== "undefined" && routes !== null && Object.keys(routes).length > 0 && Object.keys(routes)
                               .filter((routeName) => {
                                    return routes[routeName].RequiresAuth === true
                                         && routeName !== "Setup"
                                         && routeName !== "Search"
-                                        && (routeName !== "Data" || (routeName === "Data" && isAdmin() === true && visibleSections.filter((section) => { return section.label === "Data" }).length > 0))
-                                        && (routeName !== "Admin" || (routeName === "Admin" && ((isAdmin() === true && visibleSections.filter((section) => { return section.label === "Admin" }).length > 0)))) // You cannot dynamically set Enabled on this route so don't call isEnabled()
+                                        && (routeName !== "Data" || (routeName === "Data" && isAdmin() === true && typeof visibleSections !== "undefined" && visibleSections !== null && visibleSections.filter((section) => { return section.label === "Data" }).length > 0))
+                                        && (routeName !== "Admin" || (routeName === "Admin" && ((isAdmin() === true && typeof visibleSections !== "undefined" && visibleSections !== null && visibleSections.filter((section) => { return section.label === "Admin" }).length > 0)))) // You cannot dynamically set Enabled on this route so don't call isEnabled()
                                         && (routeName !== "Items" || (routeName === "Items" && isEnabled("/Items")))
-                                        && (routeName !== "BugLogs" || (routeName === "BugLogs" && !demoMode && isAdmin() === true && visibleSections.filter(section => { return section.label === "BugLogs" }).length === 1))  // You cannot dynamically set Enabled on this route so don't call isEnabled()
+                                        && (routeName !== "BugLogs" || (routeName === "BugLogs" && !demoMode && isAdmin() === true && typeof visibleSections !== "undefined" && visibleSections !== null && visibleSections.filter(section => { return section.label === "BugLogs" }).length === 1))  // You cannot dynamically set Enabled on this route so don't call isEnabled()
                                         && (routeName !== "Stats" || (routeName === "Stats" && isEnabled("/Stats"))
                                         )
                               }
                               )
                               .map((routeName, index) => {
                                    return (
-                                        <span key={index} className={`tab ${String(activeRoute) === String(routes[routeName].Name) ? "active" : ""}`}>
-                                             <span className={`tabitem`}>
+                                        <span key={index} className={`tab ${String(activeRoute) === String(routes[routeName].Name) ? "tabActive" : ""}`}>
+                                             <span className={`tabItem`}>
                                                   <span className={`clickable tabIcon`} onClick={() => tabClickHandler(routes[routeName].Name)}>
                                                        {routes[routeName].Icon}
                                                   </span>

@@ -5,6 +5,7 @@ export interface SearchIMDBContextType {
      darkMode: boolean;
      searchCount: number;
      SearchIconComponent: React.ReactNode;
+     searchModalVisible: boolean;
      searchTerm: string;
      setIsAdding: (value: boolean) => void;
      setSearchCount: (value: number) => void;

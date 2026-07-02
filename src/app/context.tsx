@@ -182,6 +182,65 @@ const DataProvider = ({
 
      const router = useRouter();
 
+     const routeList = {
+          WatchList: {
+               Name: "WatchList",
+               DisplayName: "WatchList",
+               Path: "/WatchList",
+               Icon: WatchListIconComponent,
+               RequiresAuth: true,
+               Enabled: true
+          },
+          Items: {
+               Name: "Items",
+               DisplayName: "Items",
+               Path: "/Items",
+               Icon: WatchListItemsIconComponent,
+               RequiresAuth: true,
+               Enabled: true
+          },
+          Stats: {
+               Name: "Stats",
+               DisplayName: "Stats",
+               Path: "/Stats",
+               Icon: StatsIconComponent,
+               RequiresAuth: true,
+               Enabled: true
+          },
+          Login: {
+               Name: "Login",
+               DisplayName: "Login",
+               Path: "/Login",
+               Icon: null,
+               RequiresAuth: false,
+               Enabled: true
+          },
+          BugLogs: {
+               Name: "BugLogs",
+               DisplayName: "Bug Logs",
+               Path: "/BugLogs",
+               Icon: BugReportIconComponent,
+               RequiresAuth: true,
+               Enabled: true
+          },
+          Data: {
+               Name: "Data",
+               DisplayName: "Data",
+               Path: "/Data",
+               Icon: AdminConsoleIconComponent,
+               RequiresAuth: true,
+               Enabled: true
+          },
+          Admin: {
+               Name: "Admin",
+               DisplayName: "Admin",
+               Path: "/Admin",
+               Icon: AdminConsoleIconComponent,
+               RequiresAuth: true,
+               Enabled: false
+          }
+     };
+
      const watchListSortColumns = {
           ID: "ID",
           Name: "Name",
@@ -611,9 +670,11 @@ const DataProvider = ({
 
      const setOptions = useCallback((newOptions: IUserOption) => {
           const newArchivedVisible = typeof newOptions.ArchivedVisible !== "undefined" && newOptions.ArchivedVisible === 1 ? true : false;
+
           setArchivedVisible(newArchivedVisible);
 
           const newAutoAdd = typeof newOptions.AutoAdd !== "undefined" && newOptions.AutoAdd === 1 ? true : false;
+
           setAutoAdd(newAutoAdd);
 
           const newDarkMode = typeof newOptions.DarkMode !== "undefined" && newOptions.DarkMode === 1 ? true : false;
@@ -644,6 +705,7 @@ const DataProvider = ({
                ? JSON.parse(newOptions.VisibleSections)
                : [{ value: "2", label: 'Stats' }];
 
+          //alert(JSON.stringify(visibleSections))
           setVisibleSections(newVisibleSections);
      }, [sourceFilter, typeFilter]);
 
@@ -753,66 +815,13 @@ const DataProvider = ({
                          Admin: isLoggedInResult[1].Admin,
                     });
 
-                    const newRoutes = {
-                         WatchList: {
-                              Name: "WatchList",
-                              DisplayName: "WatchList",
-                              Path: "/WatchList",
-                              Icon: WatchListIconComponent,
-                              RequiresAuth: true,
-                              Enabled: true
-                         },
-                         Items: {
-                              Name: "Items",
-                              DisplayName: "Items",
-                              Path: "/Items",
-                              Icon: WatchListItemsIconComponent,
-                              RequiresAuth: true,
-                              Enabled: true
-                         },
-                         Stats: {
-                              Name: "Stats",
-                              DisplayName: "Stats",
-                              Path: "/Stats",
-                              Icon: StatsIconComponent,
-                              RequiresAuth: true,
-                              Enabled: true
-                         },
-                         Login: {
-                              Name: "Login",
-                              DisplayName: "Login",
-                              Path: "/Login",
-                              Icon: null,
-                              RequiresAuth: false,
-                              Enabled: true
-                         },
-                         BugLogs: {
-                              Name: "BugLogs",
-                              DisplayName: "Bug Logs",
-                              Path: "/BugLogs",
-                              Icon: BugReportIconComponent,
-                              RequiresAuth: true,
-                              Enabled: true
-                         },
-                         Data: {
-                              Name: "Data",
-                              DisplayName: "Data",
-                              Path: "/Data",
-                              Icon: AdminConsoleIconComponent,
-                              RequiresAuth: true,
-                              Enabled: true
-                         },
-                         Admin: {
-                              Name: "Admin",
-                              DisplayName: "Admin",
-                              Path: "/Admin",
-                              Icon: AdminConsoleIconComponent,
-                              RequiresAuth: true,
-                              Enabled: isLoggedInResult[1].Admin
-                         }
-                    };
+                    const newRoutes = Object.assign({}, routeList);
 
-                    setRoutes(newRoutes);
+                    if (isLoggedInResult[1].Admin) {
+                         newRoutes["Admin"]["Enabled"] = true;
+                    }
+
+                    setRoutes(routeList);
 
                     const newVisibleSectionChoices = [
                          ...(isLoggedInResult[1].Admin
@@ -847,6 +856,7 @@ const DataProvider = ({
                     }
 
                     setLoggedInCheck(APIStatus.Success);
+                    setIsLoading(false);
 
                     if (!noReroute) {
                          setActiveRoute("WatchList");
@@ -1363,18 +1373,18 @@ const DataProvider = ({
      const dataContextValues = { bugLogs, darkMode, defaultRoute, demoMode, isAdmin, lastPage, pageSize, setErrorMessage, setIsError, visibleSections, watchList, watchListSortingCheck, watchListItems, watchListItemsSortingCheck, watchListSources, watchListTypes };
      const errorContextValues = { defaultRoute, errorMessage, setActiveRoute };
      const hamburgerMenuContextType = { activeRoute, archivedVisible, autoAdd, buildDate, darkMode, defaultRoute, demoMode, demoModeNotificationVisible, hideTabs, isAdding, isAdmin, isEditing, isEnabled, loggedInCheck, LogOutIconComponent, metaDataFilters, openDetailClickHandler, pullToRefreshEnabled, routes, saveOptions, setActiveRoute, setIsLoading, setMetaDataFilters, setNewPage, setOptions, setShowMissingArtwork, setSourceFilter, setStillWatching, setTypeFilter, setVisibleSections, setWatchListSortColumn, setWatchListSortDirection, showMissingArtwork, signOut, sourceFilter, stillWatching, typeFilter, visibleSections, visibleSectionChoices, watchListItemsSortColumns, watchListSortColumn, watchListSortColumns, watchListSortDirection, watchListSources, watchListTypes }
-     const itemsCardContextValues = { BrokenImageIconComponent, filteredWatchListItems, getMissingPoster, getWatchList, openDetailClickHandler, setFilteredWatchListItems, watchList, watchListSortingCheck };
+     const itemsCardContextValues = { BrokenImageIconComponent, filteredWatchListItems, getMissingPoster, openDetailClickHandler, setFilteredWatchListItems };
      const itemsContextValues = { filteredWatchListItems, hideTabs, imdbSearchEnabled, isLoading, searchModalVisible, searchTerm, setActiveRoute, setIsAdding, setIsEditing, setFilteredWatchListItems, setSearchModalVisible, watchListItemsSortingCheck };
      const itemsDtlContextValues = { BrokenImageIconComponent, CancelIconComponent, demoMode, EditIconComponent, formatWatchListDates, getMissingPoster, getWatchListItems, isAdding, isEditing, isEnabled, isLoading, pullToRefreshEnabled, SaveIconComponent, setErrorMessage, setIsAdding, setIsEditing, setIsError, watchListTypes, writeLog };
-     const loginContextValues = { activeRoute, defaultRoute, demoPassword, demoUsername, loggedInCheck, setActiveRoute, setDemoMode, setLoggedInCheck, setOptions, setUserData };
+     const loginContextValues = { activeRoute, defaultRoute, demoPassword, demoUsername, loggedInCheck, routeList, setActiveRoute, setDemoMode, setLoggedInCheck, setOptions, setRoutes, setUserData, setVisibleSections };
      const pageNavigationBarContextValues = { activeRoute, currentItemsPage, currentWatchListPage, isAdding, isLoading, hideTabs, lastPage, setNewPage };
      const recommendationsContextValues = { BrokenImageIconComponent, writeLog };
-     const searchIMDBContextValues = { AddIconComponent, autoAdd, BrokenImageIconComponent, searchCount, SearchIconComponent, searchTerm, setIsAdding, setSearchCount, setSearchModalVisible, setSearchTerm };
+     const searchIMDBContextValues = { AddIconComponent, autoAdd, BrokenImageIconComponent, searchCount, SearchIconComponent, searchModalVisible, searchTerm, setIsAdding, setSearchCount, setSearchModalVisible, setSearchTerm };
      const setupContextValues = { activeRoute, defaultRoute, demoUsername, loggedInCheck, validatePassword };
      const sharedLayoutContextValues = { activeRoute, darkMode, demoModeNotificationVisible, imdbSearchEnabled, isError, isLoading, loggedInCheck, searchModalVisible, searchTerm, setDemoModeNotificationVisible, setSearchTerm };
      const tabsContextValues = { activeRoute, demoMode, getPath, hideTabs, isAdding, isAdmin, isClient, isEditing, isEnabled, isError, isLoading, loggedInCheck, pullToRefreshEnabled, routes, setActiveRoute, setSearchTerm, visibleSections };
      const watchListCardContextValues = { BrokenImageIconComponent, filteredWatchList, formatWatchListDates, getMissingPoster, openDetailClickHandler, setFilteredWatchList, writeLog };
-     const watchListContextValues = { filteredWatchList, hideTabs, imdbSearchEnabled, isLoading, lastPage, searchModalVisible, searchTerm, setActiveRoute, setIsAdding, setIsEditing, setSearchModalVisible, watchListSortingCheck };
+     const watchListContextValues = { autoAdd, filteredWatchList, hideTabs, imdbSearchEnabled, isLoading, lastPage, searchModalVisible, searchTerm, setActiveRoute, setIsAdding, setIsEditing, setSearchModalVisible, watchListSortingCheck };
      const watchListDtlContextValues = { BrokenImageIconComponent, CancelIconComponent, demoMode, EditIconComponent, getWatchList, imdbSearchEnabled, isAdding, isEditing, isLoading, pullToRefreshEnabled, recommendationsEnabled, SaveIconComponent, setErrorMessage, setIsAdding, setIsEditing, setIsError, setStillWatching, showSearch, stillWatching, watchListSortDirection, watchListSources, writeLog };
      const watchListStatsContextValues = { demoMode, errorMessage, ratingMax, setIsError, setErrorMessage };
 

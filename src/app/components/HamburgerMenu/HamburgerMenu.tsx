@@ -2,7 +2,7 @@
 
 import { useContext, useState, useRef, useEffect } from "react";
 import { APIStatus, HamburgerMenuContext } from "../../context";
-import "./HamburgerMenu.css";
+import "../../page.css";
 import { HamburgerMenuContextType } from "../../contexts/HamburgerMenuContextType";
 import IUserOption from "../../interfaces/IUserOption";
 import IWatchListSource from "../../interfaces/IWatchListSource";
@@ -214,14 +214,14 @@ const HamburgerMenu = () => {
      return (
           <>
                <div className="hamburger-container">
-                    <div className={`hamburger-icon ${demoModeNotificationVisible ? "demoModeNotificationVisible" : ""}`} onClick={toggleMenu} ref={iconRef}>
+                    <div className={`hamburger-icon ${isOpen ? "open" : ""} ${demoModeNotificationVisible ? "demoModeNotificationVisible" : ""}`} onClick={toggleMenu} ref={iconRef}>
                          ☰ {isOpen && <span className="leftMargin">WatchList</span>}
                     </div>
 
-                    <div className={`sidebar-menu ${isOpen ? "open" : ""}`} ref={menuRef}>
-                         <div className="menu-content">
+                    <div className={`hamburger-sidebar-menu ${isOpen ? "open" : ""}`} ref={menuRef}>
+                         <div className="hamburger-menu-content">
                               {(activeRoute === "WatchList" || activeRoute === "Items") &&
-                                   <div className="menu-row">
+                                   <div className="hamburger-menu-row">
                                         <span className={`bottomMargin20 clickable customTopMargin`} onClick={() => addRecordClickHandler()}>
                                              <span className={`title`}>Add Record</span>
                                         </span>
@@ -229,7 +229,7 @@ const HamburgerMenu = () => {
                               }
 
                               {hideTabs &&
-                                   <div className="menu-row">
+                                   <div className="hamburger-menu-row">
                                         <span>Tab</span>
 
                                         <span title="Section">
@@ -259,7 +259,7 @@ const HamburgerMenu = () => {
 
                               {activeRoute === "WatchList" &&
                                    <>
-                                        <div className="menu-row">
+                                        <div className="hamburger-menu-row">
                                              <span className={`title`}>Still Watching</span>
 
                                              <span title="Stuff you are still watching">
@@ -292,7 +292,7 @@ const HamburgerMenu = () => {
 
                               {(activeRoute === "WatchList" || activeRoute === "Items") &&
                                    <>
-                                        <div className="menu-row">
+                                        <div className="hamburger-menu-row">
                                              <span>Type</span>
 
                                              <span title="Filter by type">
@@ -310,7 +310,7 @@ const HamburgerMenu = () => {
                                              </span>
                                         </div>
 
-                                        <div className="menu-row">
+                                        <div className="hamburger-menu-row">
                                              <span>Sort By</span>
 
                                              <span title="Sort by">
@@ -405,8 +405,8 @@ const HamburgerMenu = () => {
                                    </>
                               }
 
-                              <div className="menu-row">
-                                   <span className={`title`}>Dark Mode</span>
+                              <div className="hamburger-menu-row">
+                                   <span className="title">Dark Mode</span>
 
                                    <span className="leftMargin" title="Show WatchList Items">
                                         <label className="switch">
@@ -418,7 +418,7 @@ const HamburgerMenu = () => {
 
                               {(activeRoute === "WatchList" || activeRoute === "Items") &&
                                    <>
-                                        <div className="menu-row">
+                                        <div className="hamburger-menu-row">
                                              <span>Archived</span>
 
                                              <span className="leftMargin" title="Archived Items">
@@ -436,7 +436,7 @@ const HamburgerMenu = () => {
                                              </span>
                                         </div>
 
-                                        <div className="menu-row">
+                                        <div className="hamburger-menu-row">
                                              <span>Auto Add</span>
 
                                              <span className="leftMargin" title="Automatically add WatchList after adding new item">
@@ -447,7 +447,7 @@ const HamburgerMenu = () => {
                                              </span>
                                         </div>
 
-                                        <div className="menu-row">
+                                        <div className="hamburger-menu-row">
                                              <span>Hide Tabs</span>
 
                                              <span className="leftMargin" title="Hide bottom tab bar">
@@ -461,7 +461,7 @@ const HamburgerMenu = () => {
                               }
 
                               {(activeRoute === "Items") && (
-                                   <div className="menu-row">
+                                   <div className="hamburger-menu-row">
                                         <span className="firstItem" title="Show WatchListItems with missing images">
                                              <span>No Image</span>
                                         </span>
@@ -476,19 +476,19 @@ const HamburgerMenu = () => {
                               )}
 
                               {loggedInCheck == APIStatus.Success && (
-                                   <div className="menu-row">
+                                   <div className="hamburger-menu-row">
                                         <span>Sign Out</span>
 
                                         <span>
-                                             <span className="clickable customLeftMargin" onClick={signOut}>
+                                             <span className="clickable customLeftMargin2" onClick={signOut}>
                                                   {LogOutIconComponent}
                                              </span>
                                         </span>
                                    </div>
                               )}
 
-                              <div className="menu-row">
-                                   <span className="small-text title" style={{ width: "205px", marginBottom: "25px" }}>Last built on {buildDate}</span>
+                              <div className="hamburger-menu-row">
+                                   <span className="small-text title" style={{ width: "215px", marginBottom: "25px" }}>Last built on {buildDate}</span>
                               </div>
                          </div>
                     </div>

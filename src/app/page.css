@@ -9,30 +9,27 @@
 }
 
 @media only screen and (max-width:600px) {
-
   .column { @apply mr-[unset]!; }
 
   .customTopMargin { @apply relative top-[12px]!; }
 
   .displayInline { @apply inline!; }
-
-  .pageNavigationBar { @apply w-[103%]!; }
-
+  
   .rating { @apply hidden; }
 
   .ratingAlt { @apply inline-flex!; }
 
   .favoriteIcon { @apply max-w-[15px]! max-h-[15px]!; }
 
+  .sidebar-menu { @apply w-full; }
+
   .stillWatching { @apply min-w-[110px]; }
 }
 
 @media only screen and (max-width:768px) {
-
   .show-list { @apply relative left-[-20px]; }
 
   .show-item { @apply w-[150px]! mr-[25px]!; }
-
 }
 
 /* ---------------- GLOBAL ---------------- */
@@ -41,6 +38,9 @@ html.no-pull-to-refresh {
   @apply overflow-hidden overscroll-none;
 }
 
+body {
+  @apply relative top-[-16px] m-[unset];
+}
 /* ---------------- SWITCH ---------------- */
 
 input:checked + .slider { @apply bg-[#2196f3]; }
@@ -99,11 +99,13 @@ table.simpleTable:last-child {
 
 .closeButtonAdjustment { @apply relative top-[-24px]!; }
 
-.customCloseButton { @apply relative left-[-20px] top-[15px]; }
+.customCloseButton { @apply float-right; }
 
 .customBorderRadius { @apply rounded-[15px]; }
 
 .customLeftMargin { @apply ml-[7px]; }
+
+.customLeftMargin2 { @apply ml-[35px]; }
 
 .customModalHeight { @apply min-h-[60px]!; }
 
@@ -120,6 +122,33 @@ table.simpleTable:last-child {
 .fullWidthInput { @apply min-w-[300px]; }
 
 .fontStyle { @apply font-["Brush_Script_MT",cursive]!; }
+
+.hamburger-icon {
+  @apply text-[3xl] cursor-pointer fixed z-[999999] transition-transform duration-[0.3s] ease-[ease-in-out] left-[15] top-[6px] scale-[2];
+}
+
+.hamburger-icon.open {
+  @apply left-[65]
+}
+
+.hamburger-sidebar-menu {
+  @apply fixed w-fit h-full bg-[#333] text-[white] transition-transform duration-[0.3s] ease-[ease-in-out] z-[10000] overflow-y-auto p-[5] -left-full top-[0];
+}
+.hamburger-sidebar-menu:not(.open) {
+  @apply hidden;
+}
+.hamburger-sidebar-menu.open {
+  @apply inline-block left-[0];
+}
+.hamburger-menu-content {
+  @apply flex flex-col gap-[30px] pt-[45px];
+}
+.hamburger-menu-row {
+  @apply grid grid-cols-[75px_1fr] items-center gap-x-[1.5];
+}
+.hamburger-menu-row .title {
+  @apply flex w-[100px];
+}
 
 .hyperlink { @apply text-[blue]; }
 
@@ -145,6 +174,39 @@ table.simpleTable:last-child {
 
 .linkStyle { @apply no-underline!; }
 
+.login-container {
+  @apply relative z-[1] max-w-[360px] text-center shadow-[0_0_20px_0_rgba(0,0,0,0.2),0_5px_5px_0_rgba(0,0,0,0.24)] mt-[0] mb-[100px] mx-auto p-[45px] border-2 border-solid border-[rgba(255,255,255,0.1)];
+}
+.login-background {
+  @apply bg-cover bg-repeat box-border min-h-screen h-full absolute w-full z-[-999];
+}
+.login-form input {
+  @apply [font-family:"Roboto",sans-serif] [outline:0] w-full box-border text-[sm] mt-[0] mb-[15px] mx-[0] p-[15px] rounded-[15px] border-[0];
+}
+.login-form button {
+  @apply [font-family:"Roboto",sans-serif] uppercase [outline:0] bg-[#3880ff] w-full text-[white] text-[sm] [-webkit-transition:all_0.3_ease] transition-all duration-[0.3] ease-[ease] cursor-pointer p-[15px] rounded-[15px] border-[0];
+}
+.login-form button:hover,
+.login-form button:active,
+.login-form button:focus {
+  @apply [background:#3880ff];
+}
+.login-form .message {
+  @apply text-[#b3b3b3] text-[xs] mt-[15px] mb-[0] mx-[0];
+}
+.login-form .message a {
+  @apply text-[#3880ff] no-underline;
+}
+.login-form .register-form {
+  @apply hidden;
+}
+.login-label {
+  @apply [font-family:'Poppins',sans-serif] text-[28px] font-[bold] relative top-[-20px];
+}
+.login-page {
+  @apply w-[360px] m-auto pt-[8%] pb-[0] px-[0];
+}
+
 .maxWidth { @apply min-w-[50%]; }
 
 .minWidth105 { @apply min-w-[105px]!; }
@@ -165,6 +227,41 @@ table.simpleTable:last-child {
 
 .overflowY { @apply overflow-y-scroll; }
 
+.pageNavigationBar {
+  @apply bg-[#fafaec] border box-border h-[38px] text-center w-full flex justify-between z-[100] [-webkit-tap-highlight-color:transparent] border-solid border-[lightgray];
+}
+
+.dark .pageNavigationBar {
+   @apply bg-[#3b3b38]
+}
+
+.top .pageNavigationBar {
+  @apply fixed;
+}
+
+.pageNavigationBar.lastPage {
+  @apply relative bottom-[0];
+}
+
+.bottom .pageNavigationBar {
+  @apply sticky bottom-[56px];
+}
+.bottom.noTabs .pageNavigationBar {
+  @apply bottom-[0];
+}
+.pageNavigationBarArrow {
+  @apply text-[40px] cursor-pointer flex items-center justify-center h-full;
+}
+.pageNavigationBarLeft {
+  @apply text-left;
+}
+.pageNavigationBarRight {
+  @apply text-right ml-auto;
+}
+.pageNavigationBar.noTabs {
+  @apply bottom-[0];
+}
+
 .poster-detail { @apply max-h-[500px] max-w-[175px] relative top-[80px] mt-[50px]; }
 
 .primary { @apply text-[rgb(25,118,210)]; }
@@ -183,7 +280,48 @@ table.simpleTable:last-child {
 
 .sortBy { @apply mr-[15px]; }
 
+.tab {
+  @apply [font-family:"Roboto","Helvetica_Neue",sans-serif] text-[xs] tracking-[0.03em] max-w-[168px];
+}
+
+.tabActive {
+  @apply bg-[deepskyblue] rounded-[lg];
+}
+
+.tabBar {
+  @apply bg-[#fafaec] text-[black] border box-border h-[56px] fixed flex justify-between w-[100%] border-solid border-[lightgray] bottom-[0];
+}
+
+.dark .tabBar {
+   background-color: #3b3b38;
+   color: white;
+}
+
+.tabIcon {
+  @apply h-[30px] text-center mx-[1.5];
+}
+.tabItem {
+  @apply inline-grid h-[14] mx-auto align-bottom;
+}
+
+.tabLabel {
+  @apply items-center text-center cursor-pointer font-[normal] h-full rounded-[10px] border-[none];
+}
+
 .textLabel { @apply font-[700] break-words; }
+
+/*.topMarginContent { @apply text-[black] bg-[white] }*/
+.topMarginContent { @apply relative top-[65px] }
+
+.topBarActiveRoute { @apply relative top-[5px] }
+
+.dark .MuiTabs-root .MuiButtonBase-root {
+   color: white;
+}
+
+.topMargin20 {
+  @apply mt-[20px]!
+}
 
 .width50 { @apply w-[50px]; }
 
@@ -199,6 +337,11 @@ table.simpleTable:last-child {
 
 .modal {
   @apply fixed top-[0] left-[0] w-full h-full overflow-auto pt-[100px] z-[999];
+}
+
+.modal-content:has(> .datagrid) {
+   background-color: black;
+   opacity: 0.8;
 }
 
 .modal.scrollable {
@@ -234,20 +377,24 @@ table.simpleTable:last-child {
   @apply relative top-[4px] left-[155%] z-[9999];
 }
 
-.searchInput {
+.searchIMDBInput {
   @apply relative w-[102%] h-[48px] text-[1em] rounded-[25px] px-[20px];
 }
 
 .searchInputStyle {
-  @apply relative top-[-13px];
+  @apply relative left-[-20px] top-[-14px];
 }
 
 .searchResult {
   @apply flex mb-[15px];
 }
 
+.sharedLayout {
+  @apply h-[38px] fixed z-[20000];
+}
+
 .show-list {
-  @apply rounded-[15px] flex flex-wrap text-left mb-[150px];
+  @apply rounded-[15px] flex flex-wrap text-left mb-[150px] pt-[55px];
 }
 
 .show-list.noTabs {

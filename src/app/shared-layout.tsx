@@ -38,43 +38,41 @@ const SharedLayout = () => {
      }
 
      return (
-          <>
-               <span>
-                    {!isError && activeRoute !== "" &&
-                         <>
-                              {isLoading &&
-                                   <Loader />
-                              }
+          <span className="sharedLayout">
+               {!isError && activeRoute !== "" &&
+                    <>
+                         {isLoading &&
+                              <Loader />
+                         }
 
-                              {loggedInCheck === APIStatus.Success &&
-                                   <span>
-                                        <span className={`leftMargin75 topBar ${demoModeNotificationVisible === true ? "demoNotificationVisible" : ""}`}>
-                                             {!searchModalVisible &&
-                                                  <HamburgerMenu />
-                                             }
+                         {loggedInCheck === APIStatus.Success &&
+                              <span>
+                                   <span className={`leftMargin75 topBar ${demoModeNotificationVisible === true ? "demoNotificationVisible" : ""}`}>
+                                        {!searchModalVisible &&
+                                             <HamburgerMenu />
+                                        }
 
-                                             {(activeRoute === "Stats" || activeRoute === "Admin" || activeRoute === "BugLogs" || activeRoute === "Data") &&
-                                                  <span className={`leftMargin50 topBarActiveRoute`}>{activeRoute}</span>
-                                             }
+                                        {(activeRoute === "Stats" || activeRoute === "Admin" || activeRoute === "BugLogs" || activeRoute === "Data") &&
+                                             <span className={`leftMargin50 topBarActiveRoute`}>{activeRoute}</span>
+                                        }
 
-                                             {(activeRoute === "WatchList" || activeRoute === "Items") &&
-                                                  <>
-                                                       <span className={`clickable leftMargin60 maxWidth searchInputStyle visible`}>
-                                                            <input className={`inputStyle fullWidthInput`} ref={inputRef} value={searchTerm} onChange={(event) => setSearchTerm(event.target.value)} />
-                                                       </span>
-                                                  </>
-                                             }
-                                        </span>
-
-                                        {searchModalVisible &&
-                                             <SearchIMDB />
+                                        {(activeRoute === "WatchList" || activeRoute === "Items") &&
+                                             <>
+                                                  <span className={`clickable leftMargin60 maxWidth searchInputStyle visible`}>
+                                                       <input className={`inputStyle fullWidthInput`} ref={inputRef} value={searchTerm} onChange={(event) => setSearchTerm(event.target.value)} />
+                                                  </span>
+                                             </>
                                         }
                                    </span>
-                              }
-                         </>
-                    }
-               </span>
-          </>
+
+                                   {searchModalVisible &&
+                                        <SearchIMDB />
+                                   }
+                              </span>
+                         }
+                    </>
+               }
+          </span>
      )
 }
 

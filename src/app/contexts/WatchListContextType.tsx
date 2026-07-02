@@ -1,7 +1,7 @@
 import IWatchList from "../interfaces/IWatchList";
 
 export interface WatchListContextType {
-     darkMode: boolean;
+     autoAdd: boolean;
      filteredWatchList: IWatchList[];
      hideTabs: boolean;
      imdbSearchEnabled: boolean;

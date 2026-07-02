@@ -110,40 +110,13 @@ export default function Data() {
         }
     }
 
-    const createSegiTableTemplate = (section: string) => {
-        const fields: any = [];
-
-        const dataSection = dataSchema[section];
-
-        Object.keys(dataSection.Columns).forEach((column) => {
-            const newFieldDef = {
-                DisplayName: dataSection.Columns[column],
-                DatabaseColumn: column,
-                FieldType: FieldTypes.TEXTFIELD,
-                FieldValueType: FieldValueTypes.TEXT,
-                ColumnWidth: (100 / Object.keys(dataSection.Columns).length) + "%"
-            };
-
-            fields.push(newFieldDef);
-        });
-
-        const newTemplate = {
-            Fields: fields,
-        }
-
-        return newTemplate;
-    }
-
-
-    const setTemplateDataSource = (template: {}, data: any[]) => {
-        template["Data"] = data;
-
-        setSegiTableTemplate(template)
-    }
-
     const activeSectionChangeHandler = async (newActiveSection: string) => {
         setActiveSection(newActiveSection);
         setIsReady(false);
+
+        if (newActiveSection === "") {
+            return;
+        }
 
         const template = createSegiTableTemplate(newActiveSection);
 
@@ -274,15 +247,36 @@ export default function Data() {
         }
     }
 
-    /*const pageClickHandler = (adjustValue: number) => {
-        setIsReady(false);
+    const createSegiTableTemplate = (section: string) => {
+        const fields: any = [];
 
-        if (typeof topRef !== "undefined" && topRef !== null && topRef.current !== null && topRef.current.scrollIntoView !== null) {
-            topRef.current?.scrollIntoView({ behavior: "smooth" });
+        const dataSection = dataSchema[section];
+
+        Object.keys(dataSection.Columns).forEach((column) => {
+            const newFieldDef = {
+                DisplayName: dataSection.Columns[column],
+                DatabaseColumn: column,
+                FieldType: FieldTypes.TEXTFIELD,
+                FieldValueType: FieldValueTypes.TEXT,
+                ColumnWidth: (100 / Object.keys(dataSection.Columns).length) + "%"
+            };
+
+            fields.push(newFieldDef);
+        });
+
+        const newTemplate = {
+            Fields: fields,
         }
 
-        setCurrentDataPage(currentDataPage + adjustValue);
-    }*/
+        return newTemplate;
+    }
+
+
+    const setTemplateDataSource = (template: {}, data: any[]) => {
+        template["Data"] = data;
+
+        setSegiTableTemplate(template)
+    }
 
     const updateDataSourceFilteredResults = () => {
         const startIndex = (currentDataPage - 1) * dataSchema[activeSection].PageSize;

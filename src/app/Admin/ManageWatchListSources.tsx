@@ -169,7 +169,7 @@ const ManageWatchListSources = () => {
                     <Button
                          color="primary"
                          variant="contained"
-                         className="borderRadius15 bottomMargin20 topMargin"
+                         className="borderRadius15 bottomMargin20 topMargin20"
                          onClick={addSourceClickHandler}>
                          Add Source
                     </Button>

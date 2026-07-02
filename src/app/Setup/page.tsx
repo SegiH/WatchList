@@ -4,7 +4,6 @@ import { useRouter } from "next/navigation";
 import React, { useContext, useEffect, useState } from "react";
 import { APIStatus, SetupContext } from "../context";
 
-import "../Login/Login.css";
 import { SetupContextType } from "../contexts/SetupContextType";
 
 export default function Setup() {

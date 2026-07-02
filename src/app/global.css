@@ -1,5 +1,5 @@
 @layer base{
     body {
-        @apply dark:bg-gray-800 bg-white
+        @apply dark:bg-gray-800 bg-white m-unset relative! top-[-16px];
     }
 }

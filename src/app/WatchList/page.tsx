@@ -3,20 +3,22 @@
 import { useContext, useEffect, useRef, useState } from "react";
 import { APIStatus, WatchListContext } from "../context";
 import IWatchList from "../interfaces/IWatchList";
-import React from "react";
 
 import "../page.css";
-import PageNavigationBar from "../components/PageNavigationBar/PageNavigationBar";
 import { WatchListContextType } from "../contexts/WatchListContextType";
 
-import WatchListCard from "./WatchListCard";
-import IMDBCard from "../components/IMDBCard";
 import { Button } from "@mui/material";
+import IMDBCard from "../components/IMDBCard";
+import PageNavigationBar from "../components/PageNavigationBar/PageNavigationBar";
+import WatchListCard from "./WatchListCard";
+import { useRouter } from "next/navigation";
 
 export default function WatchList() {
      const {
-          filteredWatchList, hideTabs, imdbSearchEnabled, isLoading, lastPage, searchModalVisible, searchTerm, setActiveRoute, setIsAdding, setIsEditing, setSearchModalVisible, watchListSortingCheck
+          autoAdd, filteredWatchList, hideTabs, imdbSearchEnabled, isLoading, lastPage, searchModalVisible, searchTerm, setActiveRoute, setIsAdding, setIsEditing, setSearchModalVisible, watchListSortingCheck
      } = useContext(WatchListContext) as WatchListContextType;
+
+     const router = useRouter();
 
      const [imdbCardvisible, setImdbCardvisible] = useState(false);
      const [imdbJSON, setImdbJSON] = useState<[] | null>(null);
@@ -26,6 +28,36 @@ export default function WatchList() {
      const closeIMDBCard = () => {
           setImdbJSON(null);
           setImdbCardvisible(false);
+     }
+
+     const searchModalVisibleClickHandler = async (showHide: boolean) => {
+          if (searchTerm !== "") {
+               if (/^tt\d{7,}$/.test(searchTerm)) {
+                    const searchIMDBResponse = await fetch(`/api/SearchIMDB?SearchTerm=${searchTerm}&SearchCount=${1}`, { credentials: 'include' });
+
+                    const searchIMDBResult = await searchIMDBResponse.json();
+
+                    if (searchIMDBResult[0] !== "OK" && searchIMDBResult[0] !== "ERROR-ALREADY-EXISTS") {
+                         alert(searchIMDBResult[1]);
+                         return;
+                    }
+
+                    if (!autoAdd && searchIMDBResult[0] !== "ERROR-ALREADY-EXISTS") {
+                         alert("The WatchList Item has been added");
+                         return;
+                    }
+
+                    if (autoAdd) {
+                         setIsAdding(true);
+
+                         router.push(`/WatchList/Dtl?WatchListItemID=${searchIMDBResult[0] !== "ERROR-ALREADY-EXISTS" ? searchIMDBResult[2] : searchIMDBResult[2]}`);
+                    }
+
+                    return;
+               } else {
+                    setSearchModalVisible(showHide);
+               }
+          }
      }
 
      useEffect(() => {
@@ -45,7 +77,7 @@ export default function WatchList() {
                <div ref={topRef} ></div>
 
                {!isLoading && searchTerm !== "" && imdbSearchEnabled &&
-                    <h1 className="topMargin100"><Button variant="contained" color="secondary" style={{ marginLeft: "10px" }} onClick={() => setSearchModalVisible(true)}>IMDB</Button></h1>
+                    <h1 className="topMargin100"><Button variant="contained" color="secondary" style={{ marginLeft: "10px" }} onClick={() => searchModalVisibleClickHandler(true)}>IMDB</Button></h1>
                }
 
                {!isLoading && filteredWatchList && filteredWatchList.length > 0 && !imdbCardvisible &&

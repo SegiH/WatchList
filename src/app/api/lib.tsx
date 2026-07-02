@@ -2,7 +2,6 @@ import fs from "fs";
 import { cookies } from 'next/headers';
 import * as CryptoJS from 'crypto-js';
 import { NextRequest } from 'next/server';
-import * as cheerio from 'cheerio';
 
 import IUser from "../interfaces/IUser";
 import ISectionChoice from "../interfaces/ISectionChoice";
@@ -129,6 +128,85 @@ export const addUser = async (request: NextRequest, isNewInstance = false) => {
           return Response.json(["OK", usersDB.length]);
      } catch (e: any) {
           writeLog(e.message)
+          return Response.json(["ERROR", e.message]);
+     }
+}
+
+export const addWatchListItem = async (name: string, type: string, imdb_url: string, imdb_poster: string, notes: string, archived: string) => {
+     if (imdb_url !== null) {
+          try {
+               const db: any = await getDB();
+
+               const watchListItemsDB = db.WatchListItems;
+
+               const existingWatchListItem = watchListItemsDB.filter((watchListItem: IWatchListItem) => {
+                    return watchListItem.IMDB_URL === imdb_url
+               });
+
+               if (existingWatchListItem.length > 0) {
+                    return Response.json(["ERROR-ALREADY-EXISTS", `The URL ${imdb_url} already exists with the name ${existingWatchListItem[0].WatchListItemName} and the ID ${existingWatchListItem[0].WatchListItemID}. It was NOT added!`, existingWatchListItem[0].WatchListItemID]);
+               }
+          } catch (e: any) {
+               writeLog(e)
+               return Response.json(["OK", []]);
+          }
+     }
+
+     let imdb_json: string | null = null;
+
+     if (imdb_url !== null && imdb_url.toString().indexOf("imdb.com/title/") !== -1) {
+          const urlSplit = imdb_url?.split("/");
+
+          if (urlSplit[2].toString().indexOf("imdb.com") !== -1 && urlSplit[3].toString() === "title") {
+               const id = urlSplit[4].toString();
+
+               const result = await getIMDBDetails(id);
+
+               if (result !== null) {
+                    imdb_json = JSON.stringify(result);
+               }
+          }
+     }
+
+     try {
+          const db: any = await getDB();
+
+          const watchListItemsDB = db.WatchListItems;
+
+          //const highestWatchListItemID = Math.max(...watchListItemsDB.map(o => o.WatchListItemID));
+
+          //const nextId = (highestWatchListItemID !== null ? highestWatchListItemID : 0) + 1
+
+          const sortedIds = watchListItemsDB
+               .map((item: IWatchListItem) => item.WatchListItemID)
+               .sort((a: IWatchListItem, b: IWatchListItem) => a.WatchListItemID - b.WatchListItemID);
+
+          let nextWatchListItemID = 1;
+
+          for (const id of sortedIds) {
+               if (id === nextWatchListItemID) {
+                    nextWatchListItemID++;
+               } else if (id > nextWatchListItemID) {
+                    break;
+               }
+          }
+
+          watchListItemsDB.push({
+               "WatchListItemID": nextWatchListItemID,
+               "WatchListItemName": name,
+               "WatchListTypeID": parseInt(type, 10),
+               "IMDB_URL": imdb_url,
+               "IMDB_Poster": imdb_poster,
+               "IMDB_JSON": imdb_json,
+               "ItemNotes": notes,
+               "Archived": parseInt(archived as string, 10),
+          });
+
+          writeDB(db);
+
+          return Response.json(["OK", nextWatchListItemID]); // New ID
+     } catch (e: any) {
+          writeLog(e.message);
           return Response.json(["ERROR", e.message]);
      }
 }
@@ -492,103 +570,54 @@ export const getMissingArtwork = async (watchListItemID: number) => {
 
      const thisWLI = thisWLIResult[0];
 
-     logText = `${getCurrentDate()}: Checking ${thisWLI.WatchListItemID} ${thisWLI.WatchListItemName} with the URL ${thisWLI.IMDB_URL}`;
+     const IMDB_JSON = thisWLI.IMDB_JSON;
 
-     try {
-          const mediaViewerPageResponse = await fetch(thisWLI.IMDB_URL, {
-               headers: {
-                    'User-Agent': 'Next.js server',
-               },
-          });
+     // Use locally save IMDB JSON Payload if it exists to prevent uneeded API call
+     if (typeof IMDB_JSON !== "undefined") {
+          try {
+               const parsed = JSON.parse(IMDB_JSON);
 
-          if (!mediaViewerPageResponse.ok) {
-               const newResult = {
-                    ID: watchListItemID,
-                    Name: "",
-                    IMDB_URL: "",
-                    Status: "ERROR",
-                    Message: `Failed to fetch the HTML from ${thisWLI.IMDB_URL}`
-               };
+               if (typeof parsed.Poster !== "undefined" && parsed.Poster !== "") {
+                    return {
+                         ID: watchListItemID,
+                         Name: thisWLI.WatchListItemName,
+                         IMDB_URL: thisWLI.IMDB_URL,
+                         IMDB_Poster: parsed.Poster,
+                         Status: "OK"
+                    };
+               }
+          } catch { }
+     }
 
-               logText += `\n${getCurrentDate()}: Failed to fetch the HTML for ${thisWLI.WatchListItemID} ${thisWLI.WatchListItemName} with the error ${mediaViewerPageResponse.statusText} and status: ${mediaViewerPageResponse.status}`
-               writeLog(logText, true);
+     const IMDB_URL = thisWLI.IMDB_URL;
 
-               return newResult;
+     if (typeof IMDB_URL == "string" && IMDB_URL != "" && (IMDB_URL.startsWith("http://") || IMDB_URL.startsWith("https://")) && IMDB_URL.includes("imdb.com")) {
+          const urlSplit = IMDB_URL.split("/");
+
+          if (urlSplit[2].toString().indexOf("imdb.com") !== -1 && urlSplit[3].toString() === "title") {
+               const id = urlSplit[4].toString();
+               const result = await getIMDBDetails(id);
+
+               if (result !== null) {
+                    if (typeof result.Poster == "string") {
+                         return {
+                              ID: watchListItemID,
+                              Name: thisWLI.WatchListItemName,
+                              IMDB_URL: thisWLI.IMDB_URL,
+                              IMDB_Poster: result.Poster,
+                              Status: "OK"
+                         };
+                    }
+               }
           }
 
-          const linkToMediaViewerHTML = await mediaViewerPageResponse.text();
-
-          if (typeof linkToMediaViewerHTML === "undefined" || linkToMediaViewerHTML === null || linkToMediaViewerHTML === "") {
-               const newResult = {
-                    ID: watchListItemID,
-                    Name: "",
-                    IMDB_URL: "",
-                    Status: "ERROR",
-                    Message: `Failed to parse the HTML from ${thisWLI.IMDB_URL}`
-               };
-
-               logText += `\n${getCurrentDate()}: Failed to parse the HTML for ${thisWLI.WatchListItemID} ${thisWLI.WatchListItemName} with the error ${mediaViewerPageResponse.statusText} and status: ${mediaViewerPageResponse.status}`
-               writeLog(logText, true);
-
-               return newResult;
-          }
-
-          const imdbPage = cheerio.load(linkToMediaViewerHTML);
-
-          const imageUrlPage = imdbPage('.ipc-lockup-overlay.ipc-focusable');
-
-          // Add domain to this src which is a relative path
-          const newImageURL = "https://imdb.com" + imageUrlPage.attr('href');
-
-          const imageResponse = await fetch(newImageURL, {
-               headers: {
-                    'User-Agent': 'Next.js server',
-               },
-          });
-
-          if (!imageResponse.ok) {
-               const newResult = {
-                    ID: thisWLI.WatchListItemID,
-                    Name: thisWLI.WatchListItemName,
-                    IMDB_URL: thisWLI.IMDB_URL,
-                    ImageURL: newImageURL,
-                    Status: "ERROR",
-                    Message: imageResponse.statusText
-               };
-
-               logText += `\n${getCurrentDate()}: Error getting the 2nd page response for ${thisWLI.WatchListItemID} ${thisWLI.WatchListItemName} ${thisWLI.IMDB_URL}`;
-               writeLog(logText, true);
-
-               return newResult;
-          }
-
-          const imgHtml = await imageResponse.text();
-
-          const imagePage = cheerio.load(imgHtml);
-
-          const imgSources = imagePage('.sc-b66608db-2.cEjYQy img:not(.peek)')
-               .map((_, el) => imagePage(el).attr('src'))
-               .get();
-
-          if (imgSources.length === 0) {
-               return {
-                    ID: watchListItemID,
-                    Name: thisWLI.WatchListItemName,
-                    IMDB_URL: thisWLI.IMDB_URL,
-                    Status: "ERROR",
-                    Message: "No results when matching css class .sc-b66608db-2.cEjYQy img:not(.peek)"
-               };
-          } else {
-               return {
-                    ID: watchListItemID,
-                    Name: thisWLI.WatchListItemName,
-                    IMDB_URL: thisWLI.IMDB_URL,
-                    IMDB_Poster: imgSources[0],
-                    Status: "OK"
-               };
-          }
-     } catch (e: any) {
-          alert(e.message);
+          return {
+               ID: watchListItemID,
+               Name: thisWLI.WatchListItemName,
+               IMDB_URL: thisWLI.IMDB_URL,
+               Status: "ERROR",
+               Message: "No results"
+          };
      }
 }
 

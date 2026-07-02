@@ -6,12 +6,12 @@ import { APIStatus, LoginContext } from "../context";
 import IUser from "../interfaces/IUser";
 import IUserData from "../interfaces/IUserData";
 
-import "./Login.css";
+import "../page.css";
 import { LoginContextType } from "../contexts/LoginContextType";
 
 export default function Login() {
      const {
-          activeRoute, defaultRoute, demoPassword, demoUsername, loggedInCheck, setActiveRoute, setDemoMode, setLoggedInCheck, setOptions, setUserData
+          activeRoute, defaultRoute, demoPassword, demoUsername, loggedInCheck, routeList, setActiveRoute, setDemoMode, setLoggedInCheck, setOptions, setRoutes, setUserData, setVisibleSections
      } = useContext(LoginContext) as LoginContextType
 
      const [password, setPassword] = useState("");
@@ -103,11 +103,12 @@ export default function Login() {
                setUsername("");
                setPassword("");
 
+               setRoutes(routeList);
                setActiveRoute(defaultRoute);
                setUserData(newUserData);
 
-               if (typeof response.Options !== "undefined" && response.Options.length === 1) {
-                    setOptions(response.Options[0]);
+               if (typeof response.Options !== "undefined") {
+                    setOptions(response.Options);
                }
 
                setLoggedInCheck(APIStatus.Success);
@@ -134,7 +135,7 @@ export default function Login() {
           <>
                {(loggedInCheck === APIStatus.Idle || loggedInCheck === APIStatus.Unauthorized) &&
                     <div className={`login-page`}>
-                         <div className="form">
+                         <div className="login-container">
                               <form className="login-form" onSubmit={login}>
                                    <span className={`login-label`}>WatchList Login</span>
                                    <input type="text" autoFocus disabled={loginSubmitted} value={username} placeholder="username" required onChange={(event) => setUsername(event.target.value)} onKeyUp={handleKeyUp} ref={usernameRef} />

@@ -19,6 +19,7 @@ export interface ItemsDtlContextType {
      setIsAdding: (value: boolean) => void;
      setIsEditing: (value: boolean) => void;
      setIsError: (value: boolean) => void;
+     setModalVisible: (value: boolean) => void;
      watchListTypes: IWatchListType[];
      writeLog: (writeLogText: string) => void;
 }

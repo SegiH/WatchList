@@ -43,7 +43,18 @@ export default function WatchListCard({ currentWatchList, setImdbJSON }: WatchLi
 
         const newWatchList = newWatchListResult[0];
 
-        const result = await getMissingPoster(currentWatchList.WatchListItemID);
+        // Retry
+        if (typeof newWatchList["IMDB_Poster_RetryCount"] === "undefined") {
+            newWatchList["IMDB_Poster_RetryCount"] = 0;
+        } else {
+            newWatchList["IMDB_Poster_RetryCount"]++;
+        }
+
+        if (newWatchList["IMDB_Poster_RetryCount"] === 5) {
+            return;
+        }
+
+        /*const result = await getMissingPoster(currentWatchList.WatchListItemID);
 
         if (Array.isArray(result) && result.length > 0 && result[0]["Status"] === "OK") {
             newWatchList["IMDB_Poster"] = result[0]["IMDB_Poster"];
@@ -52,8 +63,16 @@ export default function WatchListCard({ currentWatchList, setImdbJSON }: WatchLi
             newWatchList["IMDB_Poster_Error"] = true;
         }
 
-        setFilteredWatchList(newFilteredWatchList);
+        setFilteredWatchList(newFilteredWatchList);*/
     };
+
+    const imageIsValid = (currentWatchList: IWatchList) => {
+        if (typeof currentWatchList?.IMDB_Poster !== "undefined" && currentWatchList?.IMDB_Poster !== null && currentWatchList?.IMDB_Poster !== "" && currentWatchList?.IMDB_Poster !== "N/A" && currentWatchList?.IMDB_Poster_Error !== true) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
     return (
         <>
@@ -64,11 +83,11 @@ export default function WatchListCard({ currentWatchList, setImdbJSON }: WatchLi
 
                 <a className="clickable show-link" onClick={() => openDetailClickHandler(currentWatchList.WatchListID, "WatchList")}>
                     <div>
-                        {typeof currentWatchList?.IMDB_Poster !== "undefined" && currentWatchList?.IMDB_Poster !== null && currentWatchList?.IMDB_Poster !== "" && currentWatchList?.IMDB_Poster !== "N/A" && currentWatchList?.IMDB_Poster_Error !== true &&
+                        {imageIsValid(currentWatchList) &&
                             <Image width="128" height="187" alt={currentWatchList.WatchListItemName ?? ""} src={currentWatchList?.IMDB_Poster} onError={() => showDefaultSrc(currentWatchList.WatchListID)} />
                         }
 
-                        {currentWatchList?.IMDB_Poster_Error === true && <>{BrokenImageIconComponent}</>}
+                        {!imageIsValid(currentWatchList) && <>{BrokenImageIconComponent}</>}
                     </div>
                 </a>
 

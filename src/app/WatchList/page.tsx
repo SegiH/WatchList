@@ -15,7 +15,7 @@ import { useRouter } from "next/navigation";
 
 export default function WatchList() {
      const {
-          autoAdd, filteredWatchList, hideTabs, imdbSearchEnabled, isLoading, lastPage, searchModalVisible, searchTerm, setActiveRoute, setIsAdding, setIsEditing, setSearchModalVisible, watchListSortingCheck
+          autoAdd, filteredWatchList, hideTabs, imdbSearchEnabled, isLoading, lastPage, modalVisible, searchTerm, setActiveRoute, setIsAdding, setIsEditing, setModalVisible, watchListSortingCheck
      } = useContext(WatchListContext) as WatchListContextType;
 
      const router = useRouter();
@@ -30,7 +30,7 @@ export default function WatchList() {
           setImdbCardvisible(false);
      }
 
-     const searchModalVisibleClickHandler = async (showHide: boolean) => {
+     const IMDBSearchClickHandler = async (showHide: boolean) => {
           if (searchTerm !== "") {
                if (/^tt\d{7,}$/.test(searchTerm)) {
                     const searchIMDBResponse = await fetch(`/api/SearchIMDB?SearchTerm=${searchTerm}&SearchCount=${1}`, { credentials: 'include' });
@@ -55,7 +55,7 @@ export default function WatchList() {
 
                     return;
                } else {
-                    setSearchModalVisible(showHide);
+                    setModalVisible(showHide);
                }
           }
      }
@@ -77,18 +77,18 @@ export default function WatchList() {
                <div ref={topRef} ></div>
 
                {!isLoading && searchTerm !== "" && imdbSearchEnabled &&
-                    <h1 className="topMargin100"><Button variant="contained" color="secondary" style={{ marginLeft: "10px" }} onClick={() => searchModalVisibleClickHandler(true)}>IMDB</Button></h1>
+                    <h1 className="topMargin100"><Button variant="contained" color="secondary" style={{ marginLeft: "10px" }} onClick={() => IMDBSearchClickHandler(true)}>IMDB</Button></h1>
                }
 
                {!isLoading && filteredWatchList && filteredWatchList.length > 0 && !imdbCardvisible &&
                     <>
-                         {!searchModalVisible &&
+                         {!modalVisible &&
                               <span className="top">
                                    <PageNavigationBar topRef={topRef} />
                               </span>
                          }
 
-                         <span className="topMarginContent">
+                         <span>
                               <ul className={`show-list ${hideTabs ? "noTabs" : ""}`}>
                                    {filteredWatchList?.map((currentWatchList: IWatchList) => {
                                         return (
@@ -98,7 +98,7 @@ export default function WatchList() {
                               </ul>
                          </span>
 
-                         {!searchModalVisible &&
+                         {!modalVisible &&
                               <span className={`bottom ${lastPage ? "lastPage" : ""} ${hideTabs ? "noTabs" : ""}`}>
                                    <PageNavigationBar isBottomNav={true} />
                               </span>

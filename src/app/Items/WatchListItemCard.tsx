@@ -34,13 +34,22 @@ export default function WatchListItemCard({ currentWatchListItem, setImdbJSON }:
 
         const newWatchListItem = newWatchListItemsResult[0];
 
-        const result = await getMissingPoster(currentWatchListItem.WatchListItemID);
-
-        if (Array.isArray(result) && result.length > 0 && result[0]["Status"] === "OK") {
-            newWatchListItem["IMDB_Poster"] = result[0]["IMDB_Poster"];
-            newWatchListItem["IMDB_Poster_Error"] = false;
-        } else {
+        // Retry
+        if (typeof newWatchListItem["IMDB_Poster_RetryCount"] === "undefined") {
+            newWatchListItem["IMDB_Poster_RetryCount"] = 0;
+        }
+        if (newWatchListItem["IMDB_Poster_RetryCount"] === 3) {
             newWatchListItem["IMDB_Poster_Error"] = true;
+        } else {
+            newWatchListItem["IMDB_Poster_RetryCount"]++;
+            const result = await getMissingPoster(currentWatchListItem.WatchListItemID);
+
+            if (Array.isArray(result) && result.length > 0 && result[0]["Status"] === "OK") {
+                newWatchListItem["IMDB_Poster"] = result[0]["IMDB_Poster"];
+                newWatchListItem["IMDB_Poster_Error"] = false;
+            } else {
+                newWatchListItem["IMDB_Poster_Error"] = true;
+            }
         }
 
         setFilteredWatchListItems(newFilteredWatchListItems);

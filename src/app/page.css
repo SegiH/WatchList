@@ -1,11 +1,6 @@
 /* ---------------- MEDIA ---------------- */
-
 @media only screen and (min-width: 992px) {
   .searchIcon { @apply ml-auto!; }
-}
-
-@media screen and (-webkit-min-device-pixel-ratio:0) {
-  .inputStyle { @apply max-w-[200px]!; }
 }
 
 @media only screen and (max-width:600px) {
@@ -27,6 +22,8 @@
 }
 
 @media only screen and (max-width:768px) {
+  .searchInputStyle { @apply w-[230px]!; }
+
   .show-list { @apply relative left-[-20px]; }
 
   .show-item { @apply w-[150px]! mr-[25px]!; }
@@ -124,7 +121,7 @@ table.simpleTable:last-child {
 .fontStyle { @apply font-["Brush_Script_MT",cursive]!; }
 
 .hamburger-icon {
-  @apply text-[3xl] cursor-pointer fixed z-[999999] transition-transform duration-[0.3s] ease-[ease-in-out] left-[15] top-[6px] scale-[2];
+  @apply text-[3xl] cursor-pointer fixed z-[999999] transition-transform duration-[0.3s] ease-[ease-in-out] left-[15] top-[8px] scale-[2];
 }
 
 .hamburger-icon.open {
@@ -169,6 +166,8 @@ table.simpleTable:last-child {
 .leftMargin60 { @apply ml-[60px]; }
 
 .leftMargin75 { @apply ml-[75px]; }
+
+.leftMargin125 { @apply ml-[125px]; }
 
 .lineChart { @apply max-w-[min-content] border; }
 
@@ -252,9 +251,11 @@ table.simpleTable:last-child {
 .pageNavigationBarArrow {
   @apply text-[40px] cursor-pointer flex items-center justify-center h-full;
 }
+
 .pageNavigationBarLeft {
   @apply text-left;
 }
+
 .pageNavigationBarRight {
   @apply text-right ml-auto;
 }
@@ -382,7 +383,11 @@ table.simpleTable:last-child {
 }
 
 .searchInputStyle {
-  @apply relative left-[-20px] top-[-14px];
+  @apply relative top-[-14px] left-[100px] inline-block w-[350px];
+}
+
+.searchInputStyle input {
+  @apply w-[inherit]
 }
 
 .searchResult {
@@ -390,7 +395,7 @@ table.simpleTable:last-child {
 }
 
 .sharedLayout {
-  @apply h-[38px] fixed z-[20000];
+  @apply h-[38px] fixed z-[20000] top-[2px];
 }
 
 .show-list {

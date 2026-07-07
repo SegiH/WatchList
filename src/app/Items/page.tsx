@@ -13,7 +13,7 @@ const WatchListItemCard = React.lazy(() => import('./WatchListItemCard'));
 
 export default function WatchListItems() {
      const {
-         filteredWatchListItems, hideTabs, imdbSearchEnabled, isLoading, searchModalVisible, searchTerm, setActiveRoute, setIsAdding, setIsEditing, setSearchModalVisible, watchListItemsSortingCheck
+         filteredWatchListItems, hideTabs, imdbSearchEnabled, isLoading, modalVisible, searchTerm, setActiveRoute, setIsAdding, setIsEditing, setModalVisible, watchListItemsSortingCheck
      } = useContext(ItemsContext) as ItemsContextType;
 
      const [imdbCardvisible, setImdbCardvisible] = useState(false);
@@ -39,18 +39,18 @@ export default function WatchListItems() {
      return (
           <>
           {!isLoading && searchTerm !== "" && imdbSearchEnabled &&
-                    <h1 className="topMargin100"><Button variant="contained" color="secondary" style={{ marginLeft: "10px" }} onClick={() => setSearchModalVisible(true)}>IMDB</Button></h1>
+                    <h1 className="topMargin100"><Button variant="contained" color="secondary" style={{ marginLeft: "10px" }} onClick={() => setModalVisible(true)}>IMDB</Button></h1>
                }
 
                {!isLoading && watchListItemsSortingCheck === APIStatus.Success && !imdbCardvisible &&
                     <>
-                         {!searchModalVisible &&
+                         {!modalVisible &&
                               <span className="top">
                                    <PageNavigationBar />
                               </span>
                          }
 
-                         <span className="displayInline topMarginContent">
+                         <span className="displayInline">
                               <ul className={`show-list ${hideTabs ? "noTabs" : ""}`}>
                                    {filteredWatchListItems?.map((currentWatchListItem: IWatchListItem, index: number) => {
                                         return (

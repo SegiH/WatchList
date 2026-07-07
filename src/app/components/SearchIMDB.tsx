@@ -9,7 +9,7 @@ import { SearchIMDBContextType } from "../contexts/SearchIMDBContextType";
 
 export default function SearchIMDB() {
      const {
-          AddIconComponent, autoAdd, BrokenImageIconComponent, searchCount, SearchIconComponent, searchModalVisible, searchTerm, setIsAdding, setSearchCount, setSearchModalVisible, setSearchTerm
+          AddIconComponent, autoAdd, BrokenImageIconComponent, modalVisible, searchCount, SearchIconComponent, searchTerm, setIsAdding, setSearchCount, setModalVisible, setSearchTerm
      } = useContext(SearchIMDBContext) as SearchIMDBContextType
 
      const [imdbSearchResults, setIMDBSearchResults] = useState<ISearchImdb[]>([]);
@@ -66,7 +66,7 @@ export default function SearchIMDB() {
 
                     setIMDBSearchResults(imdbSearchResults);
 
-                    setSearchModalVisible(false);
+                    setModalVisible(false);
                }
           } catch (e: any) {
                alert(e.message);
@@ -74,7 +74,7 @@ export default function SearchIMDB() {
      };
 
      const closeSearch = async () => {
-          setSearchModalVisible(false);
+          setModalVisible(false);
      };
 
      const handleKeypress = e => {
@@ -109,17 +109,17 @@ export default function SearchIMDB() {
                     alert(`The error ${searchIMDBResult[1]} occurred while searching IMDB`);
                     setIMDBSearchResults([]);
                     setSearchLoadingCheck(APIStatus.Idle);
-                    setSearchModalVisible(false);
+                    setModalVisible(false);
                } else {
                     if (Object.keys(searchIMDBResult[1]).length === 0) {
                          alert("No results were found");
-                         setSearchModalVisible(false);
+                         setModalVisible(false);
                          return;
                     }
 
                     setIMDBSearchResults(searchIMDBResult[1]);
                     setSearchLoadingCheck(APIStatus.Success);
-                    setSearchModalVisible(true);
+                    setModalVisible(true);
                }
           } catch (e: any) {
                alert(e.message);
@@ -143,7 +143,7 @@ export default function SearchIMDB() {
 
      return (
           <>
-               {(IMDBSearchTerm == "" || (IMDBSearchTerm != "" && searchLoadingCheck === APIStatus.Success)) && searchModalVisible &&
+               {(IMDBSearchTerm == "" || (IMDBSearchTerm != "" && searchLoadingCheck === APIStatus.Success)) && modalVisible &&
                     <div className={`modal zIndex`}>
                          <div className={`modal-content ${searchLoadingCheck === APIStatus.Success ? "" : "customModalHeight"}`}>
                               <div className="container searchHeader sticky">

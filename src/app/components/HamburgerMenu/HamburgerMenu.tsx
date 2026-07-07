@@ -117,8 +117,13 @@ const HamburgerMenu = () => {
                     setTypeFilter(value as number);
                     break;
                case "SortColumn": // Do not auto close menu bar because sort has 2 dropdowns
-                    options["SortColumn"] = value;
-                    setWatchListSortColumn(value as string);
+                    if (activeRoute === "WatchList") {
+                         options["WatchListSortColumn"] = (value as string);
+                         setWatchListSortColumn(value as string);
+                    } else if (activeRoute === "Items") {
+                         options["WatchListSortColumn"] = (value as string);
+                         setWatchListSortColumn(value as string);
+                    }
                     break;
                case "SortDirection":
                     options["SortDirection"] = value;

@@ -29,7 +29,7 @@ interface AutoCompleteWatchListItem {
 
 export default function WatchListDtl() {
      const {
-          BrokenImageIconComponent, CancelIconComponent, demoMode, EditIconComponent, getWatchList, imdbSearchEnabled, isAdding, isEditing, isLoading, pullToRefreshEnabled, recommendationsEnabled, SaveIconComponent, setErrorMessage, setIsAdding, setIsEditing, setIsError, setStillWatching, showSearch, stillWatching, watchListSortDirection, watchListSources, writeLog
+          BrokenImageIconComponent, CancelIconComponent, demoMode, EditIconComponent, getWatchList, imdbSearchEnabled, isAdding, isEditing, isLoading, pullToRefreshEnabled, modalVisible, recommendationsEnabled, SaveIconComponent, setErrorMessage, setIsAdding, setIsEditing, setIsError, setModalVisible, setStillWatching, showSearch, stillWatching, watchListSortDirection, watchListSources, writeLog
      } = useContext(WatchListDtlContext) as WatchListDtlContextType
 
      const currentDate = new Date().toLocaleDateString();
@@ -120,6 +120,7 @@ export default function WatchListDtl() {
           setOriginalWatchListDtl(null);
           setAddModified(false);
           setEditModified(false);
+          setModalVisible(false);
      };
 
      const closeDetail = async () => {
@@ -194,6 +195,7 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
 
                     setWatchListDtl(wld[0]);
                     setWatchListDtlLoadingCheck(APIStatus.Success);
+                    setModalVisible(true);
                }
           } catch (e: any) {
                alert(e.message);
@@ -659,13 +661,14 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
 
      useEffect(() => {
           if (isClosing) {
+               setModalVisible(false);
                router.push("/WatchList");
           }
      }, [isClosing, router]);
 
      return (
           <>
-               {!isLoading && !isClosing && watchListDtlLoadingCheck === APIStatus.Success && formattedNamesLoadingComplete && formattedNames.length > 0 && defaultProps !== null &&
+               {!isLoading && !isClosing && watchListDtlLoadingCheck === APIStatus.Success && formattedNamesLoadingComplete && formattedNames.length > 0 && defaultProps !== null && modalVisible &&
                     <div className="modal">
                          <div className={`modal-content ${watchListDtlID != null ? "fade-in" : ""}`}>
                               {!recommendationsVisible &&

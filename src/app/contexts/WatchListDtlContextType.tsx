@@ -11,6 +11,7 @@ export interface WatchListDtlContextType {
      isAdding: boolean;
      isEditing: boolean;
      isLoading: boolean;
+     modalVisible: boolean;
      pullToRefreshEnabled: (value: boolean) => void;
      recommendationsEnabled: boolean,
      SaveIconComponent: React.ReactNode;
@@ -18,6 +19,7 @@ export interface WatchListDtlContextType {
      setIsAdding: (value: boolean) => void;
      setIsEditing: (value: boolean) => void;
      setIsError: (value: boolean) => void;
+     setModalVisible: (value: boolean) => void;
      setStillWatching: (value: boolean) => void;
      showSearch: () => void;
      stillWatching: boolean;

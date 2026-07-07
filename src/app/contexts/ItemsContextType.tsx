@@ -7,11 +7,11 @@ export interface ItemsContextType {
      hideTabs: boolean;
      imdbSearchEnabled: boolean;
      isLoading: boolean;
-     searchModalVisible: boolean;
+     modalVisible: boolean;
      searchTerm: string;
      setActiveRoute: (value: string) => void;
      setFilteredWatchListItems: (value: IWatchListItem[]) => void;
-     setSearchModalVisible: (value: boolean) => void;
+     setModalVisible: (value: boolean) => void;
      setIsAdding: (value: boolean) => void;
      setIsEditing: (value: boolean) => void;
      watchListItemsSortingCheck: string;

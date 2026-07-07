@@ -7,11 +7,11 @@ export interface WatchListContextType {
      imdbSearchEnabled: boolean;
      isLoading: boolean;
      lastPage: boolean;
-     searchModalVisible: boolean;
+     modalVisible: boolean;
      searchTerm: string;
      setActiveRoute: (value: string) => void;
      setIsAdding: (value: boolean) => void;
      setIsEditing: (value: boolean) => void;
-     setSearchModalVisible: (value: boolean) => void;
+     setModalVisible: (value: boolean) => void;
      watchListSortingCheck: string;
 }

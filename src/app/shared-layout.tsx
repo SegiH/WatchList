@@ -13,7 +13,7 @@ import { SharedLayoutContextType } from "./contexts/SharedLayoutContextType";
 
 const SharedLayout = () => {
      const {
-          activeRoute, darkMode, demoModeNotificationVisible, imdbSearchEnabled, isError, isLoading, loggedInCheck, searchModalVisible, searchTerm, setDemoModeNotificationVisible, setSearchTerm
+          activeRoute, darkMode, demoModeNotificationVisible, isError, isLoading, loggedInCheck, modalVisible, searchTerm, setSearchTerm
      } = useContext(SharedLayoutContext) as SharedLayoutContextType
 
      const [isClient, setIsClient] = useState(false);
@@ -33,7 +33,7 @@ const SharedLayout = () => {
           document.body.className = darkMode ? 'darkMode' : '';
      }, [darkMode]);
 
-     if (loggedInCheck !== APIStatus.Success || !isClient) {
+     if (loggedInCheck !== APIStatus.Success || !isClient || modalVisible) {
           return <></>
      }
 
@@ -47,10 +47,8 @@ const SharedLayout = () => {
 
                          {loggedInCheck === APIStatus.Success &&
                               <span>
-                                   <span className={`leftMargin75 topBar ${demoModeNotificationVisible === true ? "demoNotificationVisible" : ""}`}>
-                                        {!searchModalVisible &&
-                                             <HamburgerMenu />
-                                        }
+                                   <span className={`leftMargin125 topBar ${demoModeNotificationVisible === true ? "demoNotificationVisible" : ""}`}>
+                                        <HamburgerMenu />
 
                                         {(activeRoute === "Stats" || activeRoute === "Admin" || activeRoute === "BugLogs" || activeRoute === "Data") &&
                                              <span className={`leftMargin50 topBarActiveRoute`}>{activeRoute}</span>
@@ -58,14 +56,14 @@ const SharedLayout = () => {
 
                                         {(activeRoute === "WatchList" || activeRoute === "Items") &&
                                              <>
-                                                  <span className={`clickable leftMargin60 maxWidth searchInputStyle visible`}>
-                                                       <input className={`inputStyle fullWidthInput`} ref={inputRef} value={searchTerm} onChange={(event) => setSearchTerm(event.target.value)} />
+                                                  <span className={`clickable searchInputStyle`}>
+                                                       <input ref={inputRef} value={searchTerm} onChange={(event) => setSearchTerm(event.target.value)} />
                                                   </span>
                                              </>
                                         }
                                    </span>
 
-                                   {searchModalVisible &&
+                                   {modalVisible && searchTerm !== "" &&
                                         <SearchIMDB />
                                    }
                               </span>

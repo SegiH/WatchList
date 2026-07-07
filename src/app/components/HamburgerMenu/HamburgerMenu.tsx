@@ -274,7 +274,7 @@ const HamburgerMenu = () => {
                                              </span>
                                         </div>
 
-                                        <div className="menu-row">
+                                        <div className="hamburger-menu-row">
                                              <span>Source</span>
 
                                              <span title="Filter by source">

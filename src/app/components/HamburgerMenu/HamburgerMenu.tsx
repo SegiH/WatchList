@@ -360,6 +360,7 @@ const HamburgerMenu = () => {
                                         <span>Visible Sections</span>
 
                                         <span title="Show WatchList Items">
+                                             {typeof visibleSections !== "undefined" && visibleSections !== null && typeof visibleSectionChoices !== "undefined" && visibleSectionChoices !== null &&
                                              <Select
                                                   isMulti
                                                   value={visibleSections as any}
@@ -405,6 +406,7 @@ const HamburgerMenu = () => {
                                                        }),
                                                   }}
                                              />
+}
                                         </span>
                                    </>
                               }

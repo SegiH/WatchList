@@ -9,7 +9,11 @@
   .customTopMargin { @apply relative top-[12px]!; }
 
   .displayInline { @apply inline!; }
-  
+
+  .pageNavigationBarLeft { @apply top-[-5px]; }
+
+  .pageNavigationBarRight { @apply top-[-5px]; }
+
   .rating { @apply hidden; }
 
   .ratingAlt { @apply inline-flex!; }
@@ -227,7 +231,7 @@ table.simpleTable:last-child {
 .overflowY { @apply overflow-y-scroll; }
 
 .pageNavigationBar {
-  @apply bg-[#fafaec] leading-none border box-border h-[38px] flex items-center text-center w-full flex justify-center z-[100] [-webkit-tap-highlight-color:transparent] border-solid border-[lightgray];
+  @apply bg-[#fafaec] leading-none border box-border h-[38px] flex items-center w-full justify-center z-[100] [-webkit-tap-highlight-color:transparent] border-solid border-[lightgray];
 }
 
 .dark .pageNavigationBar {
@@ -248,18 +252,17 @@ table.simpleTable:last-child {
 .bottom.noTabs .pageNavigationBar {
   @apply bottom-[0];
 }
+
 .pageNavigationBarArrow {
-  @apply flex justify-center h-full text-[40px] cursor-pointer leading-none;
-   position: relative;
-  top: -6px;
+  @apply align-middle justify-center cursor-pointer;
 }
 
 .pageNavigationBarLeft {
-  @apply text-left;
+  @apply relative scale-[3] right-[-25px];
 }
 
 .pageNavigationBarRight {
-  @apply text-right ml-auto;
+  @apply relative ml-auto scale-[3] mr-[25px];
 }
 .pageNavigationBar.noTabs {
   @apply bottom-[0];
@@ -385,7 +388,7 @@ table.simpleTable:last-child {
 }
 
 .searchInputStyle {
-  @apply relative top-[-14px] left-[100px] inline-block w-[350px];
+  @apply relative top-[-11px] left-[110px] inline-block w-[350px];
 }
 
 .searchInputStyle input {

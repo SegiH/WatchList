@@ -15,6 +15,7 @@ export interface TabsContextType {
      isError: boolean;
      isLoading: boolean;
      loggedInCheck: string;
+     modalVisible: boolean;
      pullToRefreshEnabled: (value: boolean) => void;
      routes: IRouteList;
      setActiveRoute: (value: string) => void;

@@ -11,8 +11,10 @@
   .displayInline { @apply inline!; }
 
   .pageNavigationBarLeft { @apply top-[-5px]; }
-
+  
   .pageNavigationBarRight { @apply top-[-5px]; }
+
+  .pageNavigationBarRightTop { @apply left-[40%]! }
 
   .rating { @apply hidden; }
 
@@ -26,7 +28,7 @@
 }
 
 @media only screen and (max-width:768px) {
-  .searchInputStyle { @apply w-[230px]!; }
+  .searchInputStyle { @apply w-[210px]!; }
 
   .show-list { @apply relative left-[-20px]; }
 
@@ -53,7 +55,7 @@ input:checked + .slider:before { @apply translate-x-[26px]; }
 /* ---------------- TABLE ---------------- */
 
 table.simpleTable {
-  @apply w-[fit-content] m-[0] border border-[black] rounded-[8px] font-[Arial,sans-serif];
+  @apply w-[fit-content] m-[0] border border-collapse border-[black] rounded-[8px] font-[Arial,sans-serif];
 }
 
 table.simpleTable:last-child {
@@ -96,7 +98,7 @@ table.simpleTable:last-child {
 
 .clickable { @apply cursor-pointer pointer-events-auto!; }
 
-.closeButton { @apply relative right-[-95px] scale-[2.1]!; }
+.closeButton { @apply relative left-[10px] scale-[2.1]!; }
 
 .closeButtonAdjustment { @apply relative top-[-24px]!; }
 
@@ -119,6 +121,8 @@ table.simpleTable:last-child {
 .inlineFlex { @apply inline-flex; }
 
 .fullWidth { @apply w-full; }
+
+.fullWidthHeight { @apply w-full h-full; }
 
 .fullWidthInput { @apply min-w-[300px]; }
 
@@ -159,9 +163,15 @@ table.simpleTable:last-child {
 
 .iconLarge:last-of-type { @apply mr-[25px]; }
 
+.IMDBSearchButton {
+ @apply relative left-[95px] top-[-17px] h-[30px];
+}
+
 .largeText { @apply text-[36px]; }
 
 .leftMargin { @apply ml-[25px]; }
+
+.leftMargin10 { @apply ml-[10px]; }
 
 .leftMargin40 { @apply ml-[40px]; }
 
@@ -231,7 +241,11 @@ table.simpleTable:last-child {
 .overflowY { @apply overflow-y-scroll; }
 
 .pageNavigationBar {
-  @apply bg-[#fafaec] leading-none border box-border h-[38px] flex items-center w-full justify-center z-[100] [-webkit-tap-highlight-color:transparent] border-solid border-[lightgray];
+  @apply leading-none border box-border h-[38px] flex items-center w-full justify-center z-[100] [-webkit-tap-highlight-color:transparent] border-solid border-[lightgray];
+}
+
+.light .pageNavigationBar {
+  @apply bg-[#fafaec];
 }
 
 .dark .pageNavigationBar {
@@ -253,17 +267,22 @@ table.simpleTable:last-child {
   @apply bottom-[0];
 }
 
-.pageNavigationBarArrow {
-  @apply align-middle justify-center cursor-pointer;
+.pageNavigationBarLeftTop {
+  @apply cursor-pointer relative top-[6px] inline-block scale-[3] right-[-75px];
 }
 
 .pageNavigationBarLeft {
-  @apply relative scale-[3] right-[-25px];
+  @apply cursor-pointer relative scale-[3] right-[-25px];
 }
 
 .pageNavigationBarRight {
-  @apply relative ml-auto scale-[3] mr-[25px];
+  @apply cursor-pointer relative ml-auto scale-[3] mr-[25px];
 }
+
+.pageNavigationBarRightTop {
+  @apply cursor-pointer relative inline-block scale-[3] top-[-15px] left-[80%];
+}
+
 .pageNavigationBar.noTabs {
   @apply bottom-[0];
 }
@@ -286,8 +305,13 @@ table.simpleTable:last-child {
 
 .sortBy { @apply mr-[15px]; }
 
+.searchIMDBButton { @apply relative left-[110px] top-[75px]; }
 .tab {
   @apply [font-family:"Roboto","Helvetica_Neue",sans-serif] text-[xs] tracking-[0.03em] max-w-[168px];
+}
+
+.searchInputStyle {
+  @apply relative left-[120px] top-[-13px] inline-flex w-[350px];
 }
 
 .tabActive {
@@ -318,6 +342,10 @@ table.simpleTable:last-child {
 
 /*.topMarginContent { @apply text-[black] bg-[white] }*/
 .topMarginContent { @apply relative top-[65px] }
+
+.dark .topBar {
+    @apply bg-[#3b3b38];
+}
 
 .topBarActiveRoute { @apply relative top-[5px] }
 
@@ -364,7 +392,7 @@ table.simpleTable:last-child {
 
 /* ---------------- SEARCH ---------------- */
 
-.searchContainer {
+/*.searchContainer {
   @apply inline-flex relative top-[65%] left-[50%] min-w-[400px]! transition-all;
   transform: translate(-50%, -50%);
 }
@@ -388,7 +416,7 @@ table.simpleTable:last-child {
 }
 
 .searchInputStyle {
-  @apply relative top-[-11px] left-[110px] inline-block w-[350px];
+  @apply relative left-[110px] inline-block w-[350px];
 }
 
 .searchInputStyle input {
@@ -397,10 +425,14 @@ table.simpleTable:last-child {
 
 .searchResult {
   @apply flex mb-[15px];
-}
+}*/
 
 .sharedLayout {
-  @apply h-[38px] fixed z-[20000] top-[2px];
+  @apply h-[38px] w-full fixed z-[20000] top-[2px];
+}
+
+.dark .sharedLayout {
+  @apply bg-[#3b3b38] border-[solid] border-[white];
 }
 
 .show-list {

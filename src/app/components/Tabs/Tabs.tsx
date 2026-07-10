@@ -10,7 +10,7 @@ import { TabsContextType } from '../../contexts/TabsContextType';
 
 const Tabs = () => {
      const {
-          activeRoute, demoMode, getPath, hideTabs, isAdding, isAdmin, isClient, isEditing, isEnabled, isError, isLoading, loggedInCheck, pullToRefreshEnabled, routes, setActiveRoute, setSearchTerm, visibleSections
+          activeRoute, demoMode, getPath, hideTabs, isAdding, isAdmin, isClient, isEditing, isEnabled, isError, isLoading, loggedInCheck, modalVisible, pullToRefreshEnabled, routes, setActiveRoute, setSearchTerm, visibleSections
      } = useContext(TabsContext) as TabsContextType;
 
      const router = useRouter();
@@ -35,7 +35,7 @@ const Tabs = () => {
 
      return (
           <>
-               {isClient && loggedInCheck === APIStatus.Success && !isError && !hideTabs && !isLoading && !isAdding && !isEditing && activeRoute !== "" && typeof routes !== "undefined" && routes !== null && (
+               {isClient && loggedInCheck === APIStatus.Success && !isError && !hideTabs && !isLoading && !isAdding && !isEditing && activeRoute !== "" && typeof routes !== "undefined" && routes !== null && !modalVisible && (
                     <div className="tabBar">
                          {Object.keys(routes).length > 0 && Object.keys(routes)
                               .filter((routeName) => {

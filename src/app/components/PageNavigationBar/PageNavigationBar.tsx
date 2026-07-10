@@ -2,8 +2,6 @@ import { useContext, useEffect, useState } from "react";
 
 import { PageNavigationBarContext } from "../../context";
 
-// import "../../page.css";
-
 import { PageNavigationBarContextType } from "../../contexts/PageNavigationBarContextType";
 
 interface PageNavigationBarProps {
@@ -41,11 +39,11 @@ const PageNavigationBar = ({ isBottomNav, topRef }: PageNavigationBarProps) => {
             {!isLoading && (activeRoute === "WatchList" || activeRoute === "Items") && !isAdding && (currentPage !== 1 || (currentPage === 1 && !lastPage)) &&
                 <div className={`pageNavigationBar ${hideTabs ? "pageNavigationBarNoTabs" : ""}${isBottomNav ? " bottom" : ""}`}>
                     {currentPage > 1 &&
-                        <div className={`pageNavigationBarArrow pageNavigationBarLeft leftMargin50`} onClick={() => pageClickHandler(-1)}>&#8592;</div>
+                        <div className={`pageNavigationBarLeft leftMargin50`} onClick={() => pageClickHandler(-1)}>&#8592;</div>
                     }
 
                     {!lastPage &&
-                        <div className={`pageNavigationBarArrow pageNavigationBarRight`} onClick={() => pageClickHandler(1)}>&#8594;</div>
+                        <div className={`pageNavigationBarRight`} onClick={() => pageClickHandler(1)}>&#8594;</div>
                     }
                 </div>
             }

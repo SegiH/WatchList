@@ -1,24 +1,72 @@
 "use client"
 
 import { useContext, useEffect, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
 
 import SearchIMDB from "./components/SearchIMDB";
 import HamburgerMenu from "./components/HamburgerMenu/HamburgerMenu";
+import Loader from "./components/Loader";
 
 import { APIStatus, SharedLayoutContext } from "./context";
-
-import "./page.css";
-import Loader from "./components/Loader";
 import { SharedLayoutContextType } from "./contexts/SharedLayoutContextType";
+import { Button } from "@mui/material";
+import ISearchImdb from "./interfaces/ISearchImdb";
 
 const SharedLayout = () => {
      const {
-          activeRoute, darkMode, demoModeNotificationVisible, isError, isLoading, loggedInCheck, modalVisible, searchTerm, setSearchTerm
+          activeRoute, autoAdd, currentWatchListPage, darkMode, demoModeNotificationVisible, imdbSearchEnabled, isError, isLoading, lastPage, loggedInCheck, modalVisible, searchTerm, setIsAdding, setModalVisible, setNewPage, setSearchTerm
      } = useContext(SharedLayoutContext) as SharedLayoutContextType
 
+     const router = useRouter();
+     const topRef = useRef<HTMLDivElement | null>(null);
+
+     const [imdbSearchResults, setIMDBSearchResults] = useState<ISearchImdb[]>([]);
      const [isClient, setIsClient] = useState(false);
 
      const inputRef = useRef<HTMLInputElement>(null);
+
+     const IMDBSearchClickHandler = async () => {
+          if (searchTerm !== "") {
+               const searchIMDBResponse = await fetch(`/api/SearchIMDB?SearchTerm=${searchTerm}&SearchCount=${1}`, { credentials: 'include' });
+
+               const searchIMDBResult = await searchIMDBResponse.json();
+
+               if (searchIMDBResult[0] !== "OK" && searchIMDBResult[0] !== "ERROR-ALREADY-EXISTS") {
+                    alert(searchIMDBResult[1]);
+                    return;
+               }
+
+               if (/^tt\d{7,}$/.test(searchTerm)) {
+                    if (!autoAdd && searchIMDBResult[0] !== "ERROR-ALREADY-EXISTS") {
+                         alert("The WatchList Item has been added");
+                         return;
+                    }
+
+                    if (autoAdd) {
+                         setIsAdding(true);
+
+                         router.push(`/WatchList/Dtl?WatchListItemID=${searchIMDBResult[0] !== "ERROR-ALREADY-EXISTS" ? searchIMDBResult[2] : searchIMDBResult[2]}`);
+                    }
+
+                    return;
+               } else {
+                    // Will return [{}] if no results
+                    if (searchIMDBResult[1].lengh <= 1) {
+                         alert("No Results");
+                    } else {
+                         setIMDBSearchResults(searchIMDBResult[1]);
+                    }
+               }
+          }
+     }
+
+     const pageClickHandler = (adjustValue: number) => {
+          if (typeof topRef !== "undefined" && topRef !== null && topRef.current !== null && topRef.current.scrollIntoView !== null) {
+               topRef.current?.scrollIntoView({ behavior: "smooth" });
+          }
+
+          setNewPage(adjustValue);
+     }
 
      useEffect(() => {
           const newIsClient = !window.location.href.endsWith("api-doc") && !window.location.href.endsWith("api-doc/") ? true : false;
@@ -33,44 +81,72 @@ const SharedLayout = () => {
           document.body.className = darkMode ? 'darkMode' : '';
      }, [darkMode]);
 
-     if (loggedInCheck !== APIStatus.Success || !isClient || modalVisible) {
+     useEffect(() => {
+          if (imdbSearchResults !== null) {
+               setModalVisible(true);
+          }
+     }, [imdbSearchResults]);
+
+     if (loggedInCheck !== APIStatus.Success || !isClient) {
           return <></>
      }
 
      return (
-          <span className="sharedLayout">
-               {!isError && activeRoute !== "" &&
-                    <>
-                         {isLoading &&
-                              <Loader />
-                         }
+          <>
+               {modalVisible &&
+                    <SearchIMDB imdbSearchResults={imdbSearchResults} />
+               }
 
-                         {loggedInCheck === APIStatus.Success &&
-                              <span>
-                                   <span className={`leftMargin125 topBar ${demoModeNotificationVisible === true ? "demoNotificationVisible" : ""}`}>
-                                        <HamburgerMenu />
+               {!modalVisible &&
+                    <span className="sharedLayout">
+                         <div ref={topRef}></div>
 
-                                        {(activeRoute === "Stats" || activeRoute === "Admin" || activeRoute === "BugLogs" || activeRoute === "Data") &&
-                                             <span className={`leftMargin50 topBarActiveRoute`}>{activeRoute}</span>
-                                        }
-
-                                        {(activeRoute === "WatchList" || activeRoute === "Items") &&
-                                             <>
-                                                  <span className={`clickable searchInputStyle`}>
-                                                       <input ref={inputRef} value={searchTerm} onChange={(event) => setSearchTerm(event.target.value)} />
-                                                  </span>
-                                             </>
-                                        }
-                                   </span>
-
-                                   {modalVisible && searchTerm !== "" &&
-                                        <SearchIMDB />
-                                   }
+                         {currentWatchListPage > 1 &&
+                              <span className="pageNavigationBarLeftTop">
+                                   <span onClick={() => pageClickHandler(-1)}>&#8592;</span>
                               </span>
                          }
-                    </>
+
+                         {!isError && activeRoute !== "" &&
+                              <>
+                                   {isLoading &&
+                                        <Loader />
+                                   }
+
+                                   {loggedInCheck === APIStatus.Success &&
+                                        <span>
+                                             <span className={`leftMargin125 ${demoModeNotificationVisible === true ? "demoNotificationVisible" : ""}`}>
+                                                  {!modalVisible &&
+                                                       <HamburgerMenu />
+                                                  }
+
+                                                  {/*{(activeRoute === "Stats" || activeRoute === "Admin" || activeRoute === "BugLogs" || activeRoute === "Data") &&
+                                             <span className={`leftMargin50 topBarActiveRoute`}>{activeRoute}</span>
+                                        }*/}
+
+                                                  {(activeRoute === "WatchList" || activeRoute === "Items") &&
+                                                       <span className="searchContainer">
+                                                                 <span className={`clickable searchInputStyle`}>
+                                                                      <input ref={inputRef} value={searchTerm} onChange={(event) => setSearchTerm(event.target.value)} />
+                                                                 </span>
+
+                                                            {!isLoading && searchTerm !== "" && imdbSearchEnabled &&
+                                                                 <Button className="IMDBSearchButton" variant="contained" color="secondary" onClick={() => IMDBSearchClickHandler()}>IMDB</Button>
+                                                            }
+                                                       </span>
+                                                  }
+                                             </span>
+                                        </span>
+                                   }
+                              </>
+                         }
+
+                         {!lastPage &&
+                              <span className={`pageNavigationBarRightTop`} onClick={() => pageClickHandler(1)}>&#8594;</span>
+                         }
+                    </span>
                }
-          </span>
+          </>
      )
 }
 

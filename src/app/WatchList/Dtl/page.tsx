@@ -15,7 +15,6 @@ import IWatchList from "../../interfaces/IWatchList";
 import IWatchListItem from "../../interfaces/IWatchListItem";
 import IWatchListSource from "../../interfaces/IWatchListSource";
 
-import "../../page.css";
 
 import { APIStatus, WatchListDtlContext } from "../../context";
 import { WatchListDtlContextType } from "@/app/contexts/WatchListDtlContextType";

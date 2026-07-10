@@ -484,17 +484,6 @@ const DataProvider = ({
           } else {
                return false;
           }
-          /*if (visibleSections.length === 0) {
-               return false;
-          }
-
-          const visibleResult = visibleSections?.filter((section) => section.label === sectionName);
-
-          if (visibleResult.length === 1) {
-               return true;
-          } else {
-               return false;
-          }*/
      }
 
      const isIMDBSearchEnabled = async () => {
@@ -707,7 +696,6 @@ const DataProvider = ({
                ? JSON.parse(newOptions.VisibleSections)
                : [{ value: "2", label: 'Stats' }];
 
-          //alert(JSON.stringify(visibleSections))
           setVisibleSections(newVisibleSections);
      }, [sourceFilter, typeFilter]);
 
@@ -1381,10 +1369,10 @@ const DataProvider = ({
      const loginContextValues = { activeRoute, defaultRoute, demoPassword, demoUsername, loggedInCheck, routeList, setActiveRoute, setDemoMode, setLoggedInCheck, setOptions, setRoutes, setUserData, setVisibleSections };
      const pageNavigationBarContextValues = { activeRoute, currentItemsPage, currentWatchListPage, isAdding, isLoading, hideTabs, lastPage, setNewPage };
      const recommendationsContextValues = { BrokenImageIconComponent, writeLog };
-     const searchIMDBContextValues = { AddIconComponent, autoAdd, BrokenImageIconComponent, searchCount, SearchIconComponent, modalVisible, searchTerm, setIsAdding, setSearchCount, setModalVisible, setSearchTerm };
+     const searchIMDBContextValues = { AddIconComponent, autoAdd, BrokenImageIconComponent, modalVisible, searchCount, setIsAdding, setSearchCount, setModalVisible, setSearchTerm };
      const setupContextValues = { activeRoute, defaultRoute, demoUsername, loggedInCheck, validatePassword };
-     const sharedLayoutContextValues = { activeRoute, darkMode, demoModeNotificationVisible, imdbSearchEnabled, isError, isLoading, loggedInCheck, modalVisible, searchTerm, setDemoModeNotificationVisible, setSearchTerm };
-     const tabsContextValues = { activeRoute, demoMode, getPath, hideTabs, isAdding, isAdmin, isClient, isEditing, isEnabled, isError, isLoading, loggedInCheck, pullToRefreshEnabled, routes, setActiveRoute, setSearchTerm, visibleSections };
+     const sharedLayoutContextValues = { activeRoute, autoAdd, currentWatchListPage, darkMode, demoModeNotificationVisible, imdbSearchEnabled, isError, isLoading, lastPage, loggedInCheck, modalVisible, searchTerm, setDemoModeNotificationVisible, setIsAdding, setModalVisible, setNewPage, setSearchTerm };
+     const tabsContextValues = { activeRoute, demoMode, getPath, hideTabs, isAdding, isAdmin, isClient, isEditing, isEnabled, isError, isLoading, loggedInCheck, modalVisible, pullToRefreshEnabled, routes, setActiveRoute, setSearchTerm, visibleSections };
      const watchListCardContextValues = { BrokenImageIconComponent, filteredWatchList, formatWatchListDates, getMissingPoster, openDetailClickHandler, setFilteredWatchList, writeLog };
      const watchListContextValues = { autoAdd, filteredWatchList, hideTabs, imdbSearchEnabled, isLoading, lastPage, modalVisible, searchTerm, setActiveRoute, setIsAdding, setIsEditing, setModalVisible, watchListSortingCheck };
      const watchListDtlContextValues = { BrokenImageIconComponent, CancelIconComponent, demoMode, EditIconComponent, getWatchList, imdbSearchEnabled, isAdding, isEditing, isLoading, modalVisible, pullToRefreshEnabled, recommendationsEnabled, SaveIconComponent, setErrorMessage, setIsAdding, setIsEditing, setIsError, setModalVisible, setStillWatching, showSearch, stillWatching, watchListSortDirection, watchListSources, writeLog };

@@ -52,12 +52,33 @@ export async function GET(request: NextRequest) {
 
           let results = await watchListDB
                .sort((a: IWatchList, b: IWatchList) => {
+                    const currentWatchListItemsA = watchListItemsDB.filter((watchListItem: IWatchListItem) => {
+                         return watchListItem.WatchListItemID == a.WatchListItemID;
+                    });
+
+                    const currentWatchListItemsB = watchListItemsDB.filter((watchListItem: IWatchListItem) => {
+                         return watchListItem.WatchListItemID == b.WatchListItemID;
+                    });
+
+                    if (currentWatchListItemsA.length !== 1) {
+                         console.log("currentWatchListItemsA.length !== 1!!!!!");
+                         return false;
+                    }
+
+                    if (currentWatchListItemsB.length !== 1) {
+                         console.log("currentWatchListItemsB.length !== 1!!!!!");
+                         return false;
+                    }
+
+                    const currentWatchListItemA = currentWatchListItemsA[0];
+                    const currentWatchListItemB = currentWatchListItemsB[0];
+
                     switch (sortColumn) {
                          case "ID":
                               return a.WatchListID > b.WatchListID ? (sortDirection === "ASC" ? 1 : -1) : sortDirection === "ASC" ? -1 : 1;
                          case "Name":
-                              const aName = a.WatchListItemName;
-                              const bName = b.WatchListItemName;
+                              const aName = currentWatchListItemA.WatchListItemName;
+                              const bName = currentWatchListItemB.WatchListItemName;
 
                               return String(aName) > String(bName) ? (sortDirection === "ASC" ? 1 : -1) : sortDirection === "ASC" ? -1 : 1;
                          case "StartDate":

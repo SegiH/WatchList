@@ -154,7 +154,7 @@ const ManageWatchListTypes = () => {
                }
 
                {watchListTypes && watchListTypes.length > 0 &&
-                    <table style={{ borderWidth: "1px", borderStyle: "solid" }} className={`simpleTable`}>
+                    <table className={`simpleTable`}>
                          <thead>
                               <tr>
                                    <th>Actions</th>

@@ -7,13 +7,12 @@ import React from "react";
 import PageNavigationBar from "../components/PageNavigationBar/PageNavigationBar";
 import { ItemsContextType } from "../contexts/ItemsContextType";
 import IMDBCard from "../components/IMDBCard";
-import { Button } from "@mui/material";
 
 const WatchListItemCard = React.lazy(() => import('./WatchListItemCard'));
 
 export default function WatchListItems() {
      const {
-         filteredWatchListItems, hideTabs, imdbSearchEnabled, isLoading, modalVisible, searchTerm, setActiveRoute, setIsAdding, setIsEditing, setModalVisible, watchListItemsSortingCheck
+          filteredWatchListItems, hideTabs, imdbSearchEnabled, isLoading, modalVisible, searchTerm, setActiveRoute, setIsAdding, setIsEditing, setModalVisible, watchListItemsSortingCheck
      } = useContext(ItemsContext) as ItemsContextType;
 
      const [imdbCardvisible, setImdbCardvisible] = useState(false);
@@ -38,18 +37,8 @@ export default function WatchListItems() {
 
      return (
           <>
-          {!isLoading && searchTerm !== "" && imdbSearchEnabled &&
-                    <h1 className="topMargin100"><Button variant="contained" color="secondary" style={{ marginLeft: "10px" }} onClick={() => setModalVisible(true)}>IMDB</Button></h1>
-               }
-
                {!isLoading && watchListItemsSortingCheck === APIStatus.Success && !imdbCardvisible &&
                     <>
-                         {!modalVisible &&
-                              <span className="top">
-                                   <PageNavigationBar />
-                              </span>
-                         }
-
                          <span className="displayInline">
                               <ul className={`show-list ${hideTabs ? "noTabs" : ""}`}>
                                    {filteredWatchListItems?.map((currentWatchListItem: IWatchListItem, index: number) => {

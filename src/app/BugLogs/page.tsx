@@ -23,11 +23,6 @@ export default function BugLogs() {
 
      const router = useRouter();
 
-     const cssStyle = {
-          width: "100%",
-          height: "100% !important"
-     };
-
      const bugLogChangeHandler = (fieldName: string, fieldValue: string) => {
           const newBugLog = {
                ...(isAdding ? addingBugLog : editingBugLog),
@@ -244,7 +239,7 @@ export default function BugLogs() {
                          }
 
                          {bugLogsLoadingCheck === APIStatus.Success && bugLogs.length > 0 &&
-                              <table style={{ borderWidth: "1px", borderStyle: "solid" }} className={`simpleTable fullWidth`}>
+                              <table className={`simpleTable fullWidth`}>
                                    <thead>
                                         <tr>
                                              <th>Actions</th>
@@ -285,11 +280,11 @@ export default function BugLogs() {
                                                   </td>
 
                                                   <td>
-                                                       <textarea readOnly={false} style={cssStyle} value={addingBugLog.BugName} rows={calculateRowCount(addingBugLog.BugName, addingBugLog.ResolutionNotes)} onChange={(event: React.ChangeEvent<HTMLTextAreaElement>) => bugLogChangeHandler("BugName", event.target.value)} />
+                                                       <textarea readOnly={false} className="fullWidthHeight" value={addingBugLog.BugName} rows={calculateRowCount(addingBugLog.BugName, addingBugLog.ResolutionNotes)} onChange={(event: React.ChangeEvent<HTMLTextAreaElement>) => bugLogChangeHandler("BugName", event.target.value)} />
                                                   </td>
 
                                                   <td>
-                                                       <textarea readOnly={false} style={cssStyle} value={addingBugLog.ResolutionNotes} rows={calculateRowCount(addingBugLog.BugName, addingBugLog.ResolutionNotes)} onChange={(event: React.ChangeEvent<HTMLTextAreaElement>) => bugLogChangeHandler("ResolutionNotes", event.target.value)} />
+                                                       <textarea readOnly={false} className="fullWidthHeight" value={addingBugLog.ResolutionNotes} rows={calculateRowCount(addingBugLog.BugName, addingBugLog.ResolutionNotes)} onChange={(event: React.ChangeEvent<HTMLTextAreaElement>) => bugLogChangeHandler("ResolutionNotes", event.target.value)} />
                                                   </td>
 
                                                   <td>
@@ -344,7 +339,7 @@ export default function BugLogs() {
                                                                  }
 
                                                                  {isEditing &&
-                                                                      <textarea readOnly={false} style={cssStyle} value={typeof editingBugLog.BugName !== "undefined" ? editingBugLog.BugName : ""} rows={calculateRowCount(editingBugLog.BugName, editingBugLog.ResolutionNotes)} onChange={(event: React.ChangeEvent<HTMLTextAreaElement>) => bugLogChangeHandler("BugName", event.target.value)} />
+                                                                      <textarea readOnly={false} className="fullWidthHeight" value={typeof editingBugLog.BugName !== "undefined" ? editingBugLog.BugName : ""} rows={calculateRowCount(editingBugLog.BugName, editingBugLog.ResolutionNotes)} onChange={(event: React.ChangeEvent<HTMLTextAreaElement>) => bugLogChangeHandler("BugName", event.target.value)} />
                                                                  }
                                                             </td>
 
@@ -356,7 +351,7 @@ export default function BugLogs() {
                                                                            }
 
                                                                            {isEditing &&
-                                                                                <textarea readOnly={false} style={cssStyle} value={typeof editingBugLog.ResolutionNotes !== "undefined" ? editingBugLog.ResolutionNotes : ""} rows={calculateRowCount(editingBugLog.BugName, editingBugLog.ResolutionNotes)} onChange={(event: React.ChangeEvent<HTMLTextAreaElement>) => bugLogChangeHandler("ResolutionNotes", event.target.value)} />
+                                                                                <textarea readOnly={false} className="fullWidthHeight" value={typeof editingBugLog.ResolutionNotes !== "undefined" ? editingBugLog.ResolutionNotes : ""} rows={calculateRowCount(editingBugLog.BugName, editingBugLog.ResolutionNotes)} onChange={(event: React.ChangeEvent<HTMLTextAreaElement>) => bugLogChangeHandler("ResolutionNotes", event.target.value)} />
                                                                            }
                                                                       </td>
 

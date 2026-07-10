@@ -91,7 +91,7 @@ const MetaDataFilter = ({ closeMetaDataFilters, metaDataFilters, setMetaDataFilt
         <>
             {metaDataLoadingCheck === APIStatus.Success &&
                 <div className="modal scrollable">
-                    <div className={`modal-content scrollable overflowY settingsPanel textLabel`} style={{ overflowY: "auto" }}>
+                    <div className={`modal-content scrollable overflowY settingsPanel textLabel`}>
                         <div>Metadata Filter</div>
 
                         <div className="metaDataFilterButtons">

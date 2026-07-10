@@ -82,7 +82,7 @@ const SharedLayout = () => {
      }, [darkMode]);
 
      useEffect(() => {
-          if (imdbSearchResults !== null) {
+          if (imdbSearchResults.length > 0) {
                setModalVisible(true);
           }
      }, [imdbSearchResults]);

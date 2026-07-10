@@ -86,7 +86,7 @@ export default function SearchIMDB(props) {
                                                   </span>
                                              </div>
                               <div className="container searchHeader sticky">
-                                   <div style={{ marginBottom: "20px" }}>
+                                   <div>
                                         <div className='customWidth flex'>
                                              <div className="leftMargin searchLabel textLabel">Count</div>
 

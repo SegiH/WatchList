@@ -90,14 +90,14 @@ const MetaDataFilter = ({ closeMetaDataFilters, metaDataFilters, setMetaDataFilt
     return (
         <>
             {metaDataLoadingCheck === APIStatus.Success &&
-                <div className="modal scrollable">
-                    <div className={`modal-content scrollable overflowY settingsPanel textLabel`}>
-                        <div>Metadata Filter</div>
+                <div className="modal bottomMargin75">
+                    <div className={`modal-content metaDataFilters overflowY opacity-full textLabel`}>
+                        <div className="metaDataFilterLabel">Metadata Filter</div>
 
-                        <div className="metaDataFilterButtons">
+                        <span className="metaDataFilterButtons">
                             <Button variant="contained" color="error" onClick={() => clearFiltersClickHandler()}>Clear</Button>
                             <Button variant="contained" onClick={() => setFiltersClickHandler()}>Go</Button>
-                        </div>
+                        </span>
 
                         <br />
 
@@ -112,7 +112,7 @@ const MetaDataFilter = ({ closeMetaDataFilters, metaDataFilters, setMetaDataFilt
                                             value={selectedValues[meta]}
                                             onChange={(selectedOptions: any) => filterChangeHandler(meta, selectedOptions)}
                                             options={metaDataObj[meta]["Values"]}
-                                            className="custom-select"
+                                            className="custom-select bottomMargin20"
                                             styles={{
                                                 control: (provided) => ({
                                                     ...provided,

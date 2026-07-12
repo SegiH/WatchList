@@ -22,6 +22,7 @@ export interface HamburgerMenuContextType {
     loggedInCheck: string;
     LogOutIconComponent: React.ReactNode;
     metaDataFilters: any[];
+    metaDataFilterVisible: boolean;
     openDetailClickHandler: (value: number, activeRouteOverride?: string) => void; // *
     pullToRefreshEnabled: (value: boolean) => void;
     routes: IRouteList;
@@ -31,6 +32,7 @@ export interface HamburgerMenuContextType {
     saveOptions: (newOptions: IUserOption) => void;
     setNewPage: (value: number) => void;
     setOptions: (value: IUserOption) => void;
+    setMetaDataFilterVisible: (value: boolean) => void;
     setShowMissingArtwork: (value: boolean) => void;
     setSourceFilter: (value: number) => void;
     setStillWatching: (value: boolean) => void;

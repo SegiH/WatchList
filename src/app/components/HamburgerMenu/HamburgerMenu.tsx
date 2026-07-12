@@ -15,12 +15,11 @@ import { useTheme } from "next-themes";
 
 const HamburgerMenu = () => {
      const {
-          activeRoute, archivedVisible, autoAdd, buildDate, darkMode, defaultRoute, demoMode, demoModeNotificationVisible, hideTabs, isAdding, isAdmin, isEditing, isEnabled, loggedInCheck, LogOutIconComponent, metaDataFilters, openDetailClickHandler, routes, saveOptions, setActiveRoute, setIsLoading, setMetaDataFilters, setNewPage, setOptions, setShowMissingArtwork, setSourceFilter, setStillWatching, setTypeFilter, setVisibleSections, setWatchListSortColumn, setWatchListSortDirection, showMissingArtwork, signOut, sourceFilter, stillWatching, typeFilter, visibleSections, visibleSectionChoices, watchListItemsSortColumns, watchListSortColumn, watchListSortColumns, watchListSortDirection, watchListSources, watchListTypes
+          activeRoute, archivedVisible, autoAdd, buildDate, darkMode, defaultRoute, demoMode, demoModeNotificationVisible, hideTabs, isAdding, isAdmin, isEditing, isEnabled, loggedInCheck, LogOutIconComponent, metaDataFilters, metaDataFilterVisible, openDetailClickHandler, routes, saveOptions, setActiveRoute, setIsLoading, setMetaDataFilters, setMetaDataFilterVisible, setNewPage, setOptions, setShowMissingArtwork, setSourceFilter, setStillWatching, setTypeFilter, setVisibleSections, setWatchListSortColumn, setWatchListSortDirection, showMissingArtwork, signOut, sourceFilter, stillWatching, typeFilter, visibleSections, visibleSectionChoices, watchListItemsSortColumns, watchListSortColumn, watchListSortColumns, watchListSortDirection, watchListSources, watchListTypes
      } = useContext(HamburgerMenuContext) as HamburgerMenuContextType
 
      const [drawerCloseCountdown, setDrawerCloseCountdown] = useState(-1);
      const [isOpen, setIsOpen] = useState(false);
-     const [metadataFiltervisible, setMetadataFiltervisible] = useState(false);
 
      const menuRef = useRef<HTMLDivElement | null>(null);
      const iconRef = useRef<HTMLDivElement | null>(null);
@@ -61,11 +60,11 @@ const HamburgerMenu = () => {
      }
 
      const closeMetaDataFilters = async () => {
-          setMetadataFiltervisible(false);
+          setMetaDataFilterVisible(false);
      }
 
      const filterByMetadataClickHandler = () => {
-          setMetadataFiltervisible(true);
+          setMetaDataFilterVisible(true);
           setDrawerCloseCountdown(0);
           setIsOpen(false);
      }
@@ -148,7 +147,7 @@ const HamburgerMenu = () => {
      }
 
      const toggleMenu = () => {
-          if (isAdding || isEditing) {
+          if (isAdding || isEditing || metaDataFilterVisible) {
                return;
           }
 
@@ -500,7 +499,7 @@ const HamburgerMenu = () => {
                     </div>
                </div>
 
-               {metadataFiltervisible &&
+               {metaDataFilterVisible &&
                     <MetaDataFilter closeMetaDataFilters={closeMetaDataFilters} metaDataFilters={metaDataFilters} setMetaDataFilters={setMetaDataFilters} />
                }
           </>

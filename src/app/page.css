@@ -222,6 +222,12 @@ table.simpleTable:last-child {
 
 .maxWidth { @apply min-w-[50%]; }
 
+.metaDataFilterButtons { @apply flex items-center justify-between w-[300px]; }
+
+.metaDataFilterLabel { @apply select-none mb-[20px] }
+
+.metaDataFilters { @apply relative top-[-50px] h-[98%] w-[300px]! }
+
 .minWidth105 { @apply min-w-[105px]!; }
 
 .minWidth150 { @apply min-w-[150px]!; }
@@ -373,10 +379,6 @@ table.simpleTable:last-child {
   @apply fixed top-[0] left-[0] w-full h-full overflow-auto pt-[100px] z-[999];
 }
 
-.modal-content:has(> .datagrid) {
-   background-color: black;
-   opacity: 0.8;
-}
 
 .modal.scrollable {
   @apply overflow-hidden! flex justify-center items-center;
@@ -388,6 +390,10 @@ table.simpleTable:last-child {
 
 .modal-content.scrollable {
   @apply overflow-y-auto max-h-[80vh];
+}
+
+.opacity-full {
+  @apply bg-[black];
 }
 
 /* ---------------- SEARCH ---------------- */

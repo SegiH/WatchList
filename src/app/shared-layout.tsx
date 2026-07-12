@@ -93,7 +93,7 @@ const SharedLayout = () => {
 
      return (
           <>
-               {modalVisible &&
+               {modalVisible && imdbSearchResults.length > 0 &&
                     <SearchIMDB imdbSearchResults={imdbSearchResults} />
                }
 

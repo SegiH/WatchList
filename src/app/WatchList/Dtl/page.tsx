@@ -417,6 +417,8 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
                          }
 
                          router.push("/WatchList");
+
+                         setModalVisible(false);
                     }
                } catch (e: any) {
                     alert(`The error ${e.message} occurred while adding the detail`);

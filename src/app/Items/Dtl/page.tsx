@@ -330,6 +330,8 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
                          setIsAdding(true);
                          router.push(`/WatchList/Dtl?WatchListItemID=${saveNewItemDtlResult[1]}`);
                          getWatchListItems();
+                    } else {
+                         setModalVisible(false);
                     }
                }
           } catch (e: any) {

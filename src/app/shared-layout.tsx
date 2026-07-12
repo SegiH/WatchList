@@ -87,6 +87,12 @@ const SharedLayout = () => {
           }
      }, [imdbSearchResults]);
 
+     useEffect(() => {
+          if (!modalVisible) {
+               setIMDBSearchResults([]);
+          }
+     }, [modalVisible]);
+
      if (loggedInCheck !== APIStatus.Success || !isClient) {
           return <></>
      }

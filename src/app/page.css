@@ -293,7 +293,7 @@ table.simpleTable:last-child {
 
 .rightMargin { @apply mr-[50px]; }
 
-.row { @apply inline-flex left-[-50px]; }
+.row { @apply flex items-center justify-center gap-[25] }
 
 .saveIcon { @apply relative top-[-5px] scale-[1.8]; }
 
@@ -423,9 +423,11 @@ table.simpleTable:last-child {
   @apply w-[inherit]
 }
 
+*/
+
 .searchResult {
-  @apply flex mb-[15px];
-}*/
+  @apply inline-flex mb-[15px] h-full border-[solid] border-[1px] border-[white] w-[300px];
+}
 
 .sharedLayout {
   @apply h-[38px] w-full fixed z-[20000] top-[2px];

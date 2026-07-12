@@ -14,7 +14,7 @@ import WatchListHistory from "@/app/components/WatchListHistory";
 
 export default function ItemsDtl() {
      const {
-          BrokenImageIconComponent, CancelIconComponent, demoMode, EditIconComponent, formatWatchListDates, getMissingPoster, getWatchListItems, isAdding, isEditing, isEnabled, isLoading, pullToRefreshEnabled, SaveIconComponent, setErrorMessage, setIsAdding, setIsEditing, setIsError, setModalVisible, watchListTypes, writeLog
+          autoAdd, BrokenImageIconComponent, CancelIconComponent, demoMode, EditIconComponent, formatWatchListDates, getMissingPoster, getWatchListItems, isAdding, isEditing, isEnabled, isLoading, pullToRefreshEnabled, SaveIconComponent, setErrorMessage, setIsAdding, setIsEditing, setIsError, setModalVisible, watchListTypes, writeLog
      } = useContext(ItemsDtlContext) as ItemsDtlContextType
 
      const [addWatchListItemDtl, setAddWatchListItemDtl] = useState<IWatchListItem | null>();
@@ -324,14 +324,19 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
 
                     setIsAdding(false);
 
-                    const addNewWatchListPrompt = confirm("Do you want to add a new WatchList record now ?");
+                    if (!autoAdd) {
+                         const addNewWatchListPrompt = confirm("Do you want to add a new WatchList record now ?");
 
-                    if (addNewWatchListPrompt) {
-                         setIsAdding(true);
-                         router.push(`/WatchList/Dtl?WatchListItemID=${saveNewItemDtlResult[1]}`);
-                         getWatchListItems();
+                         if (addNewWatchListPrompt) {
+                              setIsAdding(true);
+                              setModalVisible(true);
+                              router.push(`/WatchList/Dtl?WatchListItemID=${saveNewItemDtlResult[1]}`);
+                              getWatchListItems();
+                         } else {
+                              setModalVisible(false);
+                         }
                     } else {
-                         setModalVisible(false);
+                         setModalVisible(true);
                     }
                }
           } catch (e: any) {

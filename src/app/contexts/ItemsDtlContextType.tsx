@@ -1,6 +1,7 @@
 import IWatchListType from "../interfaces/IWatchListType";
 
 export interface ItemsDtlContextType {
+     autoAdd: boolean;
      BrokenImageIconComponent: React.ReactNode;
      CancelIconComponent: React.ReactNode;
      darkMode: boolean;

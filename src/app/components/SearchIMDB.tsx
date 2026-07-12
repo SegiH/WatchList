@@ -55,14 +55,18 @@ export default function SearchIMDB(props) {
                } else if (searchIMDBResult[0] === "ERROR-ALREADY-EXISTS") {
                     alert(searchIMDBResult[1]);
                } else {
+                    setSearchTerm("");
+                    props.setIMDBSearchResults([]);
+
                     if (autoAdd) {
                          setIsAdding(true);
+
+                         setModalVisible(true);
+
                          router.push(`/WatchList/Dtl?WatchListItemID=${searchIMDBResult[1]}`);
+                    } else {
+                         setModalVisible(false);
                     }
-
-                    setSearchTerm("");
-
-                    setModalVisible(false);
                }
           } catch (e: any) {
                alert(e.message);
@@ -81,11 +85,11 @@ export default function SearchIMDB(props) {
                     <div className={`modal zIndex`}>
                          <div className={`modal-content`}>
                               <div className="card rightAligned customCloseButton">
-                                                  <span className="clickable closeButton" onClick={closeSearch}>
-                                                       X
-                                                  </span>
-                                             </div>
-                              <div className="container searchHeader sticky">
+                                   <span className="clickable closeButton" onClick={closeSearch}>
+                                        X
+                                   </span>
+                              </div>
+                              <div>
                                    <div>
                                         <div className='customWidth flex'>
                                              <div className="leftMargin searchLabel textLabel">Count</div>
@@ -103,43 +107,43 @@ export default function SearchIMDB(props) {
                                    </div>
                               </div>
 
-                              <table className="datagrid">
-                                   <tbody className="data watchList">
+                              <span>
+                                   <span className="row">
                                         {typeof props.imdbSearchResults !== "undefined" && props.imdbSearchResults !== null && props.imdbSearchResults.length > 0 &&
                                              props.imdbSearchResults.map((currentResult: ISearchImdb, index: number) => {
                                                   return (
-                                                       <React.Fragment key={index}>
+                                                       <span key={index}>
                                                             {typeof currentResult.Poster !== "undefined" && currentResult.Poster !== null && currentResult.Poster !== "" && currentResult.Poster !== "N/A" &&
-                                                                 <tr>
-                                                                      <td className="row">
-                                                                           <span className="searchResult">
-                                                                                <span className="addSearchResultIcon" onClick={() => addIMDBSearchResultClickHandler(index)}>{AddIconComponent}</span>
+                                                                 <span>
+                                                                      <span>
+                                                                           {/*<span className="addSearchResultIcon" onClick={() => addIMDBSearchResultClickHandler(index)}>{AddIconComponent}</span>*/}
 
-                                                                                <Image width="100" height="125" className="searchResultPoster" src={currentResult.Poster} alt={currentResult.Title} />
+                                                                           {typeof (currentResult.Poster !== "undefined" && currentResult.Poster !== null && currentResult.Poster !== "" && currentResult.Poster !== "N/A" && (currentResult.Poster.toString().startsWith("http://") || currentResult.Poster.toString().startsWith("https://"))) &&
+                                                                                <Image width="100" height="125" className="searchResultPoster" src={currentResult.Poster} onClick={() => addIMDBSearchResultClickHandler(index)} alt={currentResult.Title} />
+                                                                           }
 
-                                                                                <span className="textLabel">
-                                                                                     {currentResult.Title} ({currentResult.Year})
-                                                                                </span>
-
-                                                                                {currentResult.Poster === "N/A" && (
-                                                                                     <>
-                                                                                          <span className="textLabel">
-                                                                                               {currentResult.Title} ({currentResult.Year})
-                                                                                          </span>
-
-                                                                                          <span className="searchResultPoster">{BrokenImageIconComponent}</span>
-                                                                                     </>
-                                                                                )}
+                                                                           <span className="textLabel">
+                                                                                {currentResult.Title} ({currentResult.Year})
                                                                            </span>
-                                                                      </td>
-                                                                 </tr>
+
+                                                                           {currentResult.Poster === "N/A" && (
+                                                                                <>
+                                                                                     <span className="textLabel">
+                                                                                          {currentResult.Title} ({currentResult.Year})
+                                                                                     </span>
+
+                                                                                     <span className="searchResultPoster">{BrokenImageIconComponent}</span>
+                                                                                </>
+                                                                           )}
+                                                                      </span>
+                                                                 </span>
                                                             }
-                                                       </React.Fragment>
+                                                       </span>
                                                   );
                                              })
                                         }
-                                   </tbody>
-                              </table>
+                                   </span>
+                              </span>
                          </div>
                     </div >
                }

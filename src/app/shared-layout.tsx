@@ -27,7 +27,7 @@ const SharedLayout = () => {
 
      const IMDBSearchClickHandler = async () => {
           if (searchTerm !== "") {
-               const searchIMDBResponse = await fetch(`/api/SearchIMDB?SearchTerm=${searchTerm}&SearchCount=${1}`, { credentials: 'include' });
+               const searchIMDBResponse = await fetch(`/api/SearchIMDB?SearchTerm=${searchTerm}&SearchCount=${5}`, { credentials: 'include' });
 
                const searchIMDBResult = await searchIMDBResponse.json();
 
@@ -44,6 +44,8 @@ const SharedLayout = () => {
 
                     if (autoAdd) {
                          setIsAdding(true);
+
+                         setModalVisible(true);
 
                          router.push(`/WatchList/Dtl?WatchListItemID=${searchIMDBResult[0] !== "ERROR-ALREADY-EXISTS" ? searchIMDBResult[2] : searchIMDBResult[2]}`);
                     }
@@ -100,7 +102,7 @@ const SharedLayout = () => {
      return (
           <>
                {modalVisible && imdbSearchResults.length > 0 &&
-                    <SearchIMDB imdbSearchResults={imdbSearchResults} />
+                    <SearchIMDB imdbSearchResults={imdbSearchResults} setIMDBSearchResults={setIMDBSearchResults} />
                }
 
                {!modalVisible &&

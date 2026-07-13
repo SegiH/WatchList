@@ -90,7 +90,7 @@ const MetaDataFilter = ({ closeMetaDataFilters, metaDataFilters, setMetaDataFilt
     return (
         <>
             {metaDataLoadingCheck === APIStatus.Success &&
-                <div className="modal bottomMargin75">
+                <div className="modal bottomMargin75 metaDataFiltersModal">
                     <div className={`modal-content metaDataFilters overflowY opacity-full textLabel`}>
                         <div className="metaDataFilterLabel">Metadata Filter</div>
 

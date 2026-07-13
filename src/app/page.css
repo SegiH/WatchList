@@ -222,11 +222,12 @@ table.simpleTable:last-child {
 
 .maxWidth { @apply min-w-[50%]; }
 
+.metaDataFiltersModal { @apply pt-[50px]! pb-[150px] }
 .metaDataFilterButtons { @apply flex items-center justify-between w-[300px]; }
 
 .metaDataFilterLabel { @apply select-none mb-[20px] }
 
-.metaDataFilters { @apply relative top-[-50px] h-[98%] w-[300px]! }
+.metaDataFilters { @apply relative top-[-50px] h-[98%] w-[300px]! mb-[100px] }
 
 .minWidth105 { @apply min-w-[105px]!; }
 

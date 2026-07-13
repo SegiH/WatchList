@@ -163,6 +163,15 @@ table.simpleTable:last-child {
 
 .iconLarge:last-of-type { @apply mr-[25px]; }
 
+.IMDBCardModal {
+    @apply relative pt-[50px]! pb-[150px]
+}
+
+/* .closeButton { @apply relative left-[10px] scale-[2.1]!; }   */
+.IMDBCloseButton {
+  @apply relative right-[-90%];
+}
+
 .IMDBSearchButton {
  @apply relative left-[95px] top-[-17px] h-[30px];
 }
@@ -247,6 +256,8 @@ table.simpleTable:last-child {
 
 .overflowY { @apply overflow-y-scroll; }
 
+.overflowYAuto {  @apply overflow-y-auto; }
+
 .pageNavigationBar {
   @apply leading-none border box-border h-[38px] flex items-center w-full justify-center z-[100] [-webkit-tap-highlight-color:transparent] border-solid border-[lightgray];
 }
@@ -298,7 +309,7 @@ table.simpleTable:last-child {
 
 .primary { @apply text-[rgb(25,118,210)]; }
 
-.rightMargin { @apply mr-[50px]; }
+.rightMargin { @apply relative right-[50px]; }
 
 .row { @apply flex items-center justify-center gap-[25] }
 

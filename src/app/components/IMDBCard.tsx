@@ -8,11 +8,11 @@ interface IMDBCardProps {
 const IMDBCard = ({ closeIMDBCard, IMDB_JSON }: IMDBCardProps) => {
     return (
         <>
-            <div className="modal">
+            <span className="modal IMDBCardModal">
                 <div className={`modal-content scrollable overflowX overflowY imdbCard textLabel`} style={{ overflowY: "auto" }}>
-                    <div>IMDB Card</div>
+                    <span>IMDB Card</span>
 
-                    <span className="clickable closeButton closeButtonAdjustment" onClick={closeIMDBCard}>
+                    <span className="clickable IMDBCloseButton" onClick={closeIMDBCard}>
                         X
                     </span>
 
@@ -27,7 +27,7 @@ const IMDBCard = ({ closeIMDBCard, IMDB_JSON }: IMDBCardProps) => {
                         )
                     })}
                 </div>
-            </div>
+            </span>
         </>
     )
 }

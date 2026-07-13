@@ -137,7 +137,7 @@ export default function WatchListCard({ currentWatchList, setImdbJSON }: WatchLi
                         value={typeof currentWatchList?.Rating !== "undefined" ? currentWatchList?.Rating : null}
                         precision={0.5}
                         defaultValue={0}
-                        style={{ opacity: 1 }}
+                        className="opacity-full"
                     />
                 </div>
 

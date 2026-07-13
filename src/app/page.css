@@ -98,9 +98,7 @@ table.simpleTable:last-child {
 
 .clickable { @apply cursor-pointer pointer-events-auto!; }
 
-.closeButton { @apply relative left-[10px] scale-[2.1]!; }
-
-.closeButtonAdjustment { @apply relative top-[-24px]!; }
+.closeButton { @apply relative left-[140px] scale-[2.1]!; }
 
 .customCloseButton { @apply float-right; }
 
@@ -167,7 +165,6 @@ table.simpleTable:last-child {
     @apply relative pt-[50px]! pb-[150px]
 }
 
-/* .closeButton { @apply relative left-[10px] scale-[2.1]!; }   */
 .IMDBCloseButton {
   @apply relative right-[-90%];
 }
@@ -405,6 +402,10 @@ table.simpleTable:last-child {
 }
 
 .opacity-full {
+  @apply opacity-[1];
+}
+
+.black-bg {
   @apply bg-[black];
 }
 

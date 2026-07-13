@@ -91,7 +91,7 @@ const MetaDataFilter = ({ closeMetaDataFilters, metaDataFilters, setMetaDataFilt
         <>
             {metaDataLoadingCheck === APIStatus.Success &&
                 <div className="modal bottomMargin75 metaDataFiltersModal">
-                    <div className={`modal-content metaDataFilters overflowY opacity-full textLabel`}>
+                    <div className={`modal-content metaDataFilters overflowY black-bg textLabel`}>
                         <div className="metaDataFilterLabel">Metadata Filter</div>
 
                         <span className="metaDataFilterButtons">

@@ -98,7 +98,7 @@ export default function SearchIMDB(props) {
                                              })}
                                         </select>
 
-                                        <span className="clickable IMDBCloseButton leftMargin60" onClick={closeSearch}>
+                                        <span className="clickable IMDBCloseButton" onClick={closeSearch}>
                                              X
                                         </span>
                                    </span>

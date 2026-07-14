@@ -22,14 +22,14 @@
 
   .favoriteIcon { @apply max-w-[15px]! max-h-[15px]!; }
 
+  .searchInputStyle { @apply relative! left-[60px]! w-[150px]!; }
+
   .sidebar-menu { @apply w-full; }
 
   .stillWatching { @apply min-w-[110px]; }
 }
 
 @media only screen and (max-width:768px) {
-  .searchInputStyle { @apply w-[210px]!; }
-
   .show-list { @apply relative left-[-20px]; }
 
   .show-item { @apply w-[150px]! mr-[25px]!; }

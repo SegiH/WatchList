@@ -9,15 +9,15 @@ import { SearchIMDBContextType } from "../contexts/SearchIMDBContextType";
 
 export default function SearchIMDB(props) {
      const {
-          AddIconComponent, autoAdd, BrokenImageIconComponent, modalVisible, searchCount, setIsAdding, setSearchCount, setModalVisible, setSearchTerm
+          autoAdd, BrokenImageIconComponent, modalVisible, searchCount, setIsAdding, setSearchCount, setModalVisible, setSearchTerm
      } = useContext(SearchIMDBContext) as SearchIMDBContextType
 
      const searchCountOptions = {
-          "10 results": 1,
-          "20 results": 2,
-          "30 results": 3,
-          "40 results": 4,
-          "50 results": 5
+          "10 results": 10,
+          "20 results": 20,
+          "30 results": 30,
+          "40 results": 40,
+          "50 results": 50
      };
 
      const router = useRouter();
@@ -82,42 +82,40 @@ export default function SearchIMDB(props) {
      return (
           <>
                {modalVisible &&
-                    <div className={`modal zIndex`}>
+                    <span className={`modal IMDBSearchModalContent zIndex`}>
                          <div className={`modal-content`}>
-                              <div className="card rightAligned customCloseButton">
-                                   <span className="clickable closeButton" onClick={closeSearch}>
-                                        X
+                              <div className="IMDBSearchHeader">
+                                   <span className="flex items-center gap-[12px]">
+                                        <span className="ml-[200px]">Count</span>
+
+                                        <select className="customBorderRadius leftMargin60" value={searchCount} onChange={(event: React.ChangeEvent<HTMLSelectElement>) => setSearchCount(parseInt(event.target.value, 10))}>
+                                             {Object.keys(searchCountOptions).map((searchCountName: string, index: number) => {
+                                                  return (
+                                                       <option key={index} value={searchCountOptions[searchCountName]}>
+                                                            {searchCountName}
+                                                       </option>
+                                                  );
+                                             })}
+                                        </select>
+
+                                        <span className="clickable IMDBCloseButton leftMargin60" onClick={closeSearch}>
+                                             X
+                                        </span>
                                    </span>
                               </div>
-                              <div>
-                                   <div>
-                                        <div className='customWidth flex'>
-                                             <div className="leftMargin searchLabel textLabel">Count</div>
 
-                                             <select className="customBorderRadius leftMargin" value={searchCount} onChange={(event: React.ChangeEvent<HTMLSelectElement>) => setSearchCount(parseInt(event.target.value, 10))}>
-                                                  {Object.keys(searchCountOptions).map((searchCount: string, index: number) => {
-                                                       return (
-                                                            <option key={index} value={searchCountOptions[searchCount]}>
-                                                                 {searchCount}
-                                                            </option>
-                                                       );
-                                                  })}
-                                             </select>
-                                        </div>
-                                   </div>
-                              </div>
-
-                              <span>
+                              <div className="paddingTop50">
                                    <span className="row">
                                         {typeof props.imdbSearchResults !== "undefined" && props.imdbSearchResults !== null && props.imdbSearchResults.length > 0 &&
-                                             props.imdbSearchResults.map((currentResult: ISearchImdb, index: number) => {
+                                             props.imdbSearchResults
+                                             .filter((currentResult: ISearchImdb, index: number) => {
+                                                  return index <= searchCount;
+                                             }).map((currentResult: ISearchImdb, index: number) => {
                                                   return (
                                                        <span key={index}>
                                                             {typeof currentResult.Poster !== "undefined" && currentResult.Poster !== null && currentResult.Poster !== "" && currentResult.Poster !== "N/A" &&
                                                                  <span>
                                                                       <span>
-                                                                           {/*<span className="addSearchResultIcon" onClick={() => addIMDBSearchResultClickHandler(index)}>{AddIconComponent}</span>*/}
-
                                                                            {typeof (currentResult.Poster !== "undefined" && currentResult.Poster !== null && currentResult.Poster !== "" && currentResult.Poster !== "N/A" && (currentResult.Poster.toString().startsWith("http://") || currentResult.Poster.toString().startsWith("https://"))) &&
                                                                                 <Image width="100" height="125" className="searchResultPoster" src={currentResult.Poster} onClick={() => addIMDBSearchResultClickHandler(index)} alt={currentResult.Title} />
                                                                            }
@@ -143,9 +141,9 @@ export default function SearchIMDB(props) {
                                              })
                                         }
                                    </span>
-                              </span>
+                              </div>
                          </div>
-                    </div >
+                    </span>
                }
           </>
      );

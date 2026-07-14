@@ -1,8 +1,8 @@
 import { useContext, useEffect, useState } from "react";
 
-import { PageNavigationBarContext } from "../../context";
+import { PageNavigationBarContext } from "../context";
 
-import { PageNavigationBarContextType } from "../../contexts/PageNavigationBarContextType";
+import { PageNavigationBarContextType } from "../contexts/PageNavigationBarContextType";
 
 interface PageNavigationBarProps {
     isBottomNav?: boolean;

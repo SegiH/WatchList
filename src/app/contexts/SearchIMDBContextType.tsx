@@ -1,5 +1,4 @@
 export interface SearchIMDBContextType {
-     AddIconComponent: React.ReactNode;
      autoAdd: boolean;
      BrokenImageIconComponent: React.ReactNode;
      darkMode: boolean;

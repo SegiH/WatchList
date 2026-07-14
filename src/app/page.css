@@ -78,6 +78,10 @@ table.simpleTable:last-child {
   @apply overflow-x-auto overflow-y-hidden;
 }
 
+.autoComplete {
+  @apply bg-[white];
+}
+
 /* ---------------- COMMON UTILITIES ---------------- */
 
 .borderRadius15 { @apply rounded-[15px]; }
@@ -86,6 +90,9 @@ table.simpleTable:last-child {
 
 .bottomMargin75 { @apply mb-[100px]; }
 
+.buildDate {
+  @apply w-[215px]! mb-[25px];
+}
 .arrowIcon { @apply float-left ml-[10px] relative top-[-12px] z-[999]; }
 
 .cancelItemsIcon { @apply relative scale-[1.5] right-[-375px] top-[-6] }
@@ -166,11 +173,19 @@ table.simpleTable:last-child {
 }
 
 .IMDBCloseButton {
-  @apply relative right-[-90%];
+  @apply relative right-[-90%] scale-[1.8];
 }
 
 .IMDBSearchButton {
  @apply relative left-[95px] top-[-17px] h-[30px];
+}
+
+.IMDBSearchHeader {
+    @apply fixed top-[120px] z-[999] flex items-center justify-between pb-[35px] w-[300px];
+}
+
+.IMDBSearchModalContent {
+  @apply relative;
 }
 
 .largeText { @apply text-[36px]; }
@@ -254,6 +269,8 @@ table.simpleTable:last-child {
 .overflowY { @apply overflow-y-scroll; }
 
 .overflowYAuto {  @apply overflow-y-auto; }
+
+.paddingTop50 { @apply pt-[50px]; }
 
 .pageNavigationBar {
   @apply leading-none border box-border h-[38px] flex items-center w-full justify-center z-[100] [-webkit-tap-highlight-color:transparent] border-solid border-[lightgray];
@@ -401,8 +418,12 @@ table.simpleTable:last-child {
   @apply overflow-y-auto max-h-[80vh];
 }
 
+.opacity-55 {
+  @apply opacity-[0.55]!;
+}
+
 .opacity-full {
-  @apply opacity-[1];
+  @apply opacity-[1]!;
 }
 
 .black-bg {

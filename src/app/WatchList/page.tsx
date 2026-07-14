@@ -7,12 +7,12 @@ import IWatchList from "../interfaces/IWatchList";
 import { WatchListContextType } from "../contexts/WatchListContextType";
 
 import IMDBCard from "../components/IMDBCard";
-import PageNavigationBar from "../components/PageNavigationBar/PageNavigationBar";
+import PageNavigationBar from "../components/PageNavigationBar";
 import WatchListCard from "./WatchListCard";
 
 export default function WatchList() {
      const {
-          filteredWatchList, hideTabs, imdbSearchEnabled, isLoading, lastPage, modalVisible, setActiveRoute, setIsAdding, setIsEditing, watchListSortingCheck
+          filteredWatchList, hideTabs, imdbSearchEnabled, isLoading, lastPage, modalVisible, setActiveRoute, setIsAdding, setIsEditing, setModalVisible, watchListSortingCheck
      } = useContext(WatchListContext) as WatchListContextType;
 
      const [imdbCardvisible, setImdbCardvisible] = useState(false);
@@ -21,6 +21,7 @@ export default function WatchList() {
      const closeIMDBCard = () => {
           setImdbJSON(null);
           setImdbCardvisible(false);
+          setModalVisible(false);
      }
 
      useEffect(() => {

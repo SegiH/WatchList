@@ -4,7 +4,7 @@ import { useContext, useEffect, useState } from "react";
 import { APIStatus, ItemsContext } from "../context";
 import IWatchListItem from "../interfaces/IWatchListItem";
 import React from "react";
-import PageNavigationBar from "../components/PageNavigationBar/PageNavigationBar";
+import PageNavigationBar from "../components/PageNavigationBar";
 import { ItemsContextType } from "../contexts/ItemsContextType";
 import IMDBCard from "../components/IMDBCard";
 
@@ -12,7 +12,7 @@ const WatchListItemCard = React.lazy(() => import('./WatchListItemCard'));
 
 export default function WatchListItems() {
      const {
-          filteredWatchListItems, hideTabs, imdbSearchEnabled, isLoading, modalVisible, searchTerm, setActiveRoute, setIsAdding, setIsEditing, setModalVisible, watchListItemsSortingCheck
+          filteredWatchListItems, hideTabs, imdbSearchEnabled, isLoading, setActiveRoute, setIsAdding, setIsEditing, setModalVisible, watchListItemsSortingCheck
      } = useContext(ItemsContext) as ItemsContextType;
 
      const [imdbCardvisible, setImdbCardvisible] = useState(false);
@@ -21,6 +21,7 @@ export default function WatchListItems() {
      const closeIMDBCard = () => {
           setImdbJSON([]);
           setImdbCardvisible(false);
+          setModalVisible(false);
      }
 
      useEffect(() => {

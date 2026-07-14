@@ -1,15 +1,15 @@
 "use client"
 
 import { useContext, useState, useRef, useEffect } from "react";
-import { APIStatus, HamburgerMenuContext } from "../../context";
-import "../../page.css";
-import { HamburgerMenuContextType } from "../../contexts/HamburgerMenuContextType";
-import IUserOption from "../../interfaces/IUserOption";
-import IWatchListSource from "../../interfaces/IWatchListSource";
+import { APIStatus, HamburgerMenuContext } from "../context";
+import "../page.css";
+import { HamburgerMenuContextType } from "../contexts/HamburgerMenuContextType";
+import IUserOption from "../interfaces/IUserOption";
+import IWatchListSource from "../interfaces/IWatchListSource";
 import { Button } from "@mui/material";
 import Select from 'react-select';
-import IWatchListType from "../../interfaces/IWatchListType";
-import MetaDataFilter from "../MetadataFilter";
+import IWatchListType from "../interfaces/IWatchListType";
+import MetaDataFilter from "./MetadataFilter";
 import { useRouter } from "next/navigation";
 import { useTheme } from "next-themes";
 
@@ -493,7 +493,7 @@ const HamburgerMenu = () => {
                               )}
 
                               <div className="hamburger-menu-row">
-                                   <span className="small-text title" style={{ width: "215px", marginBottom: "25px" }}>Last built on {buildDate}</span>
+                                   <span className="small-text title buildDate">Last built on {buildDate}</span>
                               </div>
                          </div>
                     </div>

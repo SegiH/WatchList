@@ -138,6 +138,8 @@ export default function WatchListDtl() {
 
      const closeIMDBCard = () => {
           setImdbCardvisible(false);
+
+          setModalVisible(false);
      }
 
      const getLocaleDate = useCallback(() => {
@@ -698,7 +700,7 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
 
                                                             {typeof watchListDtl?.IMDB_URL === "undefined" &&
                                                                  <>
-                                                                      <div title={watchListDtl?.Tooltip} style={{ position: "relative", left: "-5px" }}>
+                                                                      <div title={watchListDtl?.Tooltip}>
                                                                            {watchListDtl?.WatchListItemName}
                                                                       </div>
                                                                  </>
@@ -709,7 +711,7 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
                                                   }
 
                                                   {(isEditing || isAdding) &&
-                                                       <div className="narrow card" style={{ backgroundColor: "white" }}>
+                                                       <div className="narrow card autoComplete">
                                                             <Autocomplete id="wl_autocomplete" size="small" sx={{ width: 350, height: 40 }} {...defaultProps} options={formattedNames} value={autoComplete} onChange={(event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => autoCompleteChangeHandler(event)} renderInput={(params: TextFieldProps) => <TextField {...params} label="Search" />} />
                                                        </div>
                                                   }
@@ -940,7 +942,7 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
                                                                            disabled
                                                                            value={watchListDtl?.Rating}
                                                                            precision={0.5}
-                                                                           style={{ opacity: 1 }}
+                                                                           className="opacity-full"
                                                                       />
                                                                  }
 
@@ -964,7 +966,7 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
                                                                            }
                                                                       }}
                                                                       precision={0.5}
-                                                                      emptyIcon={<StarIcon style={{ opacity: 0.55 }} fontSize="inherit" />}
+                                                                      emptyIcon={<StarIcon className="opacity-55" fontSize="inherit" />}
                                                                       onChange={(event, newValue) => {
                                                                            if (isAdding) {
                                                                                 addWatchListDetailChangeHandler("Rating", String(newValue) as string);

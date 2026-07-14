@@ -4,7 +4,7 @@ import { useContext, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 
 import SearchIMDB from "./components/SearchIMDB";
-import HamburgerMenu from "./components/HamburgerMenu/HamburgerMenu";
+import HamburgerMenu from "./components/HamburgerMenu";
 import Loader from "./components/Loader";
 
 import { APIStatus, SharedLayoutContext } from "./context";
@@ -109,7 +109,7 @@ const SharedLayout = () => {
                     <span className="sharedLayout">
                          <div ref={topRef}></div>
 
-                         {currentWatchListPage > 1 &&
+                         {(activeRoute === "WatchList" || activeRoute === "Items") && currentWatchListPage > 1 &&
                               <span className="pageNavigationBarLeftTop">
                                    <span onClick={() => pageClickHandler(-1)}>&#8592;</span>
                               </span>
@@ -149,7 +149,7 @@ const SharedLayout = () => {
                               </>
                          }
 
-                         {!lastPage &&
+                         {(activeRoute === "WatchList" || activeRoute === "Items") && !lastPage &&
                               <span className={`pageNavigationBarRightTop`} onClick={() => pageClickHandler(1)}>&#8594;</span>
                          }
                     </span>

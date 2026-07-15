@@ -10,11 +10,13 @@
 
   .displayInline { @apply inline!; }
 
+  .IMDBSearchButton { @apply top-[-15px]! }
+
   .pageNavigationBarLeft { @apply top-[-5px]; }
   
-  .pageNavigationBarRight { @apply top-[-5px]; }
+  .pageNavigationBarRight { @apply left-[-10px] top-[-5px]; }
 
-  .pageNavigationBarRightTop { @apply left-[40%]! }
+  .pageNavigationBarRightTop { @apply left-[30%]! top-[-20px]!; }
 
   .rating { @apply hidden; }
 
@@ -22,7 +24,7 @@
 
   .favoriteIcon { @apply max-w-[15px]! max-h-[15px]!; }
 
-  .searchInputStyle { @apply relative! left-[60px]! w-[150px]!; }
+  .searchInputStyle { @apply relative! left-[60px]! top-[-14px]! mr-[20px] w-[150px]!; }
 
   .sidebar-menu { @apply w-full; }
 
@@ -429,41 +431,6 @@ table.simpleTable:last-child {
 .black-bg {
   @apply bg-[black];
 }
-
-/* ---------------- SEARCH ---------------- */
-
-/*.searchContainer {
-  @apply inline-flex relative top-[65%] left-[50%] min-w-[400px]! transition-all;
-  transform: translate(-50%, -50%);
-}
-
-.searchContainer:hover,
-.searchContainer:valid {
-  @apply min-w-[300px] cursor-pointer;
-}
-
-.searchContainer:hover input,
-.searchContainer:valid input {
-  @apply block;
-}
-
-.searchIcon {
-  @apply relative top-[4px] left-[155%] z-[9999];
-}
-
-.searchIMDBInput {
-  @apply relative w-[102%] h-[48px] text-[1em] rounded-[25px] px-[20px];
-}
-
-.searchInputStyle {
-  @apply relative left-[110px] inline-block w-[350px];
-}
-
-.searchInputStyle input {
-  @apply w-[inherit]
-}
-
-*/
 
 .searchResult {
   @apply inline-flex mb-[15px] h-full border-[solid] border-[1px] border-[white] w-[300px];

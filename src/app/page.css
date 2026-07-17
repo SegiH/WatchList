@@ -183,11 +183,11 @@ table.simpleTable:last-child {
 }
 
 .IMDBSearchHeader {
-    @apply fixed top-[120px] z-[999] flex items-center justify-between pb-[35px] w-[300px];
+    @apply fixed top-[120px] z-[999] flex items-center justify-between pb-[35px] w-[500px];
 }
 
 .IMDBSearchModalContent {
-  @apply relative;
+  @apply relative min-w-[400px]!;
 }
 
 .largeText { @apply text-[36px]; }
@@ -327,8 +327,9 @@ table.simpleTable:last-child {
 
 .rightMargin { @apply relative right-[50px]; }
 
-.row { @apply flex items-center justify-center gap-[25] }
+.row { @apply flex items-center justify-center align-middle gap-[25] }
 
+.row-item { @apply align-middle! hidden; }
 .saveIcon { @apply relative top-[-5px] scale-[1.8]; }
 
 .selectStyle { @apply w-[400px] }

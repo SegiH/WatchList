@@ -83,7 +83,7 @@ export default function SearchIMDB(props) {
           <>
                {modalVisible &&
                     <span className={`modal IMDBSearchModalContent zIndex`}>
-                         <div className={`modal-content`}>
+                         <div className={`modal-content IMDBSearchModalContent`}>
                               <div className="IMDBSearchHeader">
                                    <span className="flex items-center gap-[12px]">
                                         <span className="ml-[200px]">Count</span>
@@ -112,7 +112,7 @@ export default function SearchIMDB(props) {
                                                   return index <= searchCount;
                                              }).map((currentResult: ISearchImdb, index: number) => {
                                                   return (
-                                                       <span key={index}>
+                                                       <span className="row-item" key={index}>
                                                             {typeof currentResult.Poster !== "undefined" && currentResult.Poster !== null && currentResult.Poster !== "" && currentResult.Poster !== "N/A" &&
                                                                  <span>
                                                                       <span>

@@ -112,17 +112,17 @@ export default function SearchIMDB(props) {
                                                   return index <= searchCount;
                                              }).map((currentResult: ISearchImdb, index: number) => {
                                                   return (
-                                                       <span className="row-item" key={index}>
+                                                       <div key={index}>
                                                             {typeof currentResult.Poster !== "undefined" && currentResult.Poster !== null && currentResult.Poster !== "" && currentResult.Poster !== "N/A" &&
-                                                                 <span>
-                                                                      <span>
+                                                                 <div>
+                                                                      <div>
                                                                            {typeof (currentResult.Poster !== "undefined" && currentResult.Poster !== null && currentResult.Poster !== "" && currentResult.Poster !== "N/A" && (currentResult.Poster.toString().startsWith("http://") || currentResult.Poster.toString().startsWith("https://"))) &&
                                                                                 <Image width="100" height="125" className="searchResultPoster" src={currentResult.Poster} onClick={() => addIMDBSearchResultClickHandler(index)} alt={currentResult.Title} />
                                                                            }
 
-                                                                           <span className="textLabel">
+                                                                           <div className="textLabel">
                                                                                 {currentResult.Title} ({currentResult.Year})
-                                                                           </span>
+                                                                           </div>
 
                                                                            {currentResult.Poster === "N/A" && (
                                                                                 <>
@@ -133,10 +133,10 @@ export default function SearchIMDB(props) {
                                                                                      <span className="searchResultPoster">{BrokenImageIconComponent}</span>
                                                                                 </>
                                                                            )}
-                                                                      </span>
-                                                                 </span>
+                                                                      </div>
+                                                                 </div>
                                                             }
-                                                       </span>
+                                                       </div>
                                                   );
                                              })
                                         }

@@ -340,8 +340,9 @@ table.simpleTable:last-child {
 .sortBy { @apply mr-[15px]; }
 
 .searchIMDBButton { @apply relative left-[110px] top-[75px]; }
+
 .tab {
-  @apply [font-family:"Roboto","Helvetica_Neue",sans-serif] text-[xs] tracking-[0.03em] max-w-[168px];
+  @apply [font-family:"Roboto","Helvetica_Neue",sans-serif] text-[xs] tracking-[0.03em] max-w-[168px] scale-[0.8];
 }
 
 .searchInputStyle {

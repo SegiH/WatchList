@@ -144,7 +144,7 @@ table.simpleTable:last-child {
 }
 
 .hamburger-sidebar-menu {
-  @apply fixed w-fit h-full bg-[#333] text-[white] transition-transform duration-[0.3s] ease-[ease-in-out] z-[10000] overflow-y-auto p-[5] -left-full top-[0];
+  @apply fixed min-w-[300px] w-fit h-full bg-[#333] text-[white] transition-transform duration-[0.3s] ease-[ease-in-out] z-[10000] overflow-y-auto p-[5] -left-full top-[0];
 }
 .hamburger-sidebar-menu:not(.open) {
   @apply hidden;
@@ -438,7 +438,7 @@ table.simpleTable:last-child {
 }
 
 .sharedLayout {
-  @apply h-[38px] w-full fixed z-[20000];
+  @apply h-[38px] w-full fixed top-[2px] z-[20000];
 }
 
 .dark .sharedLayout {

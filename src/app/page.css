@@ -310,11 +310,11 @@ table.simpleTable:last-child {
 }
 
 .pageNavigationBarRight {
-  @apply cursor-pointer relative ml-auto scale-[3] mr-[25px];
+  @apply cursor-pointer relative inline-block ml-auto scale-[3] mr-[75px];
 }
 
 .pageNavigationBarRightTop {
-  @apply cursor-pointer relative inline-block scale-[3] top-[-15px] left-[80%];
+  @apply cursor-pointer relative inline-block scale-[3] top-[-15px] left-[77%] mr-[75px]!;
 }
 
 .pageNavigationBar.noTabs {
@@ -438,7 +438,7 @@ table.simpleTable:last-child {
 }
 
 .sharedLayout {
-  @apply h-[38px] w-full fixed z-[20000] top-[2px];
+  @apply h-[38px] w-full fixed z-[20000];
 }
 
 .dark .sharedLayout {

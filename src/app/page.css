@@ -4,6 +4,8 @@
 }
 
 @media only screen and (max-width:600px) {
+  .activeRouteHidden { @apply hidden ;}
+
   .column { @apply mr-[unset]!; }
 
   .customTopMargin { @apply relative top-[12px]!; }
@@ -78,6 +80,13 @@ table.simpleTable:last-child {
 
 .simpleTableContainer {
   @apply overflow-x-auto overflow-y-hidden;
+}
+
+.activeRoute {
+  font-size: xx-large;
+  top: -20px;
+  position: relative;
+  width: 175px;
 }
 
 .autoComplete {
@@ -346,7 +355,7 @@ table.simpleTable:last-child {
 }
 
 .searchInputStyle {
-  @apply relative left-[120px] top-[-13px] inline-flex w-[350px];
+  @apply relative left-[120px] top-[-25px] inline-flex w-[350px];
 }
 
 .tabActive {

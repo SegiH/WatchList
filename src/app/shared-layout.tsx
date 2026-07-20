@@ -128,15 +128,13 @@ const SharedLayout = () => {
                                                        <HamburgerMenu />
                                                   }
 
-                                                  {/*{(activeRoute === "Stats" || activeRoute === "Admin" || activeRoute === "BugLogs" || activeRoute === "Data") &&
-                                             <span className={`leftMargin50 topBarActiveRoute`}>{activeRoute}</span>
-                                        }*/}
+                                                  <span className={`activeRoute leftMargin50 ${activeRoute === "WatchList" || activeRoute === "Items" ? "activeRouteHidden" : ""}`}>{activeRoute}</span>
 
                                                   {(activeRoute === "WatchList" || activeRoute === "Items") &&
                                                        <span className="searchContainer">
-                                                                 <span className={`clickable searchInputStyle`}>
-                                                                      <input ref={inputRef} value={searchTerm} onChange={(event) => setSearchTerm(event.target.value)} />
-                                                                 </span>
+                                                            <span className={`clickable searchInputStyle`}>
+                                                                 <input ref={inputRef} value={searchTerm} onChange={(event) => setSearchTerm(event.target.value)} />
+                                                            </span>
 
                                                             {!isLoading && searchTerm !== "" && imdbSearchEnabled &&
                                                                  <Button className="IMDBSearchButton" variant="contained" color="secondary" onClick={() => IMDBSearchClickHandler()}>IMDB</Button>

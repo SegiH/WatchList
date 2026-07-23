@@ -12,8 +12,6 @@
 
   .displayInline { @apply inline!; }
 
-  .hamburger-icon { @apply top-[1vh]! }
-
   .IMDBSearchButton { @apply top-[-15px]! }
 
   .pageNavigationBarLeft { @apply top-[-5px]; }
@@ -147,7 +145,7 @@ table.simpleTable:last-child {
 .fontStyle { @apply font-["Brush_Script_MT",cursive]!; }
 
 .hamburger-icon {
-  @apply fixed text-[3xl] cursor-pointer z-[999999] transition-transform duration-[0.3s] ease-[ease-in-out] top-[1.2vh] scale-[2];
+  @apply fixed text-[3xl] cursor-pointer z-[999999] transition-transform duration-[0.3s] ease-[ease-in-out] items-center scale-[2];
 }
 
 .hamburger-icon.open {

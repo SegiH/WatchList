@@ -42,7 +42,6 @@ import SaveIcon from "@mui/icons-material/Save";
 const SaveIconComponent = <SaveIcon />;
 
 import SearchIcon from "@mui/icons-material/Search";
-const SearchIconComponent = <SearchIcon className="icon" />;
 
 import StatsIcon from "@mui/icons-material/BarChart";
 const StatsIconComponent = <StatsIcon className="icon" />;
@@ -1372,7 +1371,7 @@ const DataProvider = ({
      const recommendationsContextValues = { BrokenImageIconComponent, writeLog };
      const searchIMDBContextValues = { autoAdd, BrokenImageIconComponent, modalVisible, searchCount, setIsAdding, setSearchCount, setModalVisible, setSearchTerm };
      const setupContextValues = { activeRoute, defaultRoute, demoUsername, loggedInCheck, validatePassword };
-     const sharedLayoutContextValues = { activeRoute, autoAdd, currentWatchListPage, darkMode, demoModeNotificationVisible, imdbSearchEnabled, isError, isLoading, lastPage, loggedInCheck, modalVisible, searchTerm, setDemoModeNotificationVisible, setIsAdding, setModalVisible, setNewPage, setSearchTerm };
+     const sharedLayoutContextValues = { activeRoute, autoAdd, currentItemsPage, currentWatchListPage, darkMode, demoModeNotificationVisible, imdbSearchEnabled, isError, isLoading, lastPage, loggedInCheck, modalVisible, searchTerm, setDemoModeNotificationVisible, setIsAdding, setModalVisible, setNewPage, setSearchTerm };
      const tabsContextValues = { activeRoute, demoMode, getPath, hideTabs, isAdding, isAdmin, isClient, isEditing, isEnabled, isError, isLoading, loggedInCheck, modalVisible, pullToRefreshEnabled, routes, setActiveRoute, setSearchTerm, visibleSections };
      const watchListCardContextValues = { BrokenImageIconComponent, filteredWatchList, formatWatchListDates, getMissingPoster, openDetailClickHandler, setFilteredWatchList, setModalVisible, writeLog };
      const watchListContextValues = { autoAdd, filteredWatchList, hideTabs, imdbSearchEnabled, isLoading, lastPage, modalVisible, searchTerm, setActiveRoute, setIsAdding, setIsEditing, setModalVisible, watchListSortingCheck };

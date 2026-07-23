@@ -3,6 +3,7 @@ import IRouteList from "../interfaces/IRoute";
 export interface SharedLayoutContextType {
      activeRoute: string;
      autoAdd: boolean;
+     currentItemsPage: number;
      currentWatchListPage: number;
      darkMode: boolean;
      demoModeNotificationVisible: boolean;

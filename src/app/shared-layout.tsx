@@ -9,12 +9,12 @@ import Loader from "./components/Loader";
 
 import { APIStatus, SharedLayoutContext } from "./context";
 import { SharedLayoutContextType } from "./contexts/SharedLayoutContextType";
-import { Button } from "@mui/material";
+import { Button, Input } from "@mui/material";
 import ISearchImdb from "./interfaces/ISearchImdb";
 
 const SharedLayout = () => {
      const {
-          activeRoute, autoAdd, currentWatchListPage, darkMode, demoModeNotificationVisible, imdbSearchEnabled, isError, isLoading, lastPage, loggedInCheck, modalVisible, searchTerm, setIsAdding, setModalVisible, setNewPage, setSearchTerm
+          activeRoute, autoAdd, currentItemsPage, currentWatchListPage, darkMode, demoModeNotificationVisible, imdbSearchEnabled, isError, isLoading, lastPage, loggedInCheck, modalVisible, searchTerm, setIsAdding, setModalVisible, setNewPage, setSearchTerm
      } = useContext(SharedLayoutContext) as SharedLayoutContextType
 
      const router = useRouter();
@@ -109,7 +109,7 @@ const SharedLayout = () => {
                     <span className="sharedLayout">
                          <div ref={topRef}></div>
 
-                         {(activeRoute === "WatchList" || activeRoute === "Items") && currentWatchListPage > 1 &&
+                         {((activeRoute === "WatchList" && currentWatchListPage > 1) || (activeRoute === "Items" && currentItemsPage > 1)) &&
                               <span className="pageNavigationBarLeftTop">
                                    <span onClick={() => pageClickHandler(-1)}>&#8592;</span>
                               </span>
@@ -122,26 +122,26 @@ const SharedLayout = () => {
                                    }
 
                                    {loggedInCheck === APIStatus.Success &&
-                                        <span>
-                                             <span className={`leftMargin125 ${demoModeNotificationVisible === true ? "demoNotificationVisible" : ""}`}>
-                                                  {!modalVisible &&
+                                        <span className={`leftMargin sharedLayoutControls ${demoModeNotificationVisible === true ? "demoNotificationVisible" : ""}`}>
+                                             {!modalVisible &&
+                                                  <span>
                                                        <HamburgerMenu />
-                                                  }
+                                                  </span>
+                                             }
 
-                                                  <span className={`activeRoute leftMargin50 ${activeRoute === "WatchList" || activeRoute === "Items" ? "activeRouteHidden" : ""}`}>{activeRoute}</span>
+                                             <span className={`activeRoute leftMargin50 ${activeRoute === "WatchList" || activeRoute === "Items" ? "activeRouteHidden" : ""}`}>{activeRoute}</span>
 
-                                                  {(activeRoute === "WatchList" || activeRoute === "Items") &&
-                                                       <span className="searchContainer">
-                                                            <span className={`clickable searchInputStyle`}>
-                                                                 <input ref={inputRef} value={searchTerm} onChange={(event) => setSearchTerm(event.target.value)} />
-                                                            </span>
-
-                                                            {!isLoading && searchTerm !== "" && imdbSearchEnabled &&
-                                                                 <Button className="IMDBSearchButton" variant="contained" color="secondary" onClick={() => IMDBSearchClickHandler()}>IMDB</Button>
-                                                            }
+                                             {(activeRoute === "WatchList" || activeRoute === "Items") &&
+                                                  <span>
+                                                       <span className={`searchInputStyle`}>
+                                                            <input ref={inputRef} value={searchTerm} onChange={(event) => setSearchTerm(event.target.value)} />
                                                        </span>
-                                                  }
-                                             </span>
+
+                                                       {!isLoading && searchTerm !== "" && imdbSearchEnabled &&
+                                                            <Button className="IMDBSearchButton" variant="contained" color="secondary" onClick={() => IMDBSearchClickHandler()}>IMDB</Button>
+                                                       }
+                                                  </span>
+                                             }
                                         </span>
                                    }
                               </>

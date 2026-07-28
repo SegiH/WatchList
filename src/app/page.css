@@ -12,11 +12,11 @@
 
   .displayInline { @apply inline!; }
 
-  .IMDBSearchButton { @apply top-[-15px]! }
+  .IMDBSearchButton { @apply relative left-[40px]! top-[1px]! }
+
+  .IMDBSearchButtonBottom { @apply relative left-[-10px]! }
 
   .pageNavigationBarLeft { @apply top-[-5px]; }
-  
-  .pageNavigationBarRight { @apply left-[-10px] top-[-5px]; }
 
   .pageNavigationBarRightTop { @apply left-[5px] }
 
@@ -26,7 +26,9 @@
 
   .favoriteIcon { @apply max-w-[15px]! max-h-[15px]!; }
 
-  .searchInputStyle { @apply relative! left-[90px]! top-[1.5px]! mr-[20px] w-[150px]!; }
+  .searchInputStyle { @apply relative left-[30px]! top-[1.5px]! mr-[20px] w-[150px]!; }
+
+  .searchInputStyleBottom { @apply relative ml-[20px]! ;}
 
   .sidebar-menu { @apply w-full; }
 
@@ -116,7 +118,7 @@ table.simpleTable:last-child {
 
 .clickable { @apply cursor-pointer pointer-events-auto!; }
 
-.closeButton { @apply relative left-[140px] scale-[2.1]!; }
+.closeButton { @apply relative left-[120px] scale-[2.1]!; }
 
 .customCloseButton { @apply float-right; }
 
@@ -188,7 +190,7 @@ table.simpleTable:last-child {
 }
 
 .IMDBSearchButton {
- @apply relative left-[95px] top-[-17px] h-[30px];
+ @apply relative left-[95px] max-h-[30px];
 }
 
 .IMDBSearchHeader {
@@ -214,6 +216,8 @@ table.simpleTable:last-child {
 .leftMargin75 { @apply ml-[75px]; }
 
 .leftMargin125 { @apply ml-[125px]; }
+
+.leftMargin165 { @apply ml-[165px]; }
 
 .lineChart { @apply max-w-[min-content] border; }
 
@@ -296,7 +300,7 @@ table.simpleTable:last-child {
 }
 
 .top .pageNavigationBar {
-  @apply fixed;
+  @apply fixed items-center;
 }
 
 .pageNavigationBar.lastPage {
@@ -356,6 +360,14 @@ table.simpleTable:last-child {
   @apply relative left-[120px] top-[-2.8px] inline-flex w-[350px];
 }
 
+.searchInputStyleButton {
+  @apply relative left-[-175px];
+}
+
+.searchInputStyleButton {
+  @apply relative left-[-675px];
+}
+
 .sharedLayout {
   @apply h-[38px] w-full fixed flex items-center top-[2px] z-[20000];
 }
@@ -363,8 +375,6 @@ table.simpleTable:last-child {
 .dark .sharedLayout {
   @apply bg-[#3b3b38] border-[solid] border-[white];
 }
-
-
 
 .tab {
   @apply [font-family:"Roboto","Helvetica_Neue",sans-serif] text-[xs] tracking-[0.03em] max-w-[168px] scale-[0.8];
@@ -546,4 +556,59 @@ table.simpleTable:last-child {
 @keyframes spin-anim {
   0% {transform:rotate(0deg);}
   100% {transform:rotate(360deg);}
+}
+
+
+/* ---------------- loader ---------------- */
+@keyframes bouncing-loader {
+     0% {
+          transform: translateY(0);
+     }
+
+     100% {
+          opacity: 0.1;
+          transform: translateY(-10px);
+     }
+}
+
+.bouncing-loader>div:nth-child(2) {
+     animation-delay: 0.2s;
+}
+
+.bouncing-loader>div:nth-child(3) {
+     animation-delay: 0.4s;
+}
+
+.bouncing-loader {
+     display: flex;
+     justify-content: center;
+     align-items: center;
+     height: 100vh;
+     font-size: 10vw;
+     gap: 10px;
+}
+
+.bouncing-loader>div {
+     width: 50px;
+     height: 50px;
+     margin: 3px 6px;
+     border-radius: 50%;
+     background-color: #a3a1a1;
+     opacity: 1;
+     display: inline-flex;
+     animation: bouncing-loader 0.6s infinite alternate;
+}
+
+.bubble {
+     width: 20px;
+     height: 20px;
+     background-color: #000;
+     border-radius: 50%;
+     animation: bounce 1.5s infinite alternate;
+}
+
+.bouncing-loader-text {
+     position: relative;
+     top: -10px;
+     z-index: 1;
 }

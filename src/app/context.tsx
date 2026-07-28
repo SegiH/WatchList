@@ -3,6 +3,7 @@
 import { useRouter } from 'next/navigation';
 import { usePathname } from 'next/navigation';
 import React, { createContext, ReactNode, useCallback, useEffect, useMemo, useState } from "react";
+import { useTheme } from "next-themes";
 
 import IBugLog from "./interfaces/IBugLog";
 import IUser from "./interfaces/IUser";
@@ -41,8 +42,6 @@ const LogOutIconComponent = <LogOutIcon className="icon" />;
 import SaveIcon from "@mui/icons-material/Save";
 const SaveIconComponent = <SaveIcon />;
 
-import SearchIcon from "@mui/icons-material/Search";
-
 import StatsIcon from "@mui/icons-material/BarChart";
 const StatsIconComponent = <StatsIcon className="icon" />;
 
@@ -77,6 +76,7 @@ import { WatchListStatsContextType } from "./contexts/WatchListStatsContextType"
 import ComposeProviders from './components/ComposeProviders';
 
 import IRouteList, { RouteKey } from './interfaces/IRoute';
+import ISearchImdb from './interfaces/ISearchImdb';
 const WatchListItemsIconComponent = <WatchListItemsIcon className="icon" />;
 
 const DataContext = createContext({} as DataContextType);
@@ -131,6 +131,7 @@ const DataProvider = ({
      const [demoModeNotificationVisible, setDemoModeNotificationVisible] = useState(false);
      const [hideTabs, setHideTabs] = useState(false);
      const [imdbSearchEnabled, setImdbSearchEnabled] = useState(false);
+     const [imdbSearchResults, setIMDBSearchResults] = useState<ISearchImdb[]>([]);
      const [isAdding, setIsAdding] = useState(false);
      const [isClient, setIsClient] = useState(false);
      const [isEditing, setIsEditing] = useState(false);
@@ -180,7 +181,10 @@ const DataProvider = ({
      const demoUsername = "demo";
      const demoPassword = "demo";
 
+     const searchTimeout = 2500;
+
      const router = useRouter();
+     const { setTheme } = useTheme();
 
      const routeList = {
           WatchList: {
@@ -464,6 +468,43 @@ const DataProvider = ({
           }
      }
 
+     const IMDBSearchClickHandler = async () => {
+          if (searchTerm !== "") {
+               const searchIMDBResponse = await fetch(`/api/SearchIMDB?SearchTerm=${searchTerm}&SearchCount=${5}`, { credentials: 'include' });
+
+               const searchIMDBResult = await searchIMDBResponse.json();
+
+               if (searchIMDBResult[0] !== "OK" && searchIMDBResult[0] !== "ERROR-ALREADY-EXISTS") {
+                    alert(searchIMDBResult[1]);
+                    return;
+               }
+
+               if (/^tt\d{7,}$/.test(searchTerm)) {
+                    if (!autoAdd && searchIMDBResult[0] !== "ERROR-ALREADY-EXISTS") {
+                         alert("The WatchList Item has been added");
+                         return;
+                    }
+
+                    if (autoAdd) {
+                         setIsAdding(true);
+
+                         setModalVisible(true);
+
+                         router.push(`/WatchList/Dtl?WatchListItemID=${searchIMDBResult[0] !== "ERROR-ALREADY-EXISTS" ? searchIMDBResult[2] : searchIMDBResult[2]}`);
+                    }
+
+                    return;
+               } else {
+                    // Will return [{}] if no results
+                    if (searchIMDBResult[1].lengh <= 1) {
+                         alert("No Results");
+                    } else {
+                         setIMDBSearchResults(searchIMDBResult[1]);
+                    }
+               }
+          }
+     }
+
      const isAdmin = () => {
           if (demoMode) {
                return false;
@@ -669,6 +710,13 @@ const DataProvider = ({
           setAutoAdd(newAutoAdd);
 
           const newDarkMode = typeof newOptions.DarkMode !== "undefined" && newOptions.DarkMode === 1 ? true : false;
+
+          if (darkMode) {
+               localStorage.setItem("theme", "dark");
+          } else {
+               localStorage.removeItem("theme");
+          }
+
           setDarkMode(newDarkMode);
 
           const newHideTabs = typeof newOptions.HideTabs !== "undefined" && newOptions.HideTabs === 1 ? true : false;
@@ -1069,7 +1117,13 @@ const DataProvider = ({
                return;
           }
 
-          getWatchList();
+          if (searchTerm === "") {
+               getWatchList();
+          } else {
+               setTimeout(() => {
+                    getWatchList();
+               }, searchTimeout);
+          }
      }, [activeRoute, archivedVisible, currentWatchListPage, metaDataFilters, searchTerm, stillWatching, sourceFilter, typeFilter, watchListSortColumn, watchListSortDirection]);
 
      // Initiate getting WatchListItems
@@ -1139,7 +1193,13 @@ const DataProvider = ({
                return;
           }
 
-          getWatchListItems();
+          if (searchTerm === "") {
+               getWatchListItems();
+          } else {
+               setTimeout(() => {
+                    getWatchListItems();
+               }, searchTimeout);
+          }
      }, [activeRoute, archivedVisible, currentItemsPage, metaDataFilters, searchTerm, showMissingArtwork, typeFilter, watchListSortColumn, watchListSortDirection]);
 
      // Get WatchListSources
@@ -1268,6 +1328,11 @@ const DataProvider = ({
           }
      }, [isAdding, isEditing]);
 
+          // This is the only way to really set the body class based on dark mode
+     useEffect(() => {
+          setTheme(darkMode ? "dark" : "light");
+     }, [darkMode]);
+
      useEffect(() => {
           /* isClient check */
           const newIsClient = !window.location.href.endsWith("api-doc") && !window.location.href.endsWith("api-doc/") ? true : false;
@@ -1360,18 +1425,18 @@ const DataProvider = ({
           // eslint-disable-next-line react-hooks/exhaustive-deps
      }, []); // Do not add isLoggedInApi as a dependency. It causes an ends loop of network requests
 
-     const dataContextValues = { bugLogs, darkMode, defaultRoute, demoMode, isAdmin, lastPage, pageSize, setErrorMessage, setIsError, visibleSections, watchList, watchListSortingCheck, watchListItems, watchListItemsSortingCheck, watchListSources, watchListTypes };
+     const dataContextValues = { bugLogs, darkMode, defaultRoute, demoMode, IMDBSearchClickHandler, imdbSearchEnabled, isAdmin, lastPage, pageSize, setErrorMessage, setIsError, visibleSections, watchList, watchListSortingCheck, watchListItems, watchListItemsSortingCheck, watchListSources, watchListTypes };
      const errorContextValues = { defaultRoute, errorMessage, setActiveRoute };
      const hamburgerMenuContextType = { activeRoute, archivedVisible, autoAdd, buildDate, darkMode, defaultRoute, demoMode, demoModeNotificationVisible, hideTabs, isAdding, isAdmin, isEditing, isEnabled, loggedInCheck, LogOutIconComponent, metaDataFilters, metaDataFilterVisible, openDetailClickHandler, pullToRefreshEnabled, routes, saveOptions, setActiveRoute, setIsLoading, setMetaDataFilters, setMetaDataFilterVisible, setNewPage, setOptions, setShowMissingArtwork, setSourceFilter, setStillWatching, setTypeFilter, setVisibleSections, setWatchListSortColumn, setWatchListSortDirection, showMissingArtwork, signOut, sourceFilter, stillWatching, typeFilter, visibleSections, visibleSectionChoices, watchListItemsSortColumns, watchListSortColumn, watchListSortColumns, watchListSortDirection, watchListSources, watchListTypes }
      const itemsCardContextValues = { BrokenImageIconComponent, filteredWatchListItems, getMissingPoster, openDetailClickHandler, setFilteredWatchListItems };
      const itemsContextValues = { filteredWatchListItems, hideTabs, imdbSearchEnabled, isLoading, modalVisible, searchTerm, setActiveRoute, setIsAdding, setIsEditing, setFilteredWatchListItems, setModalVisible, watchListItemsSortingCheck };
      const itemsDtlContextValues = { autoAdd, BrokenImageIconComponent, CancelIconComponent, demoMode, EditIconComponent, formatWatchListDates, getMissingPoster, getWatchListItems, isAdding, isEditing, isEnabled, isLoading, pullToRefreshEnabled, SaveIconComponent, setErrorMessage, setIsAdding, setIsEditing, setIsError, setModalVisible, watchListTypes, writeLog };
      const loginContextValues = { activeRoute, defaultRoute, demoPassword, demoUsername, loggedInCheck, routeList, setActiveRoute, setDemoMode, setLoggedInCheck, setOptions, setRoutes, setUserData, setVisibleSections };
-     const pageNavigationBarContextValues = { activeRoute, currentItemsPage, currentWatchListPage, isAdding, isLoading, hideTabs, lastPage, setNewPage };
+     const pageNavigationBarContextValues = { activeRoute, currentItemsPage, currentWatchListPage, isAdding, isLoading, hideTabs, imdbSearchEnabled, IMDBSearchClickHandler, lastPage, searchTerm, setNewPage, setSearchTerm };
      const recommendationsContextValues = { BrokenImageIconComponent, writeLog };
      const searchIMDBContextValues = { autoAdd, BrokenImageIconComponent, modalVisible, searchCount, setIsAdding, setSearchCount, setModalVisible, setSearchTerm };
      const setupContextValues = { activeRoute, defaultRoute, demoUsername, loggedInCheck, validatePassword };
-     const sharedLayoutContextValues = { activeRoute, autoAdd, currentItemsPage, currentWatchListPage, darkMode, demoModeNotificationVisible, imdbSearchEnabled, isError, isLoading, lastPage, loggedInCheck, modalVisible, searchTerm, setDemoModeNotificationVisible, setIsAdding, setModalVisible, setNewPage, setSearchTerm };
+     const sharedLayoutContextValues = { activeRoute, autoAdd, currentItemsPage, currentWatchListPage, demoModeNotificationVisible, IMDBSearchClickHandler, imdbSearchEnabled, imdbSearchResults, isError, isLoading, lastPage, loggedInCheck, modalVisible, searchTerm, setDemoModeNotificationVisible, setIMDBSearchResults, setIsAdding, setModalVisible, setNewPage, setSearchTerm };
      const tabsContextValues = { activeRoute, demoMode, getPath, hideTabs, isAdding, isAdmin, isClient, isEditing, isEnabled, isError, isLoading, loggedInCheck, modalVisible, pullToRefreshEnabled, routes, setActiveRoute, setSearchTerm, visibleSections };
      const watchListCardContextValues = { BrokenImageIconComponent, filteredWatchList, formatWatchListDates, getMissingPoster, openDetailClickHandler, setFilteredWatchList, setModalVisible, writeLog };
      const watchListContextValues = { autoAdd, filteredWatchList, hideTabs, imdbSearchEnabled, isLoading, lastPage, modalVisible, searchTerm, setActiveRoute, setIsAdding, setIsEditing, setModalVisible, watchListSortingCheck };

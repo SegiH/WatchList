@@ -5,15 +5,17 @@ export interface SharedLayoutContextType {
      autoAdd: boolean;
      currentItemsPage: number;
      currentWatchListPage: number;
-     darkMode: boolean;
      demoModeNotificationVisible: boolean;
+     IMDBSearchClickHandler: () => void;
      imdbSearchEnabled: boolean;
+     imdbSearchResults: string;
      isError: boolean;
      isLoading: boolean;
      lastPage: boolean;
      loggedInCheck: string;
      modalVisible: boolean;
      searchTerm: string;
+     setIMDBSearchResults: (value: []) => void;
      setIsAdding: (value: boolean) => void;
      setModalVisible: (value: boolean) => void;
      setNewPage: (value: number) => void;

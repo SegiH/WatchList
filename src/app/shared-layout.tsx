@@ -1,66 +1,23 @@
 "use client"
 
 import { useContext, useEffect, useRef, useState } from "react";
-import { useRouter } from "next/navigation";
-
 import SearchIMDB from "./components/SearchIMDB";
 import HamburgerMenu from "./components/HamburgerMenu";
 import Loader from "./components/Loader";
 
 import { APIStatus, SharedLayoutContext } from "./context";
 import { SharedLayoutContextType } from "./contexts/SharedLayoutContextType";
-import { Button, Input } from "@mui/material";
-import ISearchImdb from "./interfaces/ISearchImdb";
+import { Button } from "@mui/material";
 
 const SharedLayout = () => {
      const {
-          activeRoute, autoAdd, currentItemsPage, currentWatchListPage, darkMode, demoModeNotificationVisible, imdbSearchEnabled, isError, isLoading, lastPage, loggedInCheck, modalVisible, searchTerm, setIsAdding, setModalVisible, setNewPage, setSearchTerm
+          activeRoute, currentItemsPage, currentWatchListPage, demoModeNotificationVisible, IMDBSearchClickHandler, imdbSearchEnabled, imdbSearchResults, isError, isLoading, lastPage, loggedInCheck, modalVisible, searchTerm, setIMDBSearchResults, setModalVisible, setNewPage, setSearchTerm
      } = useContext(SharedLayoutContext) as SharedLayoutContextType
 
-     const router = useRouter();
-     const topRef = useRef<HTMLDivElement | null>(null);
-
-     const [imdbSearchResults, setIMDBSearchResults] = useState<ISearchImdb[]>([]);
+     const topRef = useRef<HTMLDivElement | null>(null);     
      const [isClient, setIsClient] = useState(false);
 
-     const inputRef = useRef<HTMLInputElement>(null);
-
-     const IMDBSearchClickHandler = async () => {
-          if (searchTerm !== "") {
-               const searchIMDBResponse = await fetch(`/api/SearchIMDB?SearchTerm=${searchTerm}&SearchCount=${5}`, { credentials: 'include' });
-
-               const searchIMDBResult = await searchIMDBResponse.json();
-
-               if (searchIMDBResult[0] !== "OK" && searchIMDBResult[0] !== "ERROR-ALREADY-EXISTS") {
-                    alert(searchIMDBResult[1]);
-                    return;
-               }
-
-               if (/^tt\d{7,}$/.test(searchTerm)) {
-                    if (!autoAdd && searchIMDBResult[0] !== "ERROR-ALREADY-EXISTS") {
-                         alert("The WatchList Item has been added");
-                         return;
-                    }
-
-                    if (autoAdd) {
-                         setIsAdding(true);
-
-                         setModalVisible(true);
-
-                         router.push(`/WatchList/Dtl?WatchListItemID=${searchIMDBResult[0] !== "ERROR-ALREADY-EXISTS" ? searchIMDBResult[2] : searchIMDBResult[2]}`);
-                    }
-
-                    return;
-               } else {
-                    // Will return [{}] if no results
-                    if (searchIMDBResult[1].lengh <= 1) {
-                         alert("No Results");
-                    } else {
-                         setIMDBSearchResults(searchIMDBResult[1]);
-                    }
-               }
-          }
-     }
+     const inputRef = useRef<HTMLInputElement>(null);     
 
      const pageClickHandler = (adjustValue: number) => {
           if (typeof topRef !== "undefined" && topRef !== null && topRef.current !== null && topRef.current.scrollIntoView !== null) {
@@ -77,11 +34,6 @@ const SharedLayout = () => {
 
           inputRef.current?.focus();
      }, []);
-
-     // This is the only way to really set the body class based on dark mode
-     useEffect(() => {
-          document.body.className = darkMode ? 'darkMode' : '';
-     }, [darkMode]);
 
      useEffect(() => {
           if (imdbSearchResults.length > 0) {

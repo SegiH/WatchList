@@ -3,6 +3,7 @@ import { useContext, useEffect, useState } from "react";
 import { PageNavigationBarContext } from "../context";
 
 import { PageNavigationBarContextType } from "../contexts/PageNavigationBarContextType";
+import Button from "@mui/material/Button";
 
 interface PageNavigationBarProps {
     isBottomNav?: boolean;
@@ -11,7 +12,7 @@ interface PageNavigationBarProps {
 
 const PageNavigationBar = ({ isBottomNav, topRef }: PageNavigationBarProps) => {
     const {
-        activeRoute, currentItemsPage, currentWatchListPage, isAdding, isLoading, hideTabs, lastPage, setNewPage
+        activeRoute, currentItemsPage, currentWatchListPage, IMDBSearchClickHandler, imdbSearchEnabled, isAdding, isLoading, hideTabs, lastPage, searchTerm, setNewPage, setSearchTerm
     } = useContext(PageNavigationBarContext) as PageNavigationBarContextType;
 
     const [currentPage, setCurrentPage] = useState(-1);
@@ -42,8 +43,20 @@ const PageNavigationBar = ({ isBottomNav, topRef }: PageNavigationBarProps) => {
                         <div className={`pageNavigationBarLeft leftMargin50`} onClick={() => pageClickHandler(-1)}>&#8592;</div>
                     }
 
+                    <span className={`activeRoute leftMargin60 ${activeRoute === "WatchList" || activeRoute === "Items" ? "activeRouteHidden" : ""}`}>{activeRoute}</span>
+
                     {!lastPage &&
-                        <div className={`pageNavigationBarRight`} onClick={() => pageClickHandler(1)}>&#8594;</div>
+                        <>
+                            <span className={`searchInputStyle searchInputStyleBottom`}>
+                                <input value={searchTerm} onChange={(event) => setSearchTerm(event.target.value)} />
+                            </span>
+
+                            {!isLoading && searchTerm !== "" && imdbSearchEnabled &&
+                                <Button className="IMDBSearchButton IMDBSearchButtonButtom" variant="contained" color="secondary" onClick={() => IMDBSearchClickHandler()}>IMDB</Button>
+                            }
+
+                            <div className={`pageNavigationBarRight`} onClick={() => pageClickHandler(1)}>&#8594;</div>
+                        </>
                     }
                 </div>
             }

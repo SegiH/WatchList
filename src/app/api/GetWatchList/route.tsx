@@ -21,10 +21,15 @@ export async function GET(request: NextRequest) {
      const archivedVisible = searchParams.get("ArchivedVisible"); // WLI.Archive
      const searchTerm = searchParams.get("SearchTerm"); // WLI.WatchListItemName
      const sourceFilter = searchParams.get("SourceFilter"); // WL.WatchListSourceID
-     const stillWatching = searchParams.get("StillWatching"); // WL.EndDate == null
+     let stillWatching = searchParams.get("StillWatching"); // WL.EndDate == null
      const typeFilter = searchParams.get("TypeFilter"); // WLI.WatchListTypeID
      const metaDataFiltersJSONStr = searchParams.get("MetadataFilters");
      const metaDataFilters = metaDataFiltersJSONStr !== null ? JSON.parse(decodeURIComponent(metaDataFiltersJSONStr)) : null;
+
+     // If user entered a search term, show all data
+     if (searchTerm !== "" && searchTerm !== null) {
+          stillWatching = "false";
+     }
 
      // Order params
      const sortColumn = searchParams.get("SortColumn");

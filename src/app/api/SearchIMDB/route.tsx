@@ -56,6 +56,8 @@ export async function GET(request: NextRequest) {
                          try {
                               results.push(...result.Search);
                          } catch (e) { }
+                    } else if (result.Response == 'False') {
+                         return Response.json(["ERROR", result.Error]);
                     }
                } catch (e) {
                     writeLog(e)

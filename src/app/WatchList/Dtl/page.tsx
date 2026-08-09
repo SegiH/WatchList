@@ -743,7 +743,9 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
                                                   }
 
                                                   {isAdding && addWatchListDtl && watchListItems?.filter((currentWatchListItem: IWatchListItem) => String(currentWatchListItem?.WatchListItemID) === String(addWatchListDtl?.WatchListItemID)).length === 1 && !isClosing && watchListItems?.filter((currentWatchListItem: IWatchListItem) => String(currentWatchListItem?.WatchListItemID) === String(addWatchListDtl?.WatchListItemID))[0].IMDB_Poster !== "N/A" &&
-                                                       <span className="column"><Image className="poster-detail" width="175" height="280" alt="Image Not Available" src={watchListItems?.filter((currentWatchListItem: IWatchListItem) => String(currentWatchListItem?.WatchListItemID) === String(addWatchListDtl?.WatchListItemID))[0].IMDB_Poster ?? ""} /></span>
+                                                       <span className="column">
+                                                            <Image className="poster-detail" width="175" height="260" alt="Image Not Available" src={watchListItems?.filter((currentWatchListItem: IWatchListItem) => String(currentWatchListItem?.WatchListItemID) === String(addWatchListDtl?.WatchListItemID))[0].IMDB_Poster ?? ""} />
+                                                       </span>
                                                   }
                                              </div>
 

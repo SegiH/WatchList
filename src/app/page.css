@@ -108,7 +108,7 @@ table.simpleTable:last-child {
 }
 .arrowIcon { @apply float-left ml-[10px] relative top-[-12px] z-[999]; }
 
-.cancelItemsIcon { @apply relative scale-[1.5] right-[-375px] top-[-6] }
+.cancelItemsIcon { @apply relative scale-[1.5] left-[120px] top-[-6] }
 
 .cancelWatchListIcon { @apply relative right-[-175px] scale-[1.5] top-[-12] }
 
@@ -131,6 +131,8 @@ table.simpleTable:last-child {
 .customModalHeight { @apply min-h-[60px]!; }
 
 .customWidth { @apply min-w-[100%]! h-[30px]; }
+
+.editsaveCancelButton { @apply cursor-pointer z-[9999]; }
 
 .error { @apply text-[rgb(211,47,47)]; }
 
@@ -215,6 +217,10 @@ table.simpleTable:last-child {
 
 .leftMargin75 { @apply ml-[75px]; }
 
+.leftMargin80 { @apply ml-[80px]! hidden; }
+
+.leftMargin90 { @apply ml-[90px]! hidden; }
+
 .leftMargin125 { @apply ml-[125px]; }
 
 .leftMargin165 { @apply ml-[165px]; }
@@ -226,6 +232,7 @@ table.simpleTable:last-child {
 .login-container {
   @apply relative z-[1] max-w-[360px] text-center shadow-[0_0_20px_0_rgba(0,0,0,0.2),0_5px_5px_0_rgba(0,0,0,0.24)] mt-[0] mb-[100px] mx-auto p-[45px] border-2 border-solid border-[rgba(255,255,255,0.1)];
 }
+
 .login-background {
   @apply bg-cover bg-repeat box-border min-h-screen h-full absolute w-full z-[-999];
 }
@@ -334,7 +341,7 @@ table.simpleTable:last-child {
   @apply bottom-[0];
 }
 
-.poster-detail { @apply max-h-[500px] max-w-[175px] relative top-[80px] mt-[50px]; }
+.poster-detail { @apply z-[1] max-w-[200px] relative top-[80px] mt-[50px]; }
 
 .primary { @apply text-[rgb(25,118,210)]; }
 
@@ -445,7 +452,7 @@ table.simpleTable:last-child {
 }
 
 .modal-content {
-  @apply border border-[#888] rounded-[20px] m-auto p-[20px] w-[fit-content] min-h-[225px] min-w-[150px];
+  @apply border border-[#888] rounded-[20px] m-auto p-[20px] w-[max-content] min-h-[225px] min-w-[150px];
 }
 
 .modal-content.scrollable {

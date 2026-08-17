@@ -10,7 +10,9 @@ export interface ItemsDtlContextType {
      formatWatchListDates: (startDate: string, endDate: string) => string;
      getMissingPoster: (watchListItemID: number) => void;
      getWatchListItems: () => void;
+     imageHeight: number;
      imageIsValid: (imgUrl: string, poster_error?: boolean) => boolean;
+     imageWidth: number;
      isAdding: boolean;
      isEditing: boolean;
      isEnabled: (value: string) => boolean;

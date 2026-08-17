@@ -8,7 +8,9 @@ export interface WatchListDtlContextType {
      EditIconComponent: React.ReactNode;
      getWatchList: () => void;
      imdbSearchEnabled: boolean;
+     imageHeight: number;
      imageIsValid: (imgUrl: string, poster_error?: boolean) => boolean;
+     imageWidth: number;
      isAdding: boolean;
      isEditing: boolean;
      isLoading: boolean;

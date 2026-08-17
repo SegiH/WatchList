@@ -14,7 +14,7 @@ import WatchListHistory from "@/app/components/WatchListHistory";
 
 export default function ItemsDtl() {
      const {
-          autoAdd, BrokenImageIconComponent, CancelIconComponent, demoMode, EditIconComponent, formatWatchListDates, getMissingPoster, getWatchListItems, imageIsValid, isAdding, isEditing, isEnabled, isLoading, pullToRefreshEnabled, SaveIconComponent, setErrorMessage, setIsAdding, setIsEditing, setIsError, setModalVisible, watchListTypes, writeLog
+          autoAdd, BrokenImageIconComponent, CancelIconComponent, demoMode, EditIconComponent, formatWatchListDates, getMissingPoster, getWatchListItems, imageHeight, imageIsValid, imageWidth, isAdding, isEditing, isEnabled, isLoading, pullToRefreshEnabled, SaveIconComponent, setErrorMessage, setIsAdding, setIsEditing, setIsError, setModalVisible, watchListTypes, writeLog
      } = useContext(ItemsDtlContext) as ItemsDtlContextType
 
      const [addWatchListItemDtl, setAddWatchListItemDtl] = useState<IWatchListItem | null>();
@@ -497,23 +497,24 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
                                              </div>
 
                                              <div className="narrow card">
-                                                  {/*{!isAdding &&
+                                                  {!isAdding &&
                                                        <span className="topMargin">
-                                                            {imageIsValid(watchListItemDtl?.IMDB_Poster, watchListItemDtl?.IMDB_Poster_Error) &&
-                                                                 <Image alt={watchListItemDtl?.WatchListItemName} className="poster-detail" width="175" height="140" src={watchListItemDtl?.IMDB_Poster} onError={() => showDefaultSrc()} />}
+                                                            {/* TODO: Fix me */}
+                                                            {/*{imageIsValid(watchListItemDtl?.IMDB_Poster, watchListItemDtl?.IMDB_Poster_Error) &&
+                                                                 <Image alt={watchListItemDtl?.WatchListItemName} className="poster-detail" width={imageWidth} height={imageHeight} src={watchListItemDtl?.IMDB_Poster} onError={() => showDefaultSrc()} />}
 
                                                             {!imageIsValid(watchListItemDtl?.IMDB_Poster, watchListItemDtl?.IMDB_Poster_Error) &&
                                                                  <div className="imagePlaceholder">{BrokenImageIconComponent}</div>
                                                             }
 
-                                                            <div className="clickable hyperlink text-label rightAligned" onClick={recommendationsClickHandler}>Recommendations</div>
+                                                            <div className="clickable hyperlink text-label rightAligned" onClick={recommendationsClickHandler}>Recommendations</div>*/}
                                                        </span>
-                                                  }*/}
+                                                  }
 
                                                   {isAdding && addWatchListItemDtl !== null && typeof addWatchListItemDtl !== "undefined" &&
                                                        <span className="topMargin column">
                                                             {imageIsValid(addWatchListItemDtl?.IMDB_Poster, addWatchListItemDtl?.IMDB_Poster_Error) &&
-                                                                 <Image className="poster-detail" width="175" alt="Image Not Available" src={addWatchListItemDtl.IMDB_Poster} />
+                                                                 <Image className="poster-detail" width={imageWidth} height={imageHeight} alt="Image Not Available" src={addWatchListItemDtl.IMDB_Poster} />
                                                             }
                                                        </span>
                                                   }
@@ -651,13 +652,14 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
                                                   }
                                              </div>
 
-                                             {!isAdding && !isEditing && typeof watchListItemDtl !== "undefined" && watchListItemDtl !== null &&
+                                             {/* TODO: Fix me */}
+                                             {/*{!isAdding && !isEditing && typeof watchListItemDtl !== "undefined" && watchListItemDtl !== null &&
                                                   <div className={`clickable textLabel`}>
                                                        <a onClick={() => reloadImageClickHandler(watchListItemDtl.WatchListItemID)}>
                                                             Reload Image
                                                        </a>
                                                   </div>
-                                             }
+                                             }*/}
 
                                              {(isAdding || isEditing) &&
                                                   <>

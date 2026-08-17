@@ -28,7 +28,7 @@ interface AutoCompleteWatchListItem {
 
 export default function WatchListDtl() {
      const {
-          BrokenImageIconComponent, CancelIconComponent, demoMode, EditIconComponent, getWatchList, imageIsValid, imdbSearchEnabled, isAdding, isEditing, isLoading, pullToRefreshEnabled, modalVisible, recommendationsEnabled, SaveIconComponent, setErrorMessage, setIsAdding, setIsEditing, setIsError, setModalVisible, setStillWatching, showSearch, stillWatching, watchListSortDirection, watchListSources, writeLog
+          BrokenImageIconComponent, CancelIconComponent, demoMode, EditIconComponent, getWatchList, imageHeight, imageIsValid, imageWidth, imdbSearchEnabled, isAdding, isEditing, isLoading, pullToRefreshEnabled, modalVisible, recommendationsEnabled, SaveIconComponent, setErrorMessage, setIsAdding, setIsEditing, setIsError, setModalVisible, setStillWatching, showSearch, stillWatching, watchListSortDirection, watchListSources, writeLog
      } = useContext(WatchListDtlContext) as WatchListDtlContextType
 
      const currentDate = new Date().toLocaleDateString();
@@ -733,7 +733,7 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
                                                   {!isAdding && !isClosing &&
                                                        <>
                                                             {imageIsValid(watchListDtl?.IMDB_Poster, watchListDtl?.IMDB_Poster_Error) &&
-                                                                 <Image className="poster-detail" width="175" height="260" alt="Image Not Available" src={watchListDtl?.IMDB_Poster} onError={() => showDefaultSrc()} />
+                                                                 <Image className="poster-detail" width={imageWidth} height={imageHeight} alt="Image Not Available" src={watchListDtl?.IMDB_Poster} onError={() => showDefaultSrc()} />
                                                             }
 
                                                             {!imageIsValid(watchListDtl?.IMDB_Poster, watchListDtl?.IMDB_Poster_Error) &&
@@ -744,7 +744,7 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
 
                                                   {isAdding && addWatchListDtl && watchListItems?.filter((currentWatchListItem: IWatchListItem) => String(currentWatchListItem?.WatchListItemID) === String(addWatchListDtl?.WatchListItemID)).length === 1 && !isClosing && watchListItems?.filter((currentWatchListItem: IWatchListItem) => String(currentWatchListItem?.WatchListItemID) === String(addWatchListDtl?.WatchListItemID))[0].IMDB_Poster !== "N/A" &&
                                                        <span className="column">
-                                                            <Image className="poster-detail" width="175" height="260" alt="Image Not Available" src={watchListItems?.filter((currentWatchListItem: IWatchListItem) => String(currentWatchListItem?.WatchListItemID) === String(addWatchListDtl?.WatchListItemID))[0].IMDB_Poster ?? ""} />
+                                                            <Image className="poster-detail" width={imageWidth} height={imageHeight} alt="Image Not Available" src={watchListItems?.filter((currentWatchListItem: IWatchListItem) => String(currentWatchListItem?.WatchListItemID) === String(addWatchListDtl?.WatchListItemID))[0].IMDB_Poster ?? ""} />
                                                        </span>
                                                   }
                                              </div>

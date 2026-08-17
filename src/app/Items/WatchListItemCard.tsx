@@ -11,7 +11,7 @@ type WatchListCardProps = {
 
 export default function WatchListItemCard({ currentWatchListItem, setImdbJSON }: WatchListCardProps) {
     const {
-        BrokenImageIconComponent, filteredWatchListItems, getMissingPoster, imageIsValid, openDetailClickHandler, setFilteredWatchListItems
+        BrokenImageIconComponent, filteredWatchListItems, getMissingPoster, imageHeight, imageIsValid, imageWidth, openDetailClickHandler, setFilteredWatchListItems
     } = useContext(ItemsCardContext) as ItemsCardContextType;
 
     const IMDB_JSON = currentWatchListItem?.IMDB_JSON !== null && typeof currentWatchListItem?.IMDB_JSON !== "undefined" && currentWatchListItem?.IMDB_JSON !== "" ? JSON.parse(currentWatchListItem?.IMDB_JSON) : null;
@@ -65,7 +65,7 @@ export default function WatchListItemCard({ currentWatchListItem, setImdbJSON }:
                 <a className="show-link" onClick={() => openDetailClickHandler(currentWatchListItem?.WatchListItemID, "Items")}>
                     <div className="clickable">
                         {imageIsValid(currentWatchListItem?.IMDB_Poster, currentWatchListItem?.IMDB_Poster_Error) &&
-                            <Image width="128" height="187" alt={currentWatchListItem?.WatchListItemName} src={currentWatchListItem.IMDB_Poster} onError={() => showDefaultSrc(currentWatchListItem.WatchListItemID)} />
+                            <Image width={imageWidth} height={imageHeight} alt={currentWatchListItem?.WatchListItemName} src={currentWatchListItem.IMDB_Poster} onError={() => showDefaultSrc(currentWatchListItem.WatchListItemID)} />
                         }
 
                         {!imageIsValid(currentWatchListItem?.IMDB_Poster, currentWatchListItem?.IMDB_Poster_Error) &&

@@ -5,6 +5,8 @@ export interface ItemsCardContextType {
      BrokenImageIconComponent: React.ReactNode;
      darkMode: boolean;
      filteredWatchListItems: IWatchListItem[];
+     imageHeight: number;
+     imageWidth: number;
      getMissingPoster: (watchListItemID: number) => void;
      imageIsValid: (imgUrl: string, poster_error?: boolean) => boolean;
      openDetailClickHandler: (value: number, activeRouteOverride?: string) => void;

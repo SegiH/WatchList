@@ -9,7 +9,7 @@ import { SearchIMDBContextType } from "../contexts/SearchIMDBContextType";
 
 export default function SearchIMDB(props) {
      const {
-          autoAdd, BrokenImageIconComponent, modalVisible, searchCount, setIsAdding, setSearchCount, setModalVisible, setSearchTerm
+          autoAdd, BrokenImageIconComponent, imageHeight, imageWidth, modalVisible, searchCount, setIsAdding, setSearchCount, setModalVisible, setSearchTerm
      } = useContext(SearchIMDBContext) as SearchIMDBContextType
 
      const searchCountOptions = {
@@ -117,7 +117,7 @@ export default function SearchIMDB(props) {
                                                                  <div>
                                                                       <div>
                                                                            {typeof (currentResult.Poster !== "undefined" && currentResult.Poster !== null && currentResult.Poster !== "" && currentResult.Poster !== "N/A" && (currentResult.Poster.toString().startsWith("http://") || currentResult.Poster.toString().startsWith("https://"))) &&
-                                                                                <Image width="100" height="125" className="searchResultPoster" src={currentResult.Poster} onClick={() => addIMDBSearchResultClickHandler(index)} alt={currentResult.Title} />
+                                                                                <Image width={imageWidth} height={imageHeight} className="searchResultPoster" src={currentResult.Poster} onClick={() => addIMDBSearchResultClickHandler(index)} alt={currentResult.Title} />
                                                                            }
 
                                                                            <div className="textLabel">

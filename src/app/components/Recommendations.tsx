@@ -13,7 +13,7 @@ const Recommendations = ({ queryTerm, setRecommendationName, setRecommendationTy
           type: string
      }) => {
      const {
-          BrokenImageIconComponent, writeLog
+          BrokenImageIconComponent, imageHeight, imageWidth, writeLog
      } = useContext(RecommendationsContext) as RecommendationsContextType
 
      const [recommendations, setRecommendations] = useState<IRecommendation[]>([]);
@@ -105,7 +105,7 @@ const Recommendations = ({ queryTerm, setRecommendationName, setRecommendationTy
 
                                    <span>
                                         {!recommendation.Image_Error && recommendation.poster_path !== null &&
-                                             <Image width="128" height="187" alt="image not available" src={`https://image.tmdb.org/t/p/w500${recommendation.poster_path}`} onError={() => showDefaultSrc(recommendation.id)} />
+                                             <Image width={imageWidth} height={imageHeight} alt="image not available" src={`https://image.tmdb.org/t/p/w500${recommendation.poster_path}`} onError={() => showDefaultSrc(recommendation.id)} />
                                         }
 
                                         {(recommendation.Image_Error || recommendation.poster_path === null) &&

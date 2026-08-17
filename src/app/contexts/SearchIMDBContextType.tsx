@@ -2,6 +2,8 @@ export interface SearchIMDBContextType {
      autoAdd: boolean;
      BrokenImageIconComponent: React.ReactNode;
      darkMode: boolean;
+     imageHeight: number;
+     imageWidth: number;
      modalVisible: boolean;
      searchCount: number;
      setIsAdding: (value: boolean) => void;

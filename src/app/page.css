@@ -120,7 +120,7 @@ table.simpleTable:last-child {
 
 .closeButton { @apply relative left-[120px] scale-[2.1]!; }
 
-.customCloseButton { @apply float-right; }
+.customCloseButton { @apply scale-[2.1] float-right; }
 
 .customBorderRadius { @apply rounded-[15px]; }
 
@@ -183,12 +183,14 @@ table.simpleTable:last-child {
 
 .iconLarge:last-of-type { @apply mr-[25px]; }
 
+.imagePlaceholder > * { @apply min-w-[128] min-h-[187];
+}
 .IMDBCardModal {
-    @apply relative pt-[50px]! pb-[150px]
+    @apply relative pt-[50px]! pb-[150px];
 }
 
 .IMDBCloseButton {
-  @apply relative right-[-90%] scale-[1.8];
+  @apply relative right-[-90%] scale-[2.1];
 }
 
 .IMDBSearchButton {
@@ -429,6 +431,8 @@ table.simpleTable:last-child {
 .topMargin20 {
   @apply mt-[20px]!
 }
+
+.watchListHistory { @apply min-w-[500px]!; }
 
 .width50 { @apply w-[50px]; }
 

@@ -12,10 +12,10 @@ type WatchListCardProps = {
 
 export default function WatchListCard({ currentWatchList, setImdbJSON }: WatchListCardProps) {
     const {
-        BrokenImageIconComponent, darkMode, filteredWatchList, formatWatchListDates, getMissingPoster, openDetailClickHandler, setFilteredWatchList, writeLog
+        BrokenImageIconComponent, darkMode, filteredWatchList, formatWatchListDates, getMissingPoster, imageIsValid, openDetailClickHandler, setFilteredWatchList, writeLog
     } = useContext(WatchListCardContext) as WatchListCardContextType;
 
-    let IMDB_JSON :any = null;
+    let IMDB_JSON: any = null;
 
     if (currentWatchList?.IMDB_JSON) {
         try {
@@ -30,7 +30,7 @@ export default function WatchListCard({ currentWatchList, setImdbJSON }: WatchLi
     }
 
     const showDefaultSrc = async (watchListID: number) => {
-        const newFilteredWatchList: IWatchList[] = filteredWatchList.map(item => ({ ...item}));
+        const newFilteredWatchList: IWatchList[] = filteredWatchList.map(item => ({ ...item }));
 
         const newWatchListResult: IWatchList[] = newFilteredWatchList?.filter((currentWatchList: IWatchList) => {
             return String(currentWatchList.WatchListID) === String(watchListID);
@@ -66,14 +66,6 @@ export default function WatchListCard({ currentWatchList, setImdbJSON }: WatchLi
         setFilteredWatchList(newFilteredWatchList);*/
     };
 
-    const imageIsValid = (currentWatchList: IWatchList) => {
-        if (typeof currentWatchList?.IMDB_Poster !== "undefined" && currentWatchList?.IMDB_Poster !== null && currentWatchList?.IMDB_Poster !== "" && currentWatchList?.IMDB_Poster !== "N/A" && currentWatchList?.IMDB_Poster_Error !== true) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
     return (
         <>
             <li className="show-item">
@@ -83,22 +75,24 @@ export default function WatchListCard({ currentWatchList, setImdbJSON }: WatchLi
 
                 <a className="clickable show-link" onClick={() => openDetailClickHandler(currentWatchList.WatchListID, "WatchList")}>
                     <div>
-                        {imageIsValid(currentWatchList) &&
+                        {imageIsValid(currentWatchList?.IMDB_Poster, currentWatchList?.IMDB_Poster_Error) &&
                             <Image width="128" height="187" alt={currentWatchList.WatchListItemName ?? ""} src={currentWatchList?.IMDB_Poster} onError={() => showDefaultSrc(currentWatchList.WatchListID)} />
                         }
 
-                        {!imageIsValid(currentWatchList) && <>{BrokenImageIconComponent}</>}
+                        {!imageIsValid(currentWatchList?.IMDB_Poster, currentWatchList?.IMDB_Poster_Error) &&
+                            <div className="imagePlaceholder">{BrokenImageIconComponent}</div>
+                        }
                     </div>
                 </a>
 
                 <div className="show-title">
                     {typeof currentWatchList?.IMDB_URL !== "undefined" &&
-                        <a href={currentWatchList?.IMDB_URL} target='_blank'>{currentWatchList.WatchListItemName}{IMDB_JSON !== null && IMDB_JSON.Year !== null ? ` (${IMDB_JSON.Year})` : ""}</a>
+                        <a href={currentWatchList?.IMDB_URL} target='_blank'>{currentWatchList.WatchListItemName}{IMDB_JSON !== null && typeof IMDB_JSON.Year !== "undefined" && IMDB_JSON.Year !== null ? ` (${IMDB_JSON.Year})` : ""}</a>
                     }
 
                     {typeof currentWatchList?.IMDB_URL === "undefined" &&
                         <span>
-                            {currentWatchList.WatchListItemName}{IMDB_JSON !== null && IMDB_JSON.Year !== null ? ` (${IMDB_JSON.Year})` : ""}
+                            {currentWatchList.WatchListItemName}{IMDB_JSON !== null && typeof IMDB_JSON.Year !== "undefined" && IMDB_JSON.Year !== null ? ` (${IMDB_JSON.Year})` : ""}
                         </span>
                     }
 

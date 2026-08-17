@@ -130,7 +130,7 @@ export default function SearchIMDB(props) {
                                                                                           {currentResult.Title} ({currentResult.Year})
                                                                                      </span>
 
-                                                                                     <span className="searchResultPoster">{BrokenImageIconComponent}</span>
+                                                                                     <span className="imagePlaceholder searchResultPoster">{BrokenImageIconComponent}</span>
                                                                                 </>
                                                                            )}
                                                                       </div>

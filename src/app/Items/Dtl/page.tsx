@@ -14,7 +14,7 @@ import WatchListHistory from "@/app/components/WatchListHistory";
 
 export default function ItemsDtl() {
      const {
-          autoAdd, BrokenImageIconComponent, CancelIconComponent, demoMode, EditIconComponent, formatWatchListDates, getMissingPoster, getWatchListItems, isAdding, isEditing, isEnabled, isLoading, pullToRefreshEnabled, SaveIconComponent, setErrorMessage, setIsAdding, setIsEditing, setIsError, setModalVisible, watchListTypes, writeLog
+          autoAdd, BrokenImageIconComponent, CancelIconComponent, demoMode, EditIconComponent, formatWatchListDates, getMissingPoster, getWatchListItems, imageIsValid, isAdding, isEditing, isEnabled, isLoading, pullToRefreshEnabled, SaveIconComponent, setErrorMessage, setIsAdding, setIsEditing, setIsError, setModalVisible, watchListTypes, writeLog
      } = useContext(ItemsDtlContext) as ItemsDtlContextType
 
      const [addWatchListItemDtl, setAddWatchListItemDtl] = useState<IWatchListItem | null>();
@@ -320,24 +320,21 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
                     alert(`The error ${saveNewItemDtlResult[1]} occurred while adding the detail`);
                } else if (saveNewItemDtlResult[0] === "ERROR-ALREADY-EXISTS") {
                     alert(saveNewItemDtlResult[1]);
-               } else {
-                    setAddModified(true);
+               }
 
-                    setIsAdding(false);
+               setAddModified(true);
 
-                    if (!autoAdd) {
-                         const addNewWatchListPrompt = confirm("Do you want to add a new WatchList record now ?");
+               setIsAdding(false);
 
-                         if (addNewWatchListPrompt) {
-                              setIsAdding(true);
-                              setModalVisible(true);
-                              router.push(`/WatchList/Dtl?WatchListItemID=${saveNewItemDtlResult[1]}`);
-                              getWatchListItems();
-                         } else {
-                              setModalVisible(false);
-                         }
-                    } else {
-                         setModalVisible(true);
+               getWatchListItems();
+
+               setIsClosing(true);
+
+               if (!autoAdd) {
+                    const addNewWatchListPrompt = confirm("Do you want to add a new WatchList record now ?");
+
+                    if (addNewWatchListPrompt) {
+                         router.push(`/WatchList/Dtl?WatchListItemID=${saveNewItemDtlResult[1]}`);
                     }
                }
           } catch (e: any) {
@@ -461,10 +458,10 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
 
      return (
           <>
-               {!isLoading && !isClosing && watchListItemDtlLoadingCheck === APIStatus.Success &&
+               {!isLoading && !isClosing && watchListItemDtlLoadingCheck === APIStatus.Success && !imdbCardvisible && !watchListHistoryVisible &&
                     <div className="modal">
                          <div className={`modal-content ${watchListItemDtlID != null ? "fade-in" : ""}`}>
-                              {!recommendationsVisible &&
+                              {!recommendationsVisible && !imdbCardvisible &&
                                    <div className="container">
                                         <div className="cards">
                                              <div className="narrow card">
@@ -502,18 +499,23 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
                                              <div className="narrow card">
                                                   {/*{!isAdding &&
                                                        <span className="topMargin">
-                                                            {typeof watchListItemDtl?.IMDB_Poster !== "undefined" && watchListItemDtl?.IMDB_Poster !== null && watchListItemDtl?.IMDB_Poster !== "" && watchListItemDtl?.IMDB_Poster !== "N/A" && watchListItemDtl?.IMDB_Poster_Error !== true && typeof watchListItemDtl?.WatchListItemName !== "undefined" &&
+                                                            {imageIsValid(watchListItemDtl?.IMDB_Poster, watchListItemDtl?.IMDB_Poster_Error) &&
                                                                  <Image alt={watchListItemDtl?.WatchListItemName} className="poster-detail" width="175" height="140" src={watchListItemDtl?.IMDB_Poster} onError={() => showDefaultSrc()} />}
 
-                                                            {(typeof watchListItemDtl?.IMDB_Poster === "undefined" || watchListItemDtl?.IMDB_Poster === null || watchListItemDtl?.IMDB_Poster === "" || watchListItemDtl?.IMDB_Poster === "N/A" || watchListItemDtl?.IMDB_Poster_Error === true || typeof watchListItemDtl?.WatchListItemName === "undefined") && <>{BrokenImageIconComponent}</>}
+                                                            {!imageIsValid(watchListItemDtl?.IMDB_Poster, watchListItemDtl?.IMDB_Poster_Error) &&
+                                                                 <div className="imagePlaceholder">{BrokenImageIconComponent}</div>
+                                                            }
 
                                                             <div className="clickable hyperlink text-label rightAligned" onClick={recommendationsClickHandler}>Recommendations</div>
                                                        </span>
                                                   }*/}
 
                                                   {isAdding && addWatchListItemDtl !== null && typeof addWatchListItemDtl !== "undefined" &&
-                                                       <span className="topMargin column">{typeof addWatchListItemDtl?.IMDB_Poster !== "undefined" && addWatchListItemDtl?.IMDB_Poster !== null && addWatchListItemDtl?.IMDB_Poster !== "" && addWatchListItemDtl?.IMDB_Poster !== "N/A" && addWatchListItemDtl?.IMDB_Poster_Error !== true &&
-                                                            <Image className="poster-detail" width="175" alt="Image Not Available" src={addWatchListItemDtl.IMDB_Poster} />}</span>
+                                                       <span className="topMargin column">
+                                                            {imageIsValid(addWatchListItemDtl?.IMDB_Poster, addWatchListItemDtl?.IMDB_Poster_Error) &&
+                                                                 <Image className="poster-detail" width="175" alt="Image Not Available" src={addWatchListItemDtl.IMDB_Poster} />
+                                                            }
+                                                       </span>
                                                   }
                                              </div>
 
@@ -620,11 +622,11 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
                                              </div>
 
                                              <div className="narrow card">
-                                                  {isEditing && typeof watchListItemDtl?.IMDB_Poster !== "undefined" && watchListItemDtl?.IMDB_Poster !== null && addWatchListItemDtl?.IMDB_Poster !== "" && addWatchListItemDtl?.IMDB_Poster !== "N/A" &&
+                                                  {isEditing &&
                                                        <input className={`inputStyle`} value={watchListItemDtl?.IMDB_Poster} onBlur={(event: React.ChangeEvent<HTMLInputElement>) => onIMDBPosterChangeHandler(event.target.value)} onChange={(event) => watchListItemDetailChangeHandler("IMDB_Poster", event.target.value)} />
                                                   }
 
-                                                  {isAdding && typeof addWatchListItemDtl?.IMDB_Poster !== "undefined" && addWatchListItemDtl?.IMDB_Poster !== null && addWatchListItemDtl?.IMDB_Poster !== "" && addWatchListItemDtl?.IMDB_Poster !== "N/A" &&
+                                                  {isAdding &&
                                                        <input className={`inputStyle`} value={addWatchListItemDtl?.IMDB_Poster} onChange={(event: React.ChangeEvent<HTMLInputElement>) => addWatchListItemDetailChangeHandler("IMDB_Poster", event.target.value)} />
                                                   }
                                              </div>
@@ -692,21 +694,21 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
                                    </div>
                               }
 
-                              {recommendationsVisible && (
+                              {recommendationsVisible && !imdbCardvisible &&
                                    <>
                                         <Recommendations queryTerm={recommendationName} type={recommendationType} setRecommendationName={setRecommendationName} setRecommendationType={setRecommendationName} setRecommendationsVisible={setRecommendationsVisible} />
                                    </>
-                              )}
-
-                              {imdbCardvisible &&
-                                   <IMDBCard closeIMDBCard={closeIMDBCard} IMDB_JSON={IMDB_JSON} />
-                              }
-
-                              {watchListHistoryVisible &&
-                                   <WatchListHistory formatWatchListDates={formatWatchListDates} name={watchListItemDtl?.WatchListItemName} setWatchListHistoryVisible={setWatchListHistoryVisible} watchListHistory={watchListHistory} />
                               }
                          </div>
                     </div>
+               }
+
+               {imdbCardvisible && !recommendationsVisible &&
+                    <IMDBCard closeIMDBCard={closeIMDBCard} IMDB_JSON={IMDB_JSON} />
+               }
+
+               {watchListHistoryVisible &&
+                    <WatchListHistory formatWatchListDates={formatWatchListDates} name={watchListItemDtl?.WatchListItemName} setWatchListHistoryVisible={setWatchListHistoryVisible} watchListHistory={watchListHistory} />
                }
           </>
      );

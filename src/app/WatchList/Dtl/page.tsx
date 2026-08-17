@@ -28,7 +28,7 @@ interface AutoCompleteWatchListItem {
 
 export default function WatchListDtl() {
      const {
-          BrokenImageIconComponent, CancelIconComponent, demoMode, EditIconComponent, getWatchList, imdbSearchEnabled, isAdding, isEditing, isLoading, pullToRefreshEnabled, modalVisible, recommendationsEnabled, SaveIconComponent, setErrorMessage, setIsAdding, setIsEditing, setIsError, setModalVisible, setStillWatching, showSearch, stillWatching, watchListSortDirection, watchListSources, writeLog
+          BrokenImageIconComponent, CancelIconComponent, demoMode, EditIconComponent, getWatchList, imageIsValid, imdbSearchEnabled, isAdding, isEditing, isLoading, pullToRefreshEnabled, modalVisible, recommendationsEnabled, SaveIconComponent, setErrorMessage, setIsAdding, setIsEditing, setIsError, setModalVisible, setStillWatching, showSearch, stillWatching, watchListSortDirection, watchListSources, writeLog
      } = useContext(WatchListDtlContext) as WatchListDtlContextType
 
      const currentDate = new Date().toLocaleDateString();
@@ -586,12 +586,6 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
 
      const IMDB_JSON = watchListDtl?.IMDB_JSON !== null && typeof watchListDtl?.IMDB_JSON !== "undefined" && watchListDtl?.IMDB_JSON !== "" ? JSON.parse(watchListDtl?.IMDB_JSON) : null;
 
-     const imdbImage = typeof watchListDtl?.IMDB_Poster !== "undefined" && watchListDtl?.IMDB_Poster !== null && watchListDtl?.IMDB_Poster !== "N/A" && watchListDtl?.IMDB_Poster_Error !== true && watchListDtl?.IMDB_Poster !== "" && watchListDtl?.IMDB_Poster.length > 0
-          ?
-          <Image className="poster-detail" width="175" height="260" alt="Image Not Available" src={watchListDtl?.IMDB_Poster} onError={() => showDefaultSrc()} />
-          :
-          <>{BrokenImageIconComponent}</>;
-
      useEffect(() => {
           if (!isAdding && watchListDtlLoadingCheck === APIStatus.Idle && watchListDtlID !== -1 && watchListDtlID !== -1 && !isNaN(watchListDtlID)) {
                setWatchListDtlLoadingCheck(APIStatus.Loading);
@@ -738,7 +732,13 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
                                              <div className="narrow card">
                                                   {!isAdding && !isClosing &&
                                                        <>
-                                                            {imdbImage}
+                                                            {imageIsValid(watchListDtl?.IMDB_Poster, watchListDtl?.IMDB_Poster_Error) &&
+                                                                 <Image className="poster-detail" width="175" height="260" alt="Image Not Available" src={watchListDtl?.IMDB_Poster} onError={() => showDefaultSrc()} />
+                                                            }
+
+                                                            {!imageIsValid(watchListDtl?.IMDB_Poster, watchListDtl?.IMDB_Poster_Error) &&
+                                                                 <div className="imagePlaceholder">{BrokenImageIconComponent}</div>
+                                                            }
                                                        </>
                                                   }
 

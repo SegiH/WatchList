@@ -109,9 +109,9 @@ const Recommendations = ({ queryTerm, setRecommendationName, setRecommendationTy
                                         }
 
                                         {(recommendation.Image_Error || recommendation.poster_path === null) &&
-                                             <>
+                                             <div className="imagePlaceholder">
                                                   {BrokenImageIconComponent}
-                                             </>
+                                             </div>
                                         }
                                    </span>
 

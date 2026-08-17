@@ -14,8 +14,8 @@ export default function WatchListHistory({ formatWatchListDates, name, setWatchL
 
     return (
         <div className={`modal zIndex`}>
-            <div className={`modal-content`}>
-                <span className="clickable closeButton" onClick={closeWatchListHistory}>
+            <div className={`modal-content watchListHistory`}>
+                <span className="clickable customCloseButton" onClick={closeWatchListHistory}>
                     X
                 </span>
 

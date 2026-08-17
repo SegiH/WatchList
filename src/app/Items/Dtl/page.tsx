@@ -564,7 +564,7 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
 
                                                   {isEditing &&
                                                        <div className="narrow card">
-                                                            <select className="selectStyle editing" value={watchListItemDtl?.WatchListTypeID} onChange={(event) => watchListItemDetailChangeHandler("WatchListTypeID", event.target.value)}>
+                                                            <select value={watchListItemDtl?.WatchListTypeID} onChange={(event) => watchListItemDetailChangeHandler("WatchListTypeID", event.target.value)}>
                                                                  <option value="-1">Please select</option>
 
                                                                  {watchListTypes?.map((watchListType: IWatchListType, index: number) => {

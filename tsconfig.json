@@ -4,7 +4,7 @@
       "jest",
       "node"
     ],
-    "target": "es5",
+    "target": "ES6",
     "lib": [
       "dom",
       "dom.iterable",

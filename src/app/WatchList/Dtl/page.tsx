@@ -28,7 +28,7 @@ interface AutoCompleteWatchListItem {
 
 export default function WatchListDtl() {
      const {
-          BrokenImageIconComponent, CancelIconComponent, demoMode, EditIconComponent, getWatchList, imageHeight, imageIsValid, imageWidth, imdbSearchEnabled, isAdding, isEditing, isLoading, pullToRefreshEnabled, modalVisible, recommendationsEnabled, SaveIconComponent, setErrorMessage, setIsAdding, setIsEditing, setIsError, setModalVisible, setStillWatching, showSearch, stillWatching, watchListSortDirection, watchListSources, writeLog
+          BrokenImageIconComponent, CancelIconComponent, demoMode, EditIconComponent, getWatchList, imageHeight, imageIsValid, imageWidth, isAdding, isEditing, isLoading, pullToRefreshEnabled, modalVisible, recommendationsEnabled, SaveIconComponent, setErrorMessage, setIsAdding, setIsEditing, setIsError, setModalVisible, setStillWatching, stillWatching, watchListSortDirection, watchListSources, writeLog
      } = useContext(WatchListDtlContext) as WatchListDtlContextType
 
      const currentDate = new Date().toLocaleDateString();
@@ -420,7 +420,7 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
 
                          router.push("/WatchList");
 
-                         setModalVisible(false);
+                         setIsClosing(true);
                     }
                } catch (e: any) {
                     alert(`The error ${e.message} occurred while adding the detail`);
@@ -924,9 +924,9 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
                                                   }
                                              </div>
 
-                                             <div className="narrow card topMargin">
+                                             <div className="narrow card topMargin50">
                                                   {!isAdding && !isEditing && recommendationsEnabled &&
-                                                       <div className={`clickable hyperlink text-label rightAligned topMargin`} onClick={recommendationsClickHandler}>Recommendations</div>
+                                                       <div className={`clickable hyperlink text-label rightAligned`} onClick={recommendationsClickHandler}>Recommendations</div>
                                                   }
                                              </div>
 

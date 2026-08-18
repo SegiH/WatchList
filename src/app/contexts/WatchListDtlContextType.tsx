@@ -7,7 +7,6 @@ export interface WatchListDtlContextType {
      demoMode: boolean;
      EditIconComponent: React.ReactNode;
      getWatchList: () => void;
-     imdbSearchEnabled: boolean;
      imageHeight: number;
      imageIsValid: (imgUrl: string, poster_error?: boolean) => boolean;
      imageWidth: number;
@@ -24,7 +23,6 @@ export interface WatchListDtlContextType {
      setIsError: (value: boolean) => void;
      setModalVisible: (value: boolean) => void;
      setStillWatching: (value: boolean) => void;
-     showSearch: () => void;
      stillWatching: boolean;
      watchListSortDirection: string;
      watchListSources: IWatchListSource[];

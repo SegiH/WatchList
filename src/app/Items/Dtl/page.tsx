@@ -497,18 +497,15 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
                                              </div>
 
                                              <div className="narrow card">
-                                                  {!isAdding &&
-                                                       <span className="topMargin">
-                                                            {/* TODO: Fix me */}
-                                                            {/*{imageIsValid(watchListItemDtl?.IMDB_Poster, watchListItemDtl?.IMDB_Poster_Error) &&
+                                                  {!isAdding && !isClosing &&
+                                                       <>
+                                                            {imageIsValid(watchListItemDtl?.IMDB_Poster, watchListItemDtl?.IMDB_Poster_Error) &&
                                                                  <Image alt={watchListItemDtl?.WatchListItemName} className="poster-detail" width={imageWidth} height={imageHeight} src={watchListItemDtl?.IMDB_Poster} onError={() => showDefaultSrc()} />}
 
                                                             {!imageIsValid(watchListItemDtl?.IMDB_Poster, watchListItemDtl?.IMDB_Poster_Error) &&
                                                                  <div className="imagePlaceholder">{BrokenImageIconComponent}</div>
                                                             }
-
-                                                            <div className="clickable hyperlink text-label rightAligned" onClick={recommendationsClickHandler}>Recommendations</div>*/}
-                                                       </span>
+                                                       </>
                                                   }
 
                                                   {isAdding && addWatchListItemDtl !== null && typeof addWatchListItemDtl !== "undefined" &&
@@ -650,6 +647,10 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
                                                   {isAdding && typeof addWatchListItemDtl?.ItemNotes !== "undefined" && addWatchListItemDtl?.ItemNotes !== null &&
                                                        <input className={`inputStyle`} value={addWatchListItemDtl?.ItemNotes} onChange={(event: React.ChangeEvent<HTMLInputElement>) => addWatchListItemDetailChangeHandler("ItemNotes", event.target.value)} />
                                                   }
+                                             </div>
+
+                                             <div className="narrow card">
+                                                  <div className="clickable hyperlink text-label rightAligned" onClick={recommendationsClickHandler}>Recommendations</div>
                                              </div>
 
                                              {/* TODO: Fix me */}

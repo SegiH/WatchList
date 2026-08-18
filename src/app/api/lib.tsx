@@ -540,10 +540,7 @@ export const getMissingArtwork = async (watchListItemID: number) => {
           processIds = parseNumberList(watchListItemsProcessIds);
      }*/
 
-
      const db: any = await getDB();
-     let logText = "";
-
      const watchListItemsDB = db.WatchListItems;
 
      const thisWLIResult = watchListItemsDB

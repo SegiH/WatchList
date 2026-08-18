@@ -415,7 +415,6 @@ table.simpleTable:last-child {
 
 .textLabel { @apply font-[700] break-words; }
 
-/*.topMarginContent { @apply text-[black] bg-[white] }*/
 .topMarginContent { @apply relative top-[65px] }
 
 .dark .topBar {
@@ -430,6 +429,10 @@ table.simpleTable:last-child {
 
 .topMargin20 {
   @apply mt-[20px]!
+}
+
+.topMargin50 {
+  @apply relative top-[50px]!
 }
 
 .watchListHistory { @apply min-w-[500px]!; }

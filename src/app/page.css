@@ -26,9 +26,9 @@
 
   .favoriteIcon { @apply max-w-[15px]! max-h-[15px]!; }
 
-  .searchInputStyle { @apply relative left-[30px]! top-[1.5px]! mr-[20px] w-[150px]!; }
+  .searchInputStyle { @apply relative left-[30px]! top-[2px]! w-[150px]!; }
 
-  .searchInputStyleBottom { @apply relative ml-[20px]! ;}
+  .searchInputStyleBottom { @apply relative left-[60px]! hidden; }
 
   .sidebar-menu { @apply w-full; }
 
@@ -367,6 +367,10 @@ table.simpleTable:last-child {
 
 .searchInputStyle {
   @apply relative left-[120px] top-[-2.8px] inline-flex w-[350px];
+}
+
+.searchInputStyleBottom {
+  @apply relative left-[40px] top-[1px]!;
 }
 
 .searchInputStyleButton {

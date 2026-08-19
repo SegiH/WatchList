@@ -43,7 +43,7 @@ const PageNavigationBar = ({ isBottomNav, topRef }: PageNavigationBarProps) => {
                         <div className={`pageNavigationBarLeft leftMargin50`} onClick={() => pageClickHandler(-1)}>&#8592;</div>
                     }
 
-                    <span className={`activeRoute leftMargin125 ${activeRoute === "WatchList" || activeRoute === "Items" ? "activeRouteHidden" : ""}`}>{activeRoute}</span>
+                    <span className={`activeRoute leftMargin50 ${activeRoute === "WatchList" || activeRoute === "Items" ? "activeRouteHidden" : ""}`}>{activeRoute}</span>
 
                     {!lastPage &&
                         <>

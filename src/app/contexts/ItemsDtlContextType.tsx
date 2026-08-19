@@ -19,6 +19,7 @@ export interface ItemsDtlContextType {
      isLoading: boolean;
      pullToRefreshEnabled: (value: boolean) => void;
      SaveIconComponent: React.ReactNode;
+     setActiveRoute: (value: string) => void;
      setErrorMessage: (value: string) => void;
      setIsAdding: (value: boolean) => void;
      setIsEditing: (value: boolean) => void;

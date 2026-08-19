@@ -14,7 +14,7 @@ import WatchListHistory from "@/app/components/WatchListHistory";
 
 export default function ItemsDtl() {
      const {
-          autoAdd, BrokenImageIconComponent, CancelIconComponent, demoMode, EditIconComponent, formatWatchListDates, getMissingPoster, getWatchListItems, imageHeight, imageIsValid, imageWidth, isAdding, isEditing, isEnabled, isLoading, pullToRefreshEnabled, SaveIconComponent, setErrorMessage, setIsAdding, setIsEditing, setIsError, setModalVisible, watchListTypes, writeLog
+          autoAdd, BrokenImageIconComponent, CancelIconComponent, demoMode, EditIconComponent, formatWatchListDates, getMissingPoster, getWatchListItems, imageHeight, imageIsValid, imageWidth, isAdding, isEditing, isEnabled, isLoading, pullToRefreshEnabled, SaveIconComponent, setActiveRoute, setErrorMessage, setIsAdding, setIsEditing, setIsError, setModalVisible, watchListTypes, writeLog
      } = useContext(ItemsDtlContext) as ItemsDtlContextType
 
      const [addWatchListItemDtl, setAddWatchListItemDtl] = useState<IWatchListItem | null>();
@@ -324,17 +324,22 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
 
                setAddModified(true);
 
-               setIsAdding(false);
-
                getWatchListItems();
 
-               setIsClosing(true);
-
-               if (!autoAdd) {
+               if (autoAdd) {
+                    setActiveRoute("WatchList");
+                    setModalVisible(true);
+                    router.push(`/WatchList/Dtl?WatchListItemID=${saveNewItemDtlResult[1]}`);
+               } else {
                     const addNewWatchListPrompt = confirm("Do you want to add a new WatchList record now ?");
 
                     if (addNewWatchListPrompt) {
+                         setActiveRoute("WatchList");
+                         setModalVisible(true);
                          router.push(`/WatchList/Dtl?WatchListItemID=${saveNewItemDtlResult[1]}`);
+                    } else {
+                         setIsAdding(false);
+                         setIsClosing(true);
                     }
                }
           } catch (e: any) {
@@ -445,12 +450,6 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
      useEffect(() => {
           if (isClosing) {
                setModalVisible(false);
-
-               if (isEnabled("/Items")) {
-                    router.push("/Items");
-               } else {
-                    router.push("/WatchList");
-               }
           }
      }, [isClosing, isEnabled, router]);
 

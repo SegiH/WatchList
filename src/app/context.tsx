@@ -469,7 +469,7 @@ const DataProvider = ({
      }
 
      const imageIsValid = (imgUrl: string, poster_error?: boolean) => {
-          if (typeof imgUrl !== "undefined" && imgUrl !== null && imgUrl !== "" && imgUrl !== "N/A" && poster_error !== true) {
+          if (typeof imgUrl !== "undefined" && imgUrl !== null && imgUrl !== "" && imgUrl !== "N/A" && (imgUrl.startsWith("http://") || imgUrl.startsWith("https://")) && poster_error !== true) {
                return true;
           } else {
                return false;

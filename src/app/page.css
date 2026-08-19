@@ -439,6 +439,14 @@ table.simpleTable:last-child {
   @apply relative top-[50px]!
 }
 
+.topMargin75 {
+  @apply relative top-[75px]!
+}
+
+.topMargin100 {
+  @apply relative top-[100px]!
+}
+
 .watchListHistory { @apply min-w-[500px]!; }
 
 .width50 { @apply w-[50px]; }

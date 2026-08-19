@@ -163,8 +163,13 @@ export const addWatchListItem = async (name: string, type: string, imdb_url: str
                const result = await getIMDBDetails(id);
 
                if (result !== null) {
-                    imdb_json = JSON.stringify(result);
+                    imdb_json = result;
+
+                    if (imdb_json[".Response"].toString() === "False") {
+                         imdb_json = null;
+                    }
                }
+
           }
      }
 

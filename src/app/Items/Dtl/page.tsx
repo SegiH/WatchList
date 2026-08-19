@@ -80,6 +80,8 @@ export default function ItemsDtl() {
           pullToRefreshEnabled(true);
 
           setIsClosing(true);
+
+          router.push(`/Items`);
      };
 
      const closeIMDBCard = () => {
@@ -483,7 +485,7 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
 
                                              <div className="narrow card rightAligned">
                                                   {!isAdding && !isEditing &&
-                                                       <span className={`clickable closeButton`} onClick={closeDetail}>
+                                                       <span className={`clickable closeButton customCloseButton`} onClick={closeDetail}>
                                                             X
                                                        </span>
                                                   }
@@ -493,9 +495,11 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
                                                             {CancelIconComponent}
                                                        </span>
                                                   }
-                                             </div>
+                                             </div>                                       
 
-                                             <div className="narrow card">
+                                             <div className="narrow card"></div>
+
+                                             <div className="topMargin100 card">
                                                   {!isAdding && !isClosing &&
                                                        <>
                                                             {imageIsValid(watchListItemDtl?.IMDB_Poster, watchListItemDtl?.IMDB_Poster_Error) &&
@@ -508,9 +512,9 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
                                                   }
 
                                                   {isAdding && addWatchListItemDtl !== null && typeof addWatchListItemDtl !== "undefined" &&
-                                                       <span className="topMargin column">
+                                                       <span className="column">
                                                             {imageIsValid(addWatchListItemDtl?.IMDB_Poster, addWatchListItemDtl?.IMDB_Poster_Error) &&
-                                                                 <Image className="poster-detail" width={imageWidth} height={imageHeight} alt="Image Not Available" src={addWatchListItemDtl.IMDB_Poster} />
+                                                                 <Image width={imageWidth} height={imageHeight} alt="Image Not Available" src={addWatchListItemDtl.IMDB_Poster} />
                                                             }
                                                        </span>
                                                   }
@@ -648,10 +652,6 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
                                                   }
                                              </div>
 
-                                             <div className="narrow card">
-                                                  <div className="clickable hyperlink text-label rightAligned" onClick={recommendationsClickHandler}>Recommendations</div>
-                                             </div>
-
                                              {/* TODO: Fix me */}
                                              {/*{!isAdding && !isEditing && typeof watchListItemDtl !== "undefined" && watchListItemDtl !== null &&
                                                   <div className={`clickable textLabel`}>
@@ -683,6 +683,8 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
                                                        }
                                                   </>
                                              }
+
+                                             <div className="clickable hyperlink text-label rightAligned" onClick={recommendationsClickHandler}>Recommendations</div>
 
                                              {IMDB_JSON !== null &&
                                                   <a className="clickable fontStyle" onClick={IMDBCardOpenClickHandler}>IMDB Info</a>

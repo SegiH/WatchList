@@ -495,11 +495,9 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
                                                             {CancelIconComponent}
                                                        </span>
                                                   }
-                                             </div>                                       
+                                             </div>
 
-                                             <div className="narrow card"></div>
-
-                                             <div className="topMargin100 card">
+                                             <div className="card">
                                                   {!isAdding && !isClosing &&
                                                        <>
                                                             {imageIsValid(watchListItemDtl?.IMDB_Poster, watchListItemDtl?.IMDB_Poster_Error) &&
@@ -618,9 +616,11 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
 
                                              <div className="narrow card"></div>
 
-                                             <div className="narrow card">
-                                                  <div className={`textLabel`}>Image:&nbsp;</div>
-                                             </div>
+                                             {(isAdding || isEditing) &&
+                                                  <div className="narrow card">
+                                                       <div className={`textLabel`}>Image:&nbsp;</div>
+                                                  </div>
+                                             }
 
                                              <div className="narrow card">
                                                   {isEditing &&
@@ -684,16 +684,19 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
                                                   </>
                                              }
 
-                                             <div className="clickable hyperlink text-label rightAligned" onClick={recommendationsClickHandler}>Recommendations</div>
-
-                                             {IMDB_JSON !== null &&
+                                             {(!isAdding && !isEditing) &&
+                                                  <div className="clickable hyperlink text-label rightAligned" onClick={recommendationsClickHandler}>Recommendations</div>
+                                             }
+                                             {IMDB_JSON !== null && (!isAdding && !isEditing) &&
                                                   <a className="clickable fontStyle" onClick={IMDBCardOpenClickHandler}>IMDB Info</a>
                                              }
 
-                                             {watchListItemDtl !== null && typeof watchListItemDtl?.WatchListHistory !== "undefined" && watchListItemDtl?.WatchListHistory?.length > 0 &&
-                                                  <a className="clickable fontStyle" onClick={showWatchListHistory}>Watched History</a>
+                                             <div className="narrow card">
+                                                  {watchListItemDtl !== null && typeof watchListItemDtl?.WatchListHistory !== "undefined" && watchListItemDtl?.WatchListHistory?.length > 0 && (!isAdding && !isEditing) &&
+                                                       <a className="clickable fontStyle topMargin20" onClick={showWatchListHistory}>Watched History</a>
 
-                                             }
+                                                  }
+                                             </div>
                                         </div>
                                    </div>
                               }

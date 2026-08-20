@@ -503,9 +503,9 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
                                                             {imageIsValid(watchListItemDtl?.IMDB_Poster, watchListItemDtl?.IMDB_Poster_Error) &&
                                                                  <Image alt={watchListItemDtl?.WatchListItemName} className="poster-detail" width={imageWidth} height={imageHeight} src={watchListItemDtl?.IMDB_Poster} onError={() => showDefaultSrc()} />}
 
-                                                            {!imageIsValid(watchListItemDtl?.IMDB_Poster, watchListItemDtl?.IMDB_Poster_Error) &&
+                                                            {/*{!imageIsValid(watchListItemDtl?.IMDB_Poster, watchListItemDtl?.IMDB_Poster_Error) &&
                                                                  <div className="imagePlaceholder">{BrokenImageIconComponent}</div>
-                                                            }
+                                                            }*/}
                                                        </>
                                                   }
 
@@ -614,23 +614,6 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
                                                   }
                                              </div>
 
-                                             <div className="narrow card"></div>
-
-                                             {(isAdding || isEditing) &&
-                                                  <div className="narrow card">
-                                                       <div className={`textLabel`}>Image:&nbsp;</div>
-                                                  </div>
-                                             }
-
-                                             <div className="narrow card">
-                                                  {isEditing &&
-                                                       <input className={`inputStyle`} value={watchListItemDtl?.IMDB_Poster} onBlur={(event: React.ChangeEvent<HTMLInputElement>) => onIMDBPosterChangeHandler(event.target.value)} onChange={(event) => watchListItemDetailChangeHandler("IMDB_Poster", event.target.value)} />
-                                                  }
-
-                                                  {isAdding &&
-                                                       <input className={`inputStyle`} value={addWatchListItemDtl?.IMDB_Poster} onChange={(event: React.ChangeEvent<HTMLInputElement>) => addWatchListItemDetailChangeHandler("IMDB_Poster", event.target.value)} />
-                                                  }
-                                             </div>
 
                                              <div className="narrow card"></div>
 
@@ -652,6 +635,35 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
                                                   }
                                              </div>
 
+                                             {(isAdding || isEditing) &&
+                                                  <>
+                                                       <div className="narrow card"></div>
+                                                       <div className="narrow card">
+                                                            <div className={`textLabel`}>Image:&nbsp;</div>
+                                                       </div>
+                                                  </>
+                                             }
+
+                                             <div className="narrow card">
+                                                  {isEditing &&
+                                                       <input className={`inputStyle`} value={watchListItemDtl?.IMDB_Poster} onBlur={(event: React.ChangeEvent<HTMLInputElement>) => onIMDBPosterChangeHandler(event.target.value)} onChange={(event) => watchListItemDetailChangeHandler("IMDB_Poster", event.target.value)} />
+                                                  }
+
+                                                  {isAdding &&
+                                                       <input className={`inputStyle`} value={addWatchListItemDtl?.IMDB_Poster} onChange={(event: React.ChangeEvent<HTMLInputElement>) => addWatchListItemDetailChangeHandler("IMDB_Poster", event.target.value)} />
+                                                  }
+                                             </div>
+
+                                             <div className="narrow card"></div>
+
+                                             {(!isAdding && !isEditing) &&
+                                                  <div className="narrow card"></div>
+                                             }
+
+
+
+
+
                                              {/* TODO: Fix me */}
                                              {/*{!isAdding && !isEditing && typeof watchListItemDtl !== "undefined" && watchListItemDtl !== null &&
                                                   <div className={`clickable textLabel`}>
@@ -663,8 +675,6 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
 
                                              {(isAdding || isEditing) &&
                                                   <>
-                                                       <div className="narrow card"></div>
-
                                                        <div className="narrow card">
                                                             <div className={`textLabel`}>Archived:&nbsp;</div>
                                                        </div>
@@ -685,7 +695,11 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
                                              }
 
                                              {(!isAdding && !isEditing) &&
-                                                  <div className="clickable hyperlink text-label rightAligned" onClick={recommendationsClickHandler}>Recommendations</div>
+                                                  <>
+                                                       <div className="narrow card"></div><div className="narrow card">
+                                                            <div className="clickable hyperlink text-label rightAligned" onClick={recommendationsClickHandler}>Recommendations</div>
+                                                       </div>
+                                                  </>
                                              }
                                              {IMDB_JSON !== null && (!isAdding && !isEditing) &&
                                                   <a className="clickable fontStyle" onClick={IMDBCardOpenClickHandler}>IMDB Info</a>

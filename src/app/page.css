@@ -103,6 +103,7 @@ table.simpleTable:last-child {
 
 .bottomMargin75 { @apply mb-[100px]; }
 
+
 .buildDate {
   @apply w-[215px]! mb-[25px];
 }
@@ -183,8 +184,8 @@ table.simpleTable:last-child {
 
 .iconLarge:last-of-type { @apply mr-[25px]; }
 
-.imagePlaceholder > * { @apply min-w-[128] min-h-[187];
-}
+.imagePlaceholder > svg  { @apply w-[128px] h-auto relative top-[80px]; }
+
 .IMDBCardModal {
     @apply relative pt-[50px]! pb-[150px];
 }
@@ -343,7 +344,7 @@ table.simpleTable:last-child {
   @apply bottom-[0];
 }
 
-.poster-detail { @apply z-[1] max-w-[200px] relative top-[80px] mt-[50px]; }
+.poster-detail { @apply z-[1] max-w-[200px] relative top-[40px] mt-[50px]; }
 
 .primary { @apply text-[rgb(25,118,210)]; }
 

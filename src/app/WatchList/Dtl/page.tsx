@@ -670,7 +670,7 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
                               {!recommendationsVisible &&
                                    <div className="container">
                                         <div className="cards">
-                                             <div className="narrow card">
+                                             <div className="card">
                                                   {!isAdding && !isEditing &&
                                                        <span onClick={startEditing}>
                                                             <span className={`clickable editsaveCancelButton`}>{EditIconComponent}</span>
@@ -711,10 +711,6 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
                                              </div>
 
                                              <div className="card rightAligned">
-                                                  {!isAdding && !isEditing &&
-                                                       <div>ID: {watchListDtl?.WatchListID}</div>
-                                                  }
-
                                                   {(isAdding || isEditing) &&
                                                        <span className={`clickable cancelWatchListIcon`} onClick={isAdding ? closeDetail : cancelClickHandler}>
                                                             {CancelIconComponent}
@@ -728,15 +724,15 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
                                                   }
                                              </div>
 
-                                             <div className="narrow card">
+                                             <div className="narrow card topMargin20">
                                                   {!isAdding && !isClosing &&
                                                        <>
                                                             {imageIsValid(watchListDtl?.IMDB_Poster, watchListDtl?.IMDB_Poster_Error) &&
-                                                                 <Image className="poster-detail" width={imageWidth} height={imageHeight} alt="Image Not Available" src={watchListDtl?.IMDB_Poster} onError={() => showDefaultSrc()} />
+                                                                 <Image className="poster-detail topMargin50" width={imageWidth * 1.5} height={imageHeight * 1.2} alt="Image Not Available" src={watchListDtl?.IMDB_Poster} onError={() => showDefaultSrc()} />
                                                             }
 
                                                             {!imageIsValid(watchListDtl?.IMDB_Poster, watchListDtl?.IMDB_Poster_Error) &&
-                                                                 <div className="imagePlaceholder">{BrokenImageIconComponent}</div>
+                                                                 <div className="imagePlaceholder topMargin50">{BrokenImageIconComponent}</div>
                                                             }
                                                        </>
                                                   }
@@ -749,7 +745,7 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
 
                                              {!isAdding && !isEditing &&
                                                   <>
-                                                       <div className="narrow card"></div>
+                                                       <div>ID: {watchListDtl?.WatchListID}</div>
                                                        <div className="narrow card"></div>
                                                   </>
                                              }

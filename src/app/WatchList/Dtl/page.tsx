@@ -119,7 +119,6 @@ export default function WatchListDtl() {
           setOriginalWatchListDtl(null);
           setAddModified(false);
           setEditModified(false);
-          setModalVisible(false);
      };
 
      const closeDetail = async () => {

@@ -8,7 +8,7 @@ export async function GET(request: NextRequest) {
 
      const rapidapi_key = await getRapidAPIKey();
 
-     if (rapidapi_key === "") {
+     if (typeof rapidapi_key === "undefined" || rapidapi_key === null) {
           return Response.json(["ERROR", "API key is not set"]);
      } else {
          return Response.json(["OK"]);

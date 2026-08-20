@@ -980,14 +980,6 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
                                                   }
                                              </div>
 
-                                             {IMDB_JSON !== null &&
-                                                  <>
-                                                       <div className="narrow card"></div>
-                                                       <a className="clickable fontStyle" onClick={IMDBCardOpenClickHandler}>IMDB Info</a>
-
-                                                  </>
-                                             }
-
                                              {(isAdding || isEditing) &&
                                                   <>
                                                        <div className="narrow card"></div>
@@ -1008,6 +1000,14 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
                                                                  <input type="checkbox" checked={watchListDtl?.Archived === 1 ? true : false} onChange={(event: React.ChangeEvent<HTMLInputElement>) => watchListDetailChangeHandler("Archived", event.target.checked)} />
                                                             </div>
                                                        }
+                                                  </>
+                                             }
+
+                                             {IMDB_JSON !== null &&
+                                                  <>
+                                                       <div className="narrow card"></div>
+                                                       <a className="clickable fontStyle" onClick={IMDBCardOpenClickHandler}>IMDB Info</a>
+
                                                   </>
                                              }
                                         </div>

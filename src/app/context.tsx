@@ -114,6 +114,8 @@ export const APIStatus = {
      Unauthorized: "Unauthorized"
 }
 
+const defaultPageSize = 49;
+
 const DataProvider = ({
      children
 }: DataProviderProps) => {
@@ -142,7 +144,7 @@ const DataProvider = ({
      const [metaDataFilters, setMetaDataFilters] = useState<Record<string, any>>({});
      const [metaDataFilterVisible, setMetaDataFilterVisible] = useState(false);
      const [modalVisible, setModalVisible] = useState(false);
-     const [pageSize, setPageSize] = useState(typeof window !== 'undefined' && window.innerWidth <= 768 ? 10 : 49); // items per page. Mobile has less items
+     const [pageSize, setPageSize] = useState(typeof window !== 'undefined' && window.innerWidth <= 768 ? 10 : defaultPageSize); // items per page. Mobile has less items
      const [recommendationsEnabled, setRecommendationsEnabled] = useState(false);
      const [searchCount, setSearchCount] = useState(5);
      const [searchTerm, setSearchTerm] = useState("");
@@ -1349,7 +1351,7 @@ const DataProvider = ({
 
           setClientCheck(APIStatus.Success);
 
-          const newPageSize = typeof window !== 'undefined' && window.innerWidth <= 768 ? 10 : 48; // items per page. Mobile has less items
+          const newPageSize = typeof window !== 'undefined' && window.innerWidth <= 768 ? 10 : defaultPageSize; // items per page. Mobile has less items
 
           setPageSize(newPageSize);
 

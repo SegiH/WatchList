@@ -68,9 +68,20 @@ export default function WatchListItemCard({ currentWatchListItem, setImdbJSON }:
                             <Image width={imageWidth} height={imageHeight} alt={currentWatchListItem?.WatchListItemName} src={currentWatchListItem.IMDB_Poster} onError={() => showDefaultSrc(currentWatchListItem.WatchListItemID)} />
                         }
 
+                        {/* Empty placeholder */}
                         {!imageIsValid(currentWatchListItem?.IMDB_Poster, currentWatchListItem?.IMDB_Poster_Error) &&
-                            <div className="imagePlaceholder">{BrokenImageIconComponent}</div>
+                            <div
+                                className="madeup"
+                                style={{
+                                    width: `${imageWidth}px`,
+                                    height: `${imageHeight}px`,
+                                }}
+                            />
                         }
+
+                        {/*{!imageIsValid(currentWatchListItem?.IMDB_Poster, currentWatchListItem?.IMDB_Poster_Error) &&
+                            <div className="imagePlaceholder">{BrokenImageIconComponent}</div>
+                        }*/}
                     </div>
                 </a>
 

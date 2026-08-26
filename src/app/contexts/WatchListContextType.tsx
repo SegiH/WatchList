@@ -4,7 +4,6 @@ export interface WatchListContextType {
      autoAdd: boolean;
      filteredWatchList: IWatchList[];
      hideTabs: boolean;
-     imdbSearchEnabled: boolean;
      isLoading: boolean;
      lastPage: boolean;
      modalVisible: boolean;
@@ -13,5 +12,6 @@ export interface WatchListContextType {
      setIsAdding: (value: boolean) => void;
      setIsEditing: (value: boolean) => void;
      setModalVisible: (value: boolean) => void;
+     tmdbSearchEnabled: boolean;
      watchListSortingCheck: string;
 }

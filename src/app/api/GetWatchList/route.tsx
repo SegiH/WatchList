@@ -1,5 +1,5 @@
 import { NextRequest } from 'next/server';
-import { getDB, getUserID, isLoggedIn, writeLog, matchMetadata, metaSearch } from "../lib";
+import { getDB, getUserID, isLoggedIn, writeLog, matchMetadata } from "../lib";
 import IWatchList from '@/app/interfaces/IWatchList';
 import IWatchListItem from '@/app/interfaces/IWatchListItem';
 import IWatchListType from '@/app/interfaces/IWatchListType';
@@ -106,9 +106,7 @@ export async function GET(request: NextRequest) {
                               )
                          });
 
-                    const IMDB_JSON = thisWLI.length === 1 && typeof thisWLI[0]["IMDB_JSON"] !== "undefined" ? JSON.parse(thisWLI[0]["IMDB_JSON"]) : null;
-
-                    const metadataMatch = matchMetadata(IMDB_JSON, metaDataFilters);
+                    const metadataMatch = matchMetadata(thisWLI, metaDataFilters);
 
                     return (
                          (allData == "true") ||
@@ -156,9 +154,9 @@ export async function GET(request: NextRequest) {
                          watchList.WatchListTypeID = watchListItem[0].WatchListTypeID;
                          watchList.WatchListTypeName = watchListType[0].WatchListTypeName;
                          watchList.IMDB_URL = watchListItem[0].IMDB_URL;
+                         watchList.Year = watchListItem[0].Year;
                          watchList.IMDB_Poster = watchListItem[0].IMDB_Poster;
                          watchList.Archived = watchListItem[0].Archived;
-                         watchList.IMDB_JSON = watchListItem[0].IMDB_JSON;
                          watchList.WatchListSourceName = watchListSource[0]?.WatchListSourceName;
                     }
 

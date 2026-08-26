@@ -47,11 +47,11 @@ export async function GET(request: NextRequest) {
                watchList.WatchListItemName = watchListItem.length > 0 ? watchListItem[0].WatchListItemName : "";
                watchList.WatchListTypeID = watchListItem.length > 0 ? watchListItem[0].WatchListTypeID : "";
                watchList.WatchListTypeName = watchListType.length > 0 ? watchListType[0].WatchListTypeName : "";
-               watchList.IMDB_URL = watchListItem.length > 0 ? watchListItem[0].IMDB_URL : "";
+               watchList.IMDB_URL = watchListItem.length > 0 ? parseInt(watchListItem[0].Year) : "";
+               watchList.Year =  watchListItem.length > 0 ? watchListItem[0].Year : "";
                watchList.IMDB_Poster = watchListItem.length > 0 ? watchListItem[0].IMDB_Poster : "";
                watchList.ItemNotes = watchListItem.length > 0 ? watchListItem[0].ItemNotes : "";
                watchList.Archived = watchListItem.length > 0 ? watchListItem[0].Archived : "";
-               watchList.IMDB_JSON = watchListItem.length > 0 ? watchListItem[0].IMDB_JSON : "";
                watchList.WatchListSourceName = watchListItem.length > 0 ? watchListSource[0]?.WatchListSourceName : "";
           });
 

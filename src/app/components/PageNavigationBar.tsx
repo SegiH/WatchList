@@ -12,7 +12,7 @@ interface PageNavigationBarProps {
 
 const PageNavigationBar = ({ isBottomNav, topRef }: PageNavigationBarProps) => {
     const {
-        activeRoute, currentItemsPage, currentWatchListPage, IMDBSearchClickHandler, imdbSearchEnabled, isAdding, isLoading, hideTabs, lastPage, searchTerm, setNewPage, setSearchTerm
+        activeRoute, currentItemsPage, currentWatchListPage, isAdding, isLoading, hideTabs, lastPage, searchTerm, setNewPage, setSearchTerm, tmdbSearchEnabled, TMDBSearchClickHandler
     } = useContext(PageNavigationBarContext) as PageNavigationBarContextType;
 
     const [currentPage, setCurrentPage] = useState(-1);
@@ -51,8 +51,8 @@ const PageNavigationBar = ({ isBottomNav, topRef }: PageNavigationBarProps) => {
                                 <input value={searchTerm} onChange={(event) => setSearchTerm(event.target.value)} />
                             </span>
 
-                            {!isLoading && searchTerm !== "" && imdbSearchEnabled &&
-                                <Button className="IMDBSearchButton IMDBSearchButtonButtom" variant="contained" color="secondary" onClick={() => IMDBSearchClickHandler()}>IMDB</Button>
+                            {!isLoading && searchTerm !== "" && tmdbSearchEnabled &&
+                                <Button className="TMDBSearchButton" variant="contained" color="secondary" onClick={() => TMDBSearchClickHandler()}>TMDB</Button>
                             }
 
                             <div className={`pageNavigationBarRight`} onClick={() => pageClickHandler(1)}>&#8594;</div>

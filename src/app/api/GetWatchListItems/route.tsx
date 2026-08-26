@@ -62,9 +62,7 @@ export async function GET(request: NextRequest) {
                     }
                })
                .filter((watchListItem: IWatchListItem) => {
-                    const IMDB_JSON = typeof watchListItem.IMDB_JSON !== "undefined" ? JSON.parse(watchListItem.IMDB_JSON) : null;
-
-                    const metadataMatch = matchMetadata(IMDB_JSON, metaDataFilters);
+                    const metadataMatch = matchMetadata(watchListItem, metaDataFilters);
 
                     return (
                          (allData === "true") ||
@@ -120,7 +118,7 @@ export async function GET(request: NextRequest) {
                     status: 200,
                     headers: {
                          'Content-Type': 'application/json',
-                         'Content-Encoding': 'br', // usse 'gzip' when using gzip
+                         'Content-Encoding': 'br', // use 'gzip' when using gzip
                     },
                });
           }

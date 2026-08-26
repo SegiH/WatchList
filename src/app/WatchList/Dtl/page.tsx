@@ -7,7 +7,7 @@ import TextField, { TextFieldProps } from "@mui/material/TextField";
 import { useRouter } from "next/navigation";
 import React, { useCallback, useContext, useEffect, useState } from "react";
 import Recommendations from "../../components/Recommendations";
-import IMDBCard from "../../components/IMDBCard";
+import MediaDetailsCard from "../../components/MediaDetailsCard";
 
 import StarIcon from '@mui/icons-material/Star';
 
@@ -41,7 +41,7 @@ export default function WatchListDtl() {
      const [formattedNamesWithId, setFormattedNamesWithId] = useState<AutoCompleteWatchListItem[]>([]);
      const [formattedNamesLoadingComplete, setFormattedNamesLoadingComplete] = useState(APIStatus.Idle);
      const [editModified, setEditModified] = useState(false);
-     const [imdbCardvisible, setImdbCardvisible] = useState(false);
+     const [tmdbCardvisible, setTmdbCardvisible] = useState(false);
      const [isClosing, setIsClosing] = useState(false);
      const [originalWatchListDtl, setOriginalWatchListDtl] = useState<IWatchList | null>(null); (null);
      const [recommendationsVisible, setRecommendationsVisible] = useState(false);
@@ -79,9 +79,7 @@ export default function WatchListDtl() {
           }
 
           const watchListItem = watchListItems.filter((watchListItem: IWatchListItem) => {
-               const IMDB_JSON = watchListItem?.IMDB_JSON !== null && typeof watchListItem?.IMDB_JSON !== "undefined" ? JSON.parse(watchListItem?.IMDB_JSON) : null;
-
-               let itemName = watchListItem.WatchListItemName + (IMDB_JSON !== null && IMDB_JSON.Year !== null ? ` (${IMDB_JSON.Year})` : ``);
+               let itemName = watchListItem.WatchListItemName + (typeof watchListItem?.Year !== "undefined" ? ` (${watchListItem.Year})` : ``);
 
 
                if (watchListItems?.filter((watchListItemDupe: IWatchListItem) => {
@@ -135,11 +133,11 @@ export default function WatchListDtl() {
           setIsClosing(true);
      };
 
-     const closeIMDBCard = () => {
-          setImdbCardvisible(false);
+     /*const closeTMDBCard = () => {
+          setTmdbCardvisible(false);
 
           setModalVisible(false);
-     }
+     }*/
 
      const getLocaleDate = useCallback(() => {
           const dateSpl = currentDate.split("/");
@@ -169,29 +167,48 @@ export default function WatchListDtl() {
                     // Sanitize object by replacing all fields with null
                     const wld = getWatchListDtlResult[1];
 
-                    if (wld[0]?.IMDB_JSON !== null && typeof wld[0]?.IMDB_JSON !== "undefined") {
-                         const IMDB_JSON = (JSON.parse(wld[0]?.IMDB_JSON));
+                    const tooltipFields = [
+                         {
+                              displayName: "Rated",
+                              fieldName: "Rated"
+                         },
+                         {
+                              displayName: "Year",
+                              fieldName: "Year"
+                         },
+                         {
+                              displayName: "IMDB Rating",
+                              fieldName: "imdbRating"
+                         },
+                         {
+                              displayName: "Genre",
+                              fieldName: "Genre"
+                         },
+                         {
+                              displayName: "Runtime",
+                              fieldName: "Runtime"
+                         },
+                         {
+                              displayName: "Release Date",
+                              fieldName: "Released"
+                         },
+                         {
+                              displayName: "Director",
+                              fieldName: "Director"
+                         },
+                         {
+                              displayName: "Plot",
+                              fieldName: "Plot"
+                         },
+                    ];
 
-                         const tooltip = IMDB_JSON && IMDB_JSON !== null &&
-                              `Rated: ${IMDB_JSON.Rated} 
-Year: ${IMDB_JSON.Year}
-Rated: ${IMDB_JSON.imdbRating}
-Genre: ${IMDB_JSON.Genre}
-Runtime: ${IMDB_JSON.Runtime}
-Release Date: ${IMDB_JSON.Released}
-Director: ${IMDB_JSON.Director}
-Plot: ${IMDB_JSON.Plot}
-${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSeasons}` : ""}
-     `;
+                    let tooltip = ``;
 
-                         wld[0].Tooltip = tooltip;
-                    }
-
-                    Object.keys(wld[0]).map((keyName) => {
-                         if (wld[0][keyName] === null) {
-                              wld[0][keyName] = "";
+                    for (let i = 0; i < Object.keys(tooltipFields).length; i++) {
+                         if (typeof wld?.[tooltipFields[i].fieldName] !== "undefined") {
+                              tooltip += `${wld?.[tooltipFields[i].displayName]}: ${wld?.[tooltipFields[i].fieldName]}`;
                          }
-                    });
+                    }
 
                     setWatchListDtl(wld[0]);
                     setWatchListDtlLoadingCheck(APIStatus.Success);
@@ -218,9 +235,7 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
 
                // Generate names for auto complete
                const namesOnlyItems: IAutoCompleteOption[] = getAllWatchListItemsResult[1].map((watchListItem: IWatchListItem) => {
-                    const IMDB_JSON = watchListItem?.IMDB_JSON !== null && typeof watchListItem?.IMDB_JSON !== "undefined" ? JSON.parse(watchListItem?.IMDB_JSON) : null;
-
-                    let itemName = watchListItem.WatchListItemName + (IMDB_JSON !== null && IMDB_JSON.Year !== null ? ` (${IMDB_JSON.Year})` : ``);
+                    let itemName = watchListItem.WatchListItemName + (typeof watchListItem?.Year !== "undefined" ? ` (${watchListItem?.Year})` : ``);
 
 
                     if (getAllWatchListItemsResult[1]?.filter((watchListItemDupe: IWatchListItem) => {
@@ -325,9 +340,9 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
           }
      };
 
-     const IMDBCardOpenClickHandler = () => {
-          setImdbCardvisible(true);
-     }
+     /*const TMDBCardOpenClickHandler = () => {
+          setTmdbCardvisible(true);
+     }*/
 
      const recommendationsClickHandler = () => {
           if (watchListDtl !== null) {
@@ -583,8 +598,6 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
           setEditModified(true);
      };
 
-     const IMDB_JSON = watchListDtl?.IMDB_JSON !== null && typeof watchListDtl?.IMDB_JSON !== "undefined" && watchListDtl?.IMDB_JSON !== "" ? JSON.parse(watchListDtl?.IMDB_JSON) : null;
-
      useEffect(() => {
           if (!isAdding && watchListDtlLoadingCheck === APIStatus.Idle && watchListDtlID !== -1 && watchListDtlID !== -1 && !isNaN(watchListDtlID)) {
                setWatchListDtlLoadingCheck(APIStatus.Loading);
@@ -785,7 +798,7 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
                                              }
 
                                              <div className="narrow card">
-                                                  {/*{((isAdding && addWatchListDtl) || isEditing) && imdbSearchEnabled &&
+                                                  {/*{((isAdding && addWatchListDtl) || isEditing) && tmdbSearchEnabled &&
                                                        <div className="clickable hyperlink text-label rightAligned" onClick={addNewChangeHandler}>Add</div>
                                                   }*/}
                                              </div>
@@ -918,7 +931,7 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
                                                   }
                                              </div>
 
-                                             <div className="narrow card topMargin50">
+                                             <div className="narrow card">
                                                   {!isAdding && !isEditing && recommendationsEnabled &&
                                                        <div className={`clickable hyperlink text-label rightAligned`} onClick={recommendationsClickHandler}>Recommendations</div>
                                                   }
@@ -998,14 +1011,6 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
                                                        }
                                                   </>
                                              }
-
-                                             {IMDB_JSON !== null &&
-                                                  <>
-                                                       <div className="narrow card"></div>
-                                                       <a className="clickable fontStyle" onClick={IMDBCardOpenClickHandler}>IMDB Info</a>
-
-                                                  </>
-                                             }
                                         </div>
                                    </div>
                               }
@@ -1013,10 +1018,6 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
                               {recommendationsVisible && (
                                    <Recommendations queryTerm={recommendationName} type={recommendationType} setRecommendationName={setRecommendationName} setRecommendationType={setRecommendationName} setRecommendationsVisible={setRecommendationsVisible} />
                               )}
-
-                              {imdbCardvisible &&
-                                   <IMDBCard closeIMDBCard={closeIMDBCard} IMDB_JSON={IMDB_JSON} />
-                              }
                          </div>
                     </div>
                }

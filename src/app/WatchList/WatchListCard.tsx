@@ -4,30 +4,16 @@ import Image from "next/image";
 import { WatchListCardContext } from "../context";
 import { useContext } from "react";
 import { WatchListCardContextType } from "../contexts/WatchListCardContextType";
+import IWatchListItem from "../interfaces/IWatchListItem";
 
 type WatchListCardProps = {
     currentWatchList: IWatchList;
-    setImdbJSON: (value: []) => void;
 }
 
-export default function WatchListCard({ currentWatchList, setImdbJSON }: WatchListCardProps) {
+export default function WatchListCard({ currentWatchList }: WatchListCardProps) {
     const {
-        BrokenImageIconComponent, darkMode, filteredWatchList, formatWatchListDates, getMissingPoster, imageHeight, imageIsValid, imageWidth, openDetailClickHandler, setFilteredWatchList, writeLog
+        BrokenImageIconComponent, darkMode, filteredWatchList, formatWatchListDates, imageHeight, imageIsValid, imageWidth, openDetailClickHandler, setFilteredWatchList, writeLog
     } = useContext(WatchListCardContext) as WatchListCardContextType;
-
-    let IMDB_JSON: any = null;
-
-    if (currentWatchList?.IMDB_JSON) {
-        try {
-            IMDB_JSON = JSON.parse(currentWatchList.IMDB_JSON);
-        } catch (e: any) {
-            writeLog(`An error occurred parsing the IMDB_JSON for ${currentWatchList.WatchListID}`);
-        }
-    }
-
-    const IMDBCardOpenClickHandler = (IMDB_JSON) => {
-        setImdbJSON(IMDB_JSON);
-    }
 
     const showDefaultSrc = async (watchListID: number) => {
         const newFilteredWatchList: IWatchList[] = filteredWatchList.map(item => ({ ...item }));
@@ -87,12 +73,12 @@ export default function WatchListCard({ currentWatchList, setImdbJSON }: WatchLi
 
                 <div className="show-title">
                     {typeof currentWatchList?.IMDB_URL !== "undefined" &&
-                        <a href={currentWatchList?.IMDB_URL} target='_blank'>{currentWatchList.WatchListItemName}{IMDB_JSON !== null && typeof IMDB_JSON.Year !== "undefined" && IMDB_JSON.Year !== null ? ` (${IMDB_JSON.Year})` : ""}</a>
+                        <a href={currentWatchList?.IMDB_URL} target='_blank'>{currentWatchList?.WatchListItemName}{typeof currentWatchList.Year !== "undefined" ? ` (${currentWatchList.Year})` : ""}</a>
                     }
 
                     {typeof currentWatchList?.IMDB_URL === "undefined" &&
                         <span>
-                            {currentWatchList.WatchListItemName}{IMDB_JSON !== null && typeof IMDB_JSON.Year !== "undefined" && IMDB_JSON.Year !== null ? ` (${IMDB_JSON.Year})` : ""}
+                            {currentWatchList.WatchListItemName}{typeof currentWatchList.Year !== "undefined" ? ` (${currentWatchList.Year})` : ""}
                         </span>
                     }
 
@@ -134,10 +120,6 @@ export default function WatchListCard({ currentWatchList, setImdbJSON }: WatchLi
                         className="opacity-full"
                     />
                 </div>
-
-                {IMDB_JSON !== null &&
-                    <a className="clickable" onClick={() => IMDBCardOpenClickHandler(IMDB_JSON)}>IMDB Info</a>
-                }
             </li>
         </>
     )

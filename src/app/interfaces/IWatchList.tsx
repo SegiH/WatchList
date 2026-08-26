@@ -6,6 +6,7 @@ export default interface WatchList {
      EndDate: string,
      WatchListSourceID: number,
      Season: number,
+     Year: number,
      Archived: number,
      Notes: string,
      Rating: number,
@@ -13,7 +14,6 @@ export default interface WatchList {
      WatchListTypeID?: number, // WL Types is joined with WL in the SQL when getting WL
      WatchListTypeName: string, // WL Types is joined with WL in the SQL when getting WL
      WatchListSourceName?: string, // WL sources is joined with WL in the SQL when getting WL
-     IMDB_JSON?: string // WLI is joined with WL in the SQL when getting WL,
      IMDB_Poster: string // WLI is joined with WL in the SQL when getting WL,
      IMDB_Poster_Error?: boolean, // WLI is joined with WL in the SQL when getting WL,
      IMDB_URL?: string, // WLI is joined with WL in the SQL when getting WL,

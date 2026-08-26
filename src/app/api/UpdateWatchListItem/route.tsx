@@ -16,7 +16,6 @@ export async function PUT(request: NextRequest) {
      const imdb_poster = searchParams.get("IMDB_Poster");
      const notes = searchParams.get("ItemNotes");
      const archived = searchParams.get("Archived");
-     const imdb_json = searchParams.get("IMDB_JSON");
 
      if (watchListItemID === null) {
           return Response.json(["ERROR", "ID was not provided"]);
@@ -51,10 +50,6 @@ export async function PUT(request: NextRequest) {
 
           if (imdb_poster !== null) {
                watchListItem.IMDB_Poster = imdb_poster;
-          }
-
-          if (imdb_json !== null) {
-               watchListItem.IMDB_JSON = imdb_json;
           }
 
           if (notes !== null) {

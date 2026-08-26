@@ -88,19 +88,13 @@ Requirements: Node 18.19.1 or higher
 1. After completing this setup up, you should have a file name database.json. This is your WatchList database. Make sure to back up this file from time to time.
 
 ## Searching IMDB
-WatchList will allow you to search for a movie or tv show on IMDB.com. To do this, you need to create a free RAPIDAPI Key. Using RapidAPI allows searching with more specific filters by Actor, Director, Genre and many more filters.
+WatchList will allow you to search for a movie or tv show on IMDB.com. To do this, you need to create a free account on [The Movie DB](https://www.themoviedb.org). Using TMDB allows searching with more specific filters by Actor, Director, Genre and many more filters.
 
-Note: RapidAPI allows you 1000 free searches per month. In order for this API to work, you have to "subscribe" by adding your credit card with RapidAPI. It appears to work similarly to Amazon where they won't charge you if you do not go over your allotted API usage. If you do not add a credit card, the API will return an "Unsubscribed" error when you try to use it. I have never been charged for my usage. Once you have used 1000 searches, you will receive an error that you have exceeded your daily usage.
-
-1. Visit [RapidAPI](https://rapidapi.com) and create a free account.
-1. Click on "My APIs" at the top right
-1. Click on "Add New API" at the top right
-1. Name your API, give it a description and select a category. For "Specify Using" make sure UI is selected
-1. Click on "Add API" button to save it
-1. On the next page, enter a short description and click on Save
-1. Click on the down arrow next to your application name and select Security underneath the sub menu
-1. Click on the eye icon to show your API key and copy it to the clipboard.
-1. Edit .env and set RAPIDAPIKEY with this API key.
+1. Visit [TMDB](https://www.themoviedb.org/) and create a free account.
+1. Click on your icon avatar then "My API Subscription".
+1. Click on "Access your API key details here." link.
+1. Copy the API Read Access Token
+1. Edit .env and set TMDBAPIKEY with this API key.
 
 ## Recommendations
 You can get recommendations from a movie or TV show. This requires an api key from themoviedb.com which is completely free and does not require you to add a credit card.
@@ -141,5 +135,3 @@ Caching only works over https. To test caching with the dev server:
    mkcert watchlist.demo.dev
 
 ## Known Issues:
-
-If you search RapidAPI for a movie or show that is pretty new, you may not be able to find it when searching and will have to add a WatchList Item manually. This happens because RapidAPI does not have new movies or shows in their database right away.

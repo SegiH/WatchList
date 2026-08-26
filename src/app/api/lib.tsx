@@ -16,6 +16,8 @@ export const defaultSources = ['Amazon', 'Hulu', 'Movie Theatre', 'Netflix', 'Pl
 const secretKey = typeof process.env.SECRET !== "undefined" ? String(process.env.SECRET) : "";
 const sessionDuration = 604800000;
 
+const tmdb_sections = ["movie_results", "person_results", "tv_results", "tv_episode_results", "tv_season_results"];
+
 export const metaSearch = {
      "Actors": {
           Key: "Actors",
@@ -152,35 +154,10 @@ export const addWatchListItem = async (name: string, type: string, imdb_url: str
           }
      }
 
-     let imdb_json: string | null = null;
-
-     if (imdb_url !== null && imdb_url.toString().indexOf("imdb.com/title/") !== -1) {
-          const urlSplit = imdb_url?.split("/");
-
-          if (urlSplit[2].toString().indexOf("imdb.com") !== -1 && urlSplit[3].toString() === "title") {
-               const id = urlSplit[4].toString();
-
-               const result = await getIMDBDetails(id);
-
-               if (result !== null) {
-                    imdb_json = result;
-
-                    if (imdb_json[".Response"].toString() === "False") {
-                         imdb_json = null;
-                    }
-               }
-
-          }
-     }
-
      try {
           const db: any = await getDB();
 
           const watchListItemsDB = db.WatchListItems;
-
-          //const highestWatchListItemID = Math.max(...watchListItemsDB.map(o => o.WatchListItemID));
-
-          //const nextId = (highestWatchListItemID !== null ? highestWatchListItemID : 0) + 1
 
           const sortedIds = watchListItemsDB
                .map((item: IWatchListItem) => item.WatchListItemID)
@@ -196,13 +173,31 @@ export const addWatchListItem = async (name: string, type: string, imdb_url: str
                }
           }
 
+          // Get imdb details here and map with existing object and values
+          const urlSplit = imdb_url.split("/");
+
+          let ttyId = "";
+          let detail = null;
+
+          if (urlSplit[2].toString().indexOf("imdb.com") !== -1 && urlSplit[3].toString() === "title") {
+               ttyId = urlSplit[4].toString();
+
+               detail = fetchTMDBDataByTT(ttyId);
+          }
+
           watchListItemsDB.push({
                "WatchListItemID": nextWatchListItemID,
                "WatchListItemName": name,
                "WatchListTypeID": parseInt(type, 10),
                "IMDB_URL": imdb_url,
-               "IMDB_Poster": imdb_poster,
-               "IMDB_JSON": imdb_json,
+               "IMDBId": ttyId,
+               "Year": typeof detail["release_date"] !== "undefined" ? detail["release_date"].split("-")[0] : null,
+               "Released": detail["release_date"],
+               "Type": detail["media_type"],
+               "Plot": detail["overview"],
+               "Language": detail["original_language"],
+               "Country": detail["origin_country"],
+               "IMDB_Poster": imdb_poster ?? getPosterURL(detail["poster_path"]),
                "ItemNotes": notes,
                "Archived": parseInt(archived as string, 10),
           });
@@ -213,12 +208,6 @@ export const addWatchListItem = async (name: string, type: string, imdb_url: str
      } catch (e: any) {
           writeLog(e.message);
           return Response.json(["ERROR", e.message]);
-     }
-}
-
-function assertString(value: string | undefined): asserts value is string {
-     if (value == null) {
-          throw new Error("RapidAPI key is missing");
      }
 }
 
@@ -233,22 +222,56 @@ export const encrypt = (plainText: string) => {
      return cipherText
 }
 
-export const fetchRapidAPIData = async (url) => {
-     const rapidapi_key = await getRapidAPIKey();
+export const fetchTMDBData = async (query: string) => {
+     const tmdb_key = await getTMDBAPIKey();
 
-     assertString(rapidapi_key);
+     if (typeof tmdb_key === "undefined") {
+          throw new Error("TMDB key is missing");
+     }
 
      const headers = {
-          method: "GET",
-          headers: {
-               "x-rapidapi-host": "movie-database-alternative.p.rapidapi.com",
-               "x-rapidapi-key": rapidapi_key
-          }
+          Authorization: `Bearer ${tmdb_key}`
      };
 
      try {
-          const response = await fetch(url, headers);
+          const response = await fetch(`https://api.themoviedb.org/3/search/multi?query=${encodeURIComponent(query)}`, { headers });
           return await response.json();
+     } catch (error: any) {
+          throw error;
+     }
+}
+
+export const fetchTMDBDataByTT = async (tt: string) => {
+     const tmdb_key = await getTMDBAPIKey();
+
+     if (typeof tmdb_key === "undefined") {
+          throw new Error("TMDB key is missing");
+     }
+
+     const headers = {
+          Authorization: `Bearer ${tmdb_key}`
+     };
+
+     try {
+          const response = await fetch(`https://api.themoviedb.org/3/find/${tt}?external_source=imdb_id`, { headers });
+          const json = await response.json();
+
+          let returnVal = null;
+
+          // tt id should be unique and found in only 1 section
+          Object.keys(tmdb_sections).map((tmdb_section) => {
+               if (typeof json[tmdb_sections[tmdb_section]] !== "undefined" && json[tmdb_sections[tmdb_section]].length > 0) {
+                    returnVal = json[tmdb_sections[tmdb_section]][0];
+               }
+          });
+
+          if (returnVal !== null) {
+               returnVal = mapDetailsFields(returnVal);
+          }
+
+          returnVal["IMDBId"] = tt;
+
+          return returnVal;
      } catch (error: any) {
           throw error;
      }
@@ -276,16 +299,6 @@ export const getDB = () => {
      }
 }
 
-export const getIMDBDetails = async (imdb_id: string) => {
-     const rapidapi_key = process.env.RAPIDAPIKEY;
-
-     assertString(rapidapi_key);
-
-     const url = `https://movie-database-alternative.p.rapidapi.com/?r=json&i=${imdb_id}`;
-
-     return fetchRapidAPIData(url);
-}
-
 export const generateMetaData = async () => {
      const db: any = await getDB();
 
@@ -310,64 +323,60 @@ export const generateMetaData = async () => {
      const totalSeasonsValues: any = [];
 
      watchListItemsDB.map((watchListItem: IWatchListItem) => {
-          if (typeof watchListItem.IMDB_JSON !== "undefined") {
-               try {
-                    const WLIPayload: any = JSON.parse(watchListItem.IMDB_JSON);
+          try {
+               // Map these fields so they can be used in a multi select
 
-                    // Map these fields so they can be used in a multi select
-
-                    // Show rating like TV-MA
-                    if (typeof WLIPayload["Rated"] !== "undefined" && ratingsValues.findIndex(obj => obj.value === WLIPayload["Rated"]) === -1) {
-                         ratingsValues.push({ value: WLIPayload["Rated"], label: WLIPayload["Rated"] });
-                    }
-
-                    if (typeof WLIPayload["Released"] !== "undefined" && releaseDateValues.findIndex(obj => obj.value === WLIPayload["Released"]) === -1) {
-                         releaseDateValues.push({ value: WLIPayload["Released"], label: WLIPayload["Released"] });
-                    }
-
-                    if (typeof WLIPayload["Runtime"] !== "undefined" && runtimeValues.findIndex(obj => obj.value === WLIPayload["Runtime"]) === -1) {
-                         runtimeValues.push({ value: WLIPayload["Runtime"].replace("S min", " min"), label: WLIPayload["Runtime"].replace("S min", " min") });
-                    }
-
-                    if (typeof WLIPayload["Director"] !== "undefined" && directorValues.findIndex(obj => obj.value === WLIPayload["Director"]) === -1) {
-                         directorValues.push({ value: WLIPayload["Director"], label: WLIPayload["Director"] });
-                    }
-
-                    if (typeof WLIPayload["imdbRating"] !== "undefined" && imdbRatingValues.findIndex(obj => obj.value === WLIPayload["imdbRating"]) === -1) {
-                         imdbRatingValues.push({ value: WLIPayload["imdbRating"], label: WLIPayload["imdbRating"] });
-                    }
-
-                    if (typeof WLIPayload["imdbVotes"] !== "undefined" && imdbVotesValues.findIndex(obj => obj.value === WLIPayload["imdbVotes"]) === -1) {
-                         imdbVotesValues.push({ value: WLIPayload["imdbVotes"], label: WLIPayload["imdbVotes"] });
-                    }
-
-                    if (typeof WLIPayload["totalSeasons"] !== "undefined" && totalSeasonsValues.findIndex(obj => obj.value === WLIPayload["totalSeasons"]) === -1) {
-                         totalSeasonsValues.push({ value: WLIPayload["totalSeasons"], label: WLIPayload["totalSeasons"] });
-                    }
-
-                    // Do not map these values with value and label keys because they need to be processed
-                    if (typeof WLIPayload["Year"] !== "undefined" && yearArrayValues.indexOf(WLIPayload["Year"]) === -1) {
-                         yearArrayValues.push(WLIPayload["Year"]);
-                    }
-
-                    if (typeof WLIPayload["Genre"] !== "undefined" && genreArrayValues.indexOf(WLIPayload["Genre"]) === -1) {
-                         genreArrayValues.push(WLIPayload["Genre"]);
-                    }
-
-                    if (typeof WLIPayload["Writer"] !== "undefined" && writerArrayValues.indexOf(WLIPayload["Writer"]) === -1) {
-                         writerArrayValues.push(WLIPayload["Writer"]);
-                    }
-
-                    if (typeof WLIPayload["Actors"] !== "undefined" && actorArrayValues.indexOf(WLIPayload["Actors"]) === -1) {
-                         actorArrayValues.push(WLIPayload["Actors"]);
-                    }
-
-                    if (typeof WLIPayload["Language"] !== "undefined" && languageArrayValues.indexOf(WLIPayload["Language"]) === -1) {
-                         languageArrayValues.push(WLIPayload["Language"]);
-                    }
-               } catch (e: any) {
-                    writeLog("error id=" + watchListItem.WatchListItemID + `${e.message}`)
+               // Show rating like TV-MA
+               if (typeof watchListItem["Rated"] !== "undefined" && ratingsValues.findIndex(obj => obj.value === watchListItem["Rated"]) === -1) {
+                    ratingsValues.push({ value: watchListItem["Rated"], label: watchListItem["Rated"] });
                }
+
+               if (typeof watchListItem["Released"] !== "undefined" && releaseDateValues.findIndex(obj => obj.value === watchListItem["Released"]) === -1) {
+                    releaseDateValues.push({ value: watchListItem["Released"], label: watchListItem["Released"] });
+               }
+
+               if (typeof watchListItem["Runtime"] !== "undefined" && runtimeValues.findIndex(obj => obj.value === watchListItem["Runtime"]) === -1) {
+                    runtimeValues.push({ value: watchListItem["Runtime"].replace("S min", " min"), label: watchListItem["Runtime"].replace("S min", " min") });
+               }
+
+               if (typeof watchListItem["Director"] !== "undefined" && directorValues.findIndex(obj => obj.value === watchListItem["Director"]) === -1) {
+                    directorValues.push({ value: watchListItem["Director"], label: watchListItem["Director"] });
+               }
+
+               if (typeof watchListItem["imdbRating"] !== "undefined" && imdbRatingValues.findIndex(obj => obj.value === watchListItem["imdbRating"]) === -1) {
+                    imdbRatingValues.push({ value: watchListItem["imdbRating"], label: watchListItem["imdbRating"] });
+               }
+
+               if (typeof watchListItem["imdbVotes"] !== "undefined" && imdbVotesValues.findIndex(obj => obj.value === watchListItem["imdbVotes"]) === -1) {
+                    imdbVotesValues.push({ value: watchListItem["imdbVotes"], label: watchListItem["imdbVotes"] });
+               }
+
+               if (typeof watchListItem["totalSeasons"] !== "undefined" && totalSeasonsValues.findIndex(obj => obj.value === watchListItem["totalSeasons"]) === -1) {
+                    totalSeasonsValues.push({ value: watchListItem["totalSeasons"], label: watchListItem["totalSeasons"] });
+               }
+
+               // Do not map these values with value and label keys because they need to be processed
+               if (typeof watchListItem["Year"] !== "undefined" && yearArrayValues.indexOf(watchListItem["Year"]) === -1) {
+                    yearArrayValues.push(watchListItem["Year"]);
+               }
+
+               if (typeof watchListItem["Genre"] !== "undefined" && genreArrayValues.indexOf(watchListItem["Genre"]) === -1) {
+                    genreArrayValues.push(watchListItem["Genre"]);
+               }
+
+               if (typeof watchListItem["Writer"] !== "undefined" && writerArrayValues.indexOf(watchListItem["Writer"]) === -1) {
+                    writerArrayValues.push(watchListItem["Writer"]);
+               }
+
+               if (typeof watchListItem["Actors"] !== "undefined" && actorArrayValues.indexOf(watchListItem["Actors"]) === -1) {
+                    actorArrayValues.push(watchListItem["Actors"]);
+               }
+
+               if (typeof watchListItem["Language"] !== "undefined" && languageArrayValues.indexOf(watchListItem["Language"]) === -1) {
+                    languageArrayValues.push(watchListItem["Language"]);
+               }
+          } catch (e: any) {
+               writeLog("error id=" + watchListItem.WatchListItemID + `${e.message}`)
           }
      });
 
@@ -572,25 +581,6 @@ export const getMissingArtwork = async (watchListItemID: number) => {
 
      const thisWLI = thisWLIResult[0];
 
-     const IMDB_JSON = thisWLI.IMDB_JSON;
-
-     // Use locally save IMDB JSON Payload if it exists to prevent uneeded API call
-     if (typeof IMDB_JSON !== "undefined") {
-          try {
-               const parsed = JSON.parse(IMDB_JSON);
-
-               if (typeof parsed.Poster !== "undefined" && parsed.Poster !== "") {
-                    return {
-                         ID: watchListItemID,
-                         Name: thisWLI.WatchListItemName,
-                         IMDB_URL: thisWLI.IMDB_URL,
-                         IMDB_Poster: parsed.Poster,
-                         Status: "OK"
-                    };
-               }
-          } catch { }
-     }
-
      const IMDB_URL = thisWLI.IMDB_URL;
 
      if (typeof IMDB_URL == "string" && IMDB_URL != "" && (IMDB_URL.startsWith("http://") || IMDB_URL.startsWith("https://")) && IMDB_URL.includes("imdb.com")) {
@@ -598,18 +588,18 @@ export const getMissingArtwork = async (watchListItemID: number) => {
 
           if (urlSplit[2].toString().indexOf("imdb.com") !== -1 && urlSplit[3].toString() === "title") {
                const id = urlSplit[4].toString();
-               const result = await getIMDBDetails(id);
+
+               const result = await fetchTMDBDataByTT(id);
 
                if (result !== null) {
-                    if (typeof result.Poster == "string") {
-                         return {
-                              ID: watchListItemID,
-                              Name: thisWLI.WatchListItemName,
-                              IMDB_URL: thisWLI.IMDB_URL,
-                              IMDB_Poster: result.Poster,
-                              Status: "OK"
-                         };
-                    }
+                    console.log(result)
+                    return {
+                         ID: watchListItemID,
+                         Name: thisWLI.WatchListItemName,
+                         IMDB_URL: thisWLI.IMDB_URL,
+                         IMDB_Poster: result["IMDB_Poster"],
+                         Status: "OK"
+                    };
                }
           }
 
@@ -623,10 +613,14 @@ export const getMissingArtwork = async (watchListItemID: number) => {
      }
 }
 
-export const getRapidAPIKey = async () => {
-     const rapidapi_key = process.env.RAPIDAPIKEY;
+export const getPosterURL = (poster_path: string) => {
+     return `https://image.tmdb.org/t/p/original${poster_path}`;
+}
 
-     return rapidapi_key;
+export const getTMDBAPIKey = async () => {
+     const tmdbapi_key = process.env.TMDBAPIKEY;
+
+     return tmdbapi_key;
 }
 
 export const getRecommendationsAPIKey = async () => {
@@ -786,19 +780,33 @@ const loginSuccessfullActions = async (currentUser: IUser) => {
      }
 }
 
-export const matchMetadata = (IMDB_JSON, metaDataFilters) => {
+const mapDetailsFields = (details) => {
+     const mappedResult = {
+          "Year": typeof details["release_date"] !== "undefined" ? details["release_date"].split("-")[0] : "",
+          "Released": details["release_date"],
+          "Type": details["media_type"],
+          //"Genre": details["genre_ids"],
+          "Plot": details["overview"],
+          "Language": details["original_language"],
+          "Country": details["origin_country"],
+          "IMDBId": "",
+          "IMDB_Poster": getPosterURL(details["poster_path"])
+     }
+
+     return mappedResult;
+}
+
+export const matchMetadata = (watchListItem: IWatchListItem, metaDataFilters) => {
      let metadataMatch: boolean = false;
      let matchCount = 0;
 
      if (metaDataFilters !== null) {
           Object.keys(metaDataFilters).forEach((metaDataKey, index) => {
                for (let i = 0; i < metaDataFilters[metaDataKey].length; i++) {
-                    if (typeof IMDB_JSON !== "undefined" && IMDB_JSON !== null && typeof IMDB_JSON[metaDataKey] !== "undefined" && IMDB_JSON[metaDataKey] !== null
-                         && (
-                              metaSearch[metaDataKey]["MatchType"] === "Partial" && IMDB_JSON[metaDataKey].includes(metaDataFilters[metaDataKey][i]["value"])
-                              ||
-                              metaSearch[metaDataKey]["MatchType"] === "Exact" && IMDB_JSON[metaDataKey] === metaDataFilters[metaDataKey][i]["value"]
-                         )
+                    if (
+                         (metaSearch[metaDataKey]["MatchType"] === "Partial" && watchListItem[metaDataKey].includes(metaDataFilters[metaDataKey][i]["value"]))
+                         ||
+                         (metaSearch[metaDataKey]["MatchType"] === "Exact" && watchListItem[metaDataKey] === metaDataFilters[metaDataKey][i]["value"])
                     ) {
                          matchCount++;
                     }

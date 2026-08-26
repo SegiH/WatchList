@@ -63,7 +63,7 @@ import { ManageWatchListSourcesContextType } from "./contexts/ManageWatchListSou
 import { ManageWatchListTypesContextType } from "./contexts/ManageWatchListTypesContextType";
 import { PageNavigationBarContextType as PageNavigationBarContextType } from "./contexts/PageNavigationBarContextType";
 import { RecommendationsContextType } from "./contexts/RecommendationsContextType";
-import { SearchIMDBContextType } from "./contexts/SearchIMDBContextType";
+import { SearchTMDBContextType } from "./contexts/SearchTMDBContextType";
 import { SetupContextType } from "./contexts/SetupContextType";
 import { SharedLayoutContextType } from "./contexts/SharedLayoutContextType";
 import { TabsContextType } from "./contexts/TabsContextType";
@@ -75,7 +75,7 @@ import { WatchListStatsContextType } from "./contexts/WatchListStatsContextType"
 import ComposeProviders from './components/ComposeProviders';
 
 import IRouteList, { RouteKey } from './interfaces/IRoute';
-import ISearchImdb from './interfaces/ISearchImdb';
+import ISearchTmdb from './interfaces/ISearchTmdb';
 const WatchListItemsIconComponent = <WatchListItemsIcon className="icon" />;
 
 const DataContext = createContext({} as DataContextType);
@@ -88,7 +88,7 @@ const AdminContext = createContext({} as AdminContextType);
 const BugLogsContext = createContext({} as BugLogsContextType);
 const PageNavigationBarContext = createContext({} as PageNavigationBarContextType);
 const RecommendationsContext = createContext({} as RecommendationsContextType);
-const SearchIMDBContext = createContext({} as SearchIMDBContextType);
+const SearchTMDBContext = createContext({} as SearchTMDBContextType);
 const TabsContext = createContext({} as TabsContextType);
 const ItemsContext = createContext({} as ItemsContextType);
 const ItemsDtlContext = createContext({} as ItemsDtlContextType);
@@ -131,8 +131,8 @@ const DataProvider = ({
      const [demoMode, setDemoMode] = useState(false);
      const [demoModeNotificationVisible, setDemoModeNotificationVisible] = useState(false);
      const [hideTabs, setHideTabs] = useState(false);
-     const [imdbSearchEnabled, setImdbSearchEnabled] = useState(false);
-     const [imdbSearchResults, setIMDBSearchResults] = useState<ISearchImdb[]>([]);
+     const [tmdbSearchEnabled, setTmdbSearchEnabled] = useState(false);
+     const [tmdbSearchResults, setTMDBSearchResults] = useState<ISearchTmdb[]>([]);
      const [isAdding, setIsAdding] = useState(false);
      const [isClient, setIsClient] = useState(false);
      const [isEditing, setIsEditing] = useState(false);
@@ -478,43 +478,6 @@ const DataProvider = ({
           }
      }
 
-     const IMDBSearchClickHandler = async () => {
-          if (searchTerm !== "") {
-               const searchIMDBResponse = await fetch(`/api/SearchIMDB?SearchTerm=${searchTerm}&SearchCount=${5}`, { credentials: 'include' });
-
-               const searchIMDBResult = await searchIMDBResponse.json();
-
-               if (searchIMDBResult[0] !== "OK" && searchIMDBResult[0] !== "ERROR-ALREADY-EXISTS") {
-                    alert(searchIMDBResult[1]);
-                    return;
-               }
-
-               if (/^tt\d{7,}$/.test(searchTerm)) {
-                    if (!autoAdd && searchIMDBResult[0] !== "ERROR-ALREADY-EXISTS") {
-                         alert("The WatchList Item has been added");
-                         return;
-                    }
-
-                    if (autoAdd) {
-                         setIsAdding(true);
-
-                         setModalVisible(true);
-
-                         router.push(`/WatchList/Dtl?WatchListItemID=${searchIMDBResult[0] !== "ERROR-ALREADY-EXISTS" ? searchIMDBResult[2] : searchIMDBResult[2]}`);
-                    }
-
-                    return;
-               } else {
-                    // Will return [{}] if no results
-                    if (searchIMDBResult[1].lengh <= 1) {
-                         alert("No Results");
-                    } else {
-                         setIMDBSearchResults(searchIMDBResult[1]);
-                    }
-               }
-          }
-     }
-
      const isAdmin = () => {
           if (demoMode) {
                return false;
@@ -537,17 +500,17 @@ const DataProvider = ({
           }
      }
 
-     const isIMDBSearchEnabled = async () => {
+     const isTMDBSearchEnabled = async () => {
           try {
-               const isIMDBSearchEnabledResponse = await fetch(`/api/IsIMDBSearchEnabled`, { credentials: 'include' });
+               const isTMDBSearchEnabledResponse = await fetch(`/api/IsTMDBSearchEnabled`, { credentials: 'include' });
 
-               const isIMDBSearchEnabledResult = await isIMDBSearchEnabledResponse.json();
+               const isTMDBSearchEnabledResult = await isTMDBSearchEnabledResponse.json();
 
-               if (isIMDBSearchEnabledResult[0] === "OK") {
-                    setImdbSearchEnabled(true);
+               if (isTMDBSearchEnabledResult[0] === "OK") {
+                    setTmdbSearchEnabled(true);
                }
           } catch (e: any) {
-               setErrorMessage("Failed to check if IMDB search is enabled with the error " + e.message);
+               setErrorMessage("Failed to check if TMDB search is enabled with the error " + e.message);
                setIsError(true);
                return;
           }
@@ -812,6 +775,43 @@ const DataProvider = ({
           setActiveRoute("Login");
 
           router.push("/Login");
+     }
+
+     const TMDBSearchClickHandler = async () => {
+          if (searchTerm !== "") {
+               const searchTMDBResponse = await fetch(`/api/SearchTMDB?SearchTerm=${searchTerm}&SearchCount=${5}`, { credentials: 'include' });
+
+               const searchTMDBResult = await searchTMDBResponse.json();
+
+               if (searchTMDBResult[0] !== "OK" && searchTMDBResult[0] !== "ERROR-ALREADY-EXISTS") {
+                    alert(searchTMDBResult[1]);
+                    return;
+               }
+
+               if (/^tt\d{7,}$/.test(searchTerm)) {
+                    if (!autoAdd && searchTMDBResult[0] !== "ERROR-ALREADY-EXISTS") {
+                         alert("The WatchList Item has been added");
+                         return;
+                    }
+
+                    if (autoAdd) {
+                         setIsAdding(true);
+
+                         setModalVisible(true);
+
+                         router.push(`/WatchList/Dtl?WatchListItemID=${searchTMDBResult[0] !== "ERROR-ALREADY-EXISTS" ? searchTMDBResult[2] : searchTMDBResult[2]}`);
+                    }
+
+                    return;
+               } else {
+                    // Will return [{}] if no results
+                    if (searchTMDBResult[1].lengh <= 1) {
+                         alert("No Results");
+                    } else {
+                         setTMDBSearchResults(searchTMDBResult[1]);
+                    }
+               }
+          }
      }
 
      const validatePassword = (value: string) => {
@@ -1381,7 +1381,7 @@ const DataProvider = ({
           }
 
           if (demoMode) {
-               setImdbSearchEnabled(false);
+               setTmdbSearchEnabled(false);
                setRecommendationsEnabled(false);
                setLoggedInCheck(APIStatus.Success);
 
@@ -1418,8 +1418,7 @@ const DataProvider = ({
                return;
           }
 
-          /* Checks if IMDB search */
-          isIMDBSearchEnabled();
+          isTMDBSearchEnabled();
 
           /* Checks if Recommendations is enabled */
           isRecommendationsEnabled();
@@ -1435,22 +1434,22 @@ const DataProvider = ({
           // eslint-disable-next-line react-hooks/exhaustive-deps
      }, []); // Do not add isLoggedInApi as a dependency. It causes an ends loop of network requests
 
-     const dataContextValues = { bugLogs, darkMode, defaultRoute, demoMode, IMDBSearchClickHandler, imdbSearchEnabled, isAdmin, lastPage, pageSize, setErrorMessage, setIsError, visibleSections, watchList, watchListSortingCheck, watchListItems, watchListItemsSortingCheck, watchListSources, watchListTypes };
+     const dataContextValues = { bugLogs, darkMode, defaultRoute, demoMode, TMDBSearchClickHandler, tmdbSearchEnabled, isAdmin, lastPage, pageSize, setErrorMessage, setIsError, visibleSections, watchList, watchListSortingCheck, watchListItems, watchListItemsSortingCheck, watchListSources, watchListTypes };
      const errorContextValues = { defaultRoute, errorMessage, setActiveRoute };
      const hamburgerMenuContextType = { activeRoute, archivedVisible, autoAdd, buildDate, darkMode, defaultRoute, demoMode, demoModeNotificationVisible, hideTabs, isAdding, isAdmin, isEditing, isEnabled, loggedInCheck, LogOutIconComponent, metaDataFilters, metaDataFilterVisible, openDetailClickHandler, pullToRefreshEnabled, routes, saveOptions, setActiveRoute, setIsLoading, setMetaDataFilters, setMetaDataFilterVisible, setNewPage, setOptions, setShowMissingArtwork, setSourceFilter, setStillWatching, setTypeFilter, setVisibleSections, setWatchListSortColumn, setWatchListSortDirection, showMissingArtwork, signOut, sourceFilter, stillWatching, typeFilter, visibleSections, visibleSectionChoices, watchListItemsSortColumns, watchListSortColumn, watchListSortColumns, watchListSortDirection, watchListSources, watchListTypes }
      const itemsCardContextValues = { BrokenImageIconComponent, filteredWatchListItems, getMissingPoster, imageHeight, imageIsValid, imageWidth, openDetailClickHandler, setFilteredWatchListItems };
-     const itemsContextValues = { filteredWatchListItems, hideTabs, imdbSearchEnabled, isLoading, modalVisible, searchTerm, setActiveRoute, setIsAdding, setIsEditing, setFilteredWatchListItems, setModalVisible, watchListItemsSortingCheck };
+     const itemsContextValues = { filteredWatchListItems, hideTabs, tmdbSearchEnabled, isLoading, modalVisible, searchTerm, setActiveRoute, setIsAdding, setIsEditing, setFilteredWatchListItems, setModalVisible, watchListItemsSortingCheck };
      const itemsDtlContextValues = { autoAdd, BrokenImageIconComponent, CancelIconComponent, demoMode, EditIconComponent, formatWatchListDates, getMissingPoster, getWatchListItems, imageHeight, imageIsValid, imageWidth, isAdding, isEditing, isEnabled, isLoading, pullToRefreshEnabled, SaveIconComponent, setActiveRoute, setErrorMessage, setIsAdding, setIsEditing, setIsError, setModalVisible, watchListTypes, writeLog };
      const loginContextValues = { activeRoute, defaultRoute, demoPassword, demoUsername, loggedInCheck, routeList, setActiveRoute, setDemoMode, setLoggedInCheck, setOptions, setRoutes, setUserData, setVisibleSections };
-     const pageNavigationBarContextValues = { activeRoute, currentItemsPage, currentWatchListPage, isAdding, isLoading, hideTabs, imdbSearchEnabled, IMDBSearchClickHandler, lastPage, searchTerm, setNewPage, setSearchTerm };
+     const pageNavigationBarContextValues = { activeRoute, currentItemsPage, currentWatchListPage, isAdding, isLoading, hideTabs, tmdbSearchEnabled, TMDBSearchClickHandler, lastPage, searchTerm, setNewPage, setSearchTerm };
      const recommendationsContextValues = { BrokenImageIconComponent, imageHeight, imageWidth, writeLog };
-     const searchIMDBContextValues = { autoAdd, BrokenImageIconComponent, imageHeight, imageWidth, modalVisible, searchCount, setIsAdding, setSearchCount, setModalVisible, setSearchTerm };
+     const searchTMDBContextValues = { autoAdd, BrokenImageIconComponent, imageHeight, imageWidth, modalVisible, searchCount, setIsAdding, setSearchCount, setModalVisible, setSearchTerm };
      const setupContextValues = { activeRoute, defaultRoute, demoUsername, loggedInCheck, validatePassword };
-     const sharedLayoutContextValues = { activeRoute, autoAdd, currentItemsPage, currentWatchListPage, demoModeNotificationVisible, IMDBSearchClickHandler, imdbSearchEnabled, imdbSearchResults, isError, isLoading, lastPage, loggedInCheck, modalVisible, searchTerm, setDemoModeNotificationVisible, setIMDBSearchResults, setIsAdding, setModalVisible, setNewPage, setSearchTerm };
+     const sharedLayoutContextValues = { activeRoute, autoAdd, currentItemsPage, currentWatchListPage, demoModeNotificationVisible, TMDBSearchClickHandler, tmdbSearchEnabled, tmdbSearchResults, isError, isLoading, lastPage, loggedInCheck, modalVisible, searchTerm, setDemoModeNotificationVisible, setTMDBSearchResults, setIsAdding, setModalVisible, setNewPage, setSearchTerm };
      const tabsContextValues = { activeRoute, demoMode, getPath, hideTabs, isAdding, isAdmin, isClient, isEditing, isEnabled, isError, isLoading, loggedInCheck, modalVisible, pullToRefreshEnabled, routes, setActiveRoute, setSearchTerm, visibleSections };
      const watchListCardContextValues = { BrokenImageIconComponent, filteredWatchList, formatWatchListDates, getMissingPoster, imageHeight, imageIsValid, imageWidth, openDetailClickHandler, setFilteredWatchList, setModalVisible, writeLog };
-     const watchListContextValues = { autoAdd, filteredWatchList, hideTabs, imdbSearchEnabled, isLoading, lastPage, modalVisible, searchTerm, setActiveRoute, setIsAdding, setIsEditing, setModalVisible, watchListSortingCheck };
-     const watchListDtlContextValues = { BrokenImageIconComponent, CancelIconComponent, demoMode, EditIconComponent, getWatchList, imageHeight, imageIsValid, imageWidth, imdbSearchEnabled, isAdding, isEditing, isLoading, modalVisible, pullToRefreshEnabled, recommendationsEnabled, SaveIconComponent, setErrorMessage, setIsAdding, setIsEditing, setIsError, setModalVisible, setStillWatching, showSearch, stillWatching, watchListSortDirection, watchListSources, writeLog };
+     const watchListContextValues = { autoAdd, filteredWatchList, hideTabs, tmdbSearchEnabled, isLoading, lastPage, modalVisible, searchTerm, setActiveRoute, setIsAdding, setIsEditing, setModalVisible, watchListSortingCheck };
+     const watchListDtlContextValues = { BrokenImageIconComponent, CancelIconComponent, demoMode, EditIconComponent, getWatchList, imageHeight, imageIsValid, imageWidth, tmdbSearchEnabled, isAdding, isEditing, isLoading, modalVisible, pullToRefreshEnabled, recommendationsEnabled, SaveIconComponent, setErrorMessage, setIsAdding, setIsEditing, setIsError, setModalVisible, setStillWatching, showSearch, stillWatching, watchListSortDirection, watchListSources, writeLog };
      const watchListStatsContextValues = { demoMode, errorMessage, ratingMax, setIsError, setErrorMessage };
 
      const baseProviders = [
@@ -1463,7 +1462,7 @@ const DataProvider = ({
           { Provider: LoginContext.Provider, value: loginContextValues },
           { Provider: PageNavigationBarContext.Provider, value: pageNavigationBarContextValues },
           { Provider: RecommendationsContext.Provider, value: recommendationsContextValues },
-          { Provider: SearchIMDBContext.Provider, value: searchIMDBContextValues },
+          { Provider: SearchTMDBContext.Provider, value: searchTMDBContextValues },
           { Provider: SetupContext.Provider, value: setupContextValues },
           { Provider: SharedLayoutContext.Provider, value: sharedLayoutContextValues },
           { Provider: TabsContext.Provider, value: tabsContextValues },
@@ -1495,4 +1494,4 @@ const DataProvider = ({
      )
 }
 
-export { AdminContext, BugLogsContext, DataContext, DataProvider, ErrorContext, HamburgerMenuContext, ItemsContext, ItemsCardContext, ItemsDtlContext, LoginContext, ManageUserAccountsContext, ManageWatchListSourcesContext, ManageWatchListTypesContext, PageNavigationBarContext, RecommendationsContext, SearchIMDBContext, SetupContext, SharedLayoutContext, TabsContext, WatchListContext, WatchListCardContext, WatchListDtlContext, WatchListStatsContext };
+export { AdminContext, BugLogsContext, DataContext, DataProvider, ErrorContext, HamburgerMenuContext, ItemsContext, ItemsCardContext, ItemsDtlContext, LoginContext, ManageUserAccountsContext, ManageWatchListSourcesContext, ManageWatchListTypesContext, PageNavigationBarContext, RecommendationsContext, SearchTMDBContext, SetupContext, SharedLayoutContext, TabsContext, WatchListContext, WatchListCardContext, WatchListDtlContext, WatchListStatsContext };

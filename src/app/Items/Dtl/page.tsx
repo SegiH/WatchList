@@ -8,19 +8,19 @@ import { APIStatus, ItemsDtlContext } from "../../context";
 import IWatchListItem from "../../interfaces/IWatchListItem";
 import IWatchListType from "../../interfaces/IWatchListType";
 import { ItemsDtlContextType } from "@/app/contexts/ItemsDtlContextType";
-import IMDBCard from "@/app/components/IMDBCard";
+import MediaDetailsCard from "@/app/components/MediaDetailsCard";
 import IWatchList from "../../interfaces/IWatchList";
 import WatchListHistory from "@/app/components/WatchListHistory";
 
 export default function ItemsDtl() {
      const {
-          autoAdd, BrokenImageIconComponent, CancelIconComponent, demoMode, EditIconComponent, formatWatchListDates, getMissingPoster, getWatchListItems, imageHeight, imageIsValid, imageWidth, isAdding, isEditing, isEnabled, isLoading, pullToRefreshEnabled, SaveIconComponent, setActiveRoute, setErrorMessage, setIsAdding, setIsEditing, setIsError, setModalVisible, watchListTypes, writeLog
+          autoAdd, CancelIconComponent, demoMode, EditIconComponent, formatWatchListDates, getMissingPoster, getWatchListItems, imageHeight, imageIsValid, imageWidth, isAdding, isEditing, isEnabled, isLoading, pullToRefreshEnabled, SaveIconComponent, setActiveRoute, setErrorMessage, setIsAdding, setIsEditing, setIsError, setModalVisible, watchListTypes, writeLog
      } = useContext(ItemsDtlContext) as ItemsDtlContextType
 
      const [addWatchListItemDtl, setAddWatchListItemDtl] = useState<IWatchListItem | null>();
      const [editModified, setEditModified] = useState(false);
      const [addModified, setAddModified] = useState(false);
-     const [imdbCardvisible, setImdbCardvisible] = useState(false);
+     const [mediaDetailsCardVisible, setmediaDetailsVisible] = useState(false);
      const [isClosing, setIsClosing] = useState(false);
      const [originalWatchListItemDtl, setOriginalWatchListItemDtl] = useState<IWatchListItem | null>();
      const [recommendationsVisible, setRecommendationsVisible] = useState(false);
@@ -84,8 +84,8 @@ export default function ItemsDtl() {
           router.push(`/Items`);
      };
 
-     const closeIMDBCard = () => {
-          setImdbCardvisible(false);
+     const closeMediaDetailsCard = () => {
+          setmediaDetailsVisible(false);
           setModalVisible(false);
      }
 
@@ -105,23 +105,50 @@ export default function ItemsDtl() {
                     // Sanitize object by replacing all null fields with "". There are issues with binding to input fields when the value is null
                     const wlid = getWatchListItemDtlResult[1];
 
-                    if (wlid[0]?.IMDB_JSON !== null && typeof wlid[0]?.IMDB_JSON !== "undefined") {
-                         const IMDB_JSON = (JSON.parse(wlid[0]?.IMDB_JSON));
+                    const tooltipFields = [
+                         {
+                              displayName: "Rated",
+                              fieldName: "Rated"
+                         },
+                         {
+                              displayName: "Year",
+                              fieldName: "Year"
+                         },
+                         {
+                              displayName: "IMDB Rating",
+                              fieldName: "imdbRating"
+                         },
+                         {
+                              displayName: "Genre",
+                              fieldName: "Genre"
+                         },
+                         {
+                              displayName: "Runtime",
+                              fieldName: "Runtime"
+                         },
+                         {
+                              displayName: "Release Date",
+                              fieldName: "Released"
+                         },
+                         {
+                              displayName: "Director",
+                              fieldName: "Director"
+                         },
+                         {
+                              displayName: "Plot",
+                              fieldName: "Plot"
+                         },
+                    ];
 
-                         const tooltip = IMDB_JSON && IMDB_JSON !== null &&
-                              `Rated: ${IMDB_JSON.Rated} 
-Year: ${IMDB_JSON.Year}
-Rated: ${IMDB_JSON.imdbRating}
-Genre: ${IMDB_JSON.Genre}
-Runtime: ${IMDB_JSON.Runtime}
-Release Date: ${IMDB_JSON.Released}
-Director: ${IMDB_JSON.Director}
-Plot: ${IMDB_JSON.Plot}
-${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSeasons}` : ""}
-     `;
+                    let tooltip = ``;
 
-                         wlid[0].Tooltip = tooltip;
+                    for (let i = 0; i < Object.keys(tooltipFields).length; i++) {
+                         if (typeof wlid?.[tooltipFields[i].fieldName] !== "undefined") {
+                              tooltip += `${wlid?.[tooltipFields[i].displayName]}: ${wlid?.[tooltipFields[i].fieldName]}`;
+                         }
                     }
+
+                    wlid[0].Tooltip = tooltip;
 
                     Object.keys(wlid[0]).map((keyName) => {
                          if (wlid[0][keyName] === null) {
@@ -140,8 +167,8 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
           }
      }
 
-     const IMDBCardOpenClickHandler = () => {
-          setImdbCardvisible(true);
+     const MediaDetailsOpenClickHandler = () => {
+          setmediaDetailsVisible(true);
      }
 
      const onIMDBPosterChangeHandler = async (URL: string) => {
@@ -416,7 +443,7 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
 
                getWatchListItemDtl(watchListItemDtlID);
           } else if (isAdding && watchListItemDtlID === -1) {
-               const newAddWatchListItemDtl: IWatchListItem = { WatchListItemID: 0, WatchListItemName: "", WatchListTypeID: -1, WatchListTypeName: "", IMDB_URL: "", IMDB_Poster: "", ItemNotes: "", Archived: 0, WatchListHistory: [] };
+               const newAddWatchListItemDtl: IWatchListItem = { WatchListItemID: 0, WatchListItemName: "", WatchListTypeID: -1, WatchListTypeName: "", IMDB_URL: "", IMDB_Poster: "", ItemNotes: "", Year: 0, Archived: 0, WatchListHistory: [] };
                newAddWatchListItemDtl.WatchListItemName = "";
                newAddWatchListItemDtl.WatchListTypeID = -1;
                newAddWatchListItemDtl.IMDB_URL = "";
@@ -455,14 +482,12 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
           }
      }, [isClosing, isEnabled, router]);
 
-     const IMDB_JSON = watchListItemDtl?.IMDB_JSON !== null && typeof watchListItemDtl?.IMDB_JSON !== "undefined" && watchListItemDtl?.IMDB_JSON !== "" ? JSON.parse(watchListItemDtl?.IMDB_JSON) : null;
-
      return (
           <>
-               {!isLoading && !isClosing && watchListItemDtlLoadingCheck === APIStatus.Success && !imdbCardvisible && !watchListHistoryVisible &&
+               {!isLoading && !isClosing && watchListItemDtlLoadingCheck === APIStatus.Success && !mediaDetailsCardVisible && !watchListHistoryVisible &&
                     <div className="modal">
                          <div className={`modal-content ${watchListItemDtlID != null ? "fade-in" : ""}`}>
-                              {!recommendationsVisible && !imdbCardvisible &&
+                              {!recommendationsVisible && !mediaDetailsCardVisible &&
                                    <div className="container">
                                         <div className="cards">
                                              <div className="narrow card">
@@ -660,18 +685,13 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
                                                   <div className="narrow card"></div>
                                              }
 
-
-
-
-
-                                             {/* TODO: Fix me */}
-                                             {/*{!isAdding && !isEditing && typeof watchListItemDtl !== "undefined" && watchListItemDtl !== null &&
+                                             {!isAdding && !isEditing && typeof watchListItemDtl !== "undefined" && watchListItemDtl !== null &&
                                                   <div className={`clickable textLabel`}>
                                                        <a onClick={() => reloadImageClickHandler(watchListItemDtl.WatchListItemID)}>
                                                             Reload Image
                                                        </a>
                                                   </div>
-                                             }*/}
+                                             }
 
                                              {(isAdding || isEditing) &&
                                                   <>
@@ -701,9 +721,8 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
                                                        </div>
                                                   </>
                                              }
-                                             {IMDB_JSON !== null && (!isAdding && !isEditing) &&
-                                                  <a className="clickable fontStyle" onClick={IMDBCardOpenClickHandler}>IMDB Info</a>
-                                             }
+
+                                             <a className="clickable fontStyle" onClick={MediaDetailsOpenClickHandler}>IMDB Info</a>
 
                                              <div className="narrow card">
                                                   {watchListItemDtl !== null && typeof watchListItemDtl?.WatchListHistory !== "undefined" && watchListItemDtl?.WatchListHistory?.length > 0 && (!isAdding && !isEditing) &&
@@ -715,7 +734,7 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
                                    </div>
                               }
 
-                              {recommendationsVisible && !imdbCardvisible &&
+                              {recommendationsVisible && !mediaDetailsCardVisible &&
                                    <>
                                         <Recommendations queryTerm={recommendationName} type={recommendationType} setRecommendationName={setRecommendationName} setRecommendationType={setRecommendationName} setRecommendationsVisible={setRecommendationsVisible} />
                                    </>
@@ -724,8 +743,8 @@ ${typeof IMDB_JSON.totalSeasons !== "undefined" ? `Seasons: ${IMDB_JSON.totalSea
                     </div>
                }
 
-               {imdbCardvisible && !recommendationsVisible &&
-                    <IMDBCard closeIMDBCard={closeIMDBCard} IMDB_JSON={IMDB_JSON} />
+               {mediaDetailsCardVisible && !recommendationsVisible &&
+                    <MediaDetailsCard closeMediaDetails={closeMediaDetailsCard} watchListItem={watchListItemDtl} />
                }
 
                {watchListHistoryVisible &&

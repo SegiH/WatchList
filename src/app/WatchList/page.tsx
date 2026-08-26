@@ -6,23 +6,13 @@ import IWatchList from "../interfaces/IWatchList";
 
 import { WatchListContextType } from "../contexts/WatchListContextType";
 
-import IMDBCard from "../components/IMDBCard";
 import PageNavigationBar from "../components/PageNavigationBar";
 import WatchListCard from "./WatchListCard";
 
 export default function WatchList() {
      const {
-          filteredWatchList, hideTabs, imdbSearchEnabled, isLoading, lastPage, modalVisible, setActiveRoute, setIsAdding, setIsEditing, setModalVisible, watchListSortingCheck
+          filteredWatchList, hideTabs, isLoading, lastPage, modalVisible, setActiveRoute, setIsAdding, setIsEditing, tmdbSearchEnabled, watchListSortingCheck
      } = useContext(WatchListContext) as WatchListContextType;
-
-     const [imdbCardvisible, setImdbCardvisible] = useState(false);
-     const [imdbJSON, setImdbJSON] = useState<[] | null>(null);
-
-     const closeIMDBCard = () => {
-          setImdbJSON(null);
-          setImdbCardvisible(false);
-          setModalVisible(false);
-     }
 
      useEffect(() => {
           setActiveRoute("WatchList");
@@ -30,21 +20,15 @@ export default function WatchList() {
           setIsEditing(false);
      }, [setActiveRoute, setIsAdding, setIsEditing]);
 
-     useEffect(() => {
-          if (typeof imdbJSON !== "undefined" && imdbJSON !== null && Object.keys(imdbJSON).length > 0 && !imdbCardvisible) {
-               setImdbCardvisible(true);
-          }
-     }, [imdbJSON]);
-
      return (
           <>
-               {!isLoading && filteredWatchList && filteredWatchList.length > 0 && !imdbCardvisible && !modalVisible &&
+               {!isLoading && filteredWatchList && filteredWatchList.length > 0 && !modalVisible &&
                     <>
                          <span>
                               <ul className={`show-list ${hideTabs ? "noTabs" : ""}`}>
                                    {filteredWatchList?.map((currentWatchList: IWatchList) => {
                                         return (
-                                             <WatchListCard key={currentWatchList.WatchListID} currentWatchList={currentWatchList} setImdbJSON={setImdbJSON} />
+                                             <WatchListCard key={currentWatchList.WatchListID} currentWatchList={currentWatchList} />
                                         );
                                    })}
                               </ul>
@@ -58,12 +42,8 @@ export default function WatchList() {
                     </>
                }
 
-               {!isLoading && watchListSortingCheck === APIStatus.Success && filteredWatchList && filteredWatchList.length === 0 && !imdbSearchEnabled &&
+               {!isLoading && watchListSortingCheck === APIStatus.Success && filteredWatchList && filteredWatchList.length === 0 && !tmdbSearchEnabled &&
                     <h1 className="topMargin100">No results</h1>
-               }
-
-               {imdbCardvisible &&
-                    <IMDBCard closeIMDBCard={closeIMDBCard} IMDB_JSON={imdbJSON} />
                }
           </>
      )

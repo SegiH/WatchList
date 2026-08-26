@@ -6,23 +6,17 @@ import IWatchListItem from "../interfaces/IWatchListItem";
 import React from "react";
 import PageNavigationBar from "../components/PageNavigationBar";
 import { ItemsContextType } from "../contexts/ItemsContextType";
-import IMDBCard from "../components/IMDBCard";
+import WatchListItem from "../interfaces/IWatchListItem";
 
-const WatchListItemCard = React.lazy(() => import('./WatchListItemCard'));
+const ItemCard = React.lazy(() => import('./ItemCard'));
 
 export default function WatchListItems() {
      const {
-          filteredWatchListItems, hideTabs, imdbSearchEnabled, isLoading, setActiveRoute, setIsAdding, setIsEditing, setModalVisible, watchListItemsSortingCheck
+          filteredWatchListItems, hideTabs, isLoading, setActiveRoute, setIsAdding, setIsEditing, tmdbSearchEnabled, watchListItemsSortingCheck
      } = useContext(ItemsContext) as ItemsContextType;
 
-     const [imdbCardvisible, setImdbCardvisible] = useState(false);
-     const [imdbJSON, setImdbJSON] = useState([]);
-
-     const closeIMDBCard = () => {
-          setImdbJSON([]);
-          setImdbCardvisible(false);
-          setModalVisible(false);
-     }
+     const [mediaDetailsVisible, setMediaDetailsVisible] = useState(false);
+     const [mediaDetailItem, setMediaDetailItem] = useState<WatchListItem>(null);
 
      useEffect(() => {
           setActiveRoute("Items");
@@ -31,20 +25,20 @@ export default function WatchListItems() {
      }, [setActiveRoute, setIsAdding, setIsEditing]);
 
      useEffect(() => {
-          if (typeof imdbJSON !== "undefined" && imdbJSON !== null && Object.keys(imdbJSON).length > 0 && !imdbCardvisible) {
-               setImdbCardvisible(true);
+          if (typeof mediaDetailItem !== "undefined" &&  mediaDetailItem !== null && !mediaDetailsVisible) {
+               setMediaDetailsVisible(true);
           }
-     }, [imdbJSON]);
+     }, [mediaDetailItem]);
 
      return (
           <>
-               {!isLoading && watchListItemsSortingCheck === APIStatus.Success && !imdbCardvisible &&
+               {!isLoading && watchListItemsSortingCheck === APIStatus.Success && !mediaDetailsVisible &&
                     <>
                          <span className="displayInline">
                               <ul className={`show-list ${hideTabs ? "noTabs" : ""}`}>
                                    {filteredWatchListItems?.map((currentWatchListItem: IWatchListItem, index: number) => {
                                         return (
-                                             <WatchListItemCard key={index} currentWatchListItem={currentWatchListItem} setImdbJSON={setImdbJSON} />
+                                             <ItemCard key={index} currentWatchListItem={currentWatchListItem} setMediaDetailItem={setMediaDetailItem} />
                                         );
                                    })}
                               </ul>
@@ -56,12 +50,8 @@ export default function WatchListItems() {
                     </>
                }
 
-               {!isLoading && watchListItemsSortingCheck === APIStatus.Success && filteredWatchListItems && filteredWatchListItems.length === 0 && !imdbSearchEnabled &&
+               {!isLoading && watchListItemsSortingCheck === APIStatus.Success && filteredWatchListItems && filteredWatchListItems.length === 0 && !tmdbSearchEnabled &&
                     <h1>No results</h1>
-               }
-
-               {imdbCardvisible &&
-                    <IMDBCard closeIMDBCard={closeIMDBCard} IMDB_JSON={imdbJSON} />
                }
           </>
      )

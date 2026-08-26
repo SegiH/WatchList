@@ -205,8 +205,7 @@ export const demoWatchListItemsPayload =
         "IMDB_URL": "https://www.imdb.com/title/tt7889220/",
         "IMDB_Poster": "https://m.media-amazon.com/images/M/MV5BNjMyNmFiM2UtMmIzMi00ZjQ0LThlODItYTE0ZTUyYTlkNmU0XkEyXkFqcGc@._V1_.jpg",
         "ItemNotes": null,
-        "Archived": 0,
-        "IMDB_JSON": "{\"Title\":\"Dirty Money\",\"Year\":\"2018–2020\",\"Rated\":\"TV-14\",\"Released\":\"26 Jan 2018\",\"Runtime\":\"2 min\",\"Genre\":\"Documentary, Crime\",\"Director\":\"N/A\",\"Writer\":\"Josh Adler\",\"Actors\":\"Matt Taibbi, Fisher Stevens, Alex Gibney\",\"Plot\":\"A Netflix Original Series documenting various stories about exposing the greed, corruption, and crime spreading through the global economy.\",\"Language\":\"English\",\"Country\":\"United States\",\"Awards\":\"1 nomination\",\"Poster\":\"https://m.media-amazon.com/images/M/MV5BNTZjOTI2N2MtYjU0OC00YzFlLWIxNzQtYzY3MjgyOTU0MDJhXkEyXkFqcGdeQXVyMTkxNjUyNQ@@._V1_SX300.jpg\",\"Ratings\":[{\"Source\":\"Internet Movie Database\",\"Value\":\"8.1/10\"}],\"Metascore\":\"N/A\",\"imdbRating\":\"8.1\",\"imdbVotes\":\"10,150\",\"imdbID\":\"tt7889220\",\"Type\":\"series\",\"totalSeasons\":\"2\",\"Response\":\"True\"}"
+        "Archived": 0
     },
     {
         "WatchListItemID": 32,
@@ -215,8 +214,7 @@ export const demoWatchListItemsPayload =
         "IMDB_URL": "https://www.imdb.com/title/tt5884792/",
         "IMDB_Poster": "https://m.media-amazon.com/images/M/MV5BMTU3ODU2MTk5MV5BMl5BanBnXkFtZTgwOTQ4Njk0NDM@._V1_SX300.jpg",
         "ItemNotes": null,
-        "Archived": 0,
-        "IMDB_JSON": "{\"Title\":\"Disjointed\",\"Year\":\"2017–2018\",\"Rated\":\"TV-MA\",\"Released\":\"25 Aug 2017\",\"Runtime\":\"1 min\",\"Genre\":\"Comedy\",\"Director\":\"N/A\",\"Writer\":\"David Javerbaum, Chuck Lorre\",\"Actors\":\"Kathy Bates, Aaron Moten, Elizabeth Alderfer\",\"Plot\":\"Cannabis legend Ruth Whitefeather Feldman employs her newly graduated son and a team of young \\\"budtenders\\\" to help run her Los Angeles marijuana dispensary.\",\"Language\":\"Mandarin, English\",\"Country\":\"United States\",\"Awards\":\"N/A\",\"Poster\":\"https://m.media-amazon.com/images/M/MV5BMTU3ODU2MTk5MV5BMl5BanBnXkFtZTgwOTQ4Njk0NDM@._V1_SX300.jpg\",\"Ratings\":[{\"Source\":\"Internet Movie Database\",\"Value\":\"6.7/10\"}],\"Metascore\":\"N/A\",\"imdbRating\":\"6.7\",\"imdbVotes\":\"11,385\",\"imdbID\":\"tt5884792\",\"Type\":\"series\",\"totalSeasons\":\"1\",\"Response\":\"True\"}"
+        "Archived": 0
     },
     {
         "WatchListItemID": 33,
@@ -225,8 +223,7 @@ export const demoWatchListItemsPayload =
         "IMDB_URL": "https://www.imdb.com/title/tt7935522/",
         "IMDB_Poster": "https://m.media-amazon.com/images/M/MV5BMmRkZjU5YTgtNGQ0OC00YjZmLWIyMTYtZTZmZGNiNTgxNDY5XkEyXkFqcGc@._V1_.jpg",
         "ItemNotes": null,
-        "Archived": 0,
-        "IMDB_JSON": "{\"Title\":\"Drug Lords\",\"Year\":\"2018\",\"Rated\":\"TV-MA\",\"Released\":\"19 Jan 2018\",\"Runtime\":\"1 min\",\"Genre\":\"Documentary, Biography, Crime\",\"Director\":\"N/A\",\"Writer\":\"N/A\",\"Actors\":\"Quinn Dalton, Jordan Lawson, Razor Rizzotti\",\"Plot\":\"Documentary series examining drug cartels and kingpins from around the world.\",\"Language\":\"English\",\"Country\":\"United States\",\"Awards\":\"N/A\",\"Poster\":\"https://m.media-amazon.com/images/M/MV5BMzQxYzZiN2QtNTA2ZC00YWVmLWE3ZjYtNDM2OTZjNDRmNDIzXkEyXkFqcGdeQXVyMTMxODk2OTU@._V1_SX300.jpg\",\"Ratings\":[{\"Source\":\"Internet Movie Database\",\"Value\":\"6.8/10\"}],\"Metascore\":\"N/A\",\"imdbRating\":\"6.8\",\"imdbVotes\":\"1,515\",\"imdbID\":\"tt7935522\",\"Type\":\"series\",\"totalSeasons\":\"2\",\"Response\":\"True\"}"
+        "Archived": 0
     },
     {
         "WatchListItemID": 34,
@@ -235,8 +232,7 @@ export const demoWatchListItemsPayload =
         "IMDB_URL": "https://www.imdb.com/title/tt8342862/",
         "IMDB_Poster": "https://m.media-amazon.com/images/M/MV5BOGRhMTEzODMtNTY4Yy00NGJkLWFhMjMtNmY5YzkyZjhjMzg1XkEyXkFqcGdeQXVyNjUxMjc1OTM@._V1_SX300.jpg",
         "ItemNotes": null,
-        "Archived": 0,
-        "IMDB_JSON": "{\"Title\":\"Evil Genius: The True Story of America's Most Diabolical Bank Heist\",\"Year\":\"2018\",\"Rated\":\"TV-MA\",\"Released\":\"10 May 2018\",\"Runtime\":\"192 min\",\"Genre\":\"Documentary, Crime\",\"Director\":\"N/A\",\"Writer\":\"N/A\",\"Actors\":\"Trey Borzillieri, Jerry Clark, Jason Wick\",\"Plot\":\"The extraordinary story of the \\\"pizza bomber heist\\\" and the FBI's investigation into a bizarre collection of suspects.\",\"Language\":\"English\",\"Country\":\"United States\",\"Awards\":\"1 nomination\",\"Poster\":\"https://m.media-amazon.com/images/M/MV5BOGRhMTEzODMtNTY4Yy00NGJkLWFhMjMtNmY5YzkyZjhjMzg1XkEyXkFqcGdeQXVyNjUxMjc1OTM@._V1_SX300.jpg\",\"Ratings\":[{\"Source\":\"Internet Movie Database\",\"Value\":\"7.5/10\"}],\"Metascore\":\"N/A\",\"imdbRating\":\"7.5\",\"imdbVotes\":\"30,886\",\"imdbID\":\"tt8342862\",\"Type\":\"series\",\"totalSeasons\":\"1\",\"Response\":\"True\"}"
+        "Archived": 0
     },
     {
         "WatchListItemID": 35,
@@ -245,8 +241,7 @@ export const demoWatchListItemsPayload =
         "IMDB_URL": "https://www.imdb.com/title/tt4565380/",
         "IMDB_Poster": "https://m.media-amazon.com/images/M/MV5BZDNjNzhmM2ItYWM4Ni00ZThjLWE4N2YtODQ1MzRiYWQ0YzBlXkEyXkFqcGc@._V1_.jpg",
         "ItemNotes": null,
-        "Archived": 0,
-        "IMDB_JSON": "{\"Title\":\"Fauda\",\"Year\":\"2015–\",\"Rated\":\"TV-MA\",\"Released\":\"15 Feb 2015\",\"Runtime\":\"1 min\",\"Genre\":\"Action, Drama, Thriller\",\"Director\":\"N/A\",\"Writer\":\"Avi Issacharoff, Lior Raz\",\"Actors\":\"Lior Raz, Itzik Cohen, Neta Garty\",\"Plot\":\"The human stories on both sides of the Israel-Palestine conflict.\",\"Language\":\"Hebrew, Arabic\",\"Country\":\"Israel\",\"Awards\":\"15 wins & 8 nominations\",\"Poster\":\"https://m.media-amazon.com/images/M/MV5BZTk5OTU5Y2EtY2M1NC00N2E5LWJlMTMtODgzMDc2NDk1MTczXkEyXkFqcGdeQXVyMjMyMzI4MzY@._V1_SX300.jpg\",\"Ratings\":[{\"Source\":\"Internet Movie Database\",\"Value\":\"8.3/10\"}],\"Metascore\":\"N/A\",\"imdbRating\":\"8.3\",\"imdbVotes\":\"37,470\",\"imdbID\":\"tt4565380\",\"Type\":\"series\",\"totalSeasons\":\"4\",\"Response\":\"True\"}"
+        "Archived": 0
     },
     {
         "WatchListItemID": 36,
@@ -255,8 +250,7 @@ export const demoWatchListItemsPayload =
         "IMDB_URL": "https://www.imdb.com/title/tt10050772/",
         "IMDB_Poster": "https://m.media-amazon.com/images/M/MV5BZTk4Y2ZlZDAtZjRhNi00Mjc5LTkzOTQtMGFjZjc2NjFhZWJhXkEyXkFqcGc@._V1_.jpg",
         "ItemNotes": null,
-        "Archived": 0,
-        "IMDB_JSON": "{\"Title\":\"I Think You Should Leave with Tim Robinson\",\"Year\":\"2019–\",\"Rated\":\"TV-MA\",\"Released\":\"23 Apr 2019\",\"Runtime\":\"16 min\",\"Genre\":\"Comedy\",\"Director\":\"N/A\",\"Writer\":\"Zach Kanin, Tim Robinson\",\"Actors\":\"Tim Robinson, Sam Richardson, Patti Harrison\",\"Plot\":\"A sketch show where Tim Robinson and his guests spend each segment driving someone to the point of needing -- or desperately wanting -- to leave.\",\"Language\":\"English\",\"Country\":\"United States\",\"Awards\":\"Won 3 Primetime Emmys. 8 wins & 7 nominations total\",\"Poster\":\"https://m.media-amazon.com/images/M/MV5BNDAxOWU5ZGItNmI2NC00OTcyLThkM2EtYjk3NDQzYWI5YTM2XkEyXkFqcGdeQXVyMTMxODk2OTU@._V1_SX300.jpg\",\"Ratings\":[{\"Source\":\"Internet Movie Database\",\"Value\":\"8.0/10\"}],\"Metascore\":\"N/A\",\"imdbRating\":\"8.0\",\"imdbVotes\":\"21,048\",\"imdbID\":\"tt10050772\",\"Type\":\"series\",\"totalSeasons\":\"3\",\"Response\":\"True\"}"
+        "Archived": 0
     },
     {
         "WatchListItemID": 37,
@@ -265,8 +259,7 @@ export const demoWatchListItemsPayload =
         "IMDB_URL": "https://www.imdb.com/title/tt10231312/",
         "IMDB_Poster": "https://m.media-amazon.com/images/M/MV5BMGUyNTFiM2MtYmU4OS00NmY3LTg5ODktMmFmMjhmYjdlZTQ1XkEyXkFqcGc@._V1_.jpg",
         "ItemNotes": null,
-        "Archived": 0,
-        "IMDB_JSON": "{\"Title\":\"Inside Job\",\"Year\":\"2021–2022\",\"Rated\":\"TV-MA\",\"Released\":\"22 Oct 2021\",\"Runtime\":\"2 min\",\"Genre\":\"Animation, Adventure, Comedy\",\"Director\":\"N/A\",\"Writer\":\"Shion Takeuchi, Alex Hirsch\",\"Actors\":\"Lizzy Caplan, Christian Slater, Clark Duke\",\"Plot\":\"For employees of the Deep State, conspiracies aren't just theories, they're fact. And keeping them a secret is a full-time job.\",\"Language\":\"English\",\"Country\":\"United States\",\"Awards\":\"1 win\",\"Poster\":\"https://m.media-amazon.com/images/M/MV5BZTg5YjE1YzktYjRmZC00Y2VjLThiMDItOTcwODRhMjRjZDQ1XkEyXkFqcGdeQXVyMTEzMTI1Mjk3._V1_SX300.jpg\",\"Ratings\":[{\"Source\":\"Internet Movie Database\",\"Value\":\"7.7/10\"}],\"Metascore\":\"N/A\",\"imdbRating\":\"7.7\",\"imdbVotes\":\"29,537\",\"imdbID\":\"tt10231312\",\"Type\":\"series\",\"totalSeasons\":\"2\",\"Response\":\"True\"}"
+        "Archived": 0
     },
     {
         "WatchListItemID": 38,
@@ -275,8 +268,7 @@ export const demoWatchListItemsPayload =
         "IMDB_URL": "https://www.imdb.com/title/tt7085648/",
         "IMDB_Poster": "https://m.media-amazon.com/images/M/MV5BOGQ0NDVhNTMtNzcyYS00Y2UwLWE1NDAtYmY1NmRlMGQ1ZGUzXkEyXkFqcGc@._V1_.jpg",
         "ItemNotes": null,
-        "Archived": 0,
-        "IMDB_JSON": "{\"Title\":\"Inside the Mossad\",\"Year\":\"2017\",\"Rated\":\"N/A\",\"Released\":\"04 Jun 2017\",\"Runtime\":\"60 min\",\"Genre\":\"Documentary\",\"Director\":\"N/A\",\"Writer\":\"Duki Dror, Yossi Melman, Chen Shelach\",\"Actors\":\"Ram Ben Barak, Gad Shimron, Yossi Alpher\",\"Plot\":\"For years the Mossad, Israel's legendary foreign intelligence agency, has been sealed off to the media. Now, for the first time since its founding, a dozen of Mossad's former spies give us a first-hand recount into their inner wor...\",\"Language\":\"Hebrew\",\"Country\":\"Israel\",\"Awards\":\"1 nomination\",\"Poster\":\"https://m.media-amazon.com/images/M/MV5BY2NmMWJhNTAtN2NjOC00NDA5LTk5N2ItZGZlNjYwMmJhZTg3XkEyXkFqcGdeQXVyMjMyMzI4MzY@._V1_SX300.jpg\",\"Ratings\":[{\"Source\":\"Internet Movie Database\",\"Value\":\"7.5/10\"}],\"Metascore\":\"N/A\",\"imdbRating\":\"7.5\",\"imdbVotes\":\"1,129\",\"imdbID\":\"tt7085648\",\"Type\":\"series\",\"totalSeasons\":\"1\",\"Response\":\"True\"}"
+        "Archived": 0
     },
     {
         "WatchListItemID": 39,
@@ -285,8 +277,7 @@ export const demoWatchListItemsPayload =
         "IMDB_URL": "https://www.imdb.com/title/tt11150912/",
         "IMDB_Poster": "https://m.media-amazon.com/images/M/MV5BM2VmNjUzNjYtMjdiZi00MWI3LTlhNmUtZTNmMzgxZGVjMGMyXkEyXkFqcGc@._V1_.jpg",
         "ItemNotes": null,
-        "Archived": 0,
-        "IMDB_JSON": "{\"Title\":\"Jamtara: Sabka Number Ayega\",\"Year\":\"2020–\",\"Rated\":\"TV-MA\",\"Released\":\"10 Jan 2020\",\"Runtime\":\"1 min\",\"Genre\":\"Crime\",\"Director\":\"N/A\",\"Writer\":\"N/A\",\"Actors\":\"Amit Sial, Sparsh Srivastav, Monika Panwar\",\"Plot\":\"A group of small-town young men run a lucrative phishing operation, until a corrupt politician wants in on their scheme -- and a cop wants to fight it.\",\"Language\":\"Hindi\",\"Country\":\"India\",\"Awards\":\"2 wins & 7 nominations\",\"Poster\":\"https://m.media-amazon.com/images/M/MV5BNWM1OGE2MmItZWUzZi00OGY5LThhMmQtZmJjZmJlYmQ5NTkwXkEyXkFqcGdeQXVyMTMxODk2OTU@._V1_SX300.jpg\",\"Ratings\":[{\"Source\":\"Internet Movie Database\",\"Value\":\"7.3/10\"}],\"Metascore\":\"N/A\",\"imdbRating\":\"7.3\",\"imdbVotes\":\"9,224\",\"imdbID\":\"tt11150912\",\"Type\":\"series\",\"totalSeasons\":\"2\",\"Response\":\"True\"}"
+        "Archived": 0
     },
     {
         "WatchListItemID": 40,
@@ -295,8 +286,7 @@ export const demoWatchListItemsPayload =
         "IMDB_URL": "https://www.imdb.com/title/tt0159881/",
         "IMDB_Poster": "https://m.media-amazon.com/images/M/MV5BMjM1NjQ1YzUtZDFhMS00MDRkLWIwODMtOWIxOGUwZTA1MTgxXkEyXkFqcGc@._V1_.jpg",
         "ItemNotes": null,
-        "Archived": 0,
-        "IMDB_JSON": "{\"Title\":\"Jeopardy!\",\"Year\":\"1983–\",\"Rated\":\"TV-G\",\"Released\":\"10 Sep 1984\",\"Runtime\":\"30 min\",\"Genre\":\"Short, Game-Show, Reality-TV\",\"Director\":\"N/A\",\"Writer\":\"Merv Griffin\",\"Actors\":\"Alex Trebek, Johnny Gilbert, Jimmy McGuire\",\"Plot\":\"A returning champion and two challengers test their buzzer skills and their knowledge in a wide range of academic and popular categories.\",\"Language\":\"English\",\"Country\":\"United States\",\"Awards\":\"Won 1 Primetime Emmy. 56 wins & 118 nominations total\",\"Poster\":\"https://m.media-amazon.com/images/M/MV5BZWMxNjQwMTAtYTljOS00OGVkLWJkMWYtMWNlMzBlMGQ4OWYyXkEyXkFqcGdeQXVyODk4Nzg5NjE@._V1_SX300.jpg\",\"Ratings\":[{\"Source\":\"Internet Movie Database\",\"Value\":\"8.3/10\"}],\"Metascore\":\"N/A\",\"imdbRating\":\"8.3\",\"imdbVotes\":\"8,188\",\"imdbID\":\"tt0159881\",\"Type\":\"series\",\"totalSeasons\":\"39\",\"Response\":\"True\"}"
+        "Archived": 0
     }
     ];
 

@@ -1,7 +1,7 @@
 "use client"
 
 import { useContext, useEffect, useRef, useState } from "react";
-import SearchIMDB from "./components/SearchIMDB";
+import SearchTMDB from "./components/SearchTMDB";
 import HamburgerMenu from "./components/HamburgerMenu";
 import Loader from "./components/Loader";
 
@@ -11,7 +11,7 @@ import { Button } from "@mui/material";
 
 const SharedLayout = () => {
      const {
-          activeRoute, currentItemsPage, currentWatchListPage, demoModeNotificationVisible, IMDBSearchClickHandler, imdbSearchEnabled, imdbSearchResults, isError, isLoading, lastPage, loggedInCheck, modalVisible, searchTerm, setIMDBSearchResults, setModalVisible, setNewPage, setSearchTerm
+          activeRoute, currentItemsPage, currentWatchListPage, demoModeNotificationVisible, isError, isLoading, lastPage, loggedInCheck, modalVisible, searchTerm, setModalVisible, setNewPage, setSearchTerm,  setTMDBSearchResults, TMDBSearchClickHandler, tmdbSearchEnabled, tmdbSearchResults
      } = useContext(SharedLayoutContext) as SharedLayoutContextType
 
      const topRef = useRef<HTMLDivElement | null>(null);     
@@ -36,14 +36,14 @@ const SharedLayout = () => {
      }, []);
 
      useEffect(() => {
-          if (imdbSearchResults.length > 0) {
+          if (tmdbSearchResults.length > 0) {
                setModalVisible(true);
           }
-     }, [imdbSearchResults]);
+     }, [tmdbSearchResults]);
 
      useEffect(() => {
           if (!modalVisible) {
-               setIMDBSearchResults([]);
+               setTMDBSearchResults([]);
           }
      }, [modalVisible]);
 
@@ -53,8 +53,8 @@ const SharedLayout = () => {
 
      return (
           <>
-               {modalVisible && imdbSearchResults.length > 0 &&
-                    <SearchIMDB imdbSearchResults={imdbSearchResults} setIMDBSearchResults={setIMDBSearchResults} />
+               {modalVisible && tmdbSearchResults.length > 0 &&
+                    <SearchTMDB tmdbSearchResults={tmdbSearchResults} setTMDBSearchResults={setTMDBSearchResults} />
                }
 
                {!modalVisible &&
@@ -89,8 +89,8 @@ const SharedLayout = () => {
                                                             <input ref={inputRef} value={searchTerm} onChange={(event) => setSearchTerm(event.target.value)} />
                                                        </span>
 
-                                                       {!isLoading && searchTerm !== "" && imdbSearchEnabled &&
-                                                            <Button className="IMDBSearchButton" variant="contained" color="secondary" onClick={() => IMDBSearchClickHandler()}>IMDB</Button>
+                                                       {!isLoading && searchTerm !== "" && tmdbSearchEnabled &&
+                                                            <Button className="TMDBSearchButton" variant="contained" color="secondary" onClick={() => TMDBSearchClickHandler()}>TMDB</Button>
                                                        }
                                                   </span>
                                              }

@@ -40,8 +40,7 @@ export default function Data() {
                 "IMDB_Poster": "Image",
                 "Notes": "Notes",
                 "Archived": "Archived",
-                "Enabled": "Enabled",
-                "IMDB_JSON": "JSON", // Always put this last since its big
+                "Enabled": "Enabled"
             },
             PageSize: 10
         },
@@ -54,8 +53,7 @@ export default function Data() {
                 "IMDB_Poster": "Image",
                 "ItemNotes": "Notes",
                 "Archived": "Archived",
-                "Enabled": "Enabled",
-                "IMDB_JSON": "JSON" // Always put this last since its big
+                "Enabled": "Enabled"
             },
             PageSize: 8
         },

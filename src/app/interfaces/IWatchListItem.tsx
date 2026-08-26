@@ -4,12 +4,17 @@ export default interface WatchListItem {
      WatchListItemID: number,
      WatchListItemName: string,
      WatchListTypeID: number,
+     IMDBId?: string;
      IMDB_URL: string,
      IMDB_Poster: string,
      IMDB_Poster_Error?: boolean,
      WatchListTypeName?: string, // Type are joined with WLI when selecing WLI
-     IMDB_JSON?: string,
      ItemNotes: string,
+     Year?: number,
+     Released?: string,
+     Plot?: string,
+     Language?: string;
+     Country?: string;
      Archived: number,
      IsModified?: number, // Virtual field
      WatchListItemNameIsModified?: number, // Virtual field

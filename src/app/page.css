@@ -186,15 +186,15 @@ table.simpleTable:last-child {
 
 .imagePlaceholder > svg  { @apply w-[128px] h-auto relative top-[80px]; }
 
-.IMDBCardModal {
+.mediaDetailsCardModal {
     @apply relative pt-[50px]! pb-[150px];
 }
 
-.IMDBCloseButton {
+.TMDBCloseButton {
   @apply relative right-[-90%] scale-[2.1];
 }
 
-.IMDBSearchButton {
+.TMDBSearchButton {
  @apply relative left-[95px] max-h-[30px];
 }
 
@@ -202,7 +202,7 @@ table.simpleTable:last-child {
     @apply fixed top-[120px] z-[999] flex items-center justify-between pb-[35px] w-[500px];
 }
 
-.IMDBSearchModalContent {
+.TMDBSearchModalContent {
   @apply relative min-w-[400px]!;
 }
 

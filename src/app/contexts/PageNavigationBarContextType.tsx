@@ -3,8 +3,6 @@ export interface PageNavigationBarContextType {
      currentItemsPage: number;
      currentWatchListPage: number;
      darkMode: boolean;
-     IMDBSearchClickHandler: () => void;
-     imdbSearchEnabled: boolean;
      isAdding: boolean;
      isLoading: boolean;
      hideTabs: boolean;
@@ -12,4 +10,6 @@ export interface PageNavigationBarContextType {
      searchTerm: string;
      setNewPage: (value: number) => void;
      setSearchTerm: (value: string) => void;
+     TMDBSearchClickHandler: () => void;
+     tmdbSearchEnabled: boolean;
 }

@@ -1,7 +1,10 @@
 export default interface ISearchTmdb {
-     Title: string,
+     name: string,
+     title: string,
      Year: string,
      imdbID: string,
      Type: string,
-     Poster: string 
+     poster_path: string,
+     first_air_date: string,
+     release_date: string
 }

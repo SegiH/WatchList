@@ -105,62 +105,67 @@ export default function ItemsDtl() {
                     // Sanitize object by replacing all null fields with "". There are issues with binding to input fields when the value is null
                     const wlid = getWatchListItemDtlResult[1];
 
-                    const tooltipFields = [
-                         {
-                              displayName: "Rated",
-                              fieldName: "Rated"
-                         },
-                         {
-                              displayName: "Year",
-                              fieldName: "Year"
-                         },
-                         {
-                              displayName: "IMDB Rating",
-                              fieldName: "imdbRating"
-                         },
-                         {
-                              displayName: "Genre",
-                              fieldName: "Genre"
-                         },
-                         {
-                              displayName: "Runtime",
-                              fieldName: "Runtime"
-                         },
-                         {
-                              displayName: "Release Date",
-                              fieldName: "Released"
-                         },
-                         {
-                              displayName: "Director",
-                              fieldName: "Director"
-                         },
-                         {
-                              displayName: "Plot",
-                              fieldName: "Plot"
-                         },
-                    ];
+                    if (typeof wlid !== "undefined" && wlid !== null && wlid.length > 0) {
+                         const tooltipFields = [
+                              {
+                                   displayName: "Rated",
+                                   fieldName: "Rated"
+                              },
+                              {
+                                   displayName: "Year",
+                                   fieldName: "Year"
+                              },
+                              {
+                                   displayName: "IMDB Rating",
+                                   fieldName: "imdbRating"
+                              },
+                              {
+                                   displayName: "Genre",
+                                   fieldName: "Genre"
+                              },
+                              {
+                                   displayName: "Runtime",
+                                   fieldName: "Runtime"
+                              },
+                              {
+                                   displayName: "Release Date",
+                                   fieldName: "Released"
+                              },
+                              {
+                                   displayName: "Director",
+                                   fieldName: "Director"
+                              },
+                              {
+                                   displayName: "Plot",
+                                   fieldName: "Plot"
+                              },
+                         ];
 
-                    let tooltip = ``;
+                         let tooltip = ``;
 
-                    for (let i = 0; i < Object.keys(tooltipFields).length; i++) {
-                         if (typeof wlid?.[tooltipFields[i].fieldName] !== "undefined") {
-                              tooltip += `${wlid?.[tooltipFields[i].displayName]}: ${wlid?.[tooltipFields[i].fieldName]}`;
+                         for (let i = 0; i < Object.keys(tooltipFields).length; i++) {
+                              if (typeof wlid?.[tooltipFields[i].fieldName] !== "undefined") {
+                                   tooltip += `${wlid?.[tooltipFields[i].displayName]}: ${wlid?.[tooltipFields[i].fieldName]}`;
+                              }
                          }
+
+                         wlid[0].Tooltip = tooltip;
+
+                         Object.keys(wlid[0]).map((keyName) => {
+                              if (wlid[0][keyName] === null) {
+                                   wlid[0][keyName] = "";
+                              }
+                         });
+
+                         setWatchListItemDtl(wlid[0]);
+
+                         setWatchListHistory(wlid[0]?.WatchListHistory);
+
+                         setWatchListItemDtlLoadingCheck(APIStatus.Success);
+                    } else {
+                         alert("Unable to get the Item with ID " + id);
+                         closeDetail();
                     }
-
-                    wlid[0].Tooltip = tooltip;
-
-                    Object.keys(wlid[0]).map((keyName) => {
-                         if (wlid[0][keyName] === null) {
-                              wlid[0][keyName] = "";
-                         }
-                    });
-
-                    setWatchListItemDtl(wlid[0]);
-
-                    setWatchListHistory(wlid[0]?.WatchListHistory);
-
-                    setWatchListItemDtlLoadingCheck(APIStatus.Success);
                }
           } catch (e: any) {
                alert(e.message);
@@ -347,8 +352,10 @@ export default function ItemsDtl() {
 
                if (saveNewItemDtlResult[0] === "ERROR") {
                     alert(`The error ${saveNewItemDtlResult[1]} occurred while adding the detail`);
+                    return;
                } else if (saveNewItemDtlResult[0] === "ERROR-ALREADY-EXISTS") {
                     alert(saveNewItemDtlResult[1]);
+                    return;
                }
 
                setAddModified(true);
@@ -526,7 +533,7 @@ export default function ItemsDtl() {
                                                   {!isAdding && !isClosing &&
                                                        <>
                                                             {imageIsValid(watchListItemDtl?.IMDB_Poster, watchListItemDtl?.IMDB_Poster_Error) &&
-                                                                 <Image alt={watchListItemDtl?.WatchListItemName} className="poster-detail" width={imageWidth} height={imageHeight} src={watchListItemDtl?.IMDB_Poster} onError={() => showDefaultSrc()} />}
+                                                                 <Image alt={watchListItemDtl?.WatchListItemName ?? "Unknown"} className="poster-detail" width={imageWidth} height={imageHeight} src={watchListItemDtl?.IMDB_Poster} onError={() => showDefaultSrc()} />}
 
                                                             {/*{!imageIsValid(watchListItemDtl?.IMDB_Poster, watchListItemDtl?.IMDB_Poster_Error) &&
                                                                  <div className="imagePlaceholder">{BrokenImageIconComponent}</div>
@@ -535,9 +542,9 @@ export default function ItemsDtl() {
                                                   }
 
                                                   {isAdding && addWatchListItemDtl !== null && typeof addWatchListItemDtl !== "undefined" &&
-                                                       <span className="column">
+                                                       <span>
                                                             {imageIsValid(addWatchListItemDtl?.IMDB_Poster, addWatchListItemDtl?.IMDB_Poster_Error) &&
-                                                                 <Image width={imageWidth} height={imageHeight} alt="Image Not Available" src={addWatchListItemDtl.IMDB_Poster} />
+                                                                 <Image className="poster-detail leftMargin topMargin100" width={imageWidth} height={imageHeight} alt="Image Not Available" src={addWatchListItemDtl.IMDB_Poster} />
                                                             }
                                                        </span>
                                                   }
@@ -722,7 +729,7 @@ export default function ItemsDtl() {
                                                   </>
                                              }
 
-                                             <a className="clickable fontStyle" onClick={MediaDetailsOpenClickHandler}>IMDB Info</a>
+                                             <a className="clickable fontStyle leftMargin" onClick={MediaDetailsOpenClickHandler}>IMDB Info</a>
 
                                              <div className="narrow card">
                                                   {watchListItemDtl !== null && typeof watchListItemDtl?.WatchListHistory !== "undefined" && watchListItemDtl?.WatchListHistory?.length > 0 && (!isAdding && !isEditing) &&

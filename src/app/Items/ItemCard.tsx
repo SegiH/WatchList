@@ -63,7 +63,7 @@ export default function ItemCard({ currentWatchListItem, setMediaDetailItem }: W
                 <a className="show-link" onClick={() => openDetailClickHandler(currentWatchListItem?.WatchListItemID, "Items")}>
                     <div className="clickable">
                         {imageIsValid(currentWatchListItem?.IMDB_Poster, currentWatchListItem?.IMDB_Poster_Error) &&
-                            <Image width={imageWidth} height={imageHeight} alt={currentWatchListItem?.WatchListItemName} src={currentWatchListItem.IMDB_Poster} onError={() => showDefaultSrc(currentWatchListItem.WatchListItemID)} />
+                            <Image width={imageWidth} height={imageHeight} alt={currentWatchListItem?.WatchListItemName ?? "Unknown"} src={currentWatchListItem.IMDB_Poster} onError={() => showDefaultSrc(currentWatchListItem.WatchListItemID)} />
                         }
 
                         {/* Empty placeholder */}

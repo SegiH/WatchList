@@ -9,7 +9,7 @@ import { SearchTMDBContextType } from "../contexts/SearchTMDBContextType";
 
 export default function SearchTMDB(props) {
      const {
-          autoAdd, BrokenImageIconComponent, imageHeight, imageWidth, modalVisible, searchCount, setIsAdding, setSearchCount, setModalVisible, setSearchTerm
+          autoAdd, imageHeight, imageWidth, modalVisible, searchCount, setIsAdding, setSearchCount, setModalVisible, setSearchTerm
      } = useContext(SearchTMDBContext) as SearchTMDBContextType
 
      const searchCountOptions = {
@@ -22,12 +22,12 @@ export default function SearchTMDB(props) {
 
      const router = useRouter();
 
-     const addTMDBSearchResultClickHandler = async (index: number) => {
+     const addTMDBSearchResultClickHandler = async (currentResult) => {
           let itemType = 0;
 
-          if (props.tmdbSearchResults[index].Type === "movie") {
+          if (currentResult.media_type === "movie") {
                itemType = 1;
-          } else if (props.tmdbSearchResults[index].Type === "series") {
+          } else if (currentResult.media_type === "tv") {
                itemType = 2;
           } else {
                itemType = 3;
@@ -39,11 +39,11 @@ export default function SearchTMDB(props) {
                return;
           }
 
-          let paramStr = `/api/AddWatchListItem?WatchListItemName=${props.tmdbSearchResults[index].Title}&WatchListTypeID=${itemType}`;
+          let paramStr = `/api/AddWatchListItem?WatchListItemName=${currentResult.name}&WatchListTypeID=${itemType}`;
 
-          paramStr += `&IMDB_URL=https://www.imdb.com/title/${props.tmdbSearchResults[index].imdbID}/`;
+          paramStr += `&IMDB_URL=https://www.imdb.com/title/${currentResult.imdbID}/`;
 
-          paramStr += `&IMDB_Poster=${props.tmdbSearchResults[index].Poster}`;
+          paramStr += `&IMDB_Poster=https://image.tmdb.org/t/p/original${currentResult.poster_path}`;
 
           try {
                const searchTMDBResponse = await fetch(paramStr, { method: 'PUT', credentials: 'include' });
@@ -79,11 +79,19 @@ export default function SearchTMDB(props) {
           setModalVisible(false);
      };
 
+     const getYear = (yearStr?: string) => {
+          if (typeof yearStr !== "undefined" && yearStr !== null && yearStr !== "") {
+               return `(${yearStr.split("-")[0]})`;
+          } else {
+               return "";
+          }
+     }
+
      return (
           <>
                {modalVisible &&
-                    <span className={`modal TMDBSearchModalContent zIndex`}>
-                         <div className={`modal-content TMDBSearchModalContent`}>
+                    <span className={`modal zIndex TMDBSearchModal`}>
+                         <div className={`modal-content TMDBSearchModalContent overflow-y`}>
                               <div className="IMDBSearchHeader">
                                    <span className="flex items-center gap-[12px]">
                                         <span className="ml-[200px]">Count</span>
@@ -107,38 +115,38 @@ export default function SearchTMDB(props) {
                               <div className="paddingTop50">
                                    <span className="row">
                                         {typeof props.tmdbSearchResults !== "undefined" && props.tmdbSearchResults !== null && props.tmdbSearchResults.length > 0 &&
-                                             props.tmdbSearchResults
-                                             .filter((currentResult: ISearchTmdb, index: number) => {
-                                                  return index <= searchCount;
-                                             }).map((currentResult: ISearchTmdb, index: number) => {
-                                                  return (
-                                                       <div key={index}>
-                                                            {typeof currentResult.Poster !== "undefined" && currentResult.Poster !== null && currentResult.Poster !== "" && currentResult.Poster !== "N/A" &&
-                                                                 <div>
+                                             props.tmdbSearchResults[1].results
+                                                  .filter((currentResult: any, index: number) => {
+                                                       return index <= searchCount;
+                                                  }).map((currentResult: ISearchTmdb, index: number) => {
+                                                       return (
+                                                            <div key={index}>
+                                                                 {typeof currentResult.poster_path !== "undefined" && currentResult.poster_path !== null && currentResult.poster_path !== "" && currentResult.poster_path !== "N/A" &&
                                                                       <div>
-                                                                           {typeof (currentResult.Poster !== "undefined" && currentResult.Poster !== null && currentResult.Poster !== "" && currentResult.Poster !== "N/A" && (currentResult.Poster.toString().startsWith("http://") || currentResult.Poster.toString().startsWith("https://"))) &&
-                                                                                <Image width={imageWidth} height={imageHeight} className="searchResultPoster" src={currentResult.Poster} onClick={() => addTMDBSearchResultClickHandler(index)} alt={currentResult.Title} />
-                                                                           }
+                                                                           <div>
+                                                                                {typeof (currentResult.poster_path !== "undefined" && currentResult.poster_path !== null && currentResult.poster_path !== "" && currentResult.poster_path !== "N/A" && (currentResult.poster_path.toString().startsWith("http://") || currentResult.poster_path.toString().startsWith("https://"))) &&
+                                                                                     <Image width={imageWidth} height={imageHeight} className="clickable searchResultPoster" src={`https://image.tmdb.org/t/p/original${currentResult.poster_path}`} onClick={() => addTMDBSearchResultClickHandler(currentResult)} alt={currentResult.name ?? "Unknown"} />
+                                                                                }
 
-                                                                           <div className="textLabel">
-                                                                                {currentResult.Title} ({currentResult.Year})
-                                                                           </div>
+                                                                                <div className="textLabel">
+                                                                                     {currentResult.name ?? currentResult.title} {getYear(currentResult?.first_air_date ?? currentResult?.release_date)}
+                                                                                </div>
 
-                                                                           {currentResult.Poster === "N/A" && (
+                                                                                {/*{currentResult.poster_path === "N/A" && (
                                                                                 <>
                                                                                      <span className="textLabel">
-                                                                                          {currentResult.Title} ({currentResult.Year})
+                                                                                          {currentResult.name} ({currentResult.year})
                                                                                      </span>
 
                                                                                      <span className="imagePlaceholder searchResultPoster">{BrokenImageIconComponent}</span>
                                                                                 </>
-                                                                           )}
+                                                                           )}*/}
+                                                                           </div>
                                                                       </div>
-                                                                 </div>
-                                                            }
-                                                       </div>
-                                                  );
-                                             })
+                                                                 }
+                                                            </div>
+                                                       );
+                                                  })
                                         }
                                    </span>
                               </div>

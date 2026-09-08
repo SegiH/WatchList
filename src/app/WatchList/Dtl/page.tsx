@@ -7,7 +7,7 @@ import TextField, { TextFieldProps } from "@mui/material/TextField";
 import { useRouter } from "next/navigation";
 import React, { useCallback, useContext, useEffect, useState } from "react";
 import Recommendations from "../../components/Recommendations";
-import MediaDetailsCard from "../../components/MediaDetailsCard";
+//import MediaDetailsCard from "../../components/MediaDetailsCard";
 
 import StarIcon from '@mui/icons-material/Star';
 
@@ -28,7 +28,7 @@ interface AutoCompleteWatchListItem {
 
 export default function WatchListDtl() {
      const {
-          BrokenImageIconComponent, CancelIconComponent, demoMode, EditIconComponent, getWatchList, imageHeight, imageIsValid, imageWidth, isAdding, isEditing, isLoading, pullToRefreshEnabled, modalVisible, recommendationsEnabled, SaveIconComponent, setErrorMessage, setIsAdding, setIsEditing, setIsError, setModalVisible, setStillWatching, stillWatching, watchListSortDirection, watchListSources, writeLog
+          BrokenImageIconComponent, CancelIconComponent, demoMode, EditIconComponent, getWatchList, imageHeight, imageIsValid, imageWidth, isAdding, isEditing, isLoading, pullToRefreshEnabled, modalVisible, recommendationsEnabled, SaveIconComponent, setErrorMessage, setIsAdding, setIsEditing, setIsLoading, setModalVisible, setStillWatching, stillWatching, watchListSortDirection, watchListSources, writeLog
      } = useContext(WatchListDtlContext) as WatchListDtlContextType
 
      const currentDate = new Date().toLocaleDateString();
@@ -41,7 +41,7 @@ export default function WatchListDtl() {
      const [formattedNamesWithId, setFormattedNamesWithId] = useState<AutoCompleteWatchListItem[]>([]);
      const [formattedNamesLoadingComplete, setFormattedNamesLoadingComplete] = useState(APIStatus.Idle);
      const [editModified, setEditModified] = useState(false);
-     const [tmdbCardvisible, setTmdbCardvisible] = useState(false);
+     //const [tmdbCardvisible, setTmdbCardvisible] = useState(false);
      const [isClosing, setIsClosing] = useState(false);
      const [originalWatchListDtl, setOriginalWatchListDtl] = useState<IWatchList | null>(null); (null);
      const [recommendationsVisible, setRecommendationsVisible] = useState(false);
@@ -50,7 +50,7 @@ export default function WatchListDtl() {
      const [watchListDtl, setWatchListDtl] = useState<IWatchList | null>(null);
      const [watchListDtlID, setWatchListDtlID] = useState<number>(-1);
      const [watchListDtlLoadingCheck, setWatchListDtlLoadingCheck] = useState(APIStatus.Idle);
-     const [watchListItemDtlID, setWatchListItemDtlID] = useState<number>(0);
+     const [watchListItemDtlID, setWatchListItemDtlID] = useState<number>(-1);
      const [watchListItems, setWatchListItems] = useState<IWatchListItem[]>([]);
 
      const router = useRouter();
@@ -130,6 +130,7 @@ export default function WatchListDtl() {
 
           pullToRefreshEnabled(true);
 
+          setIsLoading(false);
           setIsClosing(true);
      };
 
@@ -160,13 +161,14 @@ export default function WatchListDtl() {
                const getWatchListDtlResult = await getWatchListDtlResponse.json();
 
                if (getWatchListDtlResult[0] === "ERROR") {
-                    setErrorMessage(`The error ${getWatchListDtlResult[1]} occurred while getting the detail`);
-                    setIsError(true);
+                    alert(`The error ${getWatchListDtlResult[1]} occurred while getting the detail`);
                     return;
-               } else {
-                    // Sanitize object by replacing all fields with null
-                    const wld = getWatchListDtlResult[1];
+               }
 
+               // Sanitize object by replacing all fields with null
+               const wld = getWatchListDtlResult[1];
+
+               if (typeof wld !== "undefined" && wld !== null && wld.length > 0) {
                     const tooltipFields = [
                          {
                               displayName: "Rated",
@@ -211,8 +213,13 @@ export default function WatchListDtl() {
                     }
 
                     setWatchListDtl(wld[0]);
+
                     setWatchListDtlLoadingCheck(APIStatus.Success);
+
                     setModalVisible(true);
+               } else {
+                    alert("Unable to get the WatchList with ID " + watchListDtlID);
+                    closeDetail();
                }
           } catch (e: any) {
                alert(e.message);
@@ -226,8 +233,7 @@ export default function WatchListDtl() {
                const getAllWatchListItemsResult = await getAllWatchListItemsResponse.json();
 
                if (getAllWatchListItemsResult[0] !== "OK") {
-                    setErrorMessage("Failed to get WatchList Items with the error " + getAllWatchListItemsResult[1]);
-                    setIsError(true);
+                    alert("Failed to get WatchList Items with the error " + getAllWatchListItemsResult[1]);
                     return;
                }
 
@@ -286,27 +292,30 @@ export default function WatchListDtl() {
                     getOptionLabel: (option: IAutoCompleteOption) => option?.name.toString(),
                });
 
-               const namesWithIdItems = getAllWatchListItemsResult[1].map((watchListItem: IWatchListItem) => {
-                    let itemName = watchListItem.WatchListItemName
+               const namesWithIdItems = getAllWatchListItemsResult[1]
+                    .filter((watchListItem: IWatchListItem) => {
+                         return typeof watchListItem.WatchListItemName !== "undefined" && watchListItem.WatchListItemName !== ""
+                    }).map((watchListItem: IWatchListItem) => {
+                         let itemName = watchListItem.WatchListItemName
 
-                    if (watchListItems?.filter((watchListItemDupe: IWatchListItem) => {
-                         return String(watchListItemDupe.WatchListItemName) === String(watchListItem.WatchListItemName);
-                    }).length > 1) {
-                         itemName += " (" + watchListItem.WatchListTypeName + ")"
-                    }
+                         if (watchListItems?.filter((watchListItemDupe: IWatchListItem) => {
+                              return String(watchListItemDupe.WatchListItemName) === String(watchListItem.WatchListItemName);
+                         }).length > 1) {
+                              itemName += " (" + watchListItem.WatchListTypeName + ")"
+                         }
 
-                    let newItem: AutoCompleteWatchListItem = {
-                         WatchListItemID: watchListItem.WatchListItemID,
-                         WatchListItemName: itemName
-                    }
+                         let newItem: AutoCompleteWatchListItem = {
+                              WatchListItemID: watchListItem.WatchListItemID,
+                              WatchListItemName: itemName
+                         }
 
-                    return newItem;
-               });
+                         return newItem;
+                    });
 
                const namesWithIdItemsSorted = namesWithIdItems.sort((a: IWatchListItem, b: IWatchListItem) => {
                     // Convert names to lowercase for case-insensitive sorting
-                    const nameA = a.WatchListItemName.toLowerCase().trim();
-                    const nameB = b.WatchListItemName.toLowerCase().trim();
+                    const nameA = a.WatchListItemName?.toLowerCase().trim();
+                    const nameB = b.WatchListItemName?.toLowerCase().trim();
 
                     // Compare the names
                     if (nameA < nameB) {
@@ -322,8 +331,7 @@ export default function WatchListDtl() {
 
                setFormattedNamesWithId(namesWithIdItemsSorted);
           } catch (e: any) {
-               setErrorMessage("Failed to get WatchList Items with the error " + e.message);
-               setIsError(true);
+               alert("Failed to get WatchList Items with the error " + e.message);
                return;
           }
      }
@@ -635,8 +643,13 @@ export default function WatchListDtl() {
                setAddWatchListDtl(newAddWatchListDtl);
 
                setWatchListDtlLoadingCheck(APIStatus.Success);
+          } else if (watchListItemDtlID !== -1) {
+               setModalVisible(true);
+               setIsLoading(false);
+               setWatchListDtlLoadingCheck(APIStatus.Success);
+               setIsAdding(true);
           }
-     }, [demoMode, getLocaleDate, isAdding, setErrorMessage, setIsError, watchListDtl, watchListDtlID, watchListDtlLoadingCheck, watchListItemDtlID]);
+     }, [demoMode, getLocaleDate, isAdding, setErrorMessage, watchListDtl, watchListDtlID, watchListDtlLoadingCheck, watchListItemDtlID]);
 
      useEffect(() => {
           if (formattedNames.length == 0) {
@@ -674,6 +687,8 @@ export default function WatchListDtl() {
                router.push("/WatchList");
           }
      }, [isClosing, router]);
+
+     const addingImage = !isAdding ? null : watchListItems?.filter((currentWatchListItem: IWatchListItem) => String(currentWatchListItem?.WatchListItemID) === String(addWatchListDtl?.WatchListItemID));
 
      return (
           <>
@@ -740,18 +755,16 @@ export default function WatchListDtl() {
                                              <div className="narrow card topMargin20">
                                                   {!isAdding && !isClosing &&
                                                        <>
-                                                            {imageIsValid(watchListDtl?.IMDB_Poster, watchListDtl?.IMDB_Poster_Error) &&
+                                                            {imageIsValid(watchListDtl?.IMDB_Poster, watchListDtl?.IMDB_Poster_Error) ?
                                                                  <Image className="poster-detail topMargin50" width={imageWidth * 1.5} height={imageHeight * 1.2} alt="Image Not Available" src={watchListDtl?.IMDB_Poster} onError={() => showDefaultSrc()} />
-                                                            }
-
-                                                            {!imageIsValid(watchListDtl?.IMDB_Poster, watchListDtl?.IMDB_Poster_Error) &&
+                                                                 :
                                                                  <div className="imagePlaceholder topMargin50">{BrokenImageIconComponent}</div>
                                                             }
                                                        </>
                                                   }
 
-                                                  {isAdding && addWatchListDtl && watchListItems?.filter((currentWatchListItem: IWatchListItem) => String(currentWatchListItem?.WatchListItemID) === String(addWatchListDtl?.WatchListItemID)).length === 1 && !isClosing && watchListItems?.filter((currentWatchListItem: IWatchListItem) => String(currentWatchListItem?.WatchListItemID) === String(addWatchListDtl?.WatchListItemID))[0].IMDB_Poster !== "N/A" && (watchListItems?.filter((currentWatchListItem: IWatchListItem) => String(currentWatchListItem?.WatchListItemID) === String(addWatchListDtl?.WatchListItemID)).length === 1 && !isClosing && (watchListItems?.filter((currentWatchListItem: IWatchListItem) => String(currentWatchListItem?.WatchListItemID) === String(addWatchListDtl?.WatchListItemID))[0].IMDB_Poster.startsWith("http://") || watchListItems?.filter((currentWatchListItem: IWatchListItem) => String(currentWatchListItem?.WatchListItemID) === String(addWatchListDtl?.WatchListItemID))[0].IMDB_Poster.startsWith("https://"))) &&
-                                                       <Image className="poster-detail" width={imageWidth} height={imageHeight} alt="Image Not Available" src={watchListItems?.filter((currentWatchListItem: IWatchListItem) => String(currentWatchListItem?.WatchListItemID) === String(addWatchListDtl?.WatchListItemID))[0].IMDB_Poster ?? ""} />
+                                                  {isAdding && addWatchListDtl && addingImage.length === 1 && addingImage[0].IMDB_Poster !== "N/A" && (addingImage[0].IMDB_Poster?.toString()?.startsWith("http") || addingImage[0].IMDB_Poster?.toString()?.startsWith("https")) &&
+                                                       <Image className="poster-detail" width={imageWidth} height={imageHeight} alt="Image Not Available" src={addingImage[0].IMDB_Poster ?? ""} />
 
                                                   }
                                              </div>
@@ -798,6 +811,7 @@ export default function WatchListDtl() {
                                              }
 
                                              <div className="narrow card">
+                                                  {/* TODO: Fix me later */}
                                                   {/*{((isAdding && addWatchListDtl) || isEditing) && tmdbSearchEnabled &&
                                                        <div className="clickable hyperlink text-label rightAligned" onClick={addNewChangeHandler}>Add</div>
                                                   }*/}

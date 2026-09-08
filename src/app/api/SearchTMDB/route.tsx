@@ -20,6 +20,10 @@ export async function GET(request: NextRequest) {
      if (/^tt\d{7,}$/.test(searchTerm)) {
           const result: any = await fetchTMDBDataByTT(searchTerm);
 
+          if (result === null) {
+               return Response.json(["ERROR", "Not Found"]);
+          }
+
           let itemType = "0";
 
           if (result.Type === "movie") {
@@ -30,8 +34,8 @@ export async function GET(request: NextRequest) {
                itemType = "3";
           }
 
-          const imdb_url = "https://www.imdb.com/title/" + result.imdbID + "/";
-          const imdb_poster = result.Poster;
+          const imdb_url = "https://www.imdb.com/title/" + result.IMDBId + "/";
+          const imdb_poster = result.IMDB_Poster;
 
           const addResultResponse = await addWatchListItem(result.Title, itemType, imdb_url, imdb_poster, "", "0");
           const addResult = await addResultResponse.json();
@@ -51,14 +55,7 @@ export async function GET(request: NextRequest) {
                     //const url = `?s=${searchTerm}&r=json&page=${i + 1}`;
                     // TODO: MAY NEED TO FACTOR IN PAGE #
                     const result = await fetchTMDBData(searchTerm);
-
-                    if (typeof result.Search !== "undefined") {
-                         try {
-                              results.push(...result.Search);
-                         } catch (e) { }
-                    } else if (result.Response == 'False') {
-                         return Response.json(["ERROR", result.Error]);
-                    }
+                    results.push(result);
                } catch (e) {
                     writeLog(e)
                }

@@ -146,7 +146,7 @@ const DataProvider = ({
      const [modalVisible, setModalVisible] = useState(false);
      const [pageSize, setPageSize] = useState(typeof window !== 'undefined' && window.innerWidth <= 768 ? 10 : defaultPageSize); // items per page. Mobile has less items
      const [recommendationsEnabled, setRecommendationsEnabled] = useState(false);
-     const [searchCount, setSearchCount] = useState(5);
+     const [searchCount, setSearchCount] = useState(10);
      const [searchTerm, setSearchTerm] = useState("");
      const [showMissingArtwork, setShowMissingArtwork] = useState(false);
      const [stillWatching, setStillWatching] = useState(true);
@@ -779,7 +779,9 @@ const DataProvider = ({
 
      const TMDBSearchClickHandler = async () => {
           if (searchTerm !== "") {
-               const searchTMDBResponse = await fetch(`/api/SearchTMDB?SearchTerm=${searchTerm}&SearchCount=${5}`, { credentials: 'include' });
+               const searchTMDBResponse = await fetch(`/api/SearchTMDB?SearchTerm=${searchTerm}&SearchCount=${searchCount}`, { credentials: 'include' });
+
+               setSearchTerm("");
 
                const searchTMDBResult = await searchTMDBResponse.json();
 
@@ -1267,13 +1269,14 @@ const DataProvider = ({
           } else if (currentPath !== "") {
                const findRouteByPath = Object.keys(routes).filter((routeName) => routes[routeName].Path === currentPath);
 
-               if (currentPath === "/WatchList/Dtl" && queryParams !== null && queryParams !== "") {
+               /*if (currentPath === "/WatchList/Dtl" && queryParams !== null && queryParams !== "" && !queryParams.startsWith("?WatchListItemID")) {
                     setActiveRoute("WatchList");
 
                     const id = queryParams.split("=")[1];
                     openDetailClickHandler(parseInt(id, 10), "WatchList");
                     return;
-               } else if (currentPath === "/Items/Dtl") {
+               } else */
+               if (currentPath === "/Items/Dtl") {
                     setActiveRoute("Items");
 
                     const id = queryParams.split("=")[1];
@@ -1292,6 +1295,8 @@ const DataProvider = ({
                     setActiveRoute(newRoute as RouteKey);
                } else if (currentPath === "/BugLogs") {
                     setActiveRoute("BugLogs");
+               } else if (currentPath === "/") {
+                    setActiveRoute(defaultRoute);
                }
           } else if (activeRoute !== null) {
                const findRouteByName = Object.keys(routes).filter((routeName) => routes[routeName].Name === activeRoute);
@@ -1449,7 +1454,7 @@ const DataProvider = ({
      const tabsContextValues = { activeRoute, demoMode, getPath, hideTabs, isAdding, isAdmin, isClient, isEditing, isEnabled, isError, isLoading, loggedInCheck, modalVisible, pullToRefreshEnabled, routes, setActiveRoute, setSearchTerm, visibleSections };
      const watchListCardContextValues = { BrokenImageIconComponent, filteredWatchList, formatWatchListDates, getMissingPoster, imageHeight, imageIsValid, imageWidth, openDetailClickHandler, setFilteredWatchList, setModalVisible, writeLog };
      const watchListContextValues = { autoAdd, filteredWatchList, hideTabs, tmdbSearchEnabled, isLoading, lastPage, modalVisible, searchTerm, setActiveRoute, setIsAdding, setIsEditing, setModalVisible, watchListSortingCheck };
-     const watchListDtlContextValues = { BrokenImageIconComponent, CancelIconComponent, demoMode, EditIconComponent, getWatchList, imageHeight, imageIsValid, imageWidth, tmdbSearchEnabled, isAdding, isEditing, isLoading, modalVisible, pullToRefreshEnabled, recommendationsEnabled, SaveIconComponent, setErrorMessage, setIsAdding, setIsEditing, setIsError, setModalVisible, setStillWatching, showSearch, stillWatching, watchListSortDirection, watchListSources, writeLog };
+     const watchListDtlContextValues = { BrokenImageIconComponent, CancelIconComponent, demoMode, EditIconComponent, getWatchList, imageHeight, imageIsValid, imageWidth, tmdbSearchEnabled, isAdding, isEditing, isLoading, modalVisible, pullToRefreshEnabled, recommendationsEnabled, SaveIconComponent, setErrorMessage, setIsAdding, setIsEditing, setIsError, setIsLoading, setModalVisible, setStillWatching, showSearch, stillWatching, watchListSortDirection, watchListSources, writeLog };
      const watchListStatsContextValues = { demoMode, errorMessage, ratingMax, setIsError, setErrorMessage };
 
      const baseProviders = [

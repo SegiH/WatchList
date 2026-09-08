@@ -20,6 +20,7 @@ export interface WatchListDtlContextType {
      setErrorMessage: (value: string) => void;
      setIsAdding: (value: boolean) => void;
      setIsEditing: (value: boolean) => void;
+     setIsLoading: (value: boolean) => void;
      setIsError: (value: boolean) => void;
      setModalVisible: (value: boolean) => void;
      setStillWatching: (value: boolean) => void;

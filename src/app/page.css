@@ -202,10 +202,6 @@ table.simpleTable:last-child {
     @apply fixed top-[120px] z-[999] flex items-center justify-between pb-[35px] w-[500px];
 }
 
-.TMDBSearchModalContent {
-  @apply relative min-w-[400px]!;
-}
-
 .largeText { @apply text-[36px]; }
 
 .leftMargin { @apply ml-[25px]; }

@@ -7,6 +7,8 @@ After adding information for a while, WatchList will generate statistics to show
 
 It is possible to add a WatchList record by searching IMDB if you add a free TMDB API key. More info is available in INSTALL.md.
 
+You can add a movie or show by adding the tt value from IMDB which is at the beginning of the IMDB url.
+
 Watchlist uses caching so movie or TV shows images are saved locally and will not be downloaded again, unless you clear your browser cache.
 
 WatchList uses a JSON database to store your logged movie and TV shows.

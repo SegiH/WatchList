@@ -174,7 +174,7 @@ export const addWatchListItem = async (name: string, type: string, imdb_url: str
           }
 
           // Get imdb details here and map with existing object and values
-          const urlSplit = imdb_url.split("/");
+          const urlSplit = imdb_url?.split("/");
 
           let ttyId = "";
           let detail = null;
@@ -191,13 +191,13 @@ export const addWatchListItem = async (name: string, type: string, imdb_url: str
                "WatchListTypeID": parseInt(type, 10),
                "IMDB_URL": imdb_url,
                "IMDBId": ttyId,
-               "Year": typeof detail["release_date"] !== "undefined" ? detail["release_date"].split("-")[0] : null,
-               "Released": detail["release_date"],
-               "Type": detail["media_type"],
-               "Plot": detail["overview"],
-               "Language": detail["original_language"],
-               "Country": detail["origin_country"],
-               "IMDB_Poster": imdb_poster ?? getPosterURL(detail["poster_path"]),
+               "Year": detail["Year"],
+               "Released": detail["Released"],
+               "Type": detail["Type"],
+               "Plot": detail["Plot"],
+               "Language": detail["Language"],
+               "Country": detail["Country"],
+               "IMDB_Poster": imdb_poster ?? detail["IMDB_Poster"],
                "ItemNotes": notes,
                "Archived": parseInt(archived as string, 10),
           });
@@ -265,11 +265,10 @@ export const fetchTMDBDataByTT = async (tt: string) => {
                }
           });
 
-          if (returnVal !== null) {
+          if (typeof returnVal !== "undefined" && returnVal !== null) {
                returnVal = mapDetailsFields(returnVal);
+               returnVal["IMDBId"] = tt;
           }
-
-          returnVal["IMDBId"] = tt;
 
           return returnVal;
      } catch (error: any) {
@@ -592,12 +591,11 @@ export const getMissingArtwork = async (watchListItemID: number) => {
                const result = await fetchTMDBDataByTT(id);
 
                if (result !== null) {
-                    console.log(result)
                     return {
                          ID: watchListItemID,
                          Name: thisWLI.WatchListItemName,
                          IMDB_URL: thisWLI.IMDB_URL,
-                         IMDB_Poster: result["IMDB_Poster"],
+                         IMDB_Poster: result.IMDB_Poster,
                          Status: "OK"
                     };
                }
@@ -782,6 +780,8 @@ const loginSuccessfullActions = async (currentUser: IUser) => {
 
 const mapDetailsFields = (details) => {
      const mappedResult = {
+          "Title": details["title"],
+          "IMDBId": details["IMDBId"],
           "Year": typeof details["release_date"] !== "undefined" ? details["release_date"].split("-")[0] : "",
           "Released": details["release_date"],
           "Type": details["media_type"],
@@ -789,7 +789,6 @@ const mapDetailsFields = (details) => {
           "Plot": details["overview"],
           "Language": details["original_language"],
           "Country": details["origin_country"],
-          "IMDBId": "",
           "IMDB_Poster": getPosterURL(details["poster_path"])
      }
 

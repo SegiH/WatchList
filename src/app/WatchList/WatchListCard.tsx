@@ -62,7 +62,7 @@ export default function WatchListCard({ currentWatchList }: WatchListCardProps) 
                 <a className="clickable show-link" onClick={() => openDetailClickHandler(currentWatchList.WatchListID, "WatchList")}>
                     <div>
                         {imageIsValid(currentWatchList?.IMDB_Poster, currentWatchList?.IMDB_Poster_Error) &&
-                            <Image width={imageWidth} height={imageHeight} alt={currentWatchList.WatchListItemName ?? ""} src={currentWatchList?.IMDB_Poster} onError={() => showDefaultSrc(currentWatchList.WatchListID)} />
+                            <Image width={imageWidth} height={imageHeight} alt={currentWatchList.WatchListItemName ?? "Unknown"} src={currentWatchList?.IMDB_Poster} onError={() => showDefaultSrc(currentWatchList.WatchListID)} />
                         }
 
                         {!imageIsValid(currentWatchList?.IMDB_Poster, currentWatchList?.IMDB_Poster_Error) &&

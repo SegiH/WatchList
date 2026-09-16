@@ -39,7 +39,7 @@ export default function SearchTMDB(props) {
                return;
           }
 
-          let paramStr = `/api/AddWatchListItem?WatchListItemName=${currentResult.name}&WatchListTypeID=${itemType}`;
+          let paramStr = `/api/AddWatchListItem?WatchListItemName=${currentResult.name ?? currentResult.title}&WatchListTypeID=${itemType}`;
 
           paramStr += `&IMDB_URL=https://www.imdb.com/title/${currentResult.imdbID}/`;
 

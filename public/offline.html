@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0"
+    />
+    <title>Offline</title>
+
+    <style>
+      body {
+        margin: 0;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: system-ui, sans-serif;
+        background: #f8fafc;
+        color: #0f172a;
+      }
+
+      .container {
+        max-width: 400px;
+        padding: 32px;
+        text-align: center;
+      }
+
+      h1 {
+        margin-bottom: 12px;
+      }
+
+      p {
+        color: #64748b;
+        line-height: 1.5;
+      }
+
+      button {
+        margin-top: 20px;
+        padding: 10px 18px;
+        border: 0;
+        border-radius: 8px;
+        background: #0f172a;
+        color: white;
+        font-size: 16px;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="container">
+      <h1>You're offline</h1>
+
+      <p>
+        Please check your internet connection
+      </p>
+
+      <button onclick="location.reload()">
+        Try again
+      </button>
+    </div>
+  </body>
+</html>

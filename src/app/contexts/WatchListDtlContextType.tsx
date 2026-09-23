@@ -6,6 +6,7 @@ export interface WatchListDtlContextType {
      darkMode: boolean;
      demoMode: boolean;
      EditIconComponent: React.ReactNode;
+     getMissingPoster: (watchListItemID: number) => void;
      getWatchList: () => void;
      imageHeight: number;
      imageIsValid: (imgUrl: string, poster_error?: boolean) => boolean;

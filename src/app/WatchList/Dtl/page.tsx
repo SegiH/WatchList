@@ -28,7 +28,7 @@ interface AutoCompleteWatchListItem {
 
 export default function WatchListDtl() {
      const {
-          BrokenImageIconComponent, CancelIconComponent, demoMode, EditIconComponent, getWatchList, imageHeight, imageIsValid, imageWidth, isAdding, isEditing, isLoading, pullToRefreshEnabled, modalVisible, recommendationsEnabled, SaveIconComponent, setErrorMessage, setIsAdding, setIsEditing, setIsLoading, setModalVisible, setStillWatching, stillWatching, watchListSortDirection, watchListSources, writeLog
+          BrokenImageIconComponent, CancelIconComponent, demoMode, EditIconComponent, getMissingPoster, getWatchList, imageHeight, imageIsValid, imageWidth, isAdding, isEditing, isLoading, pullToRefreshEnabled, modalVisible, recommendationsEnabled, SaveIconComponent, setErrorMessage, setIsAdding, setIsEditing, setIsLoading, setModalVisible, setStillWatching, stillWatching, watchListSortDirection, watchListSources, writeLog
      } = useContext(WatchListDtlContext) as WatchListDtlContextType
 
      const currentDate = new Date().toLocaleDateString();
@@ -358,6 +358,29 @@ export default function WatchListDtl() {
                setRecommendationType(watchListDtl.WatchListTypeName);
           }
      };
+
+     const reloadImageClickHandler = async (watchListItemID: number) => {
+          const result = await getMissingPoster(watchListItemID);
+
+          if (Array.isArray(result) && result.length > 0 && result[0]["Status"] === "OK") {
+               const newWatchListDtl = { ...watchListDtl } as IWatchList;
+               newWatchListDtl["IMDB_Poster"] = result[0].IMDB_Poster;
+
+               setWatchListDtl(newWatchListDtl);
+
+               const queryURL = `/api/UpdateWatchListItem?WatchListItemID=${watchListDtl?.WatchListItemID}&IMDB_Poster=${result[0].IMDB_Poster}`;
+
+               try {
+                    const reloadImageResponse = await fetch(queryURL, { method: 'PUT', credentials: 'include' });
+
+                    await reloadImageResponse.json();
+
+                    getWatchListItems();
+               } catch (e: any) {
+                    writeLog(e.message);
+               }
+          }
+     }
 
      const saveClickHandler = async () => {
           if (demoMode) {
@@ -1002,6 +1025,14 @@ export default function WatchListDtl() {
                                                        </span>
                                                   }
                                              </div>
+
+                                             {/*{((isAdding && typeof addWatchListDtl !== "undefined") || (isEditing && typeof watchListDtl !== "undefined" && watchListDtl !== null) || (!isAdding || !isEditing)) &&
+                                                  <div className={`clickable textLabel`}>
+                                                       <a onClick={() => reloadImageClickHandler(addWatchListDtl.WatchListItemID ?? watchListDtl.WatchListItemID)}>
+                                                            Reload Image
+                                                       </a>
+                                                  </div>
+                                             }*/}
 
                                              {(isAdding || isEditing) &&
                                                   <>

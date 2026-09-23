@@ -1,5 +1,5 @@
 import { NextRequest } from 'next/server';
-import { getDB, getPosterURL, isLoggedIn, writeLog, writeDB, fetchTMDBDataByTT } from "../lib";
+import { getDB, isLoggedIn, writeLog, writeDB, searchTMDBByTT } from "../lib";
 import IWatchListItem from '@/app/interfaces/IWatchListItem';
 
 export async function GET(request: NextRequest) {
@@ -34,7 +34,7 @@ export async function GET(request: NextRequest) {
                     const id = urlSplit[4].toString();
 
                     try {
-                         const detail = await fetchTMDBDataByTT(id);
+                         const detail = await searchTMDBByTT(id);
 
                          if (detail !== null) {
                               writeLog(`Sucessfully processed ${watchListItem.WatchListItemID}`)

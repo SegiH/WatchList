@@ -346,7 +346,46 @@ table.simpleTable:last-child {
 
 .rightMargin { @apply relative right-[50px]; }
 
-.row { @apply flex items-center justify-center align-middle gap-[25] }
+.rowParent {
+  width: 100%;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.row {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+
+  width: 100%;
+  min-width: 0;
+
+  gap: 25px;
+
+  overflow-x: auto;
+  overflow-y: hidden;
+
+  justify-content: flex-start;
+}
+
+.row > div {
+  flex: 0 0 auto;
+  width: fit-content;
+}
+
+.row::-webkit-scrollbar {
+  height: 16px;
+}
+
+.row::-webkit-scrollbar-track {
+  background: red;
+}
+
+.row::-webkit-scrollbar-thumb {
+  background: blue;
+  border-radius: 8px;
+}
+
 
 .saveIcon { @apply relative top-[-5px] scale-[1.8]; }
 
@@ -547,6 +586,10 @@ table.simpleTable:last-child {
 .slider.round { @apply rounded-[34px] w-[60px]; }
 
 .slider.round:before { @apply rounded-full; }
+
+.TMDBSearchModal {
+  @apply overflow-auto flex justify-start relative;
+}
 
 /* ---------------- MENU NOTIFICATION ---------------- */
 

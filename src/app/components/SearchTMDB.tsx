@@ -9,16 +9,16 @@ import { SearchTMDBContextType } from "../contexts/SearchTMDBContextType";
 
 export default function SearchTMDB(props) {
      const {
-          autoAdd, imageHeight, imageWidth, modalVisible, searchCount, setIsAdding, setSearchCount, setModalVisible, setSearchTerm
+          autoAdd, imageHeight, imageWidth, modalVisible, setIsAdding, setModalVisible, setSearchTerm
      } = useContext(SearchTMDBContext) as SearchTMDBContextType
 
-     const searchCountOptions = {
+     /*const searchCountOptions = {
           "10 results": 10,
           "20 results": 20,
           "30 results": 30,
           "40 results": 40,
           "50 results": 50
-     };
+     };*/
 
      const router = useRouter();
 
@@ -41,8 +41,7 @@ export default function SearchTMDB(props) {
 
           let paramStr = `/api/AddWatchListItem?WatchListItemName=${currentResult.name ?? currentResult.title}&WatchListTypeID=${itemType}`;
 
-          paramStr += `&IMDB_URL=https://www.imdb.com/title/${currentResult.imdbID}/`;
-
+          paramStr += `&IMDB_URL=https://www.imdb.com/title/${currentResult.imdb_id}/`;
           paramStr += `&IMDB_Poster=https://image.tmdb.org/t/p/original${currentResult.poster_path}`;
 
           try {
@@ -94,7 +93,7 @@ export default function SearchTMDB(props) {
                          <div className={`modal-content TMDBSearchModalContent overflow-y`}>
                               <div className="IMDBSearchHeader">
                                    <span className="flex items-center gap-[12px]">
-                                        <span className="ml-[200px]">Count</span>
+                                        {/*<span className="ml-[200px]">Count</span>
 
                                         <select className="customBorderRadius leftMargin60" value={searchCount} onChange={(event: React.ChangeEvent<HTMLSelectElement>) => setSearchCount(parseInt(event.target.value, 10))}>
                                              {Object.keys(searchCountOptions).map((searchCountName: string, index: number) => {
@@ -104,7 +103,7 @@ export default function SearchTMDB(props) {
                                                        </option>
                                                   );
                                              })}
-                                        </select>
+                                        </select>*/}
 
                                         <span className="clickable TMDBCloseButton" onClick={closeSearch}>
                                              X
@@ -112,13 +111,14 @@ export default function SearchTMDB(props) {
                                    </span>
                               </div>
 
-                              <div className="paddingTop50">
-                                   <span className="row">
+                              <div className="paddingTop50 rowParent">
+                                   <div className="row flex flex-row flex-nowrap items-start gap-[25px] overflow-x-auto">
                                         {typeof props.tmdbSearchResults !== "undefined" && props.tmdbSearchResults !== null && props.tmdbSearchResults.length > 0 &&
-                                             props.tmdbSearchResults[1].results
-                                                  .filter((currentResult: any, index: number) => {
-                                                       return index <= searchCount;
-                                                  }).map((currentResult: ISearchTmdb, index: number) => {
+                                             props.tmdbSearchResults
+                                                  .filter((currentResult: ISearchTmdb, index: number) => {
+                                                       return currentResult && typeof currentResult["IMDB_URL"] !== "undefined"
+                                                  })
+                                                  .map((currentResult: ISearchTmdb, index: number) => {
                                                        return (
                                                             <div key={index}>
                                                                  {typeof currentResult.poster_path !== "undefined" && currentResult.poster_path !== null && currentResult.poster_path !== "" && currentResult.poster_path !== "N/A" &&
@@ -128,7 +128,7 @@ export default function SearchTMDB(props) {
                                                                                      <Image width={imageWidth} height={imageHeight} className="clickable searchResultPoster" src={`https://image.tmdb.org/t/p/original${currentResult.poster_path}`} onClick={() => addTMDBSearchResultClickHandler(currentResult)} alt={currentResult.name ?? "Unknown"} />
                                                                                 }
 
-                                                                                <div className="textLabel">
+                                                                                <div className="textLabel py-[20]">
                                                                                      {currentResult.name ?? currentResult.title} {getYear(currentResult?.first_air_date ?? currentResult?.release_date)}
                                                                                 </div>
 
@@ -148,7 +148,7 @@ export default function SearchTMDB(props) {
                                                        );
                                                   })
                                         }
-                                   </span>
+                                   </div>
                               </div>
                          </div>
                     </span>

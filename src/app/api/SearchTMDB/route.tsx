@@ -1,14 +1,14 @@
 import { NextRequest } from 'next/server';
-import { addWatchListItem, fetchTMDBData, fetchTMDBDataByTT, isLoggedIn, writeLog } from '../lib';
+import { addWatchListItem, searchTMDB, searchTMDBByTT, isLoggedIn, writeLog, getTMDBAPIKey } from '../lib';
 
 export async function GET(request: NextRequest) {
+     const tmdb_key = await getTMDBAPIKey();
+
      if (!isLoggedIn(request)) {
           return Response.json(["ERROR", "Error. Not signed in"]);
      }
 
      const searchParams = request.nextUrl.searchParams;
-
-     const searchCount = searchParams.get("SearchCount") !== null ? searchParams.get("SearchCount") : "10";
 
      const searchTerm = searchParams.get("SearchTerm");
 
@@ -18,7 +18,7 @@ export async function GET(request: NextRequest) {
 
      // Check if searchTerm starts with tt and is followed by 7 or more numbers
      if (/^tt\d{7,}$/.test(searchTerm)) {
-          const result: any = await fetchTMDBDataByTT(searchTerm);
+          const result: any = await searchTMDBByTT(searchTerm);
 
           if (result === null) {
                return Response.json(["ERROR", "Not Found"]);
@@ -47,21 +47,53 @@ export async function GET(request: NextRequest) {
           }
      }
 
-     const results: [{}] = [{}];
+     //const results: [] = [];
 
-     try {
-          for (let i = 0; i < parseInt(searchCount !== null ? searchCount : "10", 10); i++) {
+     const headers = {
+          Authorization: `Bearer ${tmdb_key}`
+     };
+
+     const result = await searchTMDB(searchTerm);
+
+     await Promise.all(result.results.map(async (currentResult) => {
+          let media_type = 0;
+
+          if (currentResult["media_type"] === "movie") {
+               media_type = 1;
+          } else if (currentResult["media_type"] === "tv") {
+               media_type = 2;
+          }
+          const apiUrl = media_type == 1 ? `https://api.themoviedb.org/3/movie/${currentResult["id"]}/external_ids`
+               :
+               media_type == 2 ?
+                    `https://api.themoviedb.org/3/tv/${currentResult["id"]}/external_ids`
+                    : null;
+
+          if (apiUrl !== null) {
                try {
-                    //const url = `?s=${searchTerm}&r=json&page=${i + 1}`;
-                    // TODO: MAY NEED TO FACTOR IN PAGE #
-                    const result = await fetchTMDBData(searchTerm);
-                    results.push(result);
+                    const ttResponse = await fetch(apiUrl, { headers });
+                    const jsonTTResponse = await ttResponse.json();
+
+                    if (typeof jsonTTResponse.imdb_id !== "undefined") {
+                         currentResult["IMDB_URL"] = `https://www.imdb.com/title/${jsonTTResponse.imdb_id}/`;
+                    }
+
+                    if (typeof result.poster_path !== "undefined") {
+                         currentResult["IMDB_Poster"] = `https://image.tmdb.org/t/p/original${result.poster_path}`;
+                    }
+
+                    if (jsonTTResponse["success"] !== "false" && typeof jsonTTResponse.imdb_id !== "undefined") {
+                         currentResult.imdb_id = jsonTTResponse.imdb_id;
+                    }
                } catch (e) {
-                    writeLog(e)
                }
           }
+     }));
 
-          return Response.json(["OK", results]);
+     //results.push(result);
+
+     try {
+          return Response.json(["OK", result.results]);
      } catch (error) {
           return Response.json(["ERROR", error]);
      }

@@ -135,23 +135,21 @@ export const addUser = async (request: NextRequest, isNewInstance = false) => {
 }
 
 export const addWatchListItem = async (name: string, type: string, imdb_url: string, imdb_poster: string, notes: string, archived: string) => {
-     if (imdb_url !== null) {
-          try {
-               const db: any = await getDB();
+     try {
+          const db: any = await getDB();
 
-               const watchListItemsDB = db.WatchListItems;
+          const watchListItemsDB = db.WatchListItems;
 
-               const existingWatchListItem = watchListItemsDB.filter((watchListItem: IWatchListItem) => {
-                    return watchListItem.IMDB_URL === imdb_url
-               });
+          const existingWatchListItem = watchListItemsDB.filter((watchListItem: IWatchListItem) => {
+               return watchListItem.IMDB_URL === imdb_url
+          });
 
-               if (existingWatchListItem.length > 0) {
-                    return Response.json(["ERROR-ALREADY-EXISTS", `The URL ${imdb_url} already exists with the name ${existingWatchListItem[0].WatchListItemName} and the ID ${existingWatchListItem[0].WatchListItemID}. It was NOT added!`, existingWatchListItem[0].WatchListItemID]);
-               }
-          } catch (e: any) {
-               writeLog(e)
-               return Response.json(["OK", []]);
+          if (existingWatchListItem.length > 0) {
+               return Response.json(["ERROR-ALREADY-EXISTS", `The URL ${imdb_url} already exists with the name ${existingWatchListItem[0].WatchListItemName} and the ID ${existingWatchListItem[0].WatchListItemID}. It was NOT added!`, existingWatchListItem[0].WatchListItemID]);
           }
+     } catch (e: any) {
+          writeLog(e)
+          return Response.json(["OK", []]);
      }
 
      try {
@@ -182,7 +180,7 @@ export const addWatchListItem = async (name: string, type: string, imdb_url: str
           if (urlSplit[2].toString().indexOf("imdb.com") !== -1 && urlSplit[3].toString() === "title") {
                ttyId = urlSplit[4].toString();
 
-               detail = fetchTMDBDataByTT(ttyId);
+               detail = searchTMDBByTT(ttyId);
           }
 
           watchListItemsDB.push({
@@ -220,60 +218,6 @@ export const decrypt = (cipherText: string) => {
 export const encrypt = (plainText: string) => {
      const cipherText = CryptoJS.AES.encrypt(plainText, secretKey).toString()
      return cipherText
-}
-
-export const fetchTMDBData = async (query: string) => {
-     const tmdb_key = await getTMDBAPIKey();
-
-     if (typeof tmdb_key === "undefined") {
-          throw new Error("TMDB key is missing");
-     }
-
-     const headers = {
-          Authorization: `Bearer ${tmdb_key}`
-     };
-
-     try {
-          const response = await fetch(`https://api.themoviedb.org/3/search/multi?query=${encodeURIComponent(query)}`, { headers });
-          return await response.json();
-     } catch (error: any) {
-          throw error;
-     }
-}
-
-export const fetchTMDBDataByTT = async (tt: string) => {
-     const tmdb_key = await getTMDBAPIKey();
-
-     if (typeof tmdb_key === "undefined") {
-          throw new Error("TMDB key is missing");
-     }
-
-     const headers = {
-          Authorization: `Bearer ${tmdb_key}`
-     };
-
-     try {
-          const response = await fetch(`https://api.themoviedb.org/3/find/${tt}?external_source=imdb_id`, { headers });
-          const json = await response.json();
-
-          let returnVal = null;
-
-          // tt id should be unique and found in only 1 section
-          Object.keys(tmdb_sections).map((tmdb_section) => {
-               if (typeof json[tmdb_sections[tmdb_section]] !== "undefined" && json[tmdb_sections[tmdb_section]].length > 0) {
-                    returnVal = json[tmdb_sections[tmdb_section]][0];
-               }
-          });
-
-          if (typeof returnVal !== "undefined" && returnVal !== null) {
-               returnVal = mapDetailsFields(returnVal);
-               returnVal["IMDBId"] = tt;
-          }
-
-          return returnVal;
-     } catch (error: any) {
-          throw error;
-     }
 }
 
 export const getCurrentDate = () => {
@@ -588,7 +532,7 @@ export const getMissingArtwork = async (watchListItemID: number) => {
           if (urlSplit[2].toString().indexOf("imdb.com") !== -1 && urlSplit[3].toString() === "title") {
                const id = urlSplit[4].toString();
 
-               const result = await fetchTMDBDataByTT(id);
+               const result = await searchTMDBByTT(id);
 
                if (result !== null) {
                     return {
@@ -793,6 +737,60 @@ const mapDetailsFields = (details) => {
      }
 
      return mappedResult;
+}
+
+export const searchTMDB = async (query: string) => {
+     const tmdb_key = await getTMDBAPIKey();
+
+     if (typeof tmdb_key === "undefined") {
+          throw new Error("TMDB key is missing");
+     }
+
+     const headers = {
+          Authorization: `Bearer ${tmdb_key}`
+     };
+
+     try {
+          const response = await fetch(`https://api.themoviedb.org/3/search/multi?query=${encodeURIComponent(query)}`, { headers });
+          return await response.json();
+     } catch (error: any) {
+          throw error;
+     }
+}
+
+export const searchTMDBByTT = async (tt: string) => {
+     const tmdb_key = await getTMDBAPIKey();
+
+     if (typeof tmdb_key === "undefined") {
+          throw new Error("TMDB key is missing");
+     }
+
+     const headers = {
+          Authorization: `Bearer ${tmdb_key}`
+     };
+
+     try {
+          const response = await fetch(`https://api.themoviedb.org/3/find/${tt}?external_source=imdb_id`, { headers });
+          const json = await response.json();
+
+          let returnVal = null;
+
+          // tt id should be unique and found in only 1 section
+          Object.keys(tmdb_sections).map((tmdb_section) => {
+               if (typeof json[tmdb_sections[tmdb_section]] !== "undefined" && json[tmdb_sections[tmdb_section]].length > 0) {
+                    returnVal = json[tmdb_sections[tmdb_section]][0];
+               }
+          });
+
+          if (typeof returnVal !== "undefined" && returnVal !== null) {
+               returnVal = mapDetailsFields(returnVal);
+               returnVal["IMDBId"] = tt;
+          }
+
+          return returnVal;
+     } catch (error: any) {
+          throw error;
+     }
 }
 
 export const matchMetadata = (watchListItem: IWatchListItem, metaDataFilters) => {

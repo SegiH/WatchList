@@ -692,7 +692,7 @@ export default function ItemsDtl() {
                                                   <div className="narrow card"></div>
                                              }
 
-                                             {!isAdding && !isEditing && typeof watchListItemDtl !== "undefined" && watchListItemDtl !== null &&
+                                             {((isAdding && typeof addWatchListItemDtl !== "undefined") || (isEditing && typeof watchListItemDtl !== "undefined" && watchListItemDtl !== null) || (!isAdding || !isEditing)) &&
                                                   <div className={`clickable textLabel`}>
                                                        <a onClick={() => reloadImageClickHandler(watchListItemDtl.WatchListItemID)}>
                                                             Reload Image

@@ -146,7 +146,7 @@ const DataProvider = ({
      const [modalVisible, setModalVisible] = useState(false);
      const [pageSize, setPageSize] = useState(typeof window !== 'undefined' && window.innerWidth <= 768 ? 10 : defaultPageSize); // items per page. Mobile has less items
      const [recommendationsEnabled, setRecommendationsEnabled] = useState(false);
-     const [searchCount, setSearchCount] = useState(10);
+     const [searchCount, setSearchCount] = useState(20); // Matches default count returned by TMDB
      const [searchTerm, setSearchTerm] = useState("");
      const [showMissingArtwork, setShowMissingArtwork] = useState(false);
      const [stillWatching, setStillWatching] = useState(true);
@@ -779,7 +779,7 @@ const DataProvider = ({
 
      const TMDBSearchClickHandler = async () => {
           if (searchTerm !== "") {
-               const searchTMDBResponse = await fetch(`/api/SearchTMDB?SearchTerm=${searchTerm}&SearchCount=${searchCount}`, { credentials: 'include' });
+               const searchTMDBResponse = await fetch(`/api/SearchTMDB?SearchTerm=${searchTerm}`, { credentials: 'include' });
 
                setSearchTerm("");
 
@@ -1454,7 +1454,7 @@ const DataProvider = ({
      const tabsContextValues = { activeRoute, demoMode, getPath, hideTabs, isAdding, isAdmin, isClient, isEditing, isEnabled, isError, isLoading, loggedInCheck, modalVisible, pullToRefreshEnabled, routes, setActiveRoute, setSearchTerm, visibleSections };
      const watchListCardContextValues = { BrokenImageIconComponent, filteredWatchList, formatWatchListDates, getMissingPoster, imageHeight, imageIsValid, imageWidth, openDetailClickHandler, setFilteredWatchList, setModalVisible, writeLog };
      const watchListContextValues = { autoAdd, filteredWatchList, hideTabs, tmdbSearchEnabled, isLoading, lastPage, modalVisible, searchTerm, setActiveRoute, setIsAdding, setIsEditing, setModalVisible, watchListSortingCheck };
-     const watchListDtlContextValues = { BrokenImageIconComponent, CancelIconComponent, demoMode, EditIconComponent, getWatchList, imageHeight, imageIsValid, imageWidth, tmdbSearchEnabled, isAdding, isEditing, isLoading, modalVisible, pullToRefreshEnabled, recommendationsEnabled, SaveIconComponent, setErrorMessage, setIsAdding, setIsEditing, setIsError, setIsLoading, setModalVisible, setStillWatching, showSearch, stillWatching, watchListSortDirection, watchListSources, writeLog };
+     const watchListDtlContextValues = { BrokenImageIconComponent, CancelIconComponent, demoMode, EditIconComponent, getMissingPoster, getWatchList, imageHeight, imageIsValid, imageWidth, tmdbSearchEnabled, isAdding, isEditing, isLoading, modalVisible, pullToRefreshEnabled, recommendationsEnabled, SaveIconComponent, setErrorMessage, setIsAdding, setIsEditing, setIsError, setIsLoading, setModalVisible, setStillWatching, showSearch, stillWatching, watchListSortDirection, watchListSources, writeLog };
      const watchListStatsContextValues = { demoMode, errorMessage, ratingMax, setIsError, setErrorMessage };
 
      const baseProviders = [

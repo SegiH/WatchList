@@ -28,7 +28,7 @@ interface AutoCompleteWatchListItem {
 
 export default function WatchListDtl() {
      const {
-          BrokenImageIconComponent, CancelIconComponent, demoMode, EditIconComponent, getMissingPoster, getWatchList, imageHeight, imageIsValid, imageWidth, isAdding, isEditing, isLoading, pullToRefreshEnabled, modalVisible, recommendationsEnabled, SaveIconComponent, setErrorMessage, setIsAdding, setIsEditing, setIsLoading, setModalVisible, setStillWatching, stillWatching, watchListSortDirection, watchListSources, writeLog
+          BrokenImageIconComponent, CancelIconComponent, demoMode, EditIconComponent, getMissingPoster, getWatchList, imageHeight, imageIsValid, imageWidth, isAdding, isEditing, isLoading, pullToRefreshEnabled, modalVisible, recommendationsEnabled, SaveIconComponent, setErrorMessage, setIsAdding, setIsEditing, setIsLoading, setModalVisible, setStillWatching, stillWatching, tmdbSearchEnabled, watchListSortDirection, watchListSources, writeLog
      } = useContext(WatchListDtlContext) as WatchListDtlContextType
 
      const currentDate = new Date().toLocaleDateString();
@@ -55,6 +55,25 @@ export default function WatchListDtl() {
      const router = useRouter();
 
      let addingStarted = false;
+
+     // When you go to add a WL, if you forgot to add the WLI, the Add Link will show the search so you can add it immediately. This only applies to adding a WL, not editing one.
+     const addNewChangeHandler = () => {
+          if (addModified && (addWatchListDtl?.WatchListItemID !== -1 || addWatchListDtl.StartDate !== getLocaleDate() || addWatchListDtl.EndDate !== "" || addWatchListDtl.WatchListSourceID !== -1 || addWatchListDtl.Season !== 0 || addWatchListDtl.Rating !== 0 || addWatchListDtl.Notes !== "")) {
+               const confirmLeave = confirm("You have started to add a record. Are you sure you want to leave ?");
+
+               if (!confirmLeave) {
+                    return;
+               }
+          } else if (editModified) {
+               const confirmLeave = confirm("You have edited this record. Save it now ?");
+
+               if (confirmLeave) {
+                    updateWatchList(true);
+               }
+          }
+
+          closeDetail();
+     };
 
      const addWatchListDetailChangeHandler = (fieldName: string, fieldValue: string | number | boolean) => {
           const newAddWatchListDtl = { ...addWatchListDtl } as IWatchList;
@@ -822,12 +841,7 @@ export default function WatchListDtl() {
                                                   </div>
                                              }
 
-                                             <div className="narrow card">
-                                                  {/* TODO: Fix me later */}
-                                                  {/*{((isAdding && addWatchListDtl) || isEditing) && tmdbSearchEnabled &&
-                                                       <div className="clickable hyperlink text-label rightAligned" onClick={addNewChangeHandler}>Add</div>
-                                                  }*/}
-                                             </div>
+                                             <div className="narrow card"></div>
 
                                              {(isAdding || isEditing) &&
                                                   <div className="narrow card"></div>
@@ -961,6 +975,10 @@ export default function WatchListDtl() {
                                                   {!isAdding && !isEditing && recommendationsEnabled &&
                                                        <div className={`clickable hyperlink text-label rightAligned`} onClick={recommendationsClickHandler}>Recommendations</div>
                                                   }
+
+                                                  {((isAdding && addWatchListDtl) || (isEditing && watchListDtl)) && tmdbSearchEnabled &&
+                                                       <div className="clickable hyperlink text-label rightAligned" onClick={addNewChangeHandler}>Add</div>
+                                                  }
                                              </div>
 
                                              <div className="narrow card">
@@ -1015,17 +1033,17 @@ export default function WatchListDtl() {
                                                   }
                                              </div>
 
-                                             {/*{((isAdding && typeof addWatchListDtl !== "undefined") || (isEditing && typeof watchListDtl !== "undefined" && watchListDtl !== null) || (!isAdding || !isEditing)) &&
+                                             {((isAdding && typeof addWatchListDtl !== "undefined") || (isEditing && typeof watchListDtl !== "undefined" && watchListDtl !== null) || (!isAdding || !isEditing)) &&
                                                   <div className={`clickable textLabel`}>
-                                                       <a onClick={() => reloadImageClickHandler(addWatchListDtl.WatchListItemID ?? watchListDtl.WatchListItemID)}>
+                                                       <a onClick={() => reloadImageClickHandler(isAdding ? addWatchListDtl.WatchListItemID : watchListDtl.WatchListItemID)}>
                                                             Reload Image
                                                        </a>
                                                   </div>
-                                             }*/}
+                                             }
 
                                              {(isAdding || isEditing) &&
                                                   <>
-                                                       <div className="narrow card"></div>
+                                                       {/*<div className="narrow card"></div>*/}
 
                                                        <div className="narrow card">
                                                             <div className={`textLabel`}>Archive:</div>

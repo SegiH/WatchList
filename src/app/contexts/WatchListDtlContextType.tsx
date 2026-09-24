@@ -26,6 +26,7 @@ export interface WatchListDtlContextType {
      setModalVisible: (value: boolean) => void;
      setStillWatching: (value: boolean) => void;
      stillWatching: boolean;
+     tmdbSearchEnabled: boolean;
      watchListSortDirection: string;
      watchListSources: IWatchListSource[];
      writeLog: (writeLogText: string) => void;

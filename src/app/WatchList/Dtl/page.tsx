@@ -41,7 +41,6 @@ export default function WatchListDtl() {
      const [formattedNamesWithId, setFormattedNamesWithId] = useState<AutoCompleteWatchListItem[]>([]);
      const [formattedNamesLoadingComplete, setFormattedNamesLoadingComplete] = useState(APIStatus.Idle);
      const [editModified, setEditModified] = useState(false);
-     //const [tmdbCardvisible, setTmdbCardvisible] = useState(false);
      const [isClosing, setIsClosing] = useState(false);
      const [originalWatchListDtl, setOriginalWatchListDtl] = useState<IWatchList | null>(null); (null);
      const [recommendationsVisible, setRecommendationsVisible] = useState(false);
@@ -124,7 +123,7 @@ export default function WatchListDtl() {
           setWatchListDtl(null);
           setOriginalWatchListDtl(null);
 
-          if (addModified || editModified) {
+          if (addModified || editModified || watchListDtlID !== null || watchListItemDtlID !== null) {
                getWatchList();
           }
 
@@ -133,12 +132,6 @@ export default function WatchListDtl() {
           setIsLoading(false);
           setIsClosing(true);
      };
-
-     /*const closeTMDBCard = () => {
-          setTmdbCardvisible(false);
-
-          setModalVisible(false);
-     }*/
 
      const getLocaleDate = useCallback(() => {
           const dateSpl = currentDate.split("/");
@@ -347,10 +340,6 @@ export default function WatchListDtl() {
                return -1;
           }
      };
-
-     /*const TMDBCardOpenClickHandler = () => {
-          setTmdbCardvisible(true);
-     }*/
 
      const recommendationsClickHandler = () => {
           if (watchListDtl !== null) {

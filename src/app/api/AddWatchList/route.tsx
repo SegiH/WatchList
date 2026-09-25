@@ -33,7 +33,7 @@ export async function PUT(request: NextRequest) {
 
                const highestWatchListID = Math.max(...watchListDB.map(o => o.WatchListID));
 
-               watchListDB.push({
+               const newItem = {
                     "WatchListID": (highestWatchListID !== null ? highestWatchListID : 0) + 1,
                     "UserID": userID,
                     "WatchListItemID": parseInt(watchListItemID, 10),
@@ -44,7 +44,9 @@ export async function PUT(request: NextRequest) {
                     "Archived": archived,
                     "Rating": rating,
                     "Notes": notes
-               });
+               };
+
+               watchListDB.push(newItem);
 
                writeDB(db);
 

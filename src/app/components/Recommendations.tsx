@@ -4,6 +4,9 @@ import { APIStatus, RecommendationsContext } from "../context";
 import IRecommendation from "../interfaces/IRecommendation";
 import { RecommendationsContextType } from "../contexts/RecommendationsContextType";
 
+import "./Recommendations.css";
+import Loader from './Loader';
+
 const Recommendations = ({ queryTerm, setRecommendationName, setRecommendationType, setRecommendationsVisible, type }:
      {
           queryTerm: string,
@@ -16,6 +19,7 @@ const Recommendations = ({ queryTerm, setRecommendationName, setRecommendationTy
           BrokenImageIconComponent, imageHeight, imageWidth, writeLog
      } = useContext(RecommendationsContext) as RecommendationsContextType
 
+     const [expandedRecommendations, setExpandedRecommendations] = useState<number[]>([]);
      const [recommendations, setRecommendations] = useState<IRecommendation[]>([]);
      const [recommendationsError, setRecommendationsError] = useState(false);
      const [recommendationsLoadingCheck, setRecommendationsLoadingCheck] = useState(APIStatus.Idle);
@@ -63,6 +67,14 @@ const Recommendations = ({ queryTerm, setRecommendationName, setRecommendationTy
           setRecommendations(newRecommendations);
      }
 
+     const toggleRecommendation = (id: number) => {
+          setExpandedRecommendations(prev =>
+               prev.includes(id)
+                    ? prev.filter(item => item !== id)
+                    : [...prev, id]
+          );
+     };
+
      useEffect(() => {
           if (queryTerm !== "" && type !== "" && recommendationsLoadingCheck === APIStatus.Idle) {
                setRecommendationsLoadingCheck(APIStatus.Loading)
@@ -81,45 +93,72 @@ const Recommendations = ({ queryTerm, setRecommendationName, setRecommendationTy
 
                <ul className="clickable show-list overflow-y">
                     {recommendationsLoadingCheck !== APIStatus.Success &&
-                         <>
-                              Loading
-                              <div className="loader-container">
-                                   <div className="spinner"></div>
-                              </div>
-                         </>
+                         <Loader />
                     }
 
                     {recommendationsLoadingCheck === APIStatus.Success && recommendations && recommendations.length > 0 && recommendations.map((recommendation: IRecommendation, index: number) => {
                          return (
-                              <li className="show-item" key={index}>
-                                   <span>
-                                        {typeof recommendation.name !== "undefined"
-                                             ? recommendation.name
-                                             : typeof recommendation.Title !== "undefined"
-                                                  ? recommendation.Title
-                                                  : ""
-                                        }
-                                   </span>
+                              <li className="show-item" key={recommendation.id}>
+                                   <div className="recommendation-card">
+                                        <div className="recommendation-poster">
+                                             {!recommendation.Image_Error && recommendation.poster_path !== null ? (
+                                                  <Image
+                                                       width={80}
+                                                       height={120}
+                                                       alt={recommendation.name || recommendation.Title || "Poster"}
+                                                       src={`https://image.tmdb.org/t/p/w200${recommendation.poster_path}`}
+                                                       onError={() => showDefaultSrc(recommendation.id)}
+                                                  />
+                                             ) : (
+                                                  <div className="imagePlaceholder">
+                                                       {BrokenImageIconComponent}
+                                                  </div>
+                                             )}
+                                        </div>
 
-                                   <br />
-
-                                   <span>
-                                        {!recommendation.Image_Error && recommendation.poster_path !== null &&
-                                             <Image width={imageWidth} height={imageHeight} alt="image not available" src={`https://image.tmdb.org/t/p/w500${recommendation.poster_path}`} onError={() => showDefaultSrc(recommendation.id)} />
-                                        }
-
-                                        {(recommendation.Image_Error || recommendation.poster_path === null) &&
-                                             <div className="imagePlaceholder">
-                                                  {BrokenImageIconComponent}
+                                        <div className="recommendation-content">
+                                             <div
+                                                  className={
+                                                       expandedRecommendations.includes(recommendation.id)
+                                                            ? "recommendation-overview expanded"
+                                                            : "recommendation-overview"
+                                                  }
+                                             >
+                                                  {recommendation.overview}
                                              </div>
-                                        }
-                                   </span>
 
-                                   <br />
+                                             {recommendation.overview && (
+                                                  <div className="recommendation-content">
+                                                       <div className="recommendation-title">
+                                                            {recommendation.name || recommendation.Title || ""}
+                                                       </div>
 
-                                   <span className="no-font">
-                                        {recommendation.overview}
-                                   </span>
+                                                       {recommendation.overview && (
+                                                            <>
+                                                                 <div
+                                                                      className={
+                                                                           expandedRecommendations.includes(recommendation.id)
+                                                                                ? "recommendation-overview expanded"
+                                                                                : "recommendation-overview"
+                                                                      }
+                                                                 >
+                                                                      {recommendation.overview}
+                                                                 </div>
+
+                                                                 <button
+                                                                      className="read-more"
+                                                                      onClick={() => toggleRecommendation(recommendation.id)}
+                                                                 >
+                                                                      {expandedRecommendations.includes(recommendation.id)
+                                                                           ? "Show less"
+                                                                           : "Show more"}
+                                                                 </button>
+                                                            </>
+                                                       )}
+                                                  </div>
+                                             )}
+                                        </div>
+                                   </div>
                               </li>
                          )
                     })}

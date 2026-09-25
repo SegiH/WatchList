@@ -1,0 +1,108 @@
+.show-item {
+    list-style: none;
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+}
+
+.recommendation-card {
+    display: flex;
+    gap: 10px;
+    width: 100%;
+}
+
+.recommendation-poster {
+    flex: 0 0 70px;
+    width: 70px;
+    height: 125px;
+}
+
+.recommendation-poster img {
+    width: 70px;
+    height: 125px;
+    object-fit: cover;
+    border-radius: 4px;
+}
+
+.recommendation-content {
+    min-width: 0;
+    flex: 1;
+    height: 125px;
+
+    display: flex;
+    flex-direction: column;
+}
+
+.recommendation-title {
+    font-weight: 600;
+    font-size: 16px;
+    line-height: 20px;
+    margin-bottom: 4px;
+    flex-shrink: 0;
+}
+
+.recommendation-overview {
+    font-size: 14px;
+    line-height: 1.4;
+
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    overflow: hidden;
+}
+
+.recommendation-overview.expanded {
+    display: block;
+    flex: 1;
+    min-height: 0;
+
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    -webkit-overflow-scrolling: touch;
+
+    /* Gives the text a little breathing room */
+    padding-right: 5px;
+}
+
+.read-more {
+    flex-shrink: 0;
+    border: none;
+    background: none;
+    padding: 3px 0 0;
+    color: #007bff;
+    font-size: 13px;
+    cursor: pointer;
+}
+
+.show-list {
+    padding: 0;
+    margin: 0;
+}
+
+@media (max-width: 480px) {
+    .recommendation-poster {
+        flex: 0 0 62px;
+        width: 62px;
+        height: 115px;
+    }
+
+    .recommendation-poster img {
+        width: 62px;
+        height: 115px;
+    }
+
+    .recommendation-content {
+        height: 115px;
+    }
+
+    .recommendation-title {
+        font-size: 15px;
+        line-height: 19px;
+    }
+
+    .recommendation-overview {
+        font-size: 13px;
+        line-height: 1.4;
+        -webkit-line-clamp: 3;
+    }
+}

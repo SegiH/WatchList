@@ -1269,14 +1269,13 @@ const DataProvider = ({
           } else if (currentPath !== "") {
                const findRouteByPath = Object.keys(routes).filter((routeName) => routes[routeName].Path === currentPath);
 
-               /*if (currentPath === "/WatchList/Dtl" && queryParams !== null && queryParams !== "" && !queryParams.startsWith("?WatchListItemID")) {
+               if (currentPath === "/WatchList/Dtl" && queryParams !== null && queryParams !== "" && !queryParams.startsWith("?WatchListItemID")) {
                     setActiveRoute("WatchList");
 
                     const id = queryParams.split("=")[1];
                     openDetailClickHandler(parseInt(id, 10), "WatchList");
                     return;
-               } else */
-               if (currentPath === "/Items/Dtl") {
+               } else if (currentPath === "/Items/Dtl") {
                     setActiveRoute("Items");
 
                     const id = queryParams.split("=")[1];

@@ -180,9 +180,6 @@ export default function Data() {
                         setTemplateDataSource(template, bugLogs);
                         break;
                     }
-                //case "Options": // TODO: Fix me
-                //setDataSource(userData.)
-                //break;
                 case "Logs":
                     const getLogsResponse = await fetch(`/api/GetLogs`, { credentials: 'include' });
 

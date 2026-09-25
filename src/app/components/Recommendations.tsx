@@ -72,14 +72,14 @@ const Recommendations = ({ queryTerm, setRecommendationName, setRecommendationTy
      }, [queryTerm, recommendationsLoadingCheck, type, writeLog]);
 
      return (
-          <div className={`flex-container`}>
+          <div>
                {recommendationsLoadingCheck === APIStatus.Success &&
-                    <span className="clickable closeButton" onClick={closeRecommendations}>
+                    <span className="clickable" onClick={closeRecommendations}>
                          X
                     </span>
                }
 
-               <ul className="clickable show-list">
+               <ul className="clickable show-list overflow-y">
                     {recommendationsLoadingCheck !== APIStatus.Success &&
                          <>
                               Loading

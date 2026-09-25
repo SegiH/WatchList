@@ -7,7 +7,6 @@ import TextField, { TextFieldProps } from "@mui/material/TextField";
 import { useRouter } from "next/navigation";
 import React, { useCallback, useContext, useEffect, useState } from "react";
 import Recommendations from "../../components/Recommendations";
-//import MediaDetailsCard from "../../components/MediaDetailsCard";
 
 import StarIcon from '@mui/icons-material/Star';
 
@@ -57,7 +56,7 @@ export default function WatchListDtl() {
      let addingStarted = false;
 
      // When you go to add a WL, if you forgot to add the WLI, the Add Link will show the search so you can add it immediately. This only applies to adding a WL, not editing one.
-     const addNewChangeHandler = () => {
+     /*const addNewChangeHandler = () => {
           if (addModified && (addWatchListDtl?.WatchListItemID !== -1 || addWatchListDtl.StartDate !== getLocaleDate() || addWatchListDtl.EndDate !== "" || addWatchListDtl.WatchListSourceID !== -1 || addWatchListDtl.Season !== 0 || addWatchListDtl.Rating !== 0 || addWatchListDtl.Notes !== "")) {
                const confirmLeave = confirm("You have started to add a record. Are you sure you want to leave ?");
 
@@ -73,7 +72,7 @@ export default function WatchListDtl() {
           }
 
           closeDetail();
-     };
+     };*/
 
      const addWatchListDetailChangeHandler = (fieldName: string, fieldValue: string | number | boolean) => {
           const newAddWatchListDtl = { ...addWatchListDtl } as IWatchList;
@@ -976,9 +975,9 @@ export default function WatchListDtl() {
                                                        <div className={`clickable hyperlink text-label rightAligned`} onClick={recommendationsClickHandler}>Recommendations</div>
                                                   }
 
-                                                  {((isAdding && addWatchListDtl) || (isEditing && watchListDtl)) && tmdbSearchEnabled &&
+                                                  {/*{(isAdding && addWatchListDtl) && tmdbSearchEnabled &&
                                                        <div className="clickable hyperlink text-label rightAligned" onClick={addNewChangeHandler}>Add</div>
-                                                  }
+                                                  }*/}
                                              </div>
 
                                              <div className="narrow card">
@@ -1033,12 +1032,14 @@ export default function WatchListDtl() {
                                                   }
                                              </div>
 
-                                             {((isAdding && typeof addWatchListDtl !== "undefined") || (isEditing && typeof watchListDtl !== "undefined" && watchListDtl !== null) || (!isAdding || !isEditing)) &&
-                                                  <div className={`clickable textLabel`}>
-                                                       <a onClick={() => reloadImageClickHandler(isAdding ? addWatchListDtl.WatchListItemID : watchListDtl.WatchListItemID)}>
+                                             {(((isEditing && typeof watchListDtl !== "undefined") || watchListDtl !== null) || !isEditing) && imageIsValid(watchListDtl?.IMDB_Poster, watchListDtl?.IMDB_Poster_Error) &&
+                                                       <div className={`clickable textLabel rightAligned`} onClick={() => reloadImageClickHandler(isAdding ? addWatchListDtl.WatchListItemID : watchListDtl.WatchListItemID)}>
                                                             Reload Image
-                                                       </a>
-                                                  </div>
+                                                       </div>
+                                             }
+
+                                             {isAdding &&
+                                             <div className="narrow card"></div>
                                              }
 
                                              {(isAdding || isEditing) &&

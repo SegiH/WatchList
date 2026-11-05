@@ -61,7 +61,7 @@
     "@types/request": "^2.48.12",
     "baseline-browser-mapping": "^2.9.3",
     "concurrently": "^8.2.2",
-    "eslint-config-next": "^14.2.35",
+    "eslint-config-next": "^15.5.29",
     "typescript": "^5"
   },
   "packageManager": "pnpm@8.15.4",

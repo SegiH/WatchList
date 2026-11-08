@@ -424,7 +424,7 @@ export default function WatchListDtl() {
                     return;
                }
 
-               if (getWatchListTypeID(addWatchListDtl.WatchListItemID) === 2 && typeof addWatchListDtl.Season !== "undefined" && addWatchListDtl.Season === 0) {
+               if (getWatchListTypeID(addWatchListDtl.WatchListItemID) === "2" && typeof addWatchListDtl.Season !== "undefined" && addWatchListDtl.Season === 0) {
                     alert("Please enter the season");
                     return;
                }
@@ -520,7 +520,7 @@ export default function WatchListDtl() {
                     return;
                }
 
-               if (getWatchListTypeID(watchListDtl.WatchListItemID) === 2 && typeof watchListDtl.Season !== "undefined" && watchListDtl.Season === 0) {
+               if (getWatchListTypeID(watchListDtl.WatchListItemID) === "2" && typeof watchListDtl.Season !== "undefined" && watchListDtl.Season === 0) {
                     alert("Please enter the season");
                     return;
                }

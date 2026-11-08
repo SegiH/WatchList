@@ -41,7 +41,7 @@ export default function WatchListDtl() {
      const [formattedNamesLoadingComplete, setFormattedNamesLoadingComplete] = useState(APIStatus.Idle);
      const [editModified, setEditModified] = useState(false);
      const [isClosing, setIsClosing] = useState(false);
-     const [originalWatchListDtl, setOriginalWatchListDtl] = useState<IWatchList | null>(null); (null);
+     const [originalWatchListDtl, setOriginalWatchListDtl] = useState<IWatchList | null>(null);
      const [recommendationsVisible, setRecommendationsVisible] = useState(false);
      const [recommendationName, setRecommendationName] = useState<string>("");
      const [recommendationType, setRecommendationType] = useState<string>("");
@@ -498,7 +498,6 @@ export default function WatchListDtl() {
                const newWatchListDtl = { ...watchListDtl } as IWatchList;
 
                newWatchListDtl["IMDB_Poster_Error"] = true;
-
                setWatchListDtl(newWatchListDtl);
           }
      };
@@ -729,7 +728,7 @@ export default function WatchListDtl() {
                                    <div className="container">
                                         <div className="cards">
                                              <div className="card">
-                                                  {!isAdding && !isEditing &&
+                                                  {!isAdding && !isEditing && watchListDtl !== null &&
                                                        <span onClick={startEditing}>
                                                             <span className={`clickable editsaveCancelButton`}>{EditIconComponent}</span>
                                                        </span>
@@ -962,11 +961,11 @@ export default function WatchListDtl() {
                                                   }
 
                                                   {isEditing &&
-                                                       <input className={`inputStyle`} value={watchListDtl?.Notes} onChange={(event) => watchListDetailChangeHandler("Notes", event.target.value)} />
+                                                       <input className={`inputStyle`} value={watchListDtl?.Notes || ""} onChange={(event) => watchListDetailChangeHandler("Notes", event.target.value)} />
                                                   }
 
                                                   {isAdding && addWatchListDtl &&
-                                                       <input className={`inputStyle`} value={addWatchListDtl?.Notes} onChange={(event) => addWatchListDetailChangeHandler("Notes", event.target.value)} />
+                                                       <input className={`inputStyle`} value={addWatchListDtl?.Notes || ""} onChange={(event) => addWatchListDetailChangeHandler("Notes", event.target.value)} />
                                                   }
                                              </div>
 

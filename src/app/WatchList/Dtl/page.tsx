@@ -353,7 +353,7 @@ export default function WatchListDtl() {
           });
 
           if (results.length === 1) {
-               return results[0].WatchListTypeID;
+               return String(results[0].WatchListTypeID);
           } else {
                return -1;
           }
@@ -926,7 +926,7 @@ export default function WatchListDtl() {
                                                   }
                                              </div>
 
-                                             {((isAdding && addWatchListDtl !== null && addWatchListDtl?.WatchListItemID !== -1 && getWatchListTypeID(addWatchListDtl.WatchListItemID) === 2) || (!isAdding && watchListDtl?.WatchListTypeID === 2)) &&
+                                             {((isAdding && addWatchListDtl !== null && addWatchListDtl?.WatchListItemID !== -1 && getWatchListTypeID(addWatchListDtl.WatchListItemID) === "2") || (!isAdding && String(watchListDtl?.WatchListTypeID) === "2")) &&
                                                   <>
                                                        <div className="narrow card"></div>
 

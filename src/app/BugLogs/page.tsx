@@ -361,7 +361,7 @@ export default function BugLogs() {
                                                                            }
 
                                                                            {isEditing &&
-                                                                                <TextField type="date" className={`borderRadius15 minWidth150`} margin="dense" id="addedOn" value={typeof editingBugLog.AddDate !== "undefined" ? editingBugLog.AddDate : ""} variant="standard" onChange={(event: React.ChangeEvent<HTMLTextAreaElement>) => bugLogChangeHandler("AddDate", event.target.value)} />
+                                                                                <input type="date" className={`borderRadius15 minWidth150`} id="addedOn" value={typeof editingBugLog.AddDate !== "undefined" ? editingBugLog.AddDate : ""} onChange={(event: React.ChangeEvent<HTMLInputElement>) => bugLogChangeHandler("AddDate", event.target.value)} />
                                                                            }
                                                                       </td>
 
@@ -371,7 +371,7 @@ export default function BugLogs() {
                                                                            }
 
                                                                            {isEditing &&
-                                                                                <TextField type="date" className={`borderRadius15 minWidth150`} margin="dense" id="completedOn" value={typeof editingBugLog.CompletedDate !== "undefined" && editingBugLog.CompletedDate !== null ? editingBugLog.CompletedDate : ""} variant="standard" onChange={(event: React.ChangeEvent<HTMLTextAreaElement>) => bugLogChangeHandler("CompletedDate", event.target.value)} />
+                                                                                <input type="date" className={`borderRadius15 minWidth150`} id="completedOn" value={typeof editingBugLog.CompletedDate !== "undefined" && editingBugLog.CompletedDate !== null ? editingBugLog.CompletedDate : ""} onChange={(event: React.ChangeEvent<HTMLInputElement>) => bugLogChangeHandler("CompletedDate", event.target.value)} />
                                                                            }
                                                                       </td>
 

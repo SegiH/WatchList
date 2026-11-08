@@ -288,11 +288,11 @@ export default function BugLogs() {
                                                   </td>
 
                                                   <td>
-                                                       <TextField type="date" className={`borderRadius15 minWidth150`} margin="dense" id="addedOn" value={addingBugLog.AddDate} variant="standard" onChange={(event: React.ChangeEvent<HTMLTextAreaElement>) => bugLogChangeHandler("AddDate", event.target.value)} />
+                                                       <input type="date" className="darkModeField borderRadius15 minWidth150" id="addedOn" value={addingBugLog.AddDate} onChange={(event: React.ChangeEvent<HTMLInputElement>) => bugLogChangeHandler("AddDate", event.target.value)} />
                                                   </td>
 
                                                   <td>
-                                                       <TextField type="date" className={`borderRadius15 minWidth150`} margin="dense" id="completedOn" value={addingBugLog.CompletedDate} variant="standard" onChange={(event: React.ChangeEvent<HTMLTextAreaElement>) => bugLogChangeHandler("CompletedDate", event.target.value)} />
+                                                       <input type="date" className="darkModeField borderRadius15 minWidth150" id="completedOn" value={addingBugLog.CompletedDate} onChange={(event: React.ChangeEvent<HTMLInputElement>) => bugLogChangeHandler("CompletedDate", event.target.value)} />
                                                   </td>
                                              </tr>
                                         }

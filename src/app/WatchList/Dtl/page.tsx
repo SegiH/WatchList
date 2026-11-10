@@ -117,8 +117,24 @@ export default function WatchListDtl() {
                     setAddModified(true);
                } else if (isEditing) {
                     const newWatchListDtl = { ...watchListDtl } as IWatchList;
-                    newWatchListDtl["WatchListItemID"] = watchListItem[0].WatchListItemID;
+                    newWatchListDtl.WatchListItemID = watchListItem[0].WatchListItemID;
                     newWatchListDtl["WatchListItem"] = watchListItem[0];
+                    newWatchListDtl.WatchListItemName = watchListItem[0].WatchListItemName;
+                    newWatchListDtl.WatchListTypeName = watchListItem[0].WatchListTypeName;
+                    newWatchListDtl.IMDB_Poster = watchListItem[0].IMDB_Poster;
+                    newWatchListDtl.IMDB_URL = watchListItem[0].IMDB_URL;
+
+                    if (typeof newWatchListDtl.Season !== "undefined" && watchListItem[0].WatchListTypeID !== 2) {
+                         delete newWatchListDtl.Season;
+                    } else {
+                         newWatchListDtl.Season = 1;
+                    }
+
+                    newWatchListDtl.Rating = 0;
+                    newWatchListDtl.Notes = "";
+                    newWatchListDtl.Archived = 0;
+
+
                     newWatchListDtl[`WatchListItemIDIsModified`] = 1;
                     setWatchListDtl(newWatchListDtl);
                     setEditModified(true);
@@ -625,7 +641,22 @@ export default function WatchListDtl() {
                     });
 
                     if (watchListItem.length === 1) {
+                         newWatchListDtl.WatchListItemID = watchListItem[0].WatchListItemID;
                          newWatchListDtl["WatchListItem"] = watchListItem[0];
+                         newWatchListDtl.WatchListItemName = watchListItem[0].WatchListItemName;
+                         newWatchListDtl.WatchListTypeName = watchListItem[0].WatchListTypeName;
+                         newWatchListDtl.IMDB_Poster = watchListItem[0].IMDB_Poster;
+                         newWatchListDtl.IMDB_URL = watchListItem[0].IMDB_URL;
+
+                         if (typeof newWatchListDtl.Season !== "undefined" && watchListItem[0].WatchListTypeID !== 2) {
+                              delete newWatchListDtl.Season;
+                         } else {
+                              newWatchListDtl.Season = 1;
+                         }
+
+                         newWatchListDtl.Rating = 0;
+                         newWatchListDtl.Notes = "";
+                         newWatchListDtl.Archived = 0;
                     }
                }
           }
@@ -1032,13 +1063,13 @@ export default function WatchListDtl() {
                                              </div>
 
                                              {(((isEditing && typeof watchListDtl !== "undefined") || watchListDtl !== null) || !isEditing) && imageIsValid(watchListDtl?.IMDB_Poster, watchListDtl?.IMDB_Poster_Error) &&
-                                                       <div className={`clickable textLabel rightAligned`} onClick={() => reloadImageClickHandler(isAdding ? addWatchListDtl.WatchListItemID : watchListDtl.WatchListItemID)}>
-                                                            Reload Image
-                                                       </div>
+                                                  <div className={`clickable textLabel rightAligned`} onClick={() => reloadImageClickHandler(isAdding ? addWatchListDtl.WatchListItemID : watchListDtl.WatchListItemID)}>
+                                                       Reload Image
+                                                  </div>
                                              }
 
                                              {isAdding &&
-                                             <div className="narrow card"></div>
+                                                  <div className="narrow card"></div>
                                              }
 
                                              {(isAdding || isEditing) &&

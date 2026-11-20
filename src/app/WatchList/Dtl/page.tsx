@@ -153,6 +153,7 @@ export default function WatchListDtl() {
      };
 
      const closeDetail = async () => {
+          setIsAdding(false);
           setAddWatchListDtl(null);
           setWatchListDtl(null);
           setOriginalWatchListDtl(null);
@@ -305,7 +306,9 @@ export default function WatchListDtl() {
                          duplicateMessages.push(`Duplicate found for "${item.name}"`);
                     }
 
-                    uniqueNames.push(item);
+                    if (item.name !== "undefined") {
+                         uniqueNames.push(item);
+                    }
                });
 
                if (duplicateMessages.length > 0) {
@@ -321,7 +324,7 @@ export default function WatchListDtl() {
 
                const namesWithIdItems = getAllWatchListItemsResult[1]
                     .filter((watchListItem: IWatchListItem) => {
-                         return typeof watchListItem.WatchListItemName !== "undefined" && watchListItem.WatchListItemName !== ""
+                         return typeof watchListItem.WatchListItemName !== "undefined" && watchListItem.WatchListItemName !== "" && watchListItem.WatchListItemName !== null
                     }).map((watchListItem: IWatchListItem) => {
                          let itemName = watchListItem.WatchListItemName
 

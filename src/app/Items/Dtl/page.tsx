@@ -692,12 +692,21 @@ export default function ItemsDtl() {
                                                   <div className="narrow card"></div>
                                              }
 
-                                             {((isAdding && typeof addWatchListItemDtl !== "undefined") || (isEditing && typeof watchListItemDtl !== "undefined" && watchListItemDtl !== null) || (!isAdding || !isEditing)) &&
+                                             {(!isAdding && !isEditing) &&
                                                   <div className={`clickable textLabel`}>
                                                        <a onClick={() => reloadImageClickHandler(watchListItemDtl.WatchListItemID)}>
                                                             Reload Image
                                                        </a>
                                                   </div>
+                                             }
+
+                                             {(!isAdding && !isEditing) &&
+                                                  <>
+                                                  <div className="narrow card"></div>
+                                                       <div className="narrow card"></div><div className="narrow card">
+                                                            <div className="clickable hyperlink text-label rightAligned" onClick={recommendationsClickHandler}>Recommendations</div>
+                                                       </div>
+                                                  </>
                                              }
 
                                              {(isAdding || isEditing) &&
@@ -721,15 +730,9 @@ export default function ItemsDtl() {
                                                   </>
                                              }
 
-                                             {(!isAdding && !isEditing) &&
-                                                  <>
-                                                       <div className="narrow card"></div><div className="narrow card">
-                                                            <div className="clickable hyperlink text-label rightAligned" onClick={recommendationsClickHandler}>Recommendations</div>
-                                                       </div>
-                                                  </>
+                                             {(isAdding && isEditing) &&
+                                                  <a className="clickable fontStyle leftMargin" onClick={MediaDetailsOpenClickHandler}>IMDB Info</a>
                                              }
-
-                                             <a className="clickable fontStyle leftMargin" onClick={MediaDetailsOpenClickHandler}>IMDB Info</a>
 
                                              <div className="narrow card">
                                                   {watchListItemDtl !== null && typeof watchListItemDtl?.WatchListHistory !== "undefined" && watchListItemDtl?.WatchListHistory?.length > 0 && (!isAdding && !isEditing) &&

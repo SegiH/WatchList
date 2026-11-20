@@ -32,6 +32,9 @@ export default function ItemsDtl() {
      const [watchListItemDtlLoadingCheck, setWatchListItemDtlLoadingCheck] = useState(APIStatus.Idle);
      const [watchListItemDtlID, setWatchListItemDtlID] = useState<number>(-1);
 
+     const movieRatings = ["G", "PG", "PG-13", "R", "NC-17"];
+     const tvRatings = ["TV-G", "TV-PG", "TV-14", "TV-MA"];
+
      const router = useRouter();
 
      const addWatchListItemDetailChangeHandler = (fieldName: string, fieldValue: boolean | number | string) => {
@@ -263,6 +266,18 @@ export default function ItemsDtl() {
                     queryURL += `&ItemNotes=${watchListItemDtl.ItemNotes}`;
                }
 
+               if (watchListItemDtl?.YearIsModified === 1) {
+                    queryURL += `&Year=${watchListItemDtl.Year}`;
+               }
+
+               if (watchListItemDtl?.RatingIsModified === 1) {
+                    queryURL += `&Rated=${watchListItemDtl.Rating}`;
+               }
+
+               if (watchListItemDtl?.GenreIsModified === 1) {
+                    queryURL += `&Genre=${watchListItemDtl.Genre}`;
+               }
+
                if (watchListItemDtl?.ArchivedIsModified === 1) {
                     queryURL += `&Archived=${watchListItemDtl.Archived}`;
                }
@@ -345,6 +360,18 @@ export default function ItemsDtl() {
                queryURL += `&ItemNotes=${addWatchListItemDtl?.ItemNotes}`;
           }
 
+          if (addWatchListItemDtl?.YearIsModified === 1) {
+               queryURL += `&Year=${addWatchListItemDtl.Year}`;
+          }
+
+          if (addWatchListItemDtl?.GenreIsModified === 1) {
+               queryURL += `&Genre=${addWatchListItemDtl.Genre}`;
+          }
+
+          if (addWatchListItemDtl?.RatingIsModified === 1) {
+               queryURL += `&Rated=${addWatchListItemDtl.Rating}`;
+          }
+
           try {
                const saveNewItemDtlResponse = await fetch(queryURL, { method: 'PUT', credentials: 'include' });
 
@@ -416,6 +443,7 @@ export default function ItemsDtl() {
           } else {
                newWatchListItemDtl[fieldName] = fieldValue;
           }
+
           newWatchListItemDtl[`${fieldName}IsModified`] = 1;
 
           if (!editModified) {
@@ -450,7 +478,7 @@ export default function ItemsDtl() {
 
                getWatchListItemDtl(watchListItemDtlID);
           } else if (isAdding && watchListItemDtlID === -1) {
-               const newAddWatchListItemDtl: IWatchListItem = { WatchListItemID: 0, WatchListItemName: "", WatchListTypeID: -1, WatchListTypeName: "", IMDB_URL: "", IMDB_Poster: "", ItemNotes: "", Year: 0, Archived: 0, WatchListHistory: [] };
+               const newAddWatchListItemDtl: IWatchListItem = { WatchListItemID: 0, WatchListItemName: "", WatchListTypeID: -1, WatchListTypeName: "", IMDB_URL: "", IMDB_Poster: "", ItemNotes: "", Rating: "", Year: 0, Rated: "", Genre: "", Archived: 0, WatchListHistory: [] };
                newAddWatchListItemDtl.WatchListItemName = "";
                newAddWatchListItemDtl.WatchListTypeID = -1;
                newAddWatchListItemDtl.IMDB_URL = "";
@@ -522,7 +550,13 @@ export default function ItemsDtl() {
                                                        </span>
                                                   }
 
-                                                  {(isAdding || isEditing) &&
+                                                  {isAdding &&
+                                                       <span className={`clickable cancelItemsIcon leftMargin200`} onClick={isAdding ? closeDetail : cancelClickHandler}>
+                                                            {CancelIconComponent}
+                                                       </span>
+                                                  }
+
+                                                  {isEditing &&
                                                        <span className={`clickable cancelItemsIcon`} onClick={isAdding ? closeDetail : cancelClickHandler}>
                                                             {CancelIconComponent}
                                                        </span>
@@ -710,8 +744,83 @@ export default function ItemsDtl() {
                                                        <a className="clickable fontStyle" onClick={MediaDetailsOpenClickHandler}>IMDB Info</a>
                                                   </>
                                              }
+
                                              {(isAdding || isEditing) &&
                                                   <>
+                                                       <div className="narrow card">
+                                                            <div className={`textLabel`}>Year:&nbsp;</div>
+                                                       </div>
+
+                                                       <div className="narrow card no-width">
+                                                            {isEditing &&
+                                                                 <input className={`inputStyle`} type="number" value={watchListItemDtl?.Year} onChange={(event: React.ChangeEvent<HTMLInputElement>) => watchListItemDetailChangeHandler("Year", event.target.value)} />
+                                                            }
+
+                                                            {isAdding &&
+                                                                 <input className={`inputStyle`} type="number" value={addWatchListItemDtl?.Year} onChange={(event: React.ChangeEvent<HTMLInputElement>) => addWatchListItemDetailChangeHandler("Year", event.target.value)} />
+                                                            }
+                                                       </div>
+
+                                                       {(isAdding || isEditing) &&
+                                                            <>
+                                                                 <div className="narrow card"></div>
+                                                                 <div className="narrow card">
+                                                                      <div className={`textLabel`}>Genre:&nbsp;</div>
+                                                                 </div>
+                                                            </>
+                                                       }
+
+                                                       <div className="narrow card no-width">
+                                                            {isEditing &&
+                                                                 <input className={`inputStyle`} value={watchListItemDtl?.Genre} onChange={(event: React.ChangeEvent<HTMLInputElement>) => watchListItemDetailChangeHandler("Genre", event.target.value)} />
+                                                            }
+
+                                                            {isAdding &&
+                                                                 <input className={`inputStyle`} value={addWatchListItemDtl?.Genre} onChange={(event: React.ChangeEvent<HTMLInputElement>) => addWatchListItemDetailChangeHandler("Genre", event.target.value)} />
+                                                            }
+                                                       </div>
+
+                                                       {((isAdding && typeof addWatchListItemDtl?.WatchListTypeID !== "undefined" && addWatchListItemDtl?.WatchListTypeID !== -1) || (isEditing && typeof watchListItemDtl?.WatchListTypeID !== "undefined" && watchListItemDtl?.WatchListTypeID !== -1)) &&
+                                                            <>
+                                                                 <div className="narrow card"></div>
+
+                                                                 <div className="narrow card">
+                                                                      <div className={`textLabel`}>Rated:&nbsp;</div>
+                                                                 </div>
+                                                            </>
+                                                       }
+
+                                                       <div className="narrow card">
+                                                            {isAdding && addWatchListItemDtl?.WatchListTypeID !== -1 &&
+                                                                 <select value={addWatchListItemDtl?.Rating} onChange={(event) => addWatchListItemDetailChangeHandler("Rating", event.target.value)}>
+                                                                      <option value="-1">Please select</option>
+
+                                                                      {(addWatchListItemDtl?.WatchListTypeID === 2 ? tvRatings : movieRatings)?.map((movieRating, index: number) => {
+                                                                           return (
+                                                                                <option key={index} value={movieRating}>
+                                                                                     {movieRating}
+                                                                                </option>
+                                                                           );
+                                                                      })}
+                                                                 </select>
+                                                            }
+
+                                                            {isEditing && watchListItemDtl?.WatchListTypeID !== -1 &&
+                                                                 <select value={watchListItemDtl?.Rating} onChange={(event) => watchListItemDetailChangeHandler("Rating", event.target.value)}>
+                                                                      <option value="-1">Please select</option>
+
+                                                                      {(String(watchListItemDtl?.WatchListTypeID) === "2" ? tvRatings : movieRatings)?.map((movieRating, index: number) => {
+                                                                           return (
+                                                                                <option key={index} value={movieRating}>
+                                                                                     {movieRating}
+                                                                                </option>
+                                                                           );
+                                                                      })}
+                                                                 </select>
+                                                            }
+                                                       </div>
+
+                                                       <div className="narrow card"></div>
                                                        <div className="narrow card">
                                                             <div className={`textLabel`}>Archived:&nbsp;</div>
                                                        </div>
@@ -728,13 +837,14 @@ export default function ItemsDtl() {
                                                                  <input type="checkbox" checked={watchListItemDtl?.Archived === 1 ? true : false} onChange={(event: React.ChangeEvent<HTMLInputElement>) => watchListItemDetailChangeHandler("Archived", event.target.checked)} />
                                                             </div>
                                                        }
+
+                                                       <div className="narrow card"></div>
                                                   </>
                                              }
 
                                              <div className="narrow card">
                                                   {watchListItemDtl !== null && typeof watchListItemDtl?.WatchListHistory !== "undefined" && watchListItemDtl?.WatchListHistory?.length > 0 && (!isAdding && !isEditing) &&
                                                        <a className="clickable fontStyle topMargin20" onClick={showWatchListHistory}>Watched History</a>
-
                                                   }
                                              </div>
                                         </div>

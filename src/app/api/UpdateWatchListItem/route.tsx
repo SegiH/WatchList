@@ -16,6 +16,9 @@ export async function PUT(request: NextRequest) {
      const imdb_poster = searchParams.get("IMDB_Poster");
      const notes = searchParams.get("ItemNotes");
      const archived = searchParams.get("Archived");
+     const year = searchParams.get("Year");
+     const genre = searchParams.get("Genre");
+     const rated = searchParams.get("Rated");
 
      if (watchListItemID === null) {
           return Response.json(["ERROR", "ID was not provided"]);
@@ -50,6 +53,18 @@ export async function PUT(request: NextRequest) {
 
           if (imdb_poster !== null) {
                watchListItem.IMDB_Poster = imdb_poster;
+          }
+
+          if (year !== null) {
+               watchListItem.Year = year;
+          }
+
+          if (genre !== null) {
+               watchListItem.Genre = genre;
+          }
+
+          if (rated !== null) {
+               watchListItem.Rated = rated;
           }
 
           if (notes !== null) {

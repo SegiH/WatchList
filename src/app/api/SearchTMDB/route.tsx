@@ -37,7 +37,8 @@ export async function GET(request: NextRequest) {
           const imdb_url = "https://www.imdb.com/title/" + result.IMDBId + "/";
           const imdb_poster = result.IMDB_Poster;
 
-          const addResultResponse = await addWatchListItem(result.Title, itemType, imdb_url, imdb_poster, "", "0");
+          // We dont have the rating and notes defaults to "" (2nd and 3rd to last parameters)
+          const addResultResponse = await addWatchListItem(result.Title, itemType, imdb_url, imdb_poster, result.Year, result.Genre, "", "", 0);
           const addResult = await addResultResponse.json();
 
           if (addResult[0] === "ERROR-ALREADY-EXISTS") {

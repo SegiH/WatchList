@@ -224,6 +224,8 @@ table.simpleTable:last-child {
 
 .leftMargin165 { @apply ml-[165px]; }
 
+.leftMargin200 { @apply ml-[200px]; }
+
 .lineChart { @apply max-w-[min-content] border; }
 
 .linkStyle { @apply no-underline!; }

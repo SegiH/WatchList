@@ -134,7 +134,7 @@ export const addUser = async (request: NextRequest, isNewInstance = false) => {
      }
 }
 
-export const addWatchListItem = async (name: string, type: string, imdb_url: string, imdb_poster: string, notes: string, archived: string) => {
+export const addWatchListItem = async (name: string, type: string, imdb_url: string, imdb_poster: string, year: number, genre: string, rated: string, notes: string, archived: number) => {
      try {
           const db: any = await getDB();
 
@@ -190,6 +190,8 @@ export const addWatchListItem = async (name: string, type: string, imdb_url: str
                "IMDB_URL": imdb_url,
                "IMDBId": ttyId,
                "Year": detail["Year"],
+               "Genre": detail["Genre"],
+               "Rated": detail["Rated"],
                "Released": detail["Released"],
                "Type": detail["Type"],
                "Plot": detail["Plot"],
@@ -197,7 +199,7 @@ export const addWatchListItem = async (name: string, type: string, imdb_url: str
                "Country": detail["Country"],
                "IMDB_Poster": imdb_poster ?? detail["IMDB_Poster"],
                "ItemNotes": notes,
-               "Archived": parseInt(archived as string, 10),
+               "Archived": archived,
           });
 
           writeDB(db);
@@ -729,7 +731,7 @@ const mapDetailsFields = (details) => {
           "Year": typeof details["release_date"] !== "undefined" ? details["release_date"].split("-")[0] : "",
           "Released": details["release_date"],
           "Type": details["media_type"],
-          //"Genre": details["genre_ids"],
+          "Genre": details["genre_ids"],
           "Plot": details["overview"],
           "Language": details["original_language"],
           "Country": details["origin_country"],

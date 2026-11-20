@@ -724,7 +724,7 @@ const loginSuccessfullActions = async (currentUser: IUser) => {
 
 const mapDetailsFields = (details) => {
      const mappedResult = {
-          "Title": details["title"],
+          "Title": details["original_name"] || details["title"],
           "IMDBId": details["IMDBId"],
           "Year": typeof details["release_date"] !== "undefined" ? details["release_date"].split("-")[0] : "",
           "Released": details["release_date"],

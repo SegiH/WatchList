@@ -702,13 +702,14 @@ export default function ItemsDtl() {
 
                                              {(!isAdding && !isEditing) &&
                                                   <>
-                                                  <div className="narrow card"></div>
+                                                       <div className="narrow card"></div>
                                                        <div className="narrow card"></div><div className="narrow card">
                                                             <div className="clickable hyperlink text-label rightAligned" onClick={recommendationsClickHandler}>Recommendations</div>
                                                        </div>
+
+                                                       <a className="clickable fontStyle" onClick={MediaDetailsOpenClickHandler}>IMDB Info</a>
                                                   </>
                                              }
-
                                              {(isAdding || isEditing) &&
                                                   <>
                                                        <div className="narrow card">
@@ -728,10 +729,6 @@ export default function ItemsDtl() {
                                                             </div>
                                                        }
                                                   </>
-                                             }
-
-                                             {(isAdding && isEditing) &&
-                                                  <a className="clickable fontStyle leftMargin" onClick={MediaDetailsOpenClickHandler}>IMDB Info</a>
                                              }
 
                                              <div className="narrow card">

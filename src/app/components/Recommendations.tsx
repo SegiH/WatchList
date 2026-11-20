@@ -98,7 +98,7 @@ const Recommendations = ({ queryTerm, setRecommendationName, setRecommendationTy
 
                     {recommendationsLoadingCheck === APIStatus.Success && recommendations && recommendations.length > 0 && recommendations.map((recommendation: IRecommendation, index: number) => {
                          return (
-                              <li className="show-item" key={recommendation.id}>
+                              <li className="recommendations-item" key={recommendation.id}>
                                    <div className="recommendation-card">
                                         <div className="recommendation-poster">
                                              {!recommendation.Image_Error && recommendation.poster_path !== null ? (

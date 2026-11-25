@@ -2,7 +2,6 @@ import { NextRequest } from 'next/server';
 import { getDB, isLoggedIn, writeLog, matchMetadata } from "../lib";
 import IWatchListType from '@/app/interfaces/IWatchListType';
 import IWatchListItem from '@/app/interfaces/IWatchListItem';
-import { sendCompressedJsonBrotli, sendCompressedJsonGZip } from '@/app/api/proxy';
 import IWatchList from '@/app/interfaces/IWatchList';
 
 export async function GET(request: NextRequest) {
@@ -109,32 +108,9 @@ export async function GET(request: NextRequest) {
                results = results.slice(startIndex, endIndex);
           }
 
-          if (process.env.NODE_ENV === 'development') {
-               return Response.json(["OK", results]);
-          } else {
-               const compressedData = await sendCompressedJsonBrotli(["OK", results]);
-
-               return new Response(compressedData as unknown as BodyInit, {
-                    status: 200,
-                    headers: {
-                         'Content-Type': 'application/json',
-                         'Content-Encoding': 'br', // use 'gzip' when using gzip
-                    },
-               });
-          }
+          return Response.json(["OK", results]);
      } catch (e) {
           writeLog(e.message);
           return Response.json(["ERROR", e.message]);
      }
 }
-
-// Return gzipped results
-/*const compressedData = await sendCompressedJsonBrotli(["OK", result]);
-
-return new Response(compressedData as unknown as BodyInit, {
-     status: 200,
-     headers: {
-          'Content-Type': 'application/json',
-          'Content-Encoding': 'br', // usse 'gzip' when using gzip
-     },
-});*/

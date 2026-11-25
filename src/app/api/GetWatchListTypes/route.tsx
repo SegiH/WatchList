@@ -1,6 +1,5 @@
 import { NextRequest } from 'next/server';
 import { getDB, writeLog } from '../lib';
-import { sendCompressedJsonBrotli } from '@/app/api/proxy';
 
 export async function GET(request: NextRequest) {
      // This needs to be here even though this endpoint doesn't take any parameters because without this,
@@ -11,20 +10,7 @@ export async function GET(request: NextRequest) {
      try {
           const db: any = await getDB();
 
-          if (process.env.NODE_ENV === 'development') {
-               return Response.json(["OK", db.WatchListTypes]);
-          } else {
-               // Return gzipped results
-               const compressedData = await sendCompressedJsonBrotli(["OK", db.WatchListTypes]);
-
-               return new Response(compressedData as unknown as BodyInit, {
-                    status: 200,
-                    headers: {
-                         'Content-Type': 'application/json',
-                         'Content-Encoding': 'br', // use 'gzip' when using gzip
-                    },
-               });
-          }
+          return Response.json(["OK", db.WatchListTypes]);
      } catch (e) {
           writeLog(e)
           return Response.json(["OK", []]);

@@ -1,6 +1,5 @@
 import { getDB, defaultSources, isLoggedIn, writeDB, writeLog } from "../lib";
 import { NextRequest } from 'next/server';
-import { sendCompressedJsonBrotli} from '@/app/api/proxy';
 import IWatchListSource from "@/app/interfaces/IWatchListSource";
 
 export async function GET(request: NextRequest) {
@@ -42,20 +41,7 @@ export async function GET(request: NextRequest) {
                writeDB(db)
           }
      
-          if (process.env.NODE_ENV === 'development') {
-               return Response.json(["OK", db.WatchListSources]);
-          } else {
-               // Return gzipped results
-               const compressedData = await sendCompressedJsonBrotli(["OK", db.WatchListSources]);
-
-               return new Response(compressedData as unknown as BodyInit, {
-                    status: 200,
-                    headers: {
-                         'Content-Type': 'application/json',
-                         'Content-Encoding': 'br', // use 'gzip' when using gzip
-                    },
-               });
-          }
+          return Response.json(["OK", db.WatchListSources]);
      } catch (e) {
           writeLog(e)
           return Response.json(["OK", []]);

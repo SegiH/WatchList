@@ -40,22 +40,3 @@ export async function GET(request: NextRequest) {
           return Response.json(["ERROR", ""]);
      }
 }
-
-/*
-// Return gzipped results
-          const compressedData = await sendCompressedJsonBrotli(["OK", {
-               UserID: userSession?.UserID,
-               Username: userSession?.Username,
-               RealName: userSession?.Realname,
-               Admin: userSession?.Admin,
-               Options: userOptions
-          }]);
-
-          return new Response(compressedData as unknown as BodyInit, {
-               status: 200,
-               headers: {
-                    'Content-Type': 'application/json',
-                    'Content-Encoding': 'br', // usse 'gzip' when using gzip
-               },
-          });
-*/

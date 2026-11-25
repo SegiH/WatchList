@@ -19,6 +19,7 @@
     "deploy-windows": "xcopy /q /y .env-template .next\\standalone && xcopy /y database-template.json .next\\standalone\\database.json && xcopy /e /i /y public .next\\standalone\\public && xcopy /e /i /y .next\\static .next\\standalone\\.next\\static",
     "deploy-unix": "cp .env-template .next/standalone/.env && cp database-template.json .next/standalone/database.json && cp -r public/ .next/standalone && cp -r .next/static .next/standalone/.next",
     "cr": "cd .next/standalone && zip -r ../../watchlist.zip . && cd ../..",
+    "rb": "npm run build && npm run deploy-unix && cd .next/standalone && cp ../../.env . && cp ../../database.json . && node server.js",
     "all": "npm run build && npm run deploy-unix && npm run cr",
     "test": "jest",
     "test:watch": "jest --watch"
@@ -37,17 +38,16 @@
     "@types/cookie": "^0.6.0",
     "@types/crypto-js": "^4.2.1",
     "@types/jest": "^30.0.0",
-    "compression": "^1.8.1",
     "crypto-js": "^4.2.0",
     "json5": "^2.2.3",
-    "next": "^16.4.4",
+    "next": "16.4.6",
     "next-router-mock": "^0.9.13",
     "next-themes": "^0.4.6",
     "node-fetch": "^3.3.2",
     "postcss": "^8.5.8",
     "prop-types-exact": "^1.2.0",
-    "react": "19.2.5",
-    "react-dom": "19.2.5",
+    "react": "19.3.1",
+    "react-dom": "19.3.1",
     "react-select": "^5.10.1",
     "tailwindcss": "^4.2.1",
     "tedious": "^2.3.1",
@@ -56,19 +56,15 @@
   "devDependencies": {
     "@babel/preset-typescript": "^7.26.0",
     "@types/node": "^20",
-    "@types/react": "19.2.14",
-    "@types/react-dom": "19.2.3",
+    "@types/react": "19.3.1",
+    "@types/react-dom": "19.3.0",
     "@types/request": "^2.48.12",
     "baseline-browser-mapping": "^2.9.3",
     "concurrently": "^8.2.2",
-    "eslint-config-next": "^15.5.29",
+    "eslint-config-next": "16.4.6",
     "typescript": "^5"
   },
   "packageManager": "pnpm@8.15.4",
-  "overrides": {
-    "@types/react": "19.2.14",
-    "@types/react-dom": "19.2.3"
-  },
   "allowScripts": {
     "unrs-resolver@1.11.1": true
   }

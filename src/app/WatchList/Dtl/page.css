@@ -1,0 +1,207 @@
+/* watchlist-modal.css — self-contained, no Tailwind @apply */
+
+/* ---- Autocomplete: light box in dark mode ---- */
+/* The visible box is the Autocomplete root; make it light */
+.dark .wl-modal-content .MuiAutocomplete-root {
+  background-color: #fff;
+  border-radius: 4px;
+}
+
+/* Typed text + caret */
+.dark .wl-modal-content .MuiAutocomplete-input {
+  color: #111;
+}
+
+/* Floating "Search" label + the clear/dropdown icons */
+.dark .wl-modal-content .MuiInputLabel-root,
+.dark .wl-modal-content .MuiAutocomplete-clearIndicator,
+.dark .wl-modal-content .MuiAutocomplete-popupIndicator {
+  color: #555;
+}
+
+/* The opened popup is rendered in a PORTAL at <body>, NOT inside the
+   modal, so it cannot be scoped under .wl-modal-content. Style it
+   globally under .dark instead. */
+.dark .MuiAutocomplete-paper,
+.dark .MuiAutocomplete-listbox {
+  background-color: #fff;
+  color: #111;
+}
+.dark .MuiAutocomplete-option { color: #111; }
+.dark .MuiAutocomplete-option:hover,
+.dark .MuiAutocomplete-option.Mui-focused { background-color: #eee; }
+
+.wl-modal {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: auto;
+  padding: 40px 12px;
+  z-index: 999;
+}
+
+.wl-modal-content {
+  width: 600px;
+  max-width: 100%;
+  border: 1px solid #888;
+  border-radius: 20px;
+  background: var(--modal-bg, #fff);
+  color: var(--modal-fg, #000);
+  padding: 24px;
+  box-sizing: border-box;
+}
+
+.wl-fade-in {
+  animation: wl-fade 0.25s ease;
+}
+
+/* ---- header ---- */
+.wl-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.wl-header-actions {
+  display: flex;
+  gap: 10px;
+  flex: 0 0 auto;
+  min-width: 40px;
+}
+
+.wl-header-title {
+  flex: 1 1 auto;
+  min-width: 0;
+  font-weight: 700;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.wl-header-close {
+  flex: 0 0 auto;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.wl-action {
+  cursor: pointer;
+  transform: scale(1.8);
+  display: inline-flex;
+  user-select: none;
+}
+.wl-action.wl-close { font-weight: 700; transform: scale(2); }
+.wl-action.wl-cancel { transform: scale(1.5); }
+
+/* ---- poster + id block ---- */
+.wl-poster-row {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+  margin-bottom: 18px;
+  user-select: none;
+}
+
+.wl-poster {
+  flex: 0 0 auto;
+  width: 200px;
+}
+.wl-poster img {
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+}
+.wl-poster .wl-poster-placeholder {
+  width: 128px;
+  margin: 40px auto 0;
+}
+
+.wl-meta {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.wl-id { user-select: none; font-size: 14px; opacity: 0.8; }
+
+/* ---- field rows: label | value ---- */
+.wl-field {
+  display: grid;
+  grid-template-columns: 140px 1fr;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+  user-select: none;
+}
+.wl-field-label {
+  font-weight: 700;
+  white-space: nowrap;
+  user-select: none;
+}
+.wl-field-value {
+  min-width: 0;
+}
+.wl-field-value input[type="date"],
+.wl-field-value input[type="number"],
+.wl-field-value input[type="text"],
+.wl-field-value select {
+  max-width: 100%;
+}
+.wl-field-value .wl-notes-view {
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+/* ---- inline actions ---- */
+.wl-inline-actions {
+  display: flex;
+  gap: 24px;
+  margin: 8px 0 12px;
+  user-select: none;
+}
+.wl-link {
+  color: #1976d2;
+  cursor: pointer;
+  text-decoration: none;
+}
+.wl-link:hover { text-decoration: underline; }
+
+/* ---- rating ---- */
+.wl-rating { display: inline-flex; align-items: center; }
+
+/* ---- dark theme hook ---- */
+.dark .wl-modal-content {
+  --modal-bg: #3b3b38;
+  --modal-fg: #fff;
+  border-color: #555;
+}
+
+@keyframes wl-fade {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.wl-toolbar {
+  display: flex;
+  justify-content: space-between;   /* was flex-end */
+  align-items: center;
+  margin-bottom: 14px;
+}
+.wl-toolbar-left,
+.wl-toolbar-right {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.wl-name-view { font-weight: 700; }
+.wl-archived  { font-weight: 700; }
+.wl-select    { max-width: 100%; }
+
+/* Optional: make the name dropdown start at the far-left (flush with the
+   labels, not the inputs). Add className="wl-field-name" to that FieldRow. */
+.wl-field.wl-field-name .wl-field-label { display: none; }
+.wl-field.wl-field-name .wl-field-value { grid-column: 1 / -1; }
+

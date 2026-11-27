@@ -1,0 +1,111 @@
+/* page.css — self-contained, no Tailwind @apply */
+
+.pg-modal {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: auto;
+  padding: 40px 12px;
+  z-index: 999;
+}
+
+.pg-modal-content {
+  width: 600px;
+  max-width: 100%;
+  border: 1px solid #888;
+  border-radius: 20px;
+  background: var(--pg-bg, #fff);
+  color: var(--pg-fg, #000);
+  padding: 24px;
+  box-sizing: border-box;
+}
+
+.pg-fade-in { animation: pg-fade 0.25s ease; }
+
+/* ---- toolbar ---- */
+.pg-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+}
+.pg-toolbar-left,
+.pg-toolbar-right {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.pg-action {
+  cursor: pointer;
+  transform: scale(1.8);
+  display: inline-flex;
+}
+.pg-action.pg-close { user-select: none; font-weight: 700; transform: scale(2); }
+.pg-action.pg-cancel { transform: scale(1.5); }
+
+/* ---- poster + id ---- */
+.pg-poster-row {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+  margin-bottom: 18px;
+  user-select: none;
+}
+.pg-poster { flex: 0 0 auto; width: 200px; }
+.pg-poster img { width: 100%; height: auto; border-radius: 8px; }
+.pg-meta { flex: 1 1 auto; min-width: 0; }
+.pg-id { font-size: 14px; opacity: 0.8; }
+
+/* ---- field rows: label | value ---- */
+.pg-field {
+  display: grid;
+  grid-template-columns: 140px 1fr;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+  user-select: none;
+}
+.pg-field-label { font-weight: 700; white-space: nowrap; }
+.pg-field-value { min-width: 0; }
+.pg-field-value input,
+.pg-field-value select {
+  max-width: 100%;
+}
+.pg-field-value .pg-notes-view { white-space: pre-wrap; word-break: break-word; }
+
+/*.pg-input,
+.pg-select {
+  max-width: 100%;
+}*/
+
+/* ---- inline actions ---- */
+.pg-inline-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  margin: 8px 0 12px;
+  user-select: none;
+}
+.pg-link {
+  color: #1976d2;
+  cursor: pointer;
+  text-decoration: none;
+}
+.pg-link:hover { text-decoration: underline; }
+.pg-fontstyle { font-family: "Brush Script MT", cursive; }
+.pg-archived { font-weight: 700; }
+
+/* ---- dark theme hook ---- */
+.dark .pg-modal-content {
+  --pg-bg: #3b3b38;
+  --pg-fg: #fff;
+  border-color: #555;
+}
+
+@keyframes pg-fade {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
